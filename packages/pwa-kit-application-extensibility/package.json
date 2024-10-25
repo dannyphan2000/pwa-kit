@@ -27,6 +27,7 @@
   "scripts": {
     "build-old": "tsc",
     "build": "cross-env NODE_ENV=production internal-lib-build build && tsc",
+    "build:watch": "nodemon --watch 'src/**' --ext 'js,jsx,ts,tsx' --exec 'npm run build'",
     "lint": "npm run lint:js",
     "lint:fix": "npm run lint:js -- --fix",
     "lint:js": "pwa-kit-dev lint \"**/*.{js,jsx,ts,tsx}\"",
@@ -42,6 +43,7 @@
     "resolve": "^1.22.8"
   },
   "devDependencies": {
+    "nodemon": "^2.0.22",
     "@babel/core": "^7.21.3",
     "@babel/parser": "^7.21.3",
     "@loadable/component": "^5.15.3",

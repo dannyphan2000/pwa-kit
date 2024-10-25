@@ -41,7 +41,9 @@ export default function ApplicationExtensibilityLoader(
     // targets (server) do not require this optimization.
     const data = this.getOptions()
 
-    return renderTemplate(data)
+    const result = renderTemplate(data)
+    console.log('--- result of renderTemplate', result)
+    return result
 }
 
 export const ruleForApplicationExtensibility = (options: any = {}) => {

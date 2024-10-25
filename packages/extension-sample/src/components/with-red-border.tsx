@@ -10,12 +10,16 @@ import React from 'react'
 // Define a type for the HOC props
 type WithRedBorderProps = React.ComponentPropsWithoutRef<any>
 
+export const FooContext = React.createContext('')
+
 // Define the HOC function
 const withRedBorder = <P extends {}>(WrappedComponent: React.ComponentType<P>) => {
   const WithRedBorder: React.FC<P> = (props: WithRedBorderProps) => {
     return (
       <div style={{ border: '2px solid red', padding: '10px' }}>
-        <WrappedComponent {...(props as P)} />
+        <FooContext.Provider value='foo'>
+          <WrappedComponent {...(props as P)} />
+        </FooContext.Provider>
       </div>
     )
   }

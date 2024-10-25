@@ -19,6 +19,7 @@
   "devDependencies": {
     "@loadable/component": "^5.15.3",
     "@salesforce/extension-sample": "1.0.0-dev",
+    "@salesforce/extension-sample-2": "1.0.0-dev",
     "@salesforce/pwa-kit-dev": "4.0.0-dev",
     "@salesforce/pwa-kit-react-sdk": "4.0.0-dev",
     "@salesforce/pwa-kit-runtime": "4.0.0-dev",
@@ -46,11 +47,12 @@
     "app":{
       "extensions": [
         [
-          "@salesforce/extension-sample", 
+          "@salesforce/extension-sample",
           {
             "enabled": true
           }
-        ]
+        ],
+        "@salesforce/extension-sample-2"
       ]
     },
     "ssrEnabled": true,

@@ -47,7 +47,7 @@ const templateString = dedent`
         return [{{#each configured}}new {{getInstanceName this.[0]}}({{{jsonStringify this.[1]}}}){{#if (isNotLast @index @root.configured.length)}}, {{/if}}{{/each}}]
         {{else}}
         return []
-        {{/if}}    
+        {{/if}}
     }
     {{else}}
     const getApplicationExtensions = async () => {
@@ -66,6 +66,7 @@ const templateString = dedent`
 `
 
 export const renderTemplate = (data: ApplicationExtensionsLoaderOptions) => {
+    console.log('--- renderTemplate data', data)
     // Compile the template
     const template = Handlebars.compile(templateString)
 
