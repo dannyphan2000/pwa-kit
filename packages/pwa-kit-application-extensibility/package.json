@@ -17,6 +17,9 @@
     "LICENSE",
     "configs",
     "core",
+    "express",
+    "react",
+    "shared",
     "types",
     "utils"
   ],
