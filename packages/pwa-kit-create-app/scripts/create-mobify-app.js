@@ -894,7 +894,7 @@ const runGenerator = async (
     const appExtensionsDir = p.join(outputDir, 'app', 'application-extensions')
     const {id, type} = templateSource
     let tarPath
-
+    console.log('templateSource: ', templateSource)
     switch (type) {
         case TEMPLATE_SOURCE_NPM: {
             const tarFile = sh
@@ -907,6 +907,7 @@ const runGenerator = async (
         }
         case TEMPLATE_SOURCE_BUNDLE:
             tarPath = p.join(__dirname, '..', 'templates', `${id}.tar.gz`)
+            console.log('tarPath: ', tarPath)
             break
         default: {
             const msg = `Error: Cannot handle template source type ${type}.`
@@ -916,6 +917,7 @@ const runGenerator = async (
     }
 
     // Extract the main template
+    console.log('Extracting tarball', tmp, file)
     tar.x({
         file: tarPath,
         cwd: tmp,
