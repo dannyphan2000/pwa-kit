@@ -117,8 +117,10 @@ export function detectCookiesAvailable(options?: CookieAttributes) {
  *  @private
  */
 export async function clearAuthStateOnError(error: any, auth: Auth) {
-    const response = await error?.response?.json()
-    if (response?.detail === 'Customer credentials changed after token was issued.') {
-        auth.clearUserAuth()
+    if (error?.response?.status == 401) {
+        const response = await error?.response?.json()
+        if (response?.detail === 'Customer credentials changed after token was issued.') {
+            auth.clearUserAuth()
+        }
     }
 }

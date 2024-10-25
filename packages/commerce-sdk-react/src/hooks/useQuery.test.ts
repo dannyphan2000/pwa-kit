@@ -204,6 +204,7 @@ describe('useQuery', () => {
                 new Promise((resolve, reject) => {
                     reject({
                         response: {
+                            status: 401,
                             json: () => mockRes
                         }
                     })
