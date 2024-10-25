@@ -895,38 +895,39 @@ const runGenerator = async (
     const {id, type} = templateSource
     let tarPath
     console.log('templateSource: ', templateSource)
-    switch (type) {
-        case TEMPLATE_SOURCE_NPM: {
-            const tarFile = sh
-                .exec(`npm pack ${id}@${templateVersion} --pack-destination="${tmp}"`, {
-                    silent: true
-                })
-                .stdout.trim()
-            tarPath = p.join(tmp, tarFile)
-            break
-        }
-        case TEMPLATE_SOURCE_BUNDLE:
-            tarPath = p.join(__dirname, '..', 'templates', `${id}.tar.gz`)
-            console.log('tarPath: ', tarPath)
-            break
-        default: {
-            const msg = `Error: Cannot handle template source type ${type}.`
-            console.error(msg)
-            process.exit(1)
-        }
-    }
-
-    // Extract the main template
-    console.log('Extracting tarball', tmp, file)
     try {
+        switch (type) {
+            case TEMPLATE_SOURCE_NPM: {
+                const tarFile = sh
+                    .exec(`npm pack ${id}@${templateVersion} --pack-destination="${tmp}"`, {
+                        silent: true
+                    })
+                    .stdout.trim()
+                tarPath = p.join(tmp, tarFile)
+                break
+            }
+            case TEMPLATE_SOURCE_BUNDLE:
+                tarPath = p.join(__dirname, '..', 'templates', `${id}.tar.gz`)
+                console.log('tarPath: ', tarPath)
+                break
+            default: {
+                const msg = `Error: Cannot handle template source type ${type}.`
+                console.error(msg)
+                process.exit(1)
+            }
+        }
+
+        console.log('Extracting tarball', tmp, file)
         tar.x({
             file: tarPath,
             cwd: tmp,
             sync: true
         })
-    } catch (e) {
+    } catch(e) {
         console.log('Error extracting tarball: ', e)
+
     }
+    
 
     if (extend) {
         // Bootstrap the projects.
