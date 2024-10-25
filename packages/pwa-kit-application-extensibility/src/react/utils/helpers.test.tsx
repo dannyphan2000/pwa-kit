@@ -1,13 +1,12 @@
-/**
- * @jest-environment jsdom
- */
 /*
  * Copyright (c) 2024, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-
+/**
+ * @jest-environment jsdom
+ */
 
 // Third-Party
 import React from 'react'
@@ -49,11 +48,13 @@ describe('applyHOCs', () => {
 
     test('should hoist non-React static methods from original component', () => {
         // Add a static method to the BaseComponent
+        // @ts-ignore
         BaseComponent.someStaticMethod = jest.fn()
 
         const WrappedComponent = applyHOCs(BaseComponent, [withExtraProp])
 
         // The WrappedComponent should now have the static method from BaseComponent
+        // @ts-ignore
         expect(typeof WrappedComponent.someStaticMethod).toBe('function')
     })
 })

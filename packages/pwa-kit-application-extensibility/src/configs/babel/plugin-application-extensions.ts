@@ -78,7 +78,8 @@ module.exports = function replaceFileContentPlugin({types: t}: any) {
                         filename: filePath,
                         presets: [
                             [
-                                '/Users/bchypak/Projects/pwa-kit/packages/pwa-kit-dev/node_modules/@babel/preset-env',
+                                // DEBUG
+                                '/Users/vmarta/repos/pwa-kit/packages/pwa-kit-dev/node_modules/@babel/preset-env',
                                 {
                                     targets: {
                                         node: 'current'
