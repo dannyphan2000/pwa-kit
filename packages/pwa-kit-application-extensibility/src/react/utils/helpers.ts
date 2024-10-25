@@ -23,10 +23,3 @@ export const applyHOCs = <T extends React.ComponentType<any>>(Component: T, hocs
         return hoistNonReactStatics(WrappedComponent, AccumulatedComponent) as T
     }, Component)
 }
-
-// export const applyHOCs = <T extends React.ComponentType<any>>(Component: T, hocs: Array<(component: T) => T>): T => {
-//     return hocs.reduce((AccumulatedComponent: T, hoc: (component: T) => T) => {
-//         const WrappedComponent = hoc(AccumulatedComponent);
-//         return hoistNonReactStatics(WrappedComponent, AccumulatedComponent) as T;
-//     }, Component);
-// }

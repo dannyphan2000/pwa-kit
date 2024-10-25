@@ -1,15 +1,15 @@
+/**
+ * @jest-environment jsdom
+ */
 /*
  * Copyright (c) 2024, Salesforce, Inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-/*
- * Copyright (c) 2024, salesforce.com, inc.
- * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
- */
+// The @jest-environment comment block *MUST* be the first line of the file for the tests to pass.
+// That conflicts with the monorepo header rule, so we must disable the rule!
+/* eslint-disable header/header */
 
 // Third-Party
 import React from 'react'
@@ -31,7 +31,7 @@ const withExtraProp = (Component: React.ComponentType<any>) => {
 }
 
 const withAnotherProp = (Component: React.ComponentType<any>) => {
-    const WrappedComponent = (props: any) => <Component {...props} extraProp="I am extra!" />
+    const WrappedComponent = (props: any) => <Component {...props} anotherProp="Another one!" />
 
     // Set the display name for easier debugging
     WrappedComponent.displayName = `withAnotherProp(${
