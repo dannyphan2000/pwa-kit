@@ -19,6 +19,7 @@
   "devDependencies": {
     "@loadable/component": "^5.15.3",
     "@salesforce/extension-sample": "1.0.0-dev",
+    "@salesforce/pwa-kit-application-extensibility": "4.0.0-dev",
     "@salesforce/pwa-kit-dev": "4.0.0-dev",
     "@salesforce/pwa-kit-react-sdk": "4.0.0-dev",
     "@salesforce/pwa-kit-runtime": "4.0.0-dev",

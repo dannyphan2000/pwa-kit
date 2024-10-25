@@ -13,8 +13,6 @@ import {getApplicationExtensionInfo} from '../../shared/utils'
 import {ApplicationExtensionsLoaderContext} from './types'
 
 // Constants
-const LOADER_IMPORT =
-    '@salesforce/pwa-kit-application-extensibility/configs/webpack/application-extensions-loader'
 const DEFAULT_TARGET = 'node'
 
 /**
@@ -45,11 +43,9 @@ export default function ApplicationExtensibilityLoader(
 }
 
 export const ruleForApplicationExtensibility = (options: any = {}) => {
-    const {loaderResolver, loaderOptions = {}} = options
+    const {loaderOptions = {}} = options
     const {target = DEFAULT_TARGET, appConfig} = loaderOptions
 
-    // TODO: Use the newly created utility getApplicationExtensionInfo to get the information required here.
-    // NOTE: Passing around the `getConfig` is going to be interesting to make it look nice. Might just abandon it???
     return {
         test: new RegExp(
             `${
@@ -58,7 +54,7 @@ export const ruleForApplicationExtensibility = (options: any = {}) => {
             'i'
         ),
         use: {
-            loader: loaderResolver ? loaderResolver(LOADER_IMPORT) : LOADER_IMPORT,
+            loader: '@salesforce/pwa-kit-application-extensibility/configs/webpack/application-extensions-loader',
             options: {
                 ...getApplicationExtensionInfo(appConfig),
                 target

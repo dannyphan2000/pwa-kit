@@ -213,7 +213,6 @@ const baseConfig = (target) => {
                     },
                     ...(target === 'web' ? {fallback: {crypto: false}} : {})
                 },
-
                 plugins: [
                     new webpack.DefinePlugin({
                         DEBUG,
@@ -257,7 +256,6 @@ const baseConfig = (target) => {
                         },
                         ruleForApplicationExtensibility(
                             {
-                                loaderResolver: findDepInStack,
                                 loaderOptions: {
                                     appConfig: getConfig(),
                                     target: 'web'
@@ -266,7 +264,6 @@ const baseConfig = (target) => {
                         ),
                         ruleForApplicationExtensibility(
                             {
-                                loaderResolver: findDepInStack,
                                 loaderOptions: {
                                     appConfig: getConfig(),
                                     target: 'node'
