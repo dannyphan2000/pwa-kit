@@ -918,11 +918,15 @@ const runGenerator = async (
 
     // Extract the main template
     console.log('Extracting tarball', tmp, file)
-    tar.x({
-        file: tarPath,
-        cwd: tmp,
-        sync: true
-    })
+    try {
+        tar.x({
+            file: tarPath,
+            cwd: tmp,
+            sync: true
+        })
+    } catch (e) {
+        console.log('Error extracting tarball: ', e)
+    }
 
     if (extend) {
         // Bootstrap the projects.
