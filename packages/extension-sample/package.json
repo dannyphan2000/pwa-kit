@@ -9,6 +9,14 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
+  "peerDependenciesMeta": {
+    "@salesforce/pwa-kit-application-extensibility": {
+      "optional": true
+    },
+    "@salesforce/pwa-kit-react-sdk": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@loadable/component": "^5.15.3",
     "@salesforce/pwa-kit-application-extensibility": "4.0.0-dev",
