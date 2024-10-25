@@ -12,10 +12,9 @@ import Handlebars from 'handlebars'
 import {kebabToUpperCamelCase, nameRegex} from '../shared/utils'
 
 // Types
-// TODO: This import has a "folder structure" smell. Look to fix this.
 import {ApplicationExtensionsLoaderOptions} from './webpack/types'
 
-// Regeister Handlebars helpers
+// Register Handlebars helpers
 Handlebars.registerHelper('getInstanceName', (aString) => {
     const [, namespace, name] = aString.match(nameRegex)
     return kebabToUpperCamelCase(`${namespace ? `${namespace}-` : ''}-${name}`)

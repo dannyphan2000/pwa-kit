@@ -1,5 +1,8 @@
-/**
- * @jest-environment jsdom
+/*
+ * Copyright (c) 2024, Salesforce, Inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /*
  * Copyright (c) 2024, salesforce.com, inc.
@@ -7,7 +10,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-
 
 // Third-Party
 import React from 'react'
@@ -17,19 +19,43 @@ import {render, screen} from '@testing-library/react'
 import {applyHOCs} from './helpers'
 
 // Mock HOC functions
-const withExtraProp = (Component: React.ComponentType<any>) => (props: any) =>
-    <Component {...props} extraProp="I am extra!" />
+const withExtraProp = (Component: React.ComponentType<any>) => {
+    const WrappedComponent = (props: any) => <Component {...props} extraProp="I am extra!" />
 
-const withAnotherProp = (Component: React.ComponentType<any>) => (props: any) =>
-    <Component {...props} anotherProp="Another one!" />
+    // Set the display name for easier debugging
+    WrappedComponent.displayName = `withExtraProp(${
+        Component.displayName || Component.name || 'Component'
+    })`
 
-// Mock Component
-const BaseComponent = ({extraProp, anotherProp}: any) => (
+    return WrappedComponent
+}
+
+const withAnotherProp = (Component: React.ComponentType<any>) => {
+    const WrappedComponent = (props: any) => <Component {...props} extraProp="I am extra!" />
+
+    // Set the display name for easier debugging
+    WrappedComponent.displayName = `withAnotherProp(${
+        Component.displayName || Component.name || 'Component'
+    })`
+
+    return WrappedComponent
+}
+
+// Define BaseComponent as a functional component
+const BaseComponent: React.FC<any> & {someStaticMethod?: jest.Mock} = ({
+    extraProp,
+    anotherProp
+}: any) => (
     <div>
         {extraProp && <span>{extraProp}</span>}
         {anotherProp && <span>{anotherProp}</span>}
     </div>
 )
+
+BaseComponent.displayName = 'BaseComponent'
+
+// Add the static method to BaseComponent
+BaseComponent.someStaticMethod = jest.fn()
 
 describe('applyHOCs', () => {
     test('should apply a single HOC to the component', () => {

@@ -11,7 +11,7 @@ import path from 'path'
 import {resolve} from 'path'
 
 // Types
-import {ApplicationExtensionEntry, ApplicationExtensionEntryArray} from '../../types'
+import {ApplicationExtensionEntry} from '../../types'
 
 // Local
 import {expand} from './resolver'

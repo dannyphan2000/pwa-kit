@@ -33,7 +33,7 @@ describe('Application Extension Loader', () => {
         {
             description: 'Returns expected file content without empty options',
             entryPoint: './app/main.jsx',
-            expects: (output, fileStr) => {
+            expects: (output) => {
                 const emptyFile = dedent`
                     const getApplicationExtensions = async () => {
                         return []

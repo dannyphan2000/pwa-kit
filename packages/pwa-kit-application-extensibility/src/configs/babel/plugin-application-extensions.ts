@@ -9,12 +9,13 @@
 const parser = require('@babel/parser')
 const babel = require('@babel/core')
 
+// Local
 import {renderTemplate} from '../utils'
 import {buildAliases} from '../../shared/utils'
 
-// application-extensions-placeholder
-// const fileToReplace = 'assets/application-extensions-placeholder.js'
-// const repalcementContent = extensionLoader({getOptions}, {getOptions})
+// Constants
+const fileToReplace = 'express/assets/application-extensions-placeholder.js'
+
 // A Set to keep track of processed file paths
 const processedFiles = new Set()
 
@@ -23,10 +24,8 @@ module.exports = function replaceFileContentPlugin({types: t}: any) {
         visitor: {
             ImportDeclaration(path: any, state: any) {
                 const {installed} = state.opts
-                // TODO: Throw is undefined?
 
                 // This is analogus to the work we did in webpack to have aliases for the extensions.
-                // TODO: This should be coming from the options.
                 const aliases: any = buildAliases(installed)
                 const source = path.node.source.value
 
@@ -49,7 +48,7 @@ module.exports = function replaceFileContentPlugin({types: t}: any) {
                 }
 
                 // Check if the file matches one of the files we want to replace
-                if (filePath.endsWith('express/assets/application-extensions-placeholder.js')) {
+                if (filePath.endsWith(fileToReplace)) {
                     const newContent = renderTemplate({
                         installed,
                         configured,
@@ -78,7 +77,7 @@ module.exports = function replaceFileContentPlugin({types: t}: any) {
                         filename: filePath,
                         presets: [
                             [
-                                '/Users/bchypak/Projects/pwa-kit/packages/pwa-kit-dev/node_modules/@babel/preset-env',
+                                require('@babel/preset-env'),
                                 {
                                     targets: {
                                         node: 'current'
