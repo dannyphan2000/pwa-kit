@@ -9,10 +9,7 @@
 import {Request, Response, NextFunction, Application} from 'express'
 
 // Local Imports
-import {getApplicationExtensions} from './assets/application-extensions-placeholder'
-
-// TODO: Define our own type for this extension.
-// import {ApplicationExtensionConfig} from '../types'
+import {getApplicationExtensions} from '../placeholders/application-extensions'
 
 // Define the middleware function that modifies the app
 const applyApplicationExtensions = (app: Application) => {

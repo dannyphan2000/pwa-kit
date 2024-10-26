@@ -5,9 +5,14 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+// Third-Party
 import {useContext} from 'react'
+
+// Local
 import {ApplicationExtensionsContext} from '../contexts'
-import {ApplicationExtension} from '../ApplicationExtension'
+import {ApplicationExtension} from '../classes/ApplicationExtension'
+
+// Types
 import {ApplicationExtensionConfig as Config} from '../../types'
 
 /**
@@ -18,7 +23,7 @@ const useApplicationExtensions = (): ApplicationExtension<Config>[] => {
 
     if (context === undefined) {
         throw new Error(
-            'useApplicationExtensions must be used within ApplicationExtensionsProvider'
+            `'useApplicationExtensions' must be used within ApplicationExtensionsProvider!`
         )
     }
 

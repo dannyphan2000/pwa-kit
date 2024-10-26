@@ -4,21 +4,14 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-
-/*
- * Copyright (c) 2024, salesforce.com, inc.
- * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
- */
 // Third-Party
-import {Application} from 'express'
+import {RouteProps} from 'react-router-dom'
 
 // Local
-import {ApplicationExtension as BaseApplicationExtension} from '../shared/application-extension-base'
+import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
 
 // Types
-import {ApplicationExtensionConfig} from '../types'
+import {ApplicationExtensionConfig} from '../../types'
 
 /**
  * An abstract class representing an Application Extension. This class provides
@@ -31,7 +24,7 @@ import {ApplicationExtensionConfig} from '../types'
  */
 export class ApplicationExtension<
     Config extends ApplicationExtensionConfig
-> extends BaseApplicationExtension<Config> {
+> extends ApplicationExtensionBase<Config> {
     /**
      * Called during the rendering of the base application on the server and the client.
      * It is predominantly used to enhance the "base" application by wrapping it with React providers.
@@ -40,7 +33,22 @@ export class ApplicationExtension<
      * @param App - The base application component.
      * @returns EnhancedApp - The enhanced application component.
      */
-    public extendApp(App: Application): Application {
+    public extendApp<T extends React.ComponentType<T>>(
+        App: React.ComponentType<T>
+    ): React.ComponentType<T> {
         return App
+    }
+
+    /**
+     * Called during server rendering and client application initialization. This method allows
+     * you to modify the routes of the base application, typically used to add new routes pointing
+     * at page components added by your application extension.
+     *
+     * @protected
+     * @param routes - The base application routes.
+     * @returns routes - The modified application routes.
+     */
+    public extendRoutes(routes: RouteProps[]): RouteProps[] {
+        return routes
     }
 }

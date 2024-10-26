@@ -14,7 +14,7 @@ import {renderTemplate} from '../utils'
 import {buildAliases} from '../../shared/utils'
 
 // Constants
-const fileToReplace = 'express/assets/application-extensions-placeholder.js'
+const fileToReplace = 'express/placeholders/application-extensions.js'
 
 // A Set to keep track of processed file paths
 const processedFiles = new Set()

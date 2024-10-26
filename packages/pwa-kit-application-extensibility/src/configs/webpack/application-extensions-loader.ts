@@ -50,7 +50,7 @@ export const ruleForApplicationExtensibility = (options: any = {}) => {
         test: new RegExp(
             `${
                 target === 'node' ? 'express' : 'react'
-            }/assets/application-extensions-placeholder.js`,
+            }/placeholders/application-extensions.js`,
             'i'
         ),
         use: {

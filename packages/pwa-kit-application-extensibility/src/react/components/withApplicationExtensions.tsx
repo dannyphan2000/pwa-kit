@@ -10,10 +10,10 @@ import React from 'react'
 
 // Local
 import {applyHOCs} from '../utils'
-import {getApplicationExtensions} from '../assets/application-extensions-placeholder'
+import {getApplicationExtensions} from '../placeholders/application-extensions'
 
 // Types
-import {ApplicationExtension} from '../ApplicationExtension'
+import {ApplicationExtension} from '../classes/ApplicationExtension'
 import {ApplicationExtensionConfig as ApplicationExtensionConfigBase} from '../../types'
 
 // TODO: Move me!

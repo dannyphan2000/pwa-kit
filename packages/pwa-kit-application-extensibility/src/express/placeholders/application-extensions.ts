@@ -5,14 +5,14 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {ApplicationExtensionConfig as ApplicationExtensionConfigBase} from '../../types'
-import {ApplicationExtension as ApplicationExtensionBase} from '../ApplicationExtension'
+import {ApplicationExtension as ApplicationExtensionBase} from '../classes/application-extension'
 
 // Types
-// TODO: Move these.
+// TODO: Move this to types.
 type ExtendedApplicationExtensionConfig = ApplicationExtensionConfigBase
 type ApplicationExtension<T extends ApplicationExtensionConfigBase> = ApplicationExtensionBase<T>
 
-// Define an array of ApplicationExtension
 const APPLICATION_EXTENSIONS: ApplicationExtension<ExtendedApplicationExtensionConfig>[] = []
 
-export const getApplicationExtensions = async () => APPLICATION_EXTENSIONS
+// Export the array
+export const getApplicationExtensions = () => APPLICATION_EXTENSIONS

@@ -88,6 +88,7 @@ export const expand = (
         })
         .filter(isApplicationExtensionEntryArray)
 
+// TODO: The extensionsEntries really isn't optional, so maybe it shouldn't exist in the opts object?
 /**
  * Based on the current extensibility configuration, return an array of candiate file paths to be used
  * in the wild-card import module resolution for the given import path..
@@ -97,7 +98,6 @@ export const expand = (
  * @param {Object} opts - The path the the file of the source import.
  * @param {Array<shortName: String, config: Array>} opts.extensionEntries - List of extension entries (tupals) used by the base PWA-Kit application.
  * @param {String} opts.projectDir - Absolute path of the base project.
- * @returns {String[]} paths - The potential paths to find the module import.
  */
 export const buildCandidatePaths = (
     importPath: string,
