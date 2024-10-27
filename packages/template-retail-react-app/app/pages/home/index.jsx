@@ -53,6 +53,7 @@ import {useProductSearch} from '@salesforce/commerce-sdk-react'
  * categories and products, data is from local file.
  */
 const Home = () => {
+    // TODO: delete this later
     console.log('--- BAR')
     const intl = useIntl()
     const einstein = useEinstein()
