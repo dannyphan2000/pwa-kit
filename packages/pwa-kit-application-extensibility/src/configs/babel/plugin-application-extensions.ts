@@ -14,12 +14,12 @@ import {renderTemplate} from '../utils'
 import {buildAliases} from '../../shared/utils'
 
 // Constants
-const fileToReplace = 'express/placeholders/application-extensions.js'
+const extensionsPlaceholderFile = 'express/placeholders/application-extensions.js'
 
 // A Set to keep track of processed file paths
 const processedFiles = new Set()
 
-module.exports = function replaceFileContentPlugin({types: t}: any) {
+module.exports = function replaceExtensionsPlaceholderContentPlugin({types: t}: any) {
     return {
         visitor: {
             ImportDeclaration(path: any, state: any) {
@@ -48,7 +48,7 @@ module.exports = function replaceFileContentPlugin({types: t}: any) {
                 }
 
                 // Check if the file matches one of the files we want to replace
-                if (filePath.endsWith(fileToReplace)) {
+                if (filePath.endsWith(extensionsPlaceholderFile)) {
                     const newContent = renderTemplate({
                         installed,
                         configured,

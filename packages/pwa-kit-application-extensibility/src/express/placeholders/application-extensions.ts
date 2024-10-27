@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+/* istanbul ignore file */
+
 import {ApplicationExtensionConfig as ApplicationExtensionConfigBase} from '../../types'
 import {ApplicationExtension as ApplicationExtensionBase} from '../classes/application-extension'
 
