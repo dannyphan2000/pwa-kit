@@ -129,7 +129,9 @@ export const render = async (req, res, next) => {
     AppConfig.restore(res.locals)
 
     // Use locals to thread the application extensions through the rendering pipeline.
-    const WrappedApp = await withApplicationExtensions(routeComponent(App, false, res.locals), {locals: res.locals})
+    const applicationExtensions = await withApplicationExtensions.loadApplicationExtensions()
+
+    const WrappedApp = withApplicationExtensions(routeComponent(App, false, res.locals), {locals: res.locals, applicationExtensions})
 
     const routes = getRoutes(res.locals)
 

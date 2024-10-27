@@ -36,7 +36,7 @@ jest.mock('../utils', () => ({
 
 // Sample mock extension
 class MockExtension extends ApplicationExtension<ApplicationExtensionConfigBase> {
-    extendApp<T extends JSX.IntrinsicAttributes>(
+    extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
         const EnhancedComponent: React.FC<T> = (props) => (
@@ -67,7 +67,7 @@ describe('withApplicationExtensions HOC', () => {
         )
 
         // Execute HOC
-        const EnhancedComponent = await withApplicationExtensions(WrappedComponent, {})
+        const EnhancedComponent = withApplicationExtensions(WrappedComponent, {applicationExtensions: mockExtensions})
 
         // Render the enhanced component
         const {getByTestId} = render(<EnhancedComponent />)
@@ -84,7 +84,7 @@ describe('withApplicationExtensions HOC', () => {
         const mockExtensions = [new MockExtension({enabled: false})]
         ;(getApplicationExtensions as jest.Mock).mockResolvedValue(mockExtensions)
 
-        const EnhancedComponent = await withApplicationExtensions(WrappedComponent, {})
+        const EnhancedComponent = await withApplicationExtensions(WrappedComponent, {applicationExtensions: mockExtensions})
 
         // Render the enhanced component
         const {getByTestId} = render(<EnhancedComponent />)
@@ -100,7 +100,7 @@ describe('withApplicationExtensions HOC', () => {
         ;(getApplicationExtensions as jest.Mock).mockResolvedValue(mockExtensions)
 
         const locals: any = {}
-        await withApplicationExtensions(WrappedComponent, {locals})
+        await withApplicationExtensions(WrappedComponent, {applicationExtensions: mockExtensions, locals})
 
         expect(locals.applicationExtensions).toEqual(mockExtensions)
     })
@@ -109,7 +109,7 @@ describe('withApplicationExtensions HOC', () => {
         ;(getApplicationExtensions as jest.Mock).mockResolvedValue([])
         ;(applyHOCs as jest.Mock).mockImplementation((Component, hocs) => Component)
 
-        const EnhancedComponent = await withApplicationExtensions(WrappedComponent, {})
+        const EnhancedComponent = await withApplicationExtensions(WrappedComponent, {applicationExtensions: []})
 
         const {getByTestId} = render(<EnhancedComponent />)
 

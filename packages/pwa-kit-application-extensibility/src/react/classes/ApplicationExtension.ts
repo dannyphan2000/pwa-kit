@@ -13,6 +13,8 @@ import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/cla
 // Types
 import {ApplicationExtensionConfig} from '../../types'
 
+export interface ReactApplicationExtensionConfig extends ApplicationExtensionConfig {}
+
 /**
  * An abstract class representing an Application Extension. This class provides
  * foundational methods and properties for extending an application with additional
@@ -23,7 +25,7 @@ import {ApplicationExtensionConfig} from '../../types'
  * @abstract
  */
 export class ApplicationExtension<
-    Config extends ApplicationExtensionConfig
+    Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
     /**
      * Called during the rendering of the base application on the server and the client.

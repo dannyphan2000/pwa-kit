@@ -118,9 +118,9 @@ export const start = async () => {
     // TODO: This `async` pattern isn't ideal. Look to come up with something better. Maybe a static function
     // on the HOC that you have to await on before executing/using it.
     // E.g.
-    // await withApplicationExtensions.loadExtensions()
-    const WrappedApp = await withApplicationExtensions(routeComponent(App, false, locals), {locals})
-
+    // NOTE: Instead of this static.. I could get import the getApplicationExtensions.. might be cleaner and less code.
+    const applicationExtensions = await withApplicationExtensions.loadApplicationExtensions()
+    const WrappedApp = withApplicationExtensions(routeComponent(App, false, locals), {applicationExtensions, locals})
     
     const props = {
         error: window.__ERROR__,

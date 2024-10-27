@@ -8,23 +8,36 @@
 import React from 'react'
 
 // Local
-// TODO: We can probably pass this in as an initial value.?
-// import {getApplicationExtensions} from '../../shared/utils/universal-utils'
 import ApplicationExtensionsContext from './ApplicationExtensionsContext'
 
-// TODO: Clean this up.
+import {ApplicationExtension, ReactApplicationExtensionConfig} from '../classes/ApplicationExtension'
+// TODO: Move these to some other type file.
+/**
+ * Props for the ApplicationExtensionsProvider component.
+ * 
+ * @typedef {Object} ApplicationExtensionsProviderProps
+ * @property {React.ReactNode} children - The child components to render within this provider.
+ */
 type ApplicationExtensionsProviderProps = {
-    children: any
+    children: any,
+    extensions: ApplicationExtension<ReactApplicationExtensionConfig>[]
 }
 
-const ApplicationExtensionsProvider = ({children}: ApplicationExtensionsProviderProps) => {
-    // const extensions = getApplicationExtensions()
-
-    return (
-        <ApplicationExtensionsContext.Provider value={[]}>
-            {children}
-        </ApplicationExtensionsContext.Provider>
-    )
-}
+/**
+ * ApplicationExtensionsProvider component
+ * 
+ * This provider component is responsible for initializing and supplying application extensions
+ * to the `ApplicationExtensionsContext`. It retrieves extensions using `getApplicationExtensions`
+ * and provides an empty array to the context as a placeholder for extension data.
+ *
+ * @component
+ * @param {ApplicationExtensionsProviderProps} props - Component properties.
+ * @returns {JSX.Element} A context provider for application extensions.
+ */
+const ApplicationExtensionsProvider = ({children, extensions}: ApplicationExtensionsProviderProps) => (
+    <ApplicationExtensionsContext.Provider value={extensions}>
+        {children}
+    </ApplicationExtensionsContext.Provider>
+)
 
 export default ApplicationExtensionsProvider

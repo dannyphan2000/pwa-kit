@@ -8,6 +8,9 @@ import React, {useEffect, useState} from 'react'
 import {useQuery} from '@tanstack/react-query'
 import {Link} from 'react-router-dom'
 
+import {useApplicationExtensions} from '@salesforce/pwa-kit-application-extensibility/react'
+
+
 import HelloTS from '../components/hello-typescript'
 import HelloJS from '../components/hello-javascript'
 
@@ -83,7 +86,8 @@ h1 {
 
 const Home = ({value}: Props) => {
     const [counter, setCounter] = useState(0)
-
+    const applicationExtensions = useApplicationExtensions()
+    console.log('applicationExtensions: ', applicationExtensions)
     useEffect(() => {
         const interval = setInterval(() => {
             setCounter(counter + 1)
