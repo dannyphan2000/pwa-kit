@@ -67,6 +67,8 @@ const Home = () => {
         )
     }
 
+    // some comment
+    // and another one here
     const {data: productSearchResult, isLoading} = useProductSearch({
         parameters: {
             allImages: true,
@@ -78,11 +80,6 @@ const Home = () => {
         }
     })
 
-    /**************** Einstein ****************/
-    useEffect(() => {
-        einstein.sendViewPage(pathname)
-    }, [])
-
     return (
         <Box data-testid="home-page" layerStyle="page">
             <Seo
@@ -90,6 +87,7 @@ const Home = () => {
                 description="Commerce Cloud Retail React App"
                 keywords="Commerce Cloud, Retail React App, React Storefront"
             />
+            <div>hello world</div>
 
             <Hero
                 title={intl.formatMessage({
