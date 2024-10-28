@@ -16,11 +16,44 @@ import {
 // of the extension itself. Update this config type to your specific needs!
 
 // TODO: Rather than 2 duplicate types, how can we have a single config type here?
-export interface ServerExtensionConfig extends _ServerExtensionConfig {
-    // react-router-style path to the new sample page
-    path?: string
+export interface StoreLocatorConfig {
+    enabled: boolean
+    path: string
+    defaultDistance: number
+    defaultDistanceUnit: string
+    defaultPageSize: number
+    defaultCountry: string
+    defaultCountryCode: string
+    supportedCountries: Array<{
+        countryCode: string
+        countryName: string
+    }>
 }
-export interface ReactExtensionConfig extends _ReactExtensionConfig {
-    // react-router-style path to the new sample page
+
+export interface ServerExtensionConfig extends _ServerExtensionConfig {
+    enabled?: boolean
     path?: string
+    defaultDistance?: number
+    defaultDistanceUnit?: string
+    defaultPageSize?: number
+    defaultCountry?: string
+    defaultCountryCode?: string
+    supportedCountries?: Array<{
+        countryCode: string
+        countryName: string
+    }>
+}
+
+export interface ReactExtensionConfig extends _ReactExtensionConfig {
+    enabled?: boolean
+    path?: string
+    defaultDistance?: number
+    defaultDistanceUnit?: string
+    defaultPageSize?: number
+    defaultCountry?: string
+    defaultCountryCode?: string
+    supportedCountries?: Array<{
+        countryCode: string
+        countryName: string
+    }>
 }

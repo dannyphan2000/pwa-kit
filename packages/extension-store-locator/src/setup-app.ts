@@ -12,6 +12,7 @@ import {
   IRouteConfig,
 } from "@salesforce/pwa-kit-react-sdk/ssr/universal/extensibility";
 import withOptionalChakra from "./components/withOptionalChakraProvider";
+import { withStoreLocatorConfig } from "./components/with-store-locator-config";
 import { ReactExtensionConfig as Config } from "./types";
 
 const StoreLocator = loadable(() => import("./pages/store-locator"));
@@ -20,7 +21,20 @@ class Sample extends ApplicationExtension<Config> {
   DEFAULT_PATH = "/store-locator";
 
   extendApp(App: React.ComponentType): React.ComponentType {
-    return withOptionalChakra(App);
+    const config = this.getConfig();
+    return withStoreLocatorConfig({
+      enabled: config.enabled ?? true,
+      path: config.path ?? this.DEFAULT_PATH,
+      defaultDistance: config.defaultDistance ?? 100,
+      defaultDistanceUnit: config.defaultDistanceUnit ?? 'km',
+      defaultPageSize: config.defaultPageSize ?? 10,
+      defaultCountry: config.defaultCountry ?? 'Germany',
+      defaultCountryCode: config.defaultCountryCode ?? 'DE',
+      supportedCountries: config.supportedCountries ?? [
+        { countryCode: 'US', countryName: 'United States' },
+        { countryCode: 'DE', countryName: 'Germany' }
+      ]
+    })(withOptionalChakra(App));
   }
 
   extendRoutes(routes: IRouteConfig[]): IRouteConfig[] {

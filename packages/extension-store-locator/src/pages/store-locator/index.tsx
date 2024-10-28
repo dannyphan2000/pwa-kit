@@ -5,16 +5,22 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Container } from "@chakra-ui/react";
 import StoreLocatorContent from "../../components/store-locator/store-locator-content";
 import {
   StoreLocatorContext,
   useStoreLocator,
 } from "../../components/store-locator/index";
+import { useStoreLocatorConfig } from "../../components/store-locator-provider";
 
 const StoreLocator = () => {
   const storeLocator = useStoreLocator();
+  const config = useStoreLocatorConfig();
+
+  useEffect(() => {
+    console.log('Store Locator Config:', config);
+  }, [config]);
 
   return (
     <StoreLocatorContext.Provider value={storeLocator}>
