@@ -1,6 +1,6 @@
 import React from 'react'
 import {screen, fireEvent} from '@testing-library/react'
-import {renderWithProviders} from './test-utils'
+import {renderWithProviders} from '../../test-utils'
 import {StoreLocatorForm} from './store-locator-form'
 import {useStoreLocator} from './use-store-locator'
 

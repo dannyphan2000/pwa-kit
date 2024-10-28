@@ -32,6 +32,7 @@ const useGeolocation = () => {
     const getGeolocationError = () => {
         setAutomaticGeolocationHasFailed(true)
     }
+
     const getGeolocationSuccess = (position) => {
         setAutomaticGeolocationHasFailed(false)
         setSearchStoresParams({

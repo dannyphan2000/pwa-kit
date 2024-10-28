@@ -1,6 +1,6 @@
 import React from 'react'
 import {screen} from '@testing-library/react'
-import {renderWithProviders} from './test-utils'
+import {renderWithProviders} from '../../test-utils'
 import {StoreLocatorModal} from './store-locator-modal'
 
 // Mock specific Chakra UI components and hooks
