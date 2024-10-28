@@ -7,6 +7,7 @@
 
 import React, {useEffect} from 'react'
 import PropTypes from 'prop-types'
+import {useForm} from 'react-hook-form'
 import {Box} from '@chakra-ui/react/dist/cjs/box/box.cjs'
 import {Button} from '@chakra-ui/react/dist/cjs/button/button.cjs'
 import {InputGroup} from '@chakra-ui/react/dist/cjs/input/input-group.cjs'
@@ -56,7 +57,7 @@ const useGeolocation = () => {
     return getUserGeolocation
 }
 
-export const StoreLocatorInput = ({form, submitForm}) => {
+export const StoreLocatorInput = ({refetch}) => {
     const {
         searchStoresParams,
         userHasSetManualGeolocation,
@@ -65,9 +66,43 @@ export const StoreLocatorInput = ({form, submitForm}) => {
         userWantsToShareLocation,
         config
     } = useStoreLocator()
-
+    const {countryCode, postalCode} = searchStoresParams
     const getUserGeolocation = useGeolocation()
+    const form = useForm({
+        mode: 'onChange',
+        reValidateMode: 'onChange',
+        defaultValues: {
+            countryCode: userHasSetManualGeolocation ? countryCode : '',
+            postalCode: userHasSetManualGeolocation ? postalCode : ''
+        }
+    })
     const {control} = form
+
+    const submitForm = async (formData) => {
+        const {postalCode, countryCode} = formData
+        if (postalCode !== '') {
+            if (countryCode !== '') {
+                setSearchStoresParams({
+                    postalCode: postalCode,
+                    countryCode: countryCode,
+                    limit: config.defaultPageSize
+                })
+                setUserHasSetManualGeolocation(true)
+            } else {
+                if (config.supportedCountries.length === 0) {
+                    setSearchStoresParams({
+                        postalCode: postalCode,
+                        countryCode: config.defaultCountryCode,
+                        limit: config.defaultPageSize
+                    })
+                    setUserHasSetManualGeolocation(true)
+                }
+            }
+        }
+        setNumStoresToShow(config.defaultPageSize)
+        refetch()
+    }
+
     return (
         <form id="store-locator-form" onSubmit={form.handleSubmit(submitForm)}>
             <InputGroup>
@@ -190,6 +225,5 @@ export const StoreLocatorInput = ({form, submitForm}) => {
 }
 
 StoreLocatorInput.propTypes = {
-    form: PropTypes.object,
-    submitForm: PropTypes.func
+    refetch: PropTypes.func
 }

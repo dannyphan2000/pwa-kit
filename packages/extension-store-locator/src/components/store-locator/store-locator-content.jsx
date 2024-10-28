@@ -6,7 +6,6 @@
  */
 
 import React, {useState} from 'react'
-import {useForm} from 'react-hook-form'
 // import {Heading, Box, Button} from '@chakra-ui/react'
 import {Heading} from '@chakra-ui/react/dist/cjs/typography/heading.cjs'
 import {Box} from '@chakra-ui/react/dist/cjs/box/box.cjs'
@@ -22,20 +21,10 @@ const NUM_STORES_PER_REQUEST_API_MAX = 200
 export const StoreLocatorContent = () => {
     const {
         searchStoresParams,
-        setSearchStoresParams,
-        userHasSetManualGeolocation,
-        setUserHasSetManualGeolocation,
         config
     } = useStoreLocator()
     const {countryCode, postalCode, latitude, longitude, limit} = searchStoresParams
-    const form = useForm({
-        mode: 'onChange',
-        reValidateMode: 'onChange',
-        defaultValues: {
-            countryCode: userHasSetManualGeolocation ? countryCode : '',
-            postalCode: userHasSetManualGeolocation ? postalCode : ''
-        }
-    })
+    
 
     const [numStoresToShow, setNumStoresToShow] = useState(limit)
     // Either the countryCode & postalCode or latitude & longitude are defined, never both
@@ -63,39 +52,12 @@ export const StoreLocatorContent = () => {
             : searchStoresData?.data?.slice(0, numStoresToShow) || []
     const numStores = searchStoresData?.total || 0
 
-    const submitForm = async (formData) => {
-        const {postalCode, countryCode} = formData
-        if (postalCode !== '') {
-            if (countryCode !== '') {
-                setSearchStoresParams({
-                    postalCode: postalCode,
-                    countryCode: countryCode,
-                    limit: config.defaultPageSize
-                })
-                setUserHasSetManualGeolocation(true)
-            } else {
-                if (config.supportedCountries.length === 0) {
-                    setSearchStoresParams({
-                        postalCode: postalCode,
-                        countryCode: config.defaultCountryCode,
-                        limit: config.defaultPageSize
-                    })
-                    setUserHasSetManualGeolocation(true)
-                }
-            }
-        }
-        setNumStoresToShow(config.defaultPageSize)
-        refetch()
-    }
-
-    
-
     return (
         <>
             <Heading fontSize="2xl" style={{marginBottom: '25px'}}>
                 Find a Store
             </Heading>
-            <StoreLocatorInput form={form} submitForm={submitForm}></StoreLocatorInput>
+            <StoreLocatorInput refetch={refetch} />
             <StoreLocatorList storesInfo={storesInfo} />
             {!isFetching &&
             numStoresToShow < numStores &&

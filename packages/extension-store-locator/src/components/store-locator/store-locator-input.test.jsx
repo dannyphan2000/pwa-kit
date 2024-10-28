@@ -8,14 +8,6 @@ jest.mock('./use-store-locator', () => ({
     useStoreLocator: jest.fn()
 }))
 
-const mockForm = {
-    handleSubmit: jest.fn(),
-    control: {},
-    formState: {
-        errors: {}
-    }
-}
-
 const mockStoreLocatorContext = {
     searchStoresParams: {
         countryCode: 'US',
@@ -39,35 +31,35 @@ describe('StoreLocatorInput', () => {
     })
 
     it('renders the component with all inputs', () => {
-        renderWithProviders(<StoreLocatorInput form={mockForm} submitForm={jest.fn()} />)
+        renderWithProviders(<StoreLocatorInput refetch={jest.fn()} />)
 
-        expect(screen.getByPlaceholderText('Select a country')).toBeTruthy()
+        expect(screen.getByText('Select a country')).toBeTruthy()
         expect(screen.getByPlaceholderText('Enter postal code')).toBeTruthy()
         expect(screen.getByText('Find')).toBeTruthy()
         expect(screen.getByText('Use My Location')).toBeTruthy()
     })
 
-    // it('shows geolocation error when automatic geolocation fails', () => {
-    //     useStoreLocator.mockImplementation(() => ({
-    //         ...mockStoreLocatorContext,
-    //         automaticGeolocationHasFailed: true,
-    //         userWantsToShareLocation: true
-    //     }))
+    it('shows geolocation error when automatic geolocation fails', () => {
+        useStoreLocator.mockImplementation(() => ({
+            ...mockStoreLocatorContext,
+            automaticGeolocationHasFailed: true,
+            userWantsToShareLocation: true
+        }))
 
-    //     renderWithProviders(<StoreLocatorInput form={mockForm} submitForm={jest.fn()} />)
-    //     expect(screen.getByText('Please agree to share your location')).toBeTruthy()
-    // })
+        renderWithProviders(<StoreLocatorInput refetch={jest.fn()} />)
+        expect(screen.getByText('Please agree to share your location')).toBeTruthy()
+    })
 
-    // it('handles Use My Location button click', () => {
-    //     const setUserWantsToShareLocation = jest.fn()
-    //     useStoreLocator.mockImplementation(() => ({
-    //         ...mockStoreLocatorContext,
-    //         setUserWantsToShareLocation
-    //     }))
+    it('handles Use My Location button click', () => {
+        const setUserWantsToShareLocation = jest.fn()
+        useStoreLocator.mockImplementation(() => ({
+            ...mockStoreLocatorContext,
+            setUserWantsToShareLocation
+        }))
 
-    //     renderWithProviders(<StoreLocatorInput form={mockForm} submitForm={jest.fn()} />)
+        renderWithProviders(<StoreLocatorInput refetch={jest.fn()} />)
         
-    //     fireEvent.click(screen.getByText('Use My Location'))
-    //     expect(setUserWantsToShareLocation).toHaveBeenCalledWith(true)
-    // })
+        fireEvent.click(screen.getByText('Use My Location'))
+        expect(setUserWantsToShareLocation).toHaveBeenCalledWith(true)
+    })
 })
