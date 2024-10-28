@@ -17,8 +17,7 @@ import {
 
 // TODO: Rather than 2 duplicate types, how can we have a single config type here?
 export interface StoreLocatorConfig {
-    enabled: boolean
-    path: string
+    path?: string
     defaultDistance: number
     defaultDistanceUnit: string
     defaultPageSize: number
@@ -30,30 +29,6 @@ export interface StoreLocatorConfig {
     }>
 }
 
-export interface ServerExtensionConfig extends _ServerExtensionConfig {
-    enabled?: boolean
-    path?: string
-    defaultDistance?: number
-    defaultDistanceUnit?: string
-    defaultPageSize?: number
-    defaultCountry?: string
-    defaultCountryCode?: string
-    supportedCountries?: Array<{
-        countryCode: string
-        countryName: string
-    }>
-}
+export interface ServerExtensionConfig extends _ServerExtensionConfig, StoreLocatorConfig {}
 
-export interface ReactExtensionConfig extends _ReactExtensionConfig {
-    enabled?: boolean
-    path?: string
-    defaultDistance?: number
-    defaultDistanceUnit?: string
-    defaultPageSize?: number
-    defaultCountry?: string
-    defaultCountryCode?: string
-    supportedCountries?: Array<{
-        countryCode: string
-        countryName: string
-    }>
-}
+export interface ReactExtensionConfig extends _ReactExtensionConfig, StoreLocatorConfig {}

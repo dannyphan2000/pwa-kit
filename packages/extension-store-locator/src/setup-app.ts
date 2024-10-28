@@ -23,17 +23,13 @@ class Sample extends ApplicationExtension<Config> {
   extendApp(App: React.ComponentType): React.ComponentType {
     const config = this.getConfig();
     return withStoreLocatorConfig({
-      enabled: config.enabled ?? true,
       path: config.path ?? this.DEFAULT_PATH,
-      defaultDistance: config.defaultDistance ?? 100,
-      defaultDistanceUnit: config.defaultDistanceUnit ?? 'km',
-      defaultPageSize: config.defaultPageSize ?? 10,
-      defaultCountry: config.defaultCountry ?? 'Germany',
-      defaultCountryCode: config.defaultCountryCode ?? 'DE',
-      supportedCountries: config.supportedCountries ?? [
-        { countryCode: 'US', countryName: 'United States' },
-        { countryCode: 'DE', countryName: 'Germany' }
-      ]
+      defaultDistance: config.defaultDistance,
+      defaultDistanceUnit: config.defaultDistanceUnit,
+      defaultPageSize: config.defaultPageSize,
+      defaultCountry: config.defaultCountry,
+      defaultCountryCode: config.defaultCountryCode,
+      supportedCountries: config.supportedCountries
     })(withOptionalChakra(App));
   }
 
