@@ -24,7 +24,7 @@
     "@salesforce/commerce-sdk-react": "^3.1.0-dev",
     "@salesforce/extension-sample": "1.0.0-dev",
     "@salesforce/extension-sample-with-overrides": "1.0.0-dev",
-    "@salesforce/extension-store-locator": "1.0.0-dev",
+    "@salesforce/extension-store-locator": "0.1.0-dev",
     "@salesforce/pwa-kit-dev": "4.0.0-dev",
     "@salesforce/pwa-kit-react-sdk": "4.0.0-dev",
     "@salesforce/pwa-kit-runtime": "4.0.0-dev",
