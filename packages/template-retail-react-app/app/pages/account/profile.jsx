@@ -234,6 +234,8 @@ const PasswordCard = () => {
     const {data: customer} = useCurrentCustomer()
     const {isRegistered} = customer
 
+    // Here we use AuthHelpers.UpdateCustomerPassword rather than invoking the updateCustomerPassword mutation directly
+    // because the AuthHelper will re-authenticate the user's current session after the password change.
     const updateCustomerPassword = useAuthHelper(AuthHelpers.UpdateCustomerPassword)
     const toast = useToast()
     const [isEditing, setIsEditing] = useState(false)
