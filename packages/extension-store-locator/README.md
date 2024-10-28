@@ -23,6 +23,16 @@ Depending on what features your application extensions provides it's recommended
 packages as peer dependencies so that your base application doesn't end up having multiple versions of a 
 given package. See package.json for the full list of peer dependencies.
 
+### `@Chakra-ui` Provider
+
+This extension uses the `@chakra-ui` package as the UI library. Your application should use the `ChakraProvider` in the React component tree. 
+
+If you want to use this without having to install `@chakra-ui` in your project, a `withOptionalChakraProvider` HOC is provided and is used in the extension.
+
+### `@salesforce/commerce-sdk-react` Provider
+
+This extension uses the `@salesforce/commerce-sdk-react` package to fetch the store locator data from SCAPI. Your application must use the `CommerceApiProvider` in the React component tree.
+
 ## Configurations
 
 The Store Locator extension is configured via the `mobify.app.extensions` property in the config files or `package.json` file.
