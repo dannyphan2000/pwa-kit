@@ -7,7 +7,8 @@
 
 import React from 'react'
 // TODO: try a more direct import path?
-import {FooContext} from '*/components/with-red-border'
+// import {FooContext} from '*/components/with-red-border'
+import {FooContext} from '@salesforce/extension-sample/components/with-red-border'
 
 // Define a type for the HOC props
 type WithUsingFooProps = React.ComponentPropsWithoutRef<any>
