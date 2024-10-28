@@ -1,6 +1,7 @@
 {
   "name": "@salesforce/extension-store-locator",
-  "version": "1.0.0-dev",
+  "version": "0.0.1-dev",
+  "private": true,
   "scripts": {
     "test": "pwa-kit-dev test"
   },
