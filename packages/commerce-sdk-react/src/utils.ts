@@ -8,7 +8,7 @@
 import Cookies, {CookieAttributes} from 'js-cookie'
 import {IFRAME_HOST_ALLOW_LIST} from './constant'
 import Auth from './auth'
-import { Logger } from './types'
+import {Logger} from './types'
 
 /** Utility to determine if you are on the browser (client) or not. */
 export const onClient = (): boolean => typeof window !== 'undefined'
@@ -117,12 +117,14 @@ export function detectCookiesAvailable(options?: CookieAttributes) {
 /** Utility for clearing auth state if a certain error saying the session credentials are invalid is received.
  *  @private
  */
-export async function clearAuthStateOnError(error: any, auth: Auth, logger: Logger) {
+export async function clearAuthStateOnError(error: any, auth: Auth, logger: Logger | undefined) {
     if (error?.response?.status == 401) {
         const response = await error?.response?.json()
         if (response?.detail === 'Customer credentials changed after token was issued.') {
-            logger.info('Login was invalidated. Clearing login state.')
-            auth.logout()
+            logger
+                ? logger.info('Login was invalidated. Clearing login state.')
+                : console.log('Login was invalidated. Clearing login state.')
+            void auth.logout()
         }
     }
 }
