@@ -8,11 +8,6 @@
 import React, { useEffect } from "react";
 import { Box, Container } from "@chakra-ui/react";
 import StoreLocatorContent from "../../components/store-locator/store-locator-content";
-import {
-  StoreLocatorContext,
-  StoreLocatorProvider,
-  useStoreLocator,
-} from "../../components/store-locator/use-store-locator";
 import { useStoreLocatorConfig } from "../../components/store-locator-provider";
 
 const StoreLocator = () => {
@@ -23,7 +18,6 @@ const StoreLocator = () => {
   }, [config]);
 
   return (
-    <StoreLocatorProvider>
       <Box data-testid="store-locator-page" bg="gray.50" py={[8, 16]}>
         <Container
           overflowY="scroll"
@@ -38,7 +32,6 @@ const StoreLocator = () => {
           <StoreLocatorContent />
         </Container>
       </Box>
-    </StoreLocatorProvider>
   );
 };
 
