@@ -6,9 +6,9 @@
  */
 
 import {useContext} from 'react'
-import {StoreLocatorContext} from '*/components/store-locator/store-locator-provider'
+import {StoreLocatorContext, StoreLocatorContextValue} from '*/components/store-locator/store-locator-provider'
 
-export const useStoreLocator = () => {
+export const useStoreLocator = (): StoreLocatorContextValue => {
     const context = useContext(StoreLocatorContext)
     if (!context) {
         throw new Error('useStoreLocator must be used within a StoreLocatorProvider')
