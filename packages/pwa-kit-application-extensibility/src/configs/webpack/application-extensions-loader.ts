@@ -42,7 +42,7 @@ export default function ApplicationExtensibilityLoader(
     const data = this.getOptions()
 
     const result = renderTemplate(data)
-    console.log('--- result of renderTemplate', result)
+    console.log('--- result of renderTemplate: ', result)
     return result
 }
 

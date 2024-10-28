@@ -46,11 +46,15 @@ const withApplicationExtensions = async <
     WrappedComponent: React.ComponentType<C>,
     options: withApplicationExtensionsOptions
 ) => {
+    console.log('--- FOOOO 1')
     const applicationExtensions = await getApplicationExtensions()
     const hocs: GenericHocType<C>[] = applicationExtensions
+        // TODO: extension is enabled AND has all of its dependencies
         .filter((applicationExtension: any) => applicationExtension.isEnabled())
         .map((extension: any) => extension.extendApp.bind(extension) as GenericHocType<C>)
         .filter(Boolean)
+
+    console.log('--- FOOOO 2')
 
     if (options?.locals) {
         options.locals.applicationExtensions = applicationExtensions

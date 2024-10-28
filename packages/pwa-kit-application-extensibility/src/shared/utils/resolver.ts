@@ -120,6 +120,7 @@ export const buildCandidatePaths = (
 
     // Map all the extensions and resolve the module names to absolute paths.
     paths = expand(extensionEntries)
+        // DEBUG
         .filter(([, {enabled}]) => typeof enabled === 'undefined' || enabled)
         .reverse()
         .reduce((acc, extensionEntry) => {

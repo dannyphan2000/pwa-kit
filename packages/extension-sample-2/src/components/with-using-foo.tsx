@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+// TODO: try a more direct import path?
 import {FooContext} from '*/components/with-red-border'
 
 // Define a type for the HOC props
@@ -15,7 +16,7 @@ type WithUsingFooProps = React.ComponentPropsWithoutRef<any>
 const withUsingFoo = <P extends {}>(WrappedComponent: React.ComponentType<P>) => {
   const WithUsingFoo: React.FC<P> = (props: WithUsingFooProps) => {
     const context = React.useContext(FooContext)
-    console.log('--- can access context', context)
+    console.log('--- this context should be defined:', context)
 
     return (
           <WrappedComponent {...(props as P)} />

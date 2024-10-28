@@ -13,7 +13,7 @@ import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension} from '@salesforce/pwa-kit-application-extensibility/react'
 
 // Local Imports
-import withFoo from '*/components/with-using-foo'
+import withUsingFoo from '*/components/with-using-foo'
 import {Config} from './types'
 
 // BUG: Laodable isn't working here --> https://gus.lightning.force.com/lightning/_classic/%2Fa07EE00001o9ELVYA2
@@ -23,7 +23,7 @@ import SamplePage from './pages/sample'
 const defaultPath: string = '/sample-page'
 class Sample extends ApplicationExtension<Config> {
     extendApp<T>(App: React.ComponentType<T>): React.ComponentType<T> {
-        return withFoo(App)
+        return withUsingFoo(App)
     }
 
     extendRoutes(routes: RouteProps[]): RouteProps[] {
