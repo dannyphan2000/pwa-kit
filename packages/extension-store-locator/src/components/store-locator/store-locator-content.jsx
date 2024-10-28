@@ -7,7 +7,7 @@
 
 import React, {useState, useContext} from 'react'
 import {Heading, Accordion, AccordionItem, Box, Button} from '@chakra-ui/react'
-import StoresList from './stores-list'
+import StoresList from './stores-locator-list'
 import StoreLocatorInput from '*/components/store-locator/store-locator-input'
 
 import {
