@@ -6,7 +6,9 @@
  */
 // Third-Party
 // NOTE: These do not like the "import" syntax. Will break the plugin if you change it.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const parser = require('@babel/parser')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const babel = require('@babel/core')
 
 // Local
@@ -56,6 +58,7 @@ module.exports = function replaceExtensionsPlaceholderContentPlugin({types: t}: 
                     })
 
                     let parsedAst
+
                     try {
                         // Parse the new content as a full program
                         parsedAst = parser.parse(newContent, {
@@ -63,6 +66,7 @@ module.exports = function replaceExtensionsPlaceholderContentPlugin({types: t}: 
                             plugins: ['jsx', 'typescript'] // Add additional plugins if needed
                         }).program
                     } catch (error: any) {
+                        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                         throw new Error(`Failed to parse content for ${filePath}: ${error.message}`)
                     }
 

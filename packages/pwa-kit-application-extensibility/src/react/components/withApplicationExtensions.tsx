@@ -7,6 +7,7 @@
 
 // Third-Party
 import React from 'react'
+import hoistNonReactStatics from 'hoist-non-react-statics'
 
 // Local
 import {applyHOCs} from '../utils'
@@ -18,7 +19,7 @@ import {ApplicationExtensionsProvider} from '../contexts'
 
 // Local Types
 type withApplicationExtensionsOptions = {
-    applicationExtensions: ApplicationExtension<ApplicationExtensionConfigBase>[],
+    applicationExtensions: ApplicationExtension<ApplicationExtensionConfigBase>[]
     locals?: any
 }
 
@@ -40,10 +41,7 @@ type GenericHocType<C> = (component: React.ComponentType<C>) => React.ComponentT
  * @returns A new React component with all extensions applied, rendering the `WrappedComponent`
  *          with the extended behavior.
  */
-const withApplicationExtensions = <
-    C,
-    P extends ApplicationExtension<ApplicationExtensionConfigBase>
->(
+const withApplicationExtensions = <C,>(
     WrappedComponent: React.ComponentType<C>,
     options: withApplicationExtensionsOptions
 ) => {
@@ -51,22 +49,26 @@ const withApplicationExtensions = <
         .filter((applicationExtension: any) => applicationExtension.isEnabled())
         .map((extension: any) => extension.extendApp.bind(extension) as GenericHocType<C>)
         .filter(Boolean)
-    const withApplicationExtensionsProvider: GenericHocType<any> = (WrappedComponent) => (
-        (props) => (
+    const withApplicationExtensionsProvider: GenericHocType<any> = (WrappedComponent) => {
+        const WithApplicationExtensionsProvider = (props: any) => (
             <ApplicationExtensionsProvider extensions={options.applicationExtensions}>
                 <WrappedComponent {...props} />
             </ApplicationExtensionsProvider>
         )
-    )
+
+        // Set a display name for easier debugging in React DevTools
+        WithApplicationExtensionsProvider.displayName = `WithApplicationExtensionsProvider(${
+            WrappedComponent.displayName || WrappedComponent.name || 'Component'
+        })`
+
+        return hoistNonReactStatics(WithApplicationExtensionsProvider, WrappedComponent)
+    }
 
     if (options?.locals) {
         options.locals.applicationExtensions = options.applicationExtensions
     }
 
-    // Finally add the Application Extensions Provider wrapping all of the extensions.
-    hocs.push(withApplicationExtensionsProvider)
-    
-    return applyHOCs(WrappedComponent, hocs)
+    return withApplicationExtensionsProvider(applyHOCs(WrappedComponent, hocs))
 }
 
 export default withApplicationExtensions

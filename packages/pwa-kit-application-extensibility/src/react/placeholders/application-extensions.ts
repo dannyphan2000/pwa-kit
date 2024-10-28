@@ -17,4 +17,4 @@ type ApplicationExtension<T extends ApplicationExtensionConfigBase> = Applicatio
 // Define an array of ApplicationExtension
 const APPLICATION_EXTENSIONS: ApplicationExtension<ExtendedApplicationExtensionConfig>[] = []
 
-export const getApplicationExtensions = async () => APPLICATION_EXTENSIONS
+export const getApplicationExtensions = async () => Promise.resolve(APPLICATION_EXTENSIONS)

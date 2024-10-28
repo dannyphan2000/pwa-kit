@@ -6,8 +6,8 @@
  */
 import * as babel from '@babel/core'
 import {renderTemplate} from '../utils'
-// import {buildAliases} from '../../shared/utils'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const replaceExtensionsPlaceholderContentPlugin = require('./plugin-application-extensions')
 
 // Mock the utilities used in the plugin
@@ -32,20 +32,6 @@ describe('replaceExtensionsPlaceholderContentPlugin', () => {
             babelrc: false
         })
     }
-
-    // test('replaces import paths with aliases', () => {
-    //     // Mock the alias map
-    //     ;(buildAliases as jest.Mock).mockReturnValue({
-    //         '@alias': './replaced/path'
-    //     })
-
-    //     const code = `
-    //         import something from '@alias/module';
-    //     `
-    //     const result = transformCode(code, {installed: ['example-package']})
-    //     console.log('result: ', result)
-    //     expect(result?.code).toContain(`import something from './replaced/path/module'`)
-    // })
 
     test('replaces file content if path matches fileToReplace', () => {
         // Mock `renderTemplate` to return specific content

@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+// Third-Party
 import dedent from 'dedent'
 import Handlebars from 'handlebars'
 
@@ -15,9 +16,14 @@ import {kebabToUpperCamelCase, nameRegex} from '../shared/utils'
 import {ApplicationExtensionsLoaderOptions} from './webpack/types'
 
 // Register Handlebars helpers
-Handlebars.registerHelper('getInstanceName', (aString) => {
-    const [, namespace, name] = aString.match(nameRegex)
-    return kebabToUpperCamelCase(`${namespace ? `${namespace}-` : ''}-${name}`)
+Handlebars.registerHelper('getInstanceName', (aString: string) => {
+    const match = aString.match(nameRegex)
+
+    // Explicitly define `namespace` and `name` as strings with fallback values
+    const namespace = match?.[1] ?? ''
+    const name = match?.[2] ?? ''
+
+    return kebabToUpperCamelCase(`${namespace ? `${namespace}-` : ''}${name}`)
 })
 Handlebars.registerHelper('isNotLast', (index, arrayLength) => index !== arrayLength - 1)
 Handlebars.registerHelper('isNode', (target) => target === 'node')
