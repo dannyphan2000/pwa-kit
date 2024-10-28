@@ -15,6 +15,7 @@
 - Announce wishlist change in total for screen readers (a11y) [#2033](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2033)
 - Fixed a bug that incorrectly imports uninstalled package `@chakra-ui/layout` [#2047](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2047)
 - Replace getAppOrigin with useOrigin to have a better support for an app origin building. [#2050](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2050)
+- PWA Kit projects have Active Data tracking set to "true" by default [#1983](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1983).
 
 ### Bug Fixes
 - The unused `njwt` npm package had a security vulnerability, since it was unused, the package has been dropped
@@ -23,6 +24,8 @@
 - PDP / PLP: Render non HTTP 404 erros [#2003](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2003)
 - Error page: Render home page when clicking nav icon [#2003](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2003)
 - Encode non ASCII HTTP headers when `encodeNonAsciiHttpHeaders` flag is set to true in `ssr.js` [#2009](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2009)
+- Updated @salesforce/commerce-sdk-react to 3.0.1 to fix an issue with the expires attribute of cookies, ensuring it uses seconds instead of days [#1994](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1994)
+
 
 ### Accessibility Improvements
 - [a11y] Hide svg from screenreader as they are decorative on homepage [#1980](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1980)
@@ -39,11 +42,6 @@
 - [a11y] Mobile view account menu a11y adjustments [#2059](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2059)
 - [a11y] PLP - Use header tags for filter options [#2065](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2065)
 
-## v4.0.1 (Sept 4, 2024)
-- Updated @salesforce/commerce-sdk-react to 3.0.1 to fix an issue with the expires attribute of cookies, ensuring it uses seconds instead of days [#1994](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1994)
-
-### Other Features
-- PWA Kit projects have Active Data tracking set to "true" by default.
 
 ## v4.0.0 (Aug 7, 2024)
 
