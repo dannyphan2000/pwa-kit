@@ -12,7 +12,12 @@ import {withReactQuery} from '@salesforce/pwa-kit-react-sdk/ssr/universal/compon
 
 const isServerSide = typeof window === 'undefined'
 
-const AppConfig = ({children, locals = {}}) => {
+interface AppConfigProps {
+    children: React.ReactNode
+    locals: Record<string, unknown>
+}
+
+const AppConfig = ({children, locals = {}}: AppConfigProps) => {
     const appOrigin = getAppOrigin()
     const commerceApiConfig = {
         parameters: {
@@ -39,7 +44,7 @@ const AppConfig = ({children, locals = {}}) => {
             // enablePWAKitPrivateClient={true}
             OCAPISessionsURL={`${appOrigin}/mobify/proxy/ocapi/s/${commerceApiConfig.parameters.siteId}/dw/shop/v22_8/sessions`}
         >
-                {children}
+            {children}
         </CommerceApiProvider>
     )
 }
@@ -47,7 +52,6 @@ const AppConfig = ({children, locals = {}}) => {
 AppConfig.restore = () => {}
 AppConfig.extraGetPropsArgs = () => {}
 AppConfig.freeze = () => {}
-
 
 // Recommended settings for PWA-Kit usages.
 // NOTE: they will be applied on both server and client side.
@@ -66,4 +70,5 @@ const options = {
     }
 }
 
+// @ts-expect-error TODO: fix
 export default withReactQuery(withLegacyGetProps(AppConfig), options)
