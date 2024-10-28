@@ -7,8 +7,8 @@
 
 import React from 'react'
 import {useStoreLocator} from './use-store-locator'
-import {Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel} from '@chakra-ui/react'
-import {Box} from '@chakra-ui/react'
+import {Accordion, AccordionItem, AccordionButton, AccordionIcon, AccordionPanel} from '@chakra-ui/react/dist/cjs/accordion/index.cjs'
+import {Box} from '@chakra-ui/react/dist/cjs/box/box.cjs'
 import {useSearchStores} from '@salesforce/commerce-sdk-react'
 
 type Stores = NonNullable<ReturnType<typeof useSearchStores>['data']>['data']
