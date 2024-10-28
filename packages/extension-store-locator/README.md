@@ -1,68 +1,92 @@
- __                       _          __      _                 _             
-/ _\ __ _ _ __ ___  _ __ | | ___    /__\_  _| |_ ___ _ __  ___(_) ___  _ __  
-\ \ / _` | '_ ` _ \| '_ \| |/ _ \  /_\ \ \/ / __/ _ \ '_ \/ __| |/ _ \| '_ \ 
-_\ \ (_| | | | | | | |_) | |  __/ //__  >  <| ||  __/ | | \__ \ | (_) | | | |
-\__/\__,_|_| |_| |_| .__/|_|\___| \__/ /_/\_\\__\___|_| |_|___/_|\___/|_| |_|
-                   |_|                                                       
+# Store Locator Extension
 
-# Description
+A PWA Kit extension that adds store locator functionality to your Retail React App. This extension provides a complete store locator solution with features like:
 
-This is a sample PWA-Kit Application Extension. The purpose of this application extensions is to show how
-the Application Extensions API can be used to enhance your PWA-Kit base project.
+- Search stores by postal code / country code via SCAPI Shopper Stores API
+- Device geolocation support
+- Configurable search radius
+- Multi-country support
 
-# Folder Structure
+## Installation
 
-Insert description of generic Application Extension folder structure here.
+```sh
+npm install @salesforce/extension-store-locator
+```
 
-# Peer Dependancies
+## Peer Dependancies
 
 PWA-Kit Application Extensions are NPM packages at their most simplest form, and as such you can define
-what peer dependencies are required when using it. Because this sample application extension provides
-UI via a new "Sample" page, it requires that the below dependencies are installed at a minimum. 
+what peer dependencies are required when using it. Because this application extension provides
+Chakra UI via a page and components, it requires that the some peer dependencies are installed.
 
 Depending on what features your application extensions provides it's recommended you include any third-party
 packages as peer dependencies so that your base application doesn't end up having multiple versions of a 
-given package.
+given package. See package.json for the full list of peer dependencies.
 
-"react": "^18.2.0",
-"react-dom": "^18.2.0"
+## Configurations
 
-# Configuration
+The Store Locator extension is configured via the `mobify.app.extensions` property in the config files or `package.json` file.
 
-This section is optional and will depend on your application extensions implementation. If you have features
-that are configurable, then list those configurations here so that the PWA-Kit project implementor can configure
-the extension as they like. 
-
-```
+```json
 {
-    path: 'sample-page'
+  "mobify": {
+    "app": {
+      "extensions": [
+        [
+          "@salesforce/extension-store-locator",
+          {
+            "enabled": true,
+            "path": "/store-locator",
+            "defaultDistance": 100,
+            "defaultDistanceUnit": "km",
+            "defaultPageSize": 10,
+            "defaultPostalCode": "10178",
+            "defaultCountry": "Germany",
+            "defaultCountryCode": "DE",
+            "supportedCountries": [
+              {
+                "countryCode": "US",
+                "countryName": "United States"
+              },
+              {
+                "countryCode": "DE",
+                "countryName": "Germany"
+              }
+            ]
+          }
+        ]
+      ]
+    }
+  }
 }
 ```
 
-# Installation
-
-```
-> npm install @salesforce/extension-sample --legacy-peer-deps*<br/>
-> Downloading npm package... <br/>
-> Installing extention... <br/>
-> Finished. <br/>
-> Congratulations! The Sample extension was successfully installed! Please visit https://www.npmjs.com/package/@salesforce/extension-sample for more information on how to use this extension.
-```
-
-# Advanced Usage
-
-In order to customize this Application Extension to your particulare needs we suggest that you refer to the section titled
-"configuration", but if there is something that you want to customize that isn't configurable and cannot wait for a feature
-request to be fulfilled, then you can use overrides. 
-
-Below is a list of files that can't be overridden from within your PWA-Kit base project. Please refer to the documentation here on
-how to properly override extensions. Additionally it's up to the Application Extension developer as to which files can and 
-cannot be overridden. Please refer to this documentation on how to write your first PWA-Kit Application Extension.
 
 ## Overridable Files
 
+The following files in the extension can be overridden in your project:
+
 ```
-/src/path/to/overridable/file.ts
+/src/components/store-locator/store-locator-content.tsx
+/src/components/store-locator/store-locator-form.tsx
+/src/components/store-locator/store-locator-list.tsx
+/src/components/store-locator/store-locator-modal.tsx
+/src/components/store-locator/store-locator-provider.tsx
+/src/components/store-locator/use-store-locator.ts
+/src/components/store-locator/with-optional-chakra-provider.tsx
+/src/components/store-locator/with-store-locator.tsx
+/src/pages/store-locator/index.tsx
+/src/types/config.ts
+/src/types/index.ts
 ```
 
+To override any of these files, create a matching file structure in your project's `overrides` directory. For example, to override the store locator content component:
 
+```
+your-project/
+  src/
+    overrides/
+      components/
+        store-locator/
+          store-locator-form.tsx
+```
