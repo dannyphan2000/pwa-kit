@@ -144,7 +144,7 @@ describe('useCustomQuery', () => {
         expect(result.current.data).toEqual(mockRes)
     })
     test('clear auth state when request uses invalid session', async () => {
-        const spy = jest.spyOn(Auth.prototype, 'clearUserAuth')
+        const spy = jest.spyOn(Auth.prototype, 'logout')
         const mockRes = {
             title: 'Unauthorized',
             type: 'https://api.commercecloud.salesforce.com/documentation/error/v1/errors/unauthorized',
@@ -178,7 +178,7 @@ describe('useCustomQuery', () => {
 
 describe('useQuery', () => {
     test('clear auth state when request uses invalid session', async () => {
-        const spy = jest.spyOn(Auth.prototype, 'clearUserAuth')
+        const spy = jest.spyOn(Auth.prototype, 'logout')
 
         const mockRes = {
             title: 'Unauthorized',

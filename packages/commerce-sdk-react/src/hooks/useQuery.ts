@@ -42,6 +42,7 @@ export const useQuery = <Client extends ApiClient, Options extends ApiOptions, D
         enabled?: boolean
     }
 ) => {
+    const config = useConfig()
     const auth = useAuthContext()
     const authenticatedMethod = useAuthorizationHeader(hookConfig.method)
     // This type assertion is NOT safe in all cases. However, we know that `requiredParameters` is
@@ -62,9 +63,10 @@ export const useQuery = <Client extends ApiClient, Options extends ApiOptions, D
     if (!queryClient.getQueryCache().config.onError) {
         queryClient.getQueryCache().config = {
             onError: (error: any) => {
+                const logger = config.logger
                 // Typescript does not like having promises inside void functions
                 // so we use void to explicitly tell typescript to ignore it
-                void clearAuthStateOnError(error, auth)
+                void clearAuthStateOnError(error, auth, logger)
             }
         }
     }
@@ -163,9 +165,10 @@ export const useCustomQuery = (
     if (!queryClient.getQueryCache().config.onError) {
         queryClient.getQueryCache().config = {
             onError: (error: any) => {
+                const logger = config.logger
                 // Typescript does not like having promises inside void functions
                 // so we use void to explicitly tell typescript to ignore it
-                void clearAuthStateOnError(error, auth)
+                void clearAuthStateOnError(error, auth, logger)
             }
         }
     }

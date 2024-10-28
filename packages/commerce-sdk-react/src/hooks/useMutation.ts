@@ -40,6 +40,7 @@ export const useMutation = <
     method: ApiMethod<Options, Data>
     getCacheUpdates: CacheUpdateGetter<MergedOptions<Client, Options>, Data>
 }) => {
+    const config = useConfig()
     const auth = useAuthContext()
     const queryClient = useQueryClient()
     const customerId = useCustomerId()
@@ -54,9 +55,10 @@ export const useMutation = <
             updateCache(queryClient, cacheUpdates, data)
         },
         onError(error: any) {
+            const logger = config.logger
             // Typescript does not like having promises inside void functions
             // so we use void to explicitly tell typescript to ignore it
-            void clearAuthStateOnError(error, auth)
+            void clearAuthStateOnError(error, auth, logger)
         }
     })
 }
@@ -98,9 +100,10 @@ export const useCustomMutation = <TData = unknown, TError = unknown>(
     const mutationOpts = {
         ...mutationOptions,
         onError(error: any) {
+            const logger = globalConfig.logger
             // Typescript does not like having promises inside void functions
             // so we use void to explicitly tell typescript to ignore it
-            void clearAuthStateOnError(error, auth)
+            void clearAuthStateOnError(error, auth, logger)
         }
     }
 
