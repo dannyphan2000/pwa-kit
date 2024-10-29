@@ -108,7 +108,6 @@ export const getExtensionNames = (extensions: ApplicationExtensionEntry[]) => {
     })
 }
 
-// TODO
 export const getApplicationExtensionInfo = (appConfig?: any) => {
     const projectDir = process.cwd()
     const pkg = fse.readJsonSync(resolve(projectDir, 'package.json'))
@@ -137,12 +136,10 @@ export const validateDependentExtensions = (
     configuredExtensions: Array<any>
 ) => {
     const dependents = getDependentExtensions(currentExtension)
-    // TODO: a subset of all the configured extensions
-    const whereToLook = [configuredExtensions[0]]
+    const previousExtensions = getPreviousExtensions(currentExtension, configuredExtensions)
 
     return dependents.every((dependent) => {
-        const found = findConfiguredExtension(dependent, whereToLook)
-        console.log('--- found', found, dependent, whereToLook)
+        const found = findConfiguredExtension(dependent, previousExtensions)
         if (found) {
             const config = found[1]
             return config.enabled
@@ -159,4 +156,9 @@ const getDependentExtensions = (configuredExtension: any) => {
 }
 const findConfiguredExtension = (extensionName: string, extensions: Array<any>) => {
     return extensions.find((extension) => extension[0] === extensionName)
+}
+const getPreviousExtensions = (currentExtension: any, configuredExtensions: Array<any>) => {
+    const array = configuredExtensions.slice().reverse()
+    const index = array.findIndex((extension) => extension[0] === currentExtension[0])
+    return array.slice(index + 1)
 }
