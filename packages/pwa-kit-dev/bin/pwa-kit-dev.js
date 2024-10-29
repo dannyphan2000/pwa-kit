@@ -239,11 +239,12 @@ const main = async () => {
                 'babel-node'
             )
 
-            // This incluse 100% needs some work
+            // TODO: Babel is transpiling files in the node_modules folder that is doesn't have to!! I don't know why these ignores are working
+            // there is also a set of ignores that might have to be set in the babel configuration.
             execSync(
                 `${babelNode} ${
                     inspect ? '--inspect' : ''
-                } -i [\"/(?:\\/.*)?\\/node_modules\\//(?!@salesforce\/pwa-kit-extension-sdk\/dist)\\//i\"] ${babelArgs} ${getAppEntrypoint()}`,
+                } --ignore '/node_modules\\/(?!extension-[^\\/]+\\/)/i' --ignore '/node_modules\\/(?!pwa-kit-extension-sdk\\/dist)/i' ${babelArgs} ${getAppEntrypoint()}`,
                 {
                     env: {
                         ...process.env,

@@ -52,6 +52,7 @@ const config = {
         ],
         require('@babel/plugin-transform-async-generator-functions')
     ].filter(Boolean),
+    ignore: ['/node_modules\/(?!pwa-kit-extension-sdk\/dist\/)/i', '/node_modules\/(?!extension-[^\/]+\/)/i'],
     env: {
         test: {
             presets: [require('@babel/preset-env'), require('@babel/preset-react')],
