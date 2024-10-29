@@ -36,7 +36,7 @@ describe('StandardLogin component', () => {
     })
 
     test('renders social login buttons', async () => {
-        renderWithProviders(<WrapperComponent idps={['google', 'apple']} />)
+        renderWithProviders(<WrapperComponent isSocialEnabled={true} idps={['google', 'apple']} />)
 
         expect(screen.getByText(/Or Login With/)).toBeInTheDocument()
         expect(screen.getByRole('button', {name: /Google/})).toBeInTheDocument()
