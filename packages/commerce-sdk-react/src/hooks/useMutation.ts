@@ -92,8 +92,8 @@ export const useCustomMutation = <TData = unknown, TError = unknown>(
     const createMutationFnWithAuth = (): MutationFunction<TData, TMutationVariables> => {
         return async (args): Promise<TData> => {
             const {access_token} = await auth.ready()
-            return (
-                await helpers.callCustomEndpoint({
+            return (await helpers
+                .callCustomEndpoint({
                     ...apiOptions,
                     options: {
                         ...apiOptions.options,
@@ -112,13 +112,17 @@ export const useCustomMutation = <TData = unknown, TError = unknown>(
                         ...globalClientConfig,
                         ...(apiOptions.clientConfig || {})
                     }
-                }).catch(async (error) => {
+                })
+                .catch(async (error) => {
                     if (error?.response?.status == 401) {
                         const response = await error?.response?.json()
-                        if (response?.detail === 'Customer credentials changed after token was issued.') {
+                        if (
+                            response?.detail ===
+                            'Customer credentials changed after token was issued.'
+                        ) {
                             logger.info('Login was invalidated. Clearing login state.')
-                            await void auth.logout()
-        
+                            await auth.logout()
+
                             // Retry again after resetting auth state
                             const {access_token} = await auth.ready()
                             return await helpers.callCustomEndpoint({
@@ -147,8 +151,7 @@ export const useCustomMutation = <TData = unknown, TError = unknown>(
                     } else {
                         throw error
                     }
-                })
-            ) as TData
+                })) as TData
         }
     }
 

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {useQuery as useReactQuery, UseQueryOptions, useQueryClient} from '@tanstack/react-query'
+import {useQuery as useReactQuery, UseQueryOptions} from '@tanstack/react-query'
 import {helpers} from 'commerce-sdk-isomorphic'
 import {useAuthorizationHeader} from './useAuthorizationHeader'
 import useAuthContext from './useAuthContext'
@@ -94,8 +94,8 @@ export const useCustomQuery = (
         const clientHeaders = config.headers || {}
         return async () => {
             const {access_token} = await auth.ready()
-            return await 
-                helpers.callCustomEndpoint({
+            return await helpers
+                .callCustomEndpoint({
                     ...options,
                     options: {
                         method: options.options?.method || 'GET',
@@ -117,13 +117,17 @@ export const useCustomQuery = (
                         ...clientConfig,
                         throwOnBadResponse: true
                     }
-                }).catch(async (error) => {
+                })
+                .catch(async (error) => {
                     if (error?.response?.status == 401) {
                         const response = await error?.response?.json()
-                        if (response?.detail === 'Customer credentials changed after token was issued.') {
+                        if (
+                            response?.detail ===
+                            'Customer credentials changed after token was issued.'
+                        ) {
                             logger.info('Login was invalidated. Clearing login state.')
-                            await void auth.logout()
-        
+                            await auth.logout()
+
                             // Retry again after resetting auth state
                             const {access_token} = await auth.ready()
                             return await helpers.callCustomEndpoint({

@@ -11,9 +11,9 @@ import useConfig from './useConfig'
 /**
  * Creates a method that waits for authentication to complete and automatically includes an
  * Authorization header when making requests.
- * 
+ *
  * Also inserts a retry if the authentication token was invalidated
- * 
+ *
  * @param method Bound API method
  * @internal
  */
@@ -36,7 +36,7 @@ export const useAuthorizationHeader = <Options extends ApiOptions, Data>(
                 const response = await error?.response?.json()
                 if (response?.detail === 'Customer credentials changed after token was issued.') {
                     logger.info('Login was invalidated. Clearing login state.')
-                    await void auth.logout()
+                    await auth.logout()
 
                     // Retry again after resetting auth state
                     const {access_token} = await auth.ready()
