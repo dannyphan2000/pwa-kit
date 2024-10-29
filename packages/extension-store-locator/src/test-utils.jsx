@@ -1,6 +1,6 @@
 import React from 'react'
 import {render} from '@testing-library/react'
-import {ChakraProvider} from '@chakra-ui/react/dist/cjs/chakra-provider.cjs'
+import {ChakraProvider} from '@chakra-ui/react'
 import {StoreLocatorProvider} from '*/components/store-locator/store-locator-provider'
 
 const CONFIG = {

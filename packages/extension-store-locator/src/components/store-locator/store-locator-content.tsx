@@ -6,9 +6,7 @@
  */
 
 import React, {useState} from 'react'
-import {Heading} from '@chakra-ui/react/dist/cjs/typography/heading.cjs'
-import {Box} from '@chakra-ui/react/dist/cjs/box/box.cjs'
-import {Button} from '@chakra-ui/react/dist/cjs/button/button.cjs'
+import {Box, Button, Heading} from '@chakra-ui/react'
 import {useSearchStores} from '@salesforce/commerce-sdk-react'
 import {StoreLocatorList} from '*/components/store-locator/store-locator-list'
 import {StoreLocatorForm} from '*/components/store-locator/store-locator-form'

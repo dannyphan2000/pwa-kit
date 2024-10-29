@@ -11,8 +11,8 @@ import {
     ModalBody,
     ModalCloseButton,
     ModalContent,
-} from '@chakra-ui/react/dist/cjs/modal/index.cjs'
-import {useBreakpointValue} from '@chakra-ui/react/dist/cjs/media-query/use-breakpoint-value.cjs'
+    useBreakpointValue
+} from '@chakra-ui/react'
 import {StoreLocatorContent} from '*/components/store-locator/store-locator-content'
 
 interface StoreLocatorModalProps {

@@ -5,9 +5,13 @@ import {StoreLocatorModal} from './store-locator-modal'
 
 // Mock specific Chakra UI components and hooks
 const mockUseBreakpointValue = jest.fn()
-jest.mock('@chakra-ui/react/dist/cjs/media-query/use-breakpoint-value.cjs', () => ({
-    useBreakpointValue: (...args) => mockUseBreakpointValue(...args)
-}))
+jest.mock('@chakra-ui/react', () => {
+    const originalModule = jest.requireActual('@chakra-ui/react');
+    return {
+        ...originalModule,
+        useBreakpointValue: (...args) => mockUseBreakpointValue
+    };
+});
 
 jest.mock('@salesforce/commerce-sdk-react', () => ({
     useSearchStores: jest.fn(() => ({
