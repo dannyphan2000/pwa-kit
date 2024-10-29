@@ -12,7 +12,7 @@ import {screen} from '@testing-library/react'
 
 const WrapperComponent = ({...props}) => {
     const form = useForm()
-    return <LoginFields form={form} clickForgotPassword={() => {}} {...props} />
+    return <LoginFields form={form} handleForgotPasswordClick={() => {}} {...props} />
 }
 
 describe('LoginFields component', () => {
@@ -53,8 +53,8 @@ describe('LoginFields component', () => {
         expect(screen.queryByRole('button', {name: 'Forgot password?'})).not.toBeInTheDocument()
     })
 
-    test('hides "Forgot Password?" button when clickForgotPassword is undefined', () => {
-        renderWithProviders(<WrapperComponent clickForgotPassword={undefined} />)
+    test('hides "Forgot Password?" button when handleForgotPasswordClick is undefined', () => {
+        renderWithProviders(<WrapperComponent handleForgotPasswordClick={undefined} />)
 
         const passwordInput = screen.getByLabelText('Password')
         expect(passwordInput).toBeInTheDocument()
