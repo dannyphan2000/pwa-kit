@@ -13,7 +13,7 @@ import LoginFields from '@salesforce/retail-react-app/app/components/forms/login
 import StandardLogin from '../standard-login/index'
 import SocialLogin from '@salesforce/retail-react-app/app/components/social-login'
 
-const PasswordlessLogin = ({form, clickForgotPassword, isSocialEnabled = false, idps = []}) => {
+const PasswordlessLogin = ({form, clickForgotPassword, isSocialEnabled = false, idps = [], hideEmail = false}) => {
     const [showPasswordView, setShowPasswordView] = useState(false)
 
     const handlePasswordButton = async (e) => {
@@ -35,6 +35,7 @@ const PasswordlessLogin = ({form, clickForgotPassword, isSocialEnabled = false, 
                     <LoginFields
                         form={form}
                         hidePassword={true}
+                        hideEmail={hideEmail}
                         clickForgotPassword={clickForgotPassword}
                     />
                     <Button
@@ -89,7 +90,8 @@ PasswordlessLogin.propTypes = {
     form: PropTypes.object,
     clickForgotPassword: PropTypes.func,
     isSocialEnabled: PropTypes.bool,
-    idps: PropTypes.arrayOf[PropTypes.string]
+    idps: PropTypes.arrayOf[PropTypes.string],
+    hideEmail: PropTypes.bool
 }
 
 export default PasswordlessLogin

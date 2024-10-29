@@ -202,12 +202,28 @@ const ContactInfo = () => {
                                         <Text align="center" fontSize="sm" marginTop={2} marginBottom={2}>
                                                     <FormattedMessage
                                                         defaultMessage="Or Login With"
-                                                        id="login_form.message.or_login_with"
+                                                        id="contact_info.message.or_login_with"
                                                     />
                                         </Text>
+
+                                        {/* Passwordless Login */}
                                         {isPasswordlessEnabled && (
-                                            <><p>passwordless login here</p></>
+                                            <Button
+                                                variant="outline"
+                                                type="submit"
+                                                onClick={() => {
+                                                    form.clearErrors('global')
+                                                }}
+                                                isLoading={form.formState.isSubmitting}
+                                            >
+                                                <FormattedMessage
+                                                    defaultMessage="Secure Link"
+                                                    id="contact_info.button.secure_link"
+                                                />
+                                            </Button>
                                         )}
+
+                                        {/* Standard Password Login */}
                                         <Button variant="outline" onClick={togglePasswordField}>
                                             {!showPasswordField ? (
                                                 <FormattedMessage
@@ -221,10 +237,11 @@ const ContactInfo = () => {
                                                 />
                                             )}
                                         </Button>
+
+                                        {/* Social Login */}
                                         {isSocialEnabled && idps && (
-                                            <>
-                                                <SocialLogin idps={idps} />
-                                            </>
+                                            <SocialLogin idps={idps} />
+
                                         )}
                                     </>
                                 ) : (

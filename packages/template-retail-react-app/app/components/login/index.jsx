@@ -23,7 +23,6 @@ const LoginForm = ({
     isSocialEnabled = false,
     idps = []
 }) => {
-    console.log('isPasswordlessEnabled', isPasswordlessEnabled)
     return (
         <Fragment>
             <Stack justify="center" align="center" spacing={8} marginBottom={8}>
