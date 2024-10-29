@@ -12,7 +12,8 @@
 // we don't want it to count toward coverage until we figure out how to cover the `functions`
 // metric for this file in its test.
 
-import React from 'react'
+import React, {useEffect} from 'react'
+import {withRouter} from 'react-router-dom'
 import loadable from '@loadable/component'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
@@ -73,25 +74,25 @@ export const routes = [
         path: '/account',
         component: Account
     },
-    {
-        path: '/checkout',
-        component: Checkout,
-        exact: true
-    },
-    {
-        path: '/checkout/confirmation/:orderNo',
-        component: CheckoutConfirmation
-    },
+    // {
+    //     path: '/checkout',
+    //     component: Checkout,
+    //     exact: true
+    // },
+    // {
+    //     path: '/checkout/confirmation/:orderNo',
+    //     component: CheckoutConfirmation
+    // },
     {
         path: '/callback',
         component: LoginRedirect,
         exact: true
     },
-    {
-        path: '/cart',
-        component: Cart,
-        exact: true
-    },
+    // {
+    //     path: '/cart',
+    //     component: Cart,
+    //     exact: true
+    // },
     {
         path: '/product/:productId',
         component: ProductDetail
@@ -112,9 +113,29 @@ export const routes = [
         path: '/store-locator',
         component: StoreLocator
     },
+    // {
+    //     path: '*',
+    //     component: PageNotFound
+    // }
     {
         path: '*',
-        component: PageNotFound
+        component: withRouter((props) => {
+            const {location} = props
+            const urlParams = new URLSearchParams(location.search)
+    
+            useEffect(() => {
+                const newURL = new URL(window.location)
+                if (!urlParams.has('redirected')) {
+                    newURL.searchParams.append('redirected', '1')
+                    window.location.href = newURL
+                }
+    
+            }, [window.location.href])
+            if (urlParams.has('redirected')) {
+                return <PageNotFound {...props} />
+            }
+            return null
+        })
     }
 ]
 
