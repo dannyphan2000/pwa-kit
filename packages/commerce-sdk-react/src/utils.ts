@@ -113,18 +113,3 @@ export function detectCookiesAvailable(options?: CookieAttributes) {
         return false
     }
 }
-
-/** Utility for clearing auth state if a certain error saying the session credentials are invalid is received.
- *  @private
- */
-export async function clearAuthStateOnError(error: any, auth: Auth, logger: Logger | undefined) {
-    if (error?.response?.status == 401) {
-        const response = await error?.response?.json()
-        if (response?.detail === 'Customer credentials changed after token was issued.') {
-            logger
-                ? logger.info('Login was invalidated. Clearing login state.')
-                : console.log('Login was invalidated. Clearing login state.')
-            void auth.logout()
-        }
-    }
-}

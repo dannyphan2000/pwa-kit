@@ -24,7 +24,6 @@ import {
 import {useAuthorizationHeader} from './useAuthorizationHeader'
 import useCustomerId from './useCustomerId'
 import {mergeOptions, updateCache} from './utils'
-import {clearAuthStateOnError} from '../utils'
 
 /**
  * Helper for mutation hooks, contains most of the logic in order to keep individual hooks small.
@@ -40,8 +39,6 @@ export const useMutation = <
     method: ApiMethod<Options, Data>
     getCacheUpdates: CacheUpdateGetter<MergedOptions<Client, Options>, Data>
 }) => {
-    const config = useConfig()
-    const auth = useAuthContext()
     const queryClient = useQueryClient()
     const customerId = useCustomerId()
     const authenticatedMethod = useAuthorizationHeader(hookConfig.method)
@@ -53,12 +50,6 @@ export const useMutation = <
             const netOptions = mergeOptions(hookConfig.client, options)
             const cacheUpdates = hookConfig.getCacheUpdates(customerId, netOptions, data)
             updateCache(queryClient, cacheUpdates, data)
-        },
-        onError(error: any) {
-            const logger = config.logger
-            // Typescript does not like having promises inside void functions
-            // so we use void to explicitly tell typescript to ignore it
-            void clearAuthStateOnError(error, auth, logger)
         }
     })
 }
@@ -85,6 +76,7 @@ export const useCustomMutation = <TData = unknown, TError = unknown>(
 ) => {
     const auth = useAuthContext()
     const globalConfig = useConfig()
+    const logger = globalConfig.logger || console
     const globalHeaders = globalConfig.headers || {}
     const globalClientConfig = {
         parameters: {
@@ -97,44 +89,71 @@ export const useCustomMutation = <TData = unknown, TError = unknown>(
         throwOnBadResponse: true
     }
 
-    const mutationOpts = {
-        ...mutationOptions,
-        onError(error: any) {
-            const logger = globalConfig.logger
-            // Typescript does not like having promises inside void functions
-            // so we use void to explicitly tell typescript to ignore it
-            void clearAuthStateOnError(error, auth, logger)
-        }
-    }
-
     const createMutationFnWithAuth = (): MutationFunction<TData, TMutationVariables> => {
         return async (args): Promise<TData> => {
             const {access_token} = await auth.ready()
-            return (await helpers.callCustomEndpoint({
-                ...apiOptions,
-                options: {
-                    ...apiOptions.options,
-                    headers: {
-                        Authorization: `Bearer ${access_token}`,
-                        // Note the order of the following destructred objects is important.
-                        // Priority assending order: global config < mutation config < mutate func args
-                        ...globalHeaders,
-                        ...apiOptions.options?.headers,
-                        ...(args?.headers ? args.headers : {})
+            return (
+                await helpers.callCustomEndpoint({
+                    ...apiOptions,
+                    options: {
+                        ...apiOptions.options,
+                        headers: {
+                            Authorization: `Bearer ${access_token}`,
+                            // Note the order of the following destructred objects is important.
+                            // Priority assending order: global config < mutation config < mutate func args
+                            ...globalHeaders,
+                            ...apiOptions.options?.headers,
+                            ...(args?.headers ? args.headers : {})
+                        },
+                        ...(args?.body ? {body: args.body} : {}),
+                        ...(args?.parameters ? {parameters: args.parameters} : {})
                     },
-                    ...(args?.body ? {body: args.body} : {}),
-                    ...(args?.parameters ? {parameters: args.parameters} : {})
-                },
-                clientConfig: {
-                    ...globalClientConfig,
-                    ...(apiOptions.clientConfig || {})
-                }
-            })) as TData
+                    clientConfig: {
+                        ...globalClientConfig,
+                        ...(apiOptions.clientConfig || {})
+                    }
+                }).catch(async (error) => {
+                    if (error?.response?.status == 401) {
+                        const response = await error?.response?.json()
+                        if (response?.detail === 'Customer credentials changed after token was issued.') {
+                            logger.info('Login was invalidated. Clearing login state.')
+                            await void auth.logout()
+        
+                            // Retry again after resetting auth state
+                            const {access_token} = await auth.ready()
+                            return await helpers.callCustomEndpoint({
+                                ...apiOptions,
+                                options: {
+                                    ...apiOptions.options,
+                                    headers: {
+                                        Authorization: `Bearer ${access_token}`,
+                                        // Note the order of the following destructred objects is important.
+                                        // Priority assending order: global config < mutation config < mutate func args
+                                        ...globalHeaders,
+                                        ...apiOptions.options?.headers,
+                                        ...(args?.headers ? args.headers : {})
+                                    },
+                                    ...(args?.body ? {body: args.body} : {}),
+                                    ...(args?.parameters ? {parameters: args.parameters} : {})
+                                },
+                                clientConfig: {
+                                    ...globalClientConfig,
+                                    ...(apiOptions.clientConfig || {})
+                                }
+                            })
+                        } else {
+                            throw error
+                        }
+                    } else {
+                        throw error
+                    }
+                })
+            ) as TData
         }
     }
 
     return useReactQueryMutation<TData, TError, TMutationVariables, unknown>(
         createMutationFnWithAuth(),
-        mutationOpts
+        mutationOptions
     )
 }

@@ -21,7 +21,7 @@ import {
 } from './types'
 import useConfig from './useConfig'
 import {hasAllKeys} from './utils'
-import {onClient, clearAuthStateOnError} from '../utils'
+import {onClient} from '../utils'
 
 /**
  * Helper for query hooks, contains most of the logic in order to keep individual hooks small.
@@ -42,8 +42,6 @@ export const useQuery = <Client extends ApiClient, Options extends ApiOptions, D
         enabled?: boolean
     }
 ) => {
-    const config = useConfig()
-    const auth = useAuthContext()
     const authenticatedMethod = useAuthorizationHeader(hookConfig.method)
     // This type assertion is NOT safe in all cases. However, we know that `requiredParameters` is
     // the list of parameters required by `Options`, and we know that in the default case (when
@@ -55,21 +53,6 @@ export const useQuery = <Client extends ApiClient, Options extends ApiOptions, D
     // trade-off, as the behavior is opt-in by the end user, and it feels like adding type safety
     // for this case would add significantly more complexity.
     const wrappedMethod = async () => await authenticatedMethod(apiOptions as Options)
-
-    // The onError has deprecated/removed the onError callback for useQuery in v4 / v5
-    // So we instead manipulate the global onError callback on the QueryCache to handle failure
-    // cases where a query fails because the auth state has been invalidated
-    const queryClient = useQueryClient()
-    if (!queryClient.getQueryCache().config.onError) {
-        queryClient.getQueryCache().config = {
-            onError: (error: any) => {
-                const logger = config.logger
-                // Typescript does not like having promises inside void functions
-                // so we use void to explicitly tell typescript to ignore it
-                void clearAuthStateOnError(error, auth, logger)
-            }
-        }
-    }
 
     return useReactQuery(hookConfig.queryKey, wrappedMethod, {
         enabled:
@@ -105,34 +88,74 @@ export const useCustomQuery = (
 ) => {
     const config = useConfig()
     const auth = useAuthContext()
+    const logger = config.logger || console
     const callCustomEndpointWithAuth = (options: OptionalCustomEndpointClientConfig) => {
         const clientConfig = options.clientConfig || {}
         const clientHeaders = config.headers || {}
         return async () => {
             const {access_token} = await auth.ready()
-            return await helpers.callCustomEndpoint({
-                ...options,
-                options: {
-                    method: options.options?.method || 'GET',
-                    headers: {
-                        Authorization: `Bearer ${access_token}`,
-                        ...clientHeaders,
-                        ...options.options?.headers
+            return await 
+                helpers.callCustomEndpoint({
+                    ...options,
+                    options: {
+                        method: options.options?.method || 'GET',
+                        headers: {
+                            Authorization: `Bearer ${access_token}`,
+                            ...clientHeaders,
+                            ...options.options?.headers
+                        },
+                        ...options.options
                     },
-                    ...options.options
-                },
-                clientConfig: {
-                    parameters: {
-                        clientId: config.clientId,
-                        siteId: config.siteId,
-                        organizationId: config.organizationId,
-                        shortCode: config.organizationId
-                    },
-                    proxy: config.proxy,
-                    ...clientConfig,
-                    throwOnBadResponse: true
-                }
-            })
+                    clientConfig: {
+                        parameters: {
+                            clientId: config.clientId,
+                            siteId: config.siteId,
+                            organizationId: config.organizationId,
+                            shortCode: config.organizationId
+                        },
+                        proxy: config.proxy,
+                        ...clientConfig,
+                        throwOnBadResponse: true
+                    }
+                }).catch(async (error) => {
+                    if (error?.response?.status == 401) {
+                        const response = await error?.response?.json()
+                        if (response?.detail === 'Customer credentials changed after token was issued.') {
+                            logger.info('Login was invalidated. Clearing login state.')
+                            await void auth.logout()
+        
+                            // Retry again after resetting auth state
+                            const {access_token} = await auth.ready()
+                            return await helpers.callCustomEndpoint({
+                                ...options,
+                                options: {
+                                    method: options.options?.method || 'GET',
+                                    headers: {
+                                        Authorization: `Bearer ${access_token}`,
+                                        ...clientHeaders,
+                                        ...options.options?.headers
+                                    },
+                                    ...options.options
+                                },
+                                clientConfig: {
+                                    parameters: {
+                                        clientId: config.clientId,
+                                        siteId: config.siteId,
+                                        organizationId: config.organizationId,
+                                        shortCode: config.organizationId
+                                    },
+                                    proxy: config.proxy,
+                                    ...clientConfig,
+                                    throwOnBadResponse: true
+                                }
+                            })
+                        } else {
+                            throw error
+                        }
+                    } else {
+                        throw error
+                    }
+                })
         }
     }
 
@@ -157,21 +180,6 @@ export const useCustomQuery = (
         `/${apiOptions.options.customApiPathParameters.endpointPath}`,
         {...apiOptions.options.parameters}
     ]
-
-    // The onError has deprecated/removed the onError callback for useQuery in v4 / v5
-    // So we instead manipulate the global onError callback on the QueryCache to handle failure
-    // cases where a query fails because the auth state has been invalidated
-    const queryClient = useQueryClient()
-    if (!queryClient.getQueryCache().config.onError) {
-        queryClient.getQueryCache().config = {
-            onError: (error: any) => {
-                const logger = config.logger
-                // Typescript does not like having promises inside void functions
-                // so we use void to explicitly tell typescript to ignore it
-                void clearAuthStateOnError(error, auth, logger)
-            }
-        }
-    }
 
     return useReactQuery(queryKey, callCustomEndpointWithAuth(apiOptions), queryOptions)
 }
