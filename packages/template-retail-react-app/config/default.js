@@ -40,6 +40,7 @@ module.exports = {
         login: {
             social: {
                 enabled: true,
+                idps: ['Google']
             },
             passwordless: {
                 enabled: true,

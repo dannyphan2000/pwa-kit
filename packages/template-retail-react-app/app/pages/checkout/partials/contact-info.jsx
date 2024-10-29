@@ -18,6 +18,7 @@ import {
     Box,
     Button,
     Container,
+    Divider,
     Stack,
     Text
 } from '@salesforce/retail-react-app/app/components/shared/ui'
@@ -32,6 +33,7 @@ import {
 } from '@salesforce/retail-react-app/app/components/toggle-card'
 import Field from '@salesforce/retail-react-app/app/components/field'
 import PasswordlessLogin from '@salesforce/retail-react-app/app/components/passwordless-login'
+import SocialLogin from '@salesforce/retail-react-app/app/components/social-login'
 import {AuthModal, useAuthModal} from '@salesforce/retail-react-app/app/hooks/use-auth-modal'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
@@ -50,6 +52,9 @@ const ContactInfo = () => {
     const updateCustomerForBasket = useShopperBasketsMutation('updateCustomerForBasket')
     const transferBasket = useShopperBasketsMutation('transferBasket')
     const {passwordless, social} = getConfig().app.login
+    const idps = social?.idps
+    const isSocialEnabled = social?.enabled
+    const isPasswordlessEnabled = passwordless?.enabled
 
     const {step, STEPS, goToStep, goToNextStep} = useCheckout()
 
@@ -191,32 +196,23 @@ const ContactInfo = () => {
                                         />
                                     )}
                                 </Button>
-                                <Divider />
-                                <Text align="center" fontSize="sm">
-                                    <FormattedMessage
-                                        defaultMessage="Or Login With"
-                                        id="login_form.message.or_login_with"
-                                    />
-                                </Text>
-                                <Stack spacing={4}>
-                                    <Button
-                                        onClick={handlePasswordButton}
-                                        borderColor="gray.500"
-                                        color="blue.600"
-                                        variant="outline"
-                                    >
-                                        <FormattedMessage
-                                            defaultMessage="Password"
-                                            id="login_form.button.password"
-                                        />
-                                    </Button>
-                                    {isSocialEnabled && <SocialLogin idps={idps} />}
-                                </Stack>
+                                {isSocialEnabled && idps && (
+                                    <>
+                                        <Divider />
+                                        <Text align="center" fontSize="sm" marginTop={2} marginBottom={2}>
+                                            <FormattedMessage
+                                                defaultMessage="Or Login With"
+                                                id="login_form.message.or_login_with"
+                                            />
+                                        </Text>
+                                        <SocialLogin idps={idps} />
+                                    </>
+                                )}
                                 <Button variant="outline" onClick={togglePasswordField}>
                                     {!showPasswordField ? (
                                         <FormattedMessage
-                                            defaultMessage="Already have an account? Log in"
-                                            id="contact_info.button.already_have_account"
+                                            defaultMessage="Password"
+                                            id="contact_info.button.password"
                                         />
                                     ) : (
                                         <FormattedMessage
