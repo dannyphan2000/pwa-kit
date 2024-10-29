@@ -50,7 +50,7 @@ describe('PasswordlessLogin component', () => {
     })
 
     test('renders social login buttons', async () => {
-        renderWithProviders(<WrapperComponent idps={['google', 'apple']} />)
+        renderWithProviders(<WrapperComponent isSocialEnabled={true} idps={['google', 'apple']} />)
 
         expect(screen.getByRole('button', {name: /Google/})).toBeInTheDocument()
         expect(screen.getByRole('button', {name: /Apple/})).toBeInTheDocument()
