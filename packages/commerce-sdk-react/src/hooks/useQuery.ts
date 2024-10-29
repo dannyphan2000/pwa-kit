@@ -22,6 +22,7 @@ import {
 import useConfig from './useConfig'
 import {hasAllKeys} from './utils'
 import {onClient} from '../utils'
+import {CommerceApiProviderProps} from '../provider'
 
 /**
  * Helper for query hooks, contains most of the logic in order to keep individual hooks small.
@@ -90,76 +91,38 @@ export const useCustomQuery = (
     const auth = useAuthContext()
     const logger = config.logger || console
     const callCustomEndpointWithAuth = (options: OptionalCustomEndpointClientConfig) => {
-        const clientConfig = options.clientConfig || {}
-        const clientHeaders = config.headers || {}
         return async () => {
             const {access_token} = await auth.ready()
-            return await helpers
-                .callCustomEndpoint({
-                    ...options,
-                    options: {
-                        method: options.options?.method || 'GET',
-                        headers: {
-                            Authorization: `Bearer ${access_token}`,
-                            ...clientHeaders,
-                            ...options.options?.headers
-                        },
-                        ...options.options
-                    },
-                    clientConfig: {
-                        parameters: {
-                            clientId: config.clientId,
-                            siteId: config.siteId,
-                            organizationId: config.organizationId,
-                            shortCode: config.organizationId
-                        },
-                        proxy: config.proxy,
-                        ...clientConfig,
-                        throwOnBadResponse: true
-                    }
-                })
-                .catch(async (error) => {
-                    if (error?.response?.status == 401) {
-                        const response = await error?.response?.json()
-                        if (
-                            response?.detail ===
-                            'Customer credentials changed after token was issued.'
-                        ) {
-                            logger.info('Login was invalidated. Clearing login state.')
-                            await auth.logout()
+            const customEndpointOptions = generateCustomEndpointOptions(
+                options,
+                config,
+                access_token
+            )
 
-                            // Retry again after resetting auth state
-                            const {access_token} = await auth.ready()
-                            return await helpers.callCustomEndpoint({
-                                ...options,
-                                options: {
-                                    method: options.options?.method || 'GET',
-                                    headers: {
-                                        Authorization: `Bearer ${access_token}`,
-                                        ...clientHeaders,
-                                        ...options.options?.headers
-                                    },
-                                    ...options.options
-                                },
-                                clientConfig: {
-                                    parameters: {
-                                        clientId: config.clientId,
-                                        siteId: config.siteId,
-                                        organizationId: config.organizationId,
-                                        shortCode: config.organizationId
-                                    },
-                                    proxy: config.proxy,
-                                    ...clientConfig,
-                                    throwOnBadResponse: true
-                                }
-                            })
-                        } else {
-                            throw error
-                        }
+            return await helpers.callCustomEndpoint(customEndpointOptions).catch(async (error) => {
+                if (error?.response?.status == 401) {
+                    const response = await error?.response?.json()
+                    if (
+                        response?.detail === 'Customer credentials changed after token was issued.'
+                    ) {
+                        logger.info('Login was invalidated. Clearing login state.')
+                        await auth.logout()
+
+                        // Retry again after resetting auth state
+                        const {access_token} = await auth.ready()
+                        const customEndpointOptions = generateCustomEndpointOptions(
+                            options,
+                            config,
+                            access_token
+                        )
+                        return await helpers.callCustomEndpoint(customEndpointOptions)
                     } else {
                         throw error
                     }
-                })
+                } else {
+                    throw error
+                }
+            })
         }
     }
 
@@ -186,4 +149,36 @@ export const useCustomQuery = (
     ]
 
     return useReactQuery(queryKey, callCustomEndpointWithAuth(apiOptions), queryOptions)
+}
+
+const generateCustomEndpointOptions = (
+    options: OptionalCustomEndpointClientConfig,
+    config: Omit<CommerceApiProviderProps, 'children'>,
+    access_token: string
+) => {
+    const clientConfig = options.clientConfig || {}
+    const clientHeaders = config.headers || {}
+    return {
+        ...options,
+        options: {
+            method: options.options?.method || 'GET',
+            headers: {
+                Authorization: `Bearer ${access_token}`,
+                ...clientHeaders,
+                ...options.options?.headers
+            },
+            ...options.options
+        },
+        clientConfig: {
+            parameters: {
+                clientId: config.clientId,
+                siteId: config.siteId,
+                organizationId: config.organizationId,
+                shortCode: config.organizationId
+            },
+            proxy: config.proxy,
+            ...clientConfig,
+            throwOnBadResponse: true
+        }
+    }
 }

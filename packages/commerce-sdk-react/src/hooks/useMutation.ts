@@ -24,6 +24,7 @@ import {
 import {useAuthorizationHeader} from './useAuthorizationHeader'
 import useCustomerId from './useCustomerId'
 import {mergeOptions, updateCache} from './utils'
+import {CommerceApiProviderProps} from '../provider'
 
 /**
  * Helper for mutation hooks, contains most of the logic in order to keep individual hooks small.
@@ -77,42 +78,14 @@ export const useCustomMutation = <TData = unknown, TError = unknown>(
     const auth = useAuthContext()
     const globalConfig = useConfig()
     const logger = globalConfig.logger || console
-    const globalHeaders = globalConfig.headers || {}
-    const globalClientConfig = {
-        parameters: {
-            clientId: globalConfig.clientId,
-            siteId: globalConfig.siteId,
-            organizationId: globalConfig.organizationId,
-            shortCode: globalConfig.shortCode
-        },
-        proxy: globalConfig.proxy,
-        throwOnBadResponse: true
-    }
 
     const createMutationFnWithAuth = (): MutationFunction<TData, TMutationVariables> => {
         return async (args): Promise<TData> => {
             const {access_token} = await auth.ready()
             return (await helpers
-                .callCustomEndpoint({
-                    ...apiOptions,
-                    options: {
-                        ...apiOptions.options,
-                        headers: {
-                            Authorization: `Bearer ${access_token}`,
-                            // Note the order of the following destructred objects is important.
-                            // Priority assending order: global config < mutation config < mutate func args
-                            ...globalHeaders,
-                            ...apiOptions.options?.headers,
-                            ...(args?.headers ? args.headers : {})
-                        },
-                        ...(args?.body ? {body: args.body} : {}),
-                        ...(args?.parameters ? {parameters: args.parameters} : {})
-                    },
-                    clientConfig: {
-                        ...globalClientConfig,
-                        ...(apiOptions.clientConfig || {})
-                    }
-                })
+                .callCustomEndpoint(
+                    generateCustomEndpointOptions(args, apiOptions, globalConfig, access_token)
+                )
                 .catch(async (error) => {
                     if (error?.response?.status == 401) {
                         const response = await error?.response?.json()
@@ -125,26 +98,14 @@ export const useCustomMutation = <TData = unknown, TError = unknown>(
 
                             // Retry again after resetting auth state
                             const {access_token} = await auth.ready()
-                            return await helpers.callCustomEndpoint({
-                                ...apiOptions,
-                                options: {
-                                    ...apiOptions.options,
-                                    headers: {
-                                        Authorization: `Bearer ${access_token}`,
-                                        // Note the order of the following destructred objects is important.
-                                        // Priority assending order: global config < mutation config < mutate func args
-                                        ...globalHeaders,
-                                        ...apiOptions.options?.headers,
-                                        ...(args?.headers ? args.headers : {})
-                                    },
-                                    ...(args?.body ? {body: args.body} : {}),
-                                    ...(args?.parameters ? {parameters: args.parameters} : {})
-                                },
-                                clientConfig: {
-                                    ...globalClientConfig,
-                                    ...(apiOptions.clientConfig || {})
-                                }
-                            })
+                            return await helpers.callCustomEndpoint(
+                                generateCustomEndpointOptions(
+                                    args,
+                                    apiOptions,
+                                    globalConfig,
+                                    access_token
+                                )
+                            )
                         } else {
                             throw error
                         }
@@ -159,4 +120,44 @@ export const useCustomMutation = <TData = unknown, TError = unknown>(
         createMutationFnWithAuth(),
         mutationOptions
     )
+}
+
+const generateCustomEndpointOptions = (
+    args: TMutationVariables,
+    apiOptions: OptionalCustomEndpointClientConfig,
+    config: Omit<CommerceApiProviderProps, 'children'>,
+    access_token: string
+) => {
+    const globalHeaders = config.headers || {}
+    const globalClientConfig = {
+        parameters: {
+            clientId: config.clientId,
+            siteId: config.siteId,
+            organizationId: config.organizationId,
+            shortCode: config.shortCode
+        },
+        proxy: config.proxy,
+        throwOnBadResponse: true
+    }
+
+    return {
+        ...apiOptions,
+        options: {
+            ...apiOptions.options,
+            headers: {
+                Authorization: `Bearer ${access_token}`,
+                // Note the order of the following destructred objects is important.
+                // Priority assending order: global config < mutation config < mutate func args
+                ...globalHeaders,
+                ...apiOptions.options?.headers,
+                ...(args?.headers ? args.headers : {})
+            },
+            ...(args?.body ? {body: args.body} : {}),
+            ...(args?.parameters ? {parameters: args.parameters} : {})
+        },
+        clientConfig: {
+            ...globalClientConfig,
+            ...(apiOptions.clientConfig || {})
+        }
+    }
 }
