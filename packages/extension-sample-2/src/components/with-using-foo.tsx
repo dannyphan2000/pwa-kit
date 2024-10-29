@@ -15,6 +15,9 @@ type WithUsingFooProps = React.ComponentPropsWithoutRef<any>
 const withUsingFoo = <P extends {}>(WrappedComponent: React.ComponentType<P>) => {
   const WithUsingFoo: React.FC<P> = (props: WithUsingFooProps) => {
     const context = useContext(FooContext)
+    // TODO: why is this context value not foo?
+    // Try reversing the order of extensions config in package.json,
+    // but strangely the dev server would be hanging after the initial load
     console.log('--- context should be `foo`:', context)
     return (
         <WrappedComponent {...(props as P)} />
