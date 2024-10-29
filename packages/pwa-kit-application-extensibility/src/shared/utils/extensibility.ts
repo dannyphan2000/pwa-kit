@@ -139,7 +139,8 @@ export const validateDependentExtensions = (
     const previousExtensions = getPreviousExtensions(currentExtension, configuredExtensions)
 
     return dependents.every((dependent) => {
-        const found = findConfiguredExtension(dependent, previousExtensions)
+        // const found = findConfiguredExtension(dependent, previousExtensions)
+        const found = previousExtensions.find((extension) => extension[0] === dependent)
         if (found) {
             const config = found[1]
             return config.enabled
@@ -150,12 +151,17 @@ export const validateDependentExtensions = (
 
 const getDependentExtensions = (configuredExtension: any) => {
     // TODO
-    if (configuredExtension[0] === '@salesforce/extension-sample-2')
-        return ['@salesforce/extension-sample']
-    return []
-}
-const findConfiguredExtension = (extensionName: string, extensions: Array<any>) => {
-    return extensions.find((extension) => extension[0] === extensionName)
+    const projectDir = process.cwd()
+    const pkg = fse.readJsonSync(
+        resolve(projectDir, 'node_modules', configuredExtension[0], 'package.json')
+    )
+
+    // TODO: should we be looking at peer or dev dependencies?
+    return Object.keys(pkg.devDependencies).filter((name) => name.match(nameRegex) !== null)
+
+    // if (configuredExtension[0] === '@salesforce/extension-sample-2')
+    //     return ['@salesforce/extension-sample']
+    // return []
 }
 const getPreviousExtensions = (currentExtension: any, configuredExtensions: Array<any>) => {
     const array = configuredExtensions.slice().reverse()
