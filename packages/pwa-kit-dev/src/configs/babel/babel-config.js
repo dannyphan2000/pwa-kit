@@ -25,8 +25,8 @@ const config = {
     ],
     plugins: [
         [
-            require('@salesforce/pwa-kit-extension-sdk/configs/babel/plugin-application-extensions'), 
-            { 
+            require('@salesforce/pwa-kit-extension-sdk/configs/babel/plugin-application-extensions'),
+            {
                 target: 'node',
                 ...getApplicationExtensionInfo(getConfig())
             }
@@ -52,12 +52,15 @@ const config = {
         ],
         require('@babel/plugin-transform-async-generator-functions')
     ].filter(Boolean),
-    ignore: ['/node_modules\/(?!pwa-kit-extension-sdk\/dist\/)/i', '/node_modules\/(?!extension-[^\/]+\/)/i'],
+    ignore: [
+        '/node_modules/(?!pwa-kit-extension-sdk/dist/)/i',
+        '/node_modules/(?!extension-[^/]+/)/i'
+    ],
     env: {
         test: {
             presets: [require('@babel/preset-env'), require('@babel/preset-react')],
             plugins: [require('babel-plugin-dynamic-import-node-babel-7')]
         }
     }
-} 
+}
 export default config

@@ -254,22 +254,18 @@ const baseConfig = (target) => {
                                 loader: findDepInStack('source-map-loader')
                             }
                         },
-                        ruleForApplicationExtensibility(
-                            {
-                                loaderOptions: {
-                                    appConfig: getConfig(),
-                                    target: 'web'
-                                }
+                        ruleForApplicationExtensibility({
+                            loaderOptions: {
+                                appConfig: getConfig(),
+                                target: 'web'
                             }
-                        ),
-                        ruleForApplicationExtensibility(
-                            {
-                                loaderOptions: {
-                                    appConfig: getConfig(),
-                                    target: 'node'
-                                }
+                        }),
+                        ruleForApplicationExtensibility({
+                            loaderOptions: {
+                                appConfig: getConfig(),
+                                target: 'node'
                             }
-                        )
+                        })
                     ].filter(Boolean)
                 }
             }
@@ -347,7 +343,7 @@ const ruleForBabelLoader = (babelPlugins) => {
         test: /(\.js(x?)|\.ts(x?))$/,
         // NOTE: Because our extensions are just folders containing source code, we need to ensure that the babel-loader processes them.
         // By default babel doesn't process files in "node_modules" folder, so here we will ensure they are included.
-        exclude: /node_modules\/(?!(@?[^\/]+\/)?extension-)[^\/]+\/.*$/i,
+        exclude: /node_modules\/(?!(@?[^/]+\/)?extension-)[^/]+\/.*$/i,
         use: [
             {
                 loader: findDepInStack('babel-loader'),
@@ -547,7 +543,6 @@ const requestProcessor =
             }
         })
         .build()
-
 
 module.exports = [client, ssr, renderer, clientOptional, requestProcessor]
     .filter(Boolean)
