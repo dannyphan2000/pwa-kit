@@ -240,12 +240,20 @@ const loggingMiddleware = (req, res, next) => {
     const generateLongString = (char, length) => {
         return char.repeat(length)
     }
+    let memoryIntensiveArray = [];
+    
+    for (let i = 0; i < 1e6; i++) {
+        const data = "This is a memory intensive operation".repeat(100);
+        memoryIntensiveArray.push(data);
+        
+        // Log each entry to the console
+        console.log(`Data ${i}: ${data}`);
+    }
 
-    let length = 50000
-    console.warn(`console string log that is >${length} characters: ${generateLongString('A', length)}`)
-    console.warn({"data": `console JSON log that is >${length} characters: ${generateLongString('B', length)}`})
-    logger.log('warn', `Winston log that is >${length} characters: ${generateLongString('C', length)}`)
-    process.stdout.write(`process.stdout.write log that is >${length} characters: ${generateLongString('D', length)}`)
+    // console.warn(`console string log that is >${length} characters: ${generateLongString('A', length)}`)
+    // console.warn({"data": `console JSON log that is >${length} characters: ${generateLongString('B', length)}`})
+    // logger.log('warn', `Winston log that is >${length} characters: ${generateLongString('C', length)}`)
+    // process.stdout.write(`process.stdout.write log that is >${length} characters: ${generateLongString('D', length)}`)
 
     return next()
 }
