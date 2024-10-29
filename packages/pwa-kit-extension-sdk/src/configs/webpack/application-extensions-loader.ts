@@ -42,6 +42,18 @@ export default function ApplicationExtensibilityLoader(
     return renderTemplate(data)
 }
 
+/**
+ * Generates a Webpack rule for application extensibility, configuring the loader for
+ * handling application extensions based on the target (e.g., 'node' for server-side,
+ * 'react' for client-side).
+ *
+ * @param {Object} [options={}] - Options to customize the Webpack rule.
+ * @param {Object} [options.loaderOptions={}] - Loader-specific options.
+ * @param {string} [options.loaderOptions.target=DEFAULT_TARGET] - The target environment, either 'node' or 'react'.
+ * @param {Object} [options.loaderOptions.appConfig] - Optional application configuration to pass to the loader.
+ *
+ * @returns {Object} A Webpack rule configuration object for handling application extensions.
+ */
 export const ruleForApplicationExtensibility = (options: any = {}) => {
     const {loaderOptions = {}} = options
     const {target = DEFAULT_TARGET, appConfig} = loaderOptions
