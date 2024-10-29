@@ -205,7 +205,8 @@ const baseConfig = (target) => {
                             ...DEPS_TO_DEDUPE.map((dep) => ({
                                 [dep]: findDepInStack(dep)
                             }))
-                        )
+                        ),
+                        '$': path.resolve(__dirname, 'src')
                     },
                     ...(target === 'web' ? {fallback: {crypto: false}} : {})
                 },

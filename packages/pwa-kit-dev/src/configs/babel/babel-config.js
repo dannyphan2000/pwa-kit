@@ -38,7 +38,17 @@ const config = {
                 ast: true
             }
         ],
-        require('@babel/plugin-transform-async-generator-functions')
+        require('@babel/plugin-transform-async-generator-functions'),
+        [
+            require('babel-plugin-module-resolver'),
+            {
+                root: ['./'],
+                alias: {
+                    $: './src'
+                },
+                extensions: ['.js', '.jsx', '.ts', '.tsx']
+            }
+        ]
     ],
     env: {
         test: {

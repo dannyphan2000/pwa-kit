@@ -1,0 +1,7 @@
+["module-resolver", {
+  "root": ["./"],
+  "alias": {
+    "$": "./src"
+  },
+  "extensions": [".js", ".jsx", ".ts", ".tsx"]
+}]
