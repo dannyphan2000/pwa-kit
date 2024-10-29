@@ -108,6 +108,7 @@ export const getExtensionNames = (extensions: ApplicationExtensionEntry[]) => {
     })
 }
 
+// TODO
 export const getApplicationExtensionInfo = (appConfig?: any) => {
     const projectDir = process.cwd()
     const pkg = fse.readJsonSync(resolve(projectDir, 'package.json'))
@@ -124,8 +125,38 @@ export const getApplicationExtensionInfo = (appConfig?: any) => {
     // NOTE: Might have to get the expanded version of these.
     const configuredExtensions = expand(appConfig?.app?.extensions || [])
 
+    console.log('--- getApplicationExtensionInfo', installedExtensions, configuredExtensions)
     return {
         installed: installedExtensions,
         configured: configuredExtensions
     }
+}
+
+export const validateDependentExtensions = (
+    currentExtension: any,
+    configuredExtensions: Array<any>
+) => {
+    const dependents = getDependentExtensions(currentExtension)
+    // TODO: a subset of all the configured extensions
+    const whereToLook = [configuredExtensions[0]]
+
+    return dependents.every((dependent) => {
+        const found = findConfiguredExtension(dependent, whereToLook)
+        console.log('--- found', found, dependent, whereToLook)
+        if (found) {
+            const config = found[1]
+            return config.enabled
+        }
+        return false
+    })
+}
+
+const getDependentExtensions = (configuredExtension: any) => {
+    // TODO
+    if (configuredExtension[0] === '@salesforce/extension-sample-2')
+        return ['@salesforce/extension-sample']
+    return []
+}
+const findConfiguredExtension = (extensionName: string, extensions: Array<any>) => {
+    return extensions.find((extension) => extension[0] === extensionName)
 }

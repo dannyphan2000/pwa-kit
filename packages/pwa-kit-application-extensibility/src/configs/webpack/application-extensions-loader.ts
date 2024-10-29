@@ -7,7 +7,7 @@
 
 // Local
 import {renderTemplate} from '../utils'
-import {getApplicationExtensionInfo} from '../../shared/utils'
+import {getApplicationExtensionInfo, validateDependentExtensions} from '../../shared/utils'
 
 // Types
 import {ApplicationExtensionsLoaderContext} from './types'
@@ -46,6 +46,12 @@ export const ruleForApplicationExtensibility = (options: any = {}) => {
     const {loaderOptions = {}} = options
     const {target = DEFAULT_TARGET, appConfig} = loaderOptions
 
+    const extensionInfo = getApplicationExtensionInfo(appConfig)
+    extensionInfo.configured = extensionInfo.configured.filter((extension) =>
+        validateDependentExtensions(extension, extensionInfo.configured)
+    )
+    console.log('--- after my filtering', extensionInfo)
+
     return {
         test: new RegExp(
             `${target === 'node' ? 'express' : 'react'}/placeholders/application-extensions.js`,
@@ -54,7 +60,7 @@ export const ruleForApplicationExtensibility = (options: any = {}) => {
         use: {
             loader: '@salesforce/pwa-kit-application-extensibility/configs/webpack/application-extensions-loader',
             options: {
-                ...getApplicationExtensionInfo(appConfig),
+                ...extensionInfo,
                 target
             }
         }
