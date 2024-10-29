@@ -196,31 +196,52 @@ const ContactInfo = () => {
                                         />
                                     )}
                                 </Button>
-                                {isSocialEnabled && idps && (
+                                {(isSocialEnabled || isPasswordlessEnabled) ? (
                                     <>
                                         <Divider />
                                         <Text align="center" fontSize="sm" marginTop={2} marginBottom={2}>
-                                            <FormattedMessage
-                                                defaultMessage="Or Login With"
-                                                id="login_form.message.or_login_with"
-                                            />
+                                                    <FormattedMessage
+                                                        defaultMessage="Or Login With"
+                                                        id="login_form.message.or_login_with"
+                                                    />
                                         </Text>
-                                        <SocialLogin idps={idps} />
+                                        {isPasswordlessEnabled && (
+                                            <><p>passwordless login here</p></>
+                                        )}
+                                        <Button variant="outline" onClick={togglePasswordField}>
+                                            {!showPasswordField ? (
+                                                <FormattedMessage
+                                                    defaultMessage="Password"
+                                                    id="contact_info.button.password"
+                                                />
+                                            ) : (
+                                                <FormattedMessage
+                                                    defaultMessage="Checkout as Guest"
+                                                    id="contact_info.button.checkout_as_guest"
+                                                />
+                                            )}
+                                        </Button>
+                                        {isSocialEnabled && idps && (
+                                            <>
+                                                <SocialLogin idps={idps} />
+                                            </>
+                                        )}
                                     </>
+                                ) : (
+                                    <Button variant="outline" onClick={togglePasswordField}>
+                                        {!showPasswordField ? (
+                                            <FormattedMessage
+                                                defaultMessage="Password"
+                                                id="contact_info.button.password"
+                                            />
+                                        ) : (
+                                            <FormattedMessage
+                                                defaultMessage="Checkout as Guest"
+                                                id="contact_info.button.checkout_as_guest"
+                                            />
+                                        )}
+                                    </Button>
                                 )}
-                                <Button variant="outline" onClick={togglePasswordField}>
-                                    {!showPasswordField ? (
-                                        <FormattedMessage
-                                            defaultMessage="Password"
-                                            id="contact_info.button.password"
-                                        />
-                                    ) : (
-                                        <FormattedMessage
-                                            defaultMessage="Checkout as Guest"
-                                            id="contact_info.button.checkout_as_guest"
-                                        />
-                                    )}
-                                </Button>
                             </Stack>
                         </Stack>
                     </form>
