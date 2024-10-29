@@ -7,7 +7,7 @@
 
 // Local
 import {renderTemplate} from '../utils'
-import {getApplicationExtensionInfo, validateDependentExtensions} from '../../shared/utils'
+import {getApplicationExtensionInfo, validateDependencies} from '../../shared/utils'
 
 // Types
 import {ApplicationExtensionsLoaderContext} from './types'
@@ -47,9 +47,15 @@ export const ruleForApplicationExtensibility = (options: any = {}) => {
     const {target = DEFAULT_TARGET, appConfig} = loaderOptions
 
     const extensionInfo = getApplicationExtensionInfo(appConfig)
-    extensionInfo.configured = extensionInfo.configured.filter((extension) =>
-        validateDependentExtensions(extension, extensionInfo.configured)
-    )
+    extensionInfo.configured = extensionInfo.configured.filter((extension) => {
+        const hasDependencies = validateDependencies(extension, extensionInfo.configured)
+        if (!hasDependencies)
+            // TODO: collect as a summary at the end instead?
+            console.warn(
+                `--- This extension ${extension[0]} will be disabled because it does NOT have its dependencies`
+            )
+        return hasDependencies
+    })
     console.log('--- after my filtering', extensionInfo)
 
     return {

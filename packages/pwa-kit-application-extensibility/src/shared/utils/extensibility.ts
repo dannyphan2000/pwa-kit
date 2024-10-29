@@ -131,16 +131,12 @@ export const getApplicationExtensionInfo = (appConfig?: any) => {
     }
 }
 
-export const validateDependentExtensions = (
-    currentExtension: any,
-    configuredExtensions: Array<any>
-) => {
-    const dependents = getDependentExtensions(currentExtension)
+export const validateDependencies = (currentExtension: any, configuredExtensions: Array<any>) => {
+    const dependencies = getDependencies(currentExtension)
     const previousExtensions = getPreviousExtensions(currentExtension, configuredExtensions)
 
-    return dependents.every((dependent) => {
-        // const found = findConfiguredExtension(dependent, previousExtensions)
-        const found = previousExtensions.find((extension) => extension[0] === dependent)
+    return dependencies.every((dependency) => {
+        const found = previousExtensions.find((extension) => extension[0] === dependency)
         if (found) {
             const config = found[1]
             return config.enabled
@@ -149,8 +145,8 @@ export const validateDependentExtensions = (
     })
 }
 
-const getDependentExtensions = (configuredExtension: any) => {
-    // TODO
+// TODO: naming - the other extensions that it depends on... how do you call them?
+const getDependencies = (configuredExtension: any) => {
     const projectDir = process.cwd()
     const pkg = fse.readJsonSync(
         resolve(projectDir, 'node_modules', configuredExtension[0], 'package.json')
