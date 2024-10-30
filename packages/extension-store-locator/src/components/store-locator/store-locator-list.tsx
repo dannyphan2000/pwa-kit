@@ -30,13 +30,15 @@ export const StoreLocatorList: React.FC<StoreLocatorListProps> = ({storesInfo}) 
         if (storesInfo === undefined) return 'Loading locations...'
         if (storesInfo.length === 0) return 'Sorry, there are no locations in this area'
         if (searchStoresParams.postalCode !== undefined)
-            return `Viewing stores within ${config.defaultDistance}${
-                config.defaultDistanceUnit
-            } of ${searchStoresParams.postalCode} in 
+            return `Viewing stores within ${String(config.defaultDistance)}${String(
+                String(config.defaultDistanceUnit)
+            )} of ${String(searchStoresParams.postalCode)} in 
                 ${
+                    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                     config.supportedCountries.length !== 0
                         ? config.supportedCountries.find(
-                              (o) => o.countryCode === searchStoresParams.countryCode
+                              (o: {countryCode: string}) =>
+                                  o.countryCode === searchStoresParams.countryCode
                           )?.countryName || config.defaultCountry
                         : config.defaultCountry
                 }`

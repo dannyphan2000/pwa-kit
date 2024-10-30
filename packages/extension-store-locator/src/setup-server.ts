@@ -15,7 +15,9 @@ import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/express'
 import {Config} from './types'
 
 class StoreLocatorExtension extends ApplicationExtension<Config> {
-    extendApp(app: Application): Application {}
+    extendApp(app: Application): Application {
+        return app
+    }
 }
 
 export default StoreLocatorExtension

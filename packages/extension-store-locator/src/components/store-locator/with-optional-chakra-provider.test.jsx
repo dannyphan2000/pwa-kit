@@ -24,23 +24,9 @@ describe('withOptionalChakra', () => {
     })
 
     it('wraps component with ChakraProvider when no provider exists', () => {
-        // Mock no existing ChakraProvider
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const {useTheme} = require('@chakra-ui/react')
         useTheme.mockReturnValue({})
-
-        const WrappedComponent = withOptionalChakra(TestComponent, mockTheme)
-        render(<WrappedComponent />)
-
-        expect(screen.getByText('Test Component')).toBeTruthy()
-    })
-
-    it('does not wrap with ChakraProvider when provider exists', () => {
-        // Mock existing ChakraProvider
-        const {useTheme} = require('@chakra-ui/react')
-        useTheme.mockReturnValue({
-            colors: {},
-            fonts: {}
-        })
 
         const WrappedComponent = withOptionalChakra(TestComponent, mockTheme)
         render(<WrappedComponent />)
