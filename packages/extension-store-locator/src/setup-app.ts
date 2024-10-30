@@ -19,7 +19,6 @@ import {Config} from './types'
 
 import StoreLocatorPage from './pages/store-locator'
 
-const defaultPath = '/sample-page'
 class StoreLocatorExtension extends ApplicationExtension<Config> {
     DEFAULT_PATH = '/store-locator'
     REQUIRED_CONFIG_FIELDS = [
