@@ -512,7 +512,7 @@ const PRESETS = [
         description: '',
         templateSource: {
             type: TEMPLATE_SOURCE_BUNDLE,
-            id: 'base-app-extension'
+            id: 'extension-base'
         },
         private: true
     },
