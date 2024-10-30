@@ -15,7 +15,6 @@
 import {proxyConfigs} from '@salesforce/pwa-kit-runtime/utils/ssr-shared'
 // @ts-ignore
 import {bundleBasePath} from '@salesforce/pwa-kit-runtime/utils/ssr-namespace-paths'
-import hoistNonReactStatics from 'hoist-non-react-statics'
 
 const onClient = typeof window !== 'undefined'
 
