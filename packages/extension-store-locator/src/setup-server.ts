@@ -5,14 +5,27 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import {
-    Application as ExpressApplication,
-    ApplicationExtension as ExpressApplicationExtension
-} from '@salesforce/pwa-kit-runtime/ssr/server/extensibility'
-import {ServerExtensionConfig as Config} from './types'
+// Third-Party Imports
+import {Application} from 'express'
 
-class StoreLocatorExtension extends ExpressApplicationExtension<Config> {
-    extendApp(app: ExpressApplication): ExpressApplication {
+// Platform Imports
+import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/express'
+
+// Local Imports
+import {Config} from './types'
+
+class StoreLocatorExtension extends ApplicationExtension<Config> {
+
+    extendApp(app: Application): Application {
+        // console.log('setup-server: SampleExtension: extendApp: ', app)
+        app.get('/sample', (req, res) => {
+            console.log('SampleExtension extendApp GET /sample')
+            res.send(
+                `<p>Hello from an express SampleExtension!</p>
+                <pre>extensionConfig = ${JSON.stringify(this.getConfig())}</pre>`
+            )
+        })
+
         return app
     }
 }
