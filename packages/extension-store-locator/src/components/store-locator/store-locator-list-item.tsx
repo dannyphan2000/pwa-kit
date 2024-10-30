@@ -13,9 +13,7 @@ import {
     AccordionPanel,
     Box
 } from '@chakra-ui/react'
-import {useSearchStores} from '@salesforce/commerce-sdk-react'
-
-type Store = NonNullable<ReturnType<typeof useSearchStores>['data']>['data'][0]
+import {Store} from '../../types/store'
 
 interface StoreLocatorListItemProps {
     store: Store

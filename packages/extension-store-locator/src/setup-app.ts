@@ -13,8 +13,8 @@ import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 
 // Local Imports
-import {withOptionalChakra} from '*/components/store-locator/with-optional-chakra-provider'
-import {withStoreLocator} from '*/components/store-locator/with-store-locator'
+import {withOptionalChakra} from './components/store-locator/with-optional-chakra-provider'
+import {withStoreLocator} from './components/store-locator/with-store-locator'
 import {Config} from './types'
 
 import StoreLocatorPage from './pages/store-locator'
@@ -55,7 +55,7 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
         return [
             {
                 exact: true,
-                path: this.getConfig().path || defaultPath,
+                path: this.getConfig().path || this.DEFAULT_PATH,
                 component: StoreLocatorPage
             },
             ...routes

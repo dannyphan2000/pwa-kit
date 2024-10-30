@@ -6,12 +6,14 @@
  */
 
 import React, {useState, createContext, ReactNode} from 'react'
-import {StoreLocatorConfig} from '../../types/config'
+import {Config as StoreLocatorConfig} from '../../types/config'
 
 interface SearchStoresParams {
     countryCode: string
     postalCode: string
     limit: number
+    latitude?: number
+    longitude?: number
 }
 
 interface StoreLocatorContextValue {

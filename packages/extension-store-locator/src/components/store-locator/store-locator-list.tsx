@@ -12,10 +12,8 @@ import {
     AccordionItem,
     Box
 } from '@chakra-ui/react'
-import {useSearchStores} from '@salesforce/commerce-sdk-react'
 import {StoreLocatorListItem} from './store-locator-list-item'
-
-type Stores = NonNullable<ReturnType<typeof useSearchStores>['data']>['data']
+import {Stores, Store} from '../../types/store'
 
 interface StoreLocatorListProps {
     storesInfo?: Stores
@@ -59,7 +57,7 @@ export const StoreLocatorList: React.FC<StoreLocatorListProps> = ({storesInfo}) 
                     {displayStoreLocatorStatusMessage()}
                 </Box>
             </AccordionItem>
-            {storesInfo?.map((store, index) => (
+            {storesInfo?.map((store: Store, index: number) => (
                 <StoreLocatorListItem key={index} store={store} />
             ))}
         </Accordion>
