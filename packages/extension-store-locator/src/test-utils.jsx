@@ -30,12 +30,12 @@ const CONFIG = {
 }
 
 const renderWithProviders = (ui, options = {}) => {
-    const Wrapper = ({children}) => (
-        <ChakraProvider theme={{}}>
-            <StoreLocatorProvider config={CONFIG}>{children}</StoreLocatorProvider>
-        </ChakraProvider>
-    )
-    return render(ui, {wrapper: Wrapper, ...options})
-}
+  const Wrapper = ({ children }) => (
+    <ChakraProvider theme={{}}>
+      <StoreLocatorProvider config={CONFIG}>{children}</StoreLocatorProvider>
+    </ChakraProvider>
+  );
+  return render(ui, { wrapper: Wrapper, ...options });
+};
 
-export {renderWithProviders}
+export { renderWithProviders };

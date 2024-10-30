@@ -7,4 +7,4 @@
 
 // This is used for jest to transform the code. Since the jest-config transform rule is "upward"
 // we need to use the babel-config from the pwa-kit-dev package.
-module.exports = require('@salesforce/pwa-kit-dev/configs/babel/babel-config')
+module.exports = require("@salesforce/pwa-kit-dev/configs/babel/babel-config");

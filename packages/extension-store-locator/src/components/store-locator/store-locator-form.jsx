@@ -19,92 +19,95 @@ import {
 } from '@chakra-ui/react'
 
 // import {AlertIcon} from '@salesforce/retail-react-app/app/components/icons'
-import {Controller} from 'react-hook-form'
-import {useStoreLocator} from '*/components/store-locator/use-store-locator'
+import { Controller } from "react-hook-form";
+import { useStoreLocator } from "*/components/store-locator/use-store-locator";
 
 const useGeolocation = () => {
-    const {
-        setSearchStoresParams,
-        setAutomaticGeolocationHasFailed,
-        setUserHasSetManualGeolocation,
-        userHasSetManualGeolocation,
-        config
-    } = useStoreLocator()
+  const {
+    setSearchStoresParams,
+    setAutomaticGeolocationHasFailed,
+    setUserHasSetManualGeolocation,
+    userHasSetManualGeolocation,
+    config,
+  } = useStoreLocator();
 
-    const getGeolocationError = () => {
-        setAutomaticGeolocationHasFailed(true)
+  const getGeolocationError = () => {
+    setAutomaticGeolocationHasFailed(true);
+  };
+
+  const getGeolocationSuccess = (position) => {
+    setAutomaticGeolocationHasFailed(false);
+    setSearchStoresParams({
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+      limit: config.defaultPageSize,
+    });
+  };
+
+  const getUserGeolocation = () => {
+    if (navigator?.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        getGeolocationSuccess,
+        getGeolocationError
+      );
+      setUserHasSetManualGeolocation(false);
+    } else {
+      console.log("Geolocation not supported");
     }
+  };
 
-    const getGeolocationSuccess = (position) => {
-        setAutomaticGeolocationHasFailed(false)
+  useEffect(() => {
+    if (!userHasSetManualGeolocation) getUserGeolocation();
+  }, []);
+
+  return getUserGeolocation;
+};
+
+export const StoreLocatorForm = ({ refetch }) => {
+  const {
+    searchStoresParams,
+    userHasSetManualGeolocation,
+    automaticGeolocationHasFailed,
+    setUserWantsToShareLocation,
+    userWantsToShareLocation,
+    config,
+  } = useStoreLocator();
+  const { countryCode, postalCode } = searchStoresParams;
+  const getUserGeolocation = useGeolocation();
+  const form = useForm({
+    mode: "onChange",
+    reValidateMode: "onChange",
+    defaultValues: {
+      countryCode: userHasSetManualGeolocation ? countryCode : "",
+      postalCode: userHasSetManualGeolocation ? postalCode : "",
+    },
+  });
+  const { control } = form;
+
+  const submitForm = async (formData) => {
+    const { postalCode, countryCode } = formData;
+    if (postalCode !== "") {
+      if (countryCode !== "") {
         setSearchStoresParams({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            limit: config.defaultPageSize
-        })
-    }
-
-    const getUserGeolocation = () => {
-        if (navigator?.geolocation) {
-            navigator.geolocation.getCurrentPosition(getGeolocationSuccess, getGeolocationError)
-            setUserHasSetManualGeolocation(false)
-        } else {
-            console.log('Geolocation not supported')
+          postalCode: postalCode,
+          countryCode: countryCode,
+          limit: config.defaultPageSize,
+        });
+        setUserHasSetManualGeolocation(true);
+      } else {
+        if (config.supportedCountries.length === 0) {
+          setSearchStoresParams({
+            postalCode: postalCode,
+            countryCode: config.defaultCountryCode,
+            limit: config.defaultPageSize,
+          });
+          setUserHasSetManualGeolocation(true);
         }
+      }
     }
-
-    useEffect(() => {
-        if (!userHasSetManualGeolocation) getUserGeolocation()
-    }, [])
-
-    return getUserGeolocation
-}
-
-export const StoreLocatorForm = ({refetch}) => {
-    const {
-        searchStoresParams,
-        userHasSetManualGeolocation,
-        automaticGeolocationHasFailed,
-        setUserWantsToShareLocation,
-        userWantsToShareLocation,
-        config
-    } = useStoreLocator()
-    const {countryCode, postalCode} = searchStoresParams
-    const getUserGeolocation = useGeolocation()
-    const form = useForm({
-        mode: 'onChange',
-        reValidateMode: 'onChange',
-        defaultValues: {
-            countryCode: userHasSetManualGeolocation ? countryCode : '',
-            postalCode: userHasSetManualGeolocation ? postalCode : ''
-        }
-    })
-    const {control} = form
-
-    const submitForm = async (formData) => {
-        const {postalCode, countryCode} = formData
-        if (postalCode !== '') {
-            if (countryCode !== '') {
-                setSearchStoresParams({
-                    postalCode: postalCode,
-                    countryCode: countryCode,
-                    limit: config.defaultPageSize
-                })
-                setUserHasSetManualGeolocation(true)
-            } else {
-                if (config.supportedCountries.length === 0) {
-                    setSearchStoresParams({
-                        postalCode: postalCode,
-                        countryCode: config.defaultCountryCode,
-                        limit: config.defaultPageSize
-                    })
-                    setUserHasSetManualGeolocation(true)
-                }
-            }
-        }
-        setNumStoresToShow(config.defaultPageSize)
-        refetch()
-    }
+    setNumStoresToShow(config.defaultPageSize);
+    refetch();
+  };
 
     return (
         <form id="store-locator-form" onSubmit={form.handleSubmit(submitForm)}>
@@ -225,5 +228,5 @@ export const StoreLocatorForm = ({refetch}) => {
 }
 
 StoreLocatorForm.propTypes = {
-    refetch: PropTypes.func
-}
+  refetch: PropTypes.func,
+};
