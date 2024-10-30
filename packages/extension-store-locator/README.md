@@ -77,20 +77,14 @@ The Store Locator extension is configured via the `mobify.app.extensions` proper
 The following files in the extension can be overridden in your project:
 
 ```
-/src/components/store-locator/store-locator-content.tsx
-/src/components/store-locator/store-locator-form.tsx
-/src/components/store-locator/store-locator-list.tsx
-/src/components/store-locator/store-locator-modal.tsx
-/src/components/store-locator/store-locator-provider.tsx
-/src/components/store-locator/use-store-locator.ts
-/src/components/store-locator/with-optional-chakra-provider.tsx
-/src/components/store-locator/with-store-locator.tsx
-/src/pages/store-locator/index.tsx
-/src/types/config.ts
-/src/types/index.ts
+/src/components/store-locator/store-locator-list-item.tsx
 ```
 
-To override any of these files, create a matching file structure in your project's `overrides` directory. For example, to override the store locator content component:
+### Store Locator List Item
+
+The Store Locator List Item component is a child component of the Store Locator List component. It receives a `store` prop and displays the store information. The store object is the same as the one returned by the SCAPI Shopper Stores API.
+
+To override this file, create a matching file structure in your project's `overrides` directory. For example:
 
 ```
 your-project/
@@ -98,5 +92,5 @@ your-project/
     overrides/
       components/
         store-locator/
-          store-locator-form.tsx
+          store-locator-list-item.tsx
 ```

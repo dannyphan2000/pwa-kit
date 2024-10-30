@@ -13,7 +13,7 @@ import {
     Box
 } from '@chakra-ui/react'
 import {useSearchStores} from '@salesforce/commerce-sdk-react'
-import {StoreLocatorListItem} from '*/components/store-locator/store-locator-list-item'
+import {StoreLocatorListItem} from './store-locator-list-item'
 
 type Stores = NonNullable<ReturnType<typeof useSearchStores>['data']>['data']
 
