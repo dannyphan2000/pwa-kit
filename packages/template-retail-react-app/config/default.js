@@ -16,10 +16,10 @@ module.exports = {
             interpretPlusSignAsSpace: false
         },
         defaultSite: 'RefArch',
-        siteAliases: {
-            RefArch: 'us',
-            RefArchGlobal: 'global'
-        },
+        // siteAliases: {
+        //     RefArch: 'us',
+        //     RefArchGlobal: 'global'
+        // },
         sites,
         commerceAPI: {
             proxyPath: `/mobify/proxy/api`,
