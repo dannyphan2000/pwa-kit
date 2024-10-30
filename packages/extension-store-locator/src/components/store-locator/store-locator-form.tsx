@@ -27,14 +27,6 @@ interface FormData {
     postalCode: string
 }
 
-// interface SearchStoresParams {
-//     latitude?: number;
-//     longitude?: number;
-//     limit: number;
-//     countryCode: string;
-//     postalCode: string;
-// }
-
 const useGeolocation = () => {
     const {
         searchStoresParams,
@@ -121,8 +113,6 @@ export const StoreLocatorForm: React.FC<StoreLocatorFormProps> = ({refetch}) => 
                 }
             }
         }
-        // TODO: fix this
-        // setNumStoresToShow(config.defaultPageSize)
         refetch()
     }
 
