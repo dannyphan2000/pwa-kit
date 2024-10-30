@@ -22,13 +22,13 @@ export const withStoreLocator = <P extends object>(
             <StoreLocatorProvider config={config}>
                 <WrappedComponent {...props} />
             </StoreLocatorProvider>
-        );
-    };
+        )
+    }
 
     // Preserve the display name for debugging
     WithConfig.displayName = `WithStoreLocator(${
         WrappedComponent.displayName || WrappedComponent.name || 'Component'
-    })`;
+    })`
 
-    return WithConfig;
-};
+    return WithConfig
+}

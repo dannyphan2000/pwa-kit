@@ -30,12 +30,13 @@ const CONFIG = {
 }
 
 const renderWithProviders = (ui, options = {}) => {
-  const Wrapper = ({ children }) => (
-    <ChakraProvider theme={{}}>
-      <StoreLocatorProvider config={CONFIG}>{children}</StoreLocatorProvider>
-    </ChakraProvider>
-  );
-  return render(ui, { wrapper: Wrapper, ...options });
-};
+    // eslint-disable-next-line react/prop-types
+    const Wrapper = ({children}) => (
+        <ChakraProvider theme={{}}>
+            <StoreLocatorProvider config={CONFIG}>{children}</StoreLocatorProvider>
+        </ChakraProvider>
+    )
+    return render(ui, {wrapper: Wrapper, ...options})
+}
 
-export { renderWithProviders };
+export {renderWithProviders}

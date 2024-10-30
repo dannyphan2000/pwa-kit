@@ -9,19 +9,19 @@ import {render, screen} from '@testing-library/react'
 import {withOptionalChakra} from './with-optional-chakra-provider'
 import PropTypes from 'prop-types'
 
-// Mock Chakra hooks
-jest.mock("@chakra-ui/react", () => ({
-  useTheme: jest.fn(),
-  ChakraProvider: ({ children }) => <div>{children}</div>,
-}));
+jest.mock('@chakra-ui/react', () => ({
+    useTheme: jest.fn(),
+    // eslint-disable-next-line react/prop-types
+    ChakraProvider: ({children}) => <div>{children}</div>
+}))
 
-describe("withOptionalChakra", () => {
-  const TestComponent = () => <div>Test Component</div>;
-  const mockTheme = {};
+describe('withOptionalChakra', () => {
+    const TestComponent = () => <div>Test Component</div>
+    const mockTheme = {}
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+    beforeEach(() => {
+        jest.clearAllMocks()
+    })
 
     it('wraps component with ChakraProvider when no provider exists', () => {
         // Mock no existing ChakraProvider

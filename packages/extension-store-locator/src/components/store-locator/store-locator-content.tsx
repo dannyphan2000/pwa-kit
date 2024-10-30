@@ -15,7 +15,7 @@ import {useStoreLocator} from '*/components/store-locator/use-store-locator'
 //This is an API limit and is therefore not configurable
 const NUM_STORES_PER_REQUEST_API_MAX = 200
 
-export const StoreLocatorContent: React.FC = () => {
+export const StoreLocatorContent = (): JSX.Element => {
     const {searchStoresParams, config} = useStoreLocator()
     const {countryCode, postalCode, latitude, longitude, limit} = searchStoresParams
 
@@ -58,9 +58,9 @@ export const StoreLocatorContent: React.FC = () => {
                         key="load-more-button"
                         onClick={() => {
                             setNumStoresToShow(
-                                numStoresToShow + config.defaultPageSize <=
+                                numStoresToShow + Number(config.defaultPageSize) <=
                                     NUM_STORES_PER_REQUEST_API_MAX
-                                    ? numStoresToShow + config.defaultPageSize
+                                    ? numStoresToShow + Number(config.defaultPageSize)
                                     : numStoresToShow
                             )
                         }}

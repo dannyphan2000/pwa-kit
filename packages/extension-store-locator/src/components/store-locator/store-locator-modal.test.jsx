@@ -15,46 +15,46 @@ jest.mock('@chakra-ui/react', () => {
     const originalModule = jest.requireActual('@chakra-ui/react')
     return {
         ...originalModule,
-        useBreakpointValue: (...args) => mockUseBreakpointValue
+        useBreakpointValue: () => mockUseBreakpointValue
     }
 })
 
-jest.mock("@salesforce/commerce-sdk-react", () => ({
-  useSearchStores: jest.fn(() => ({
-    data: {
-      data: [
-        {
-          name: "Test Store 1",
-          address1: "123 Test St",
-          city: "San Francisco",
-          stateCode: "CA",
-          postalCode: "94105",
-          phone: "555-1234",
-          distance: 0.5,
-          distanceUnit: "mi",
-          storeHours: "<p>Mon-Fri: 9AM-9PM</p>",
+jest.mock('@salesforce/commerce-sdk-react', () => ({
+    useSearchStores: jest.fn(() => ({
+        data: {
+            data: [
+                {
+                    name: 'Test Store 1',
+                    address1: '123 Test St',
+                    city: 'San Francisco',
+                    stateCode: 'CA',
+                    postalCode: '94105',
+                    phone: '555-1234',
+                    distance: 0.5,
+                    distanceUnit: 'mi',
+                    storeHours: '<p>Mon-Fri: 9AM-9PM</p>'
+                }
+            ],
+            total: 1,
+            limit: 10,
+            offset: 0
         },
-      ],
-      total: 1,
-      limit: 10,
-      offset: 0,
-    },
-    isLoading: false,
-    isFetching: false,
-    refetch: jest.fn(),
-  })),
-}));
+        isLoading: false,
+        isFetching: false,
+        refetch: jest.fn()
+    }))
+}))
 
-describe("StoreLocatorModal", () => {
-  const mockProps = {
-    isOpen: true,
-    onClose: jest.fn(),
-  };
+describe('StoreLocatorModal', () => {
+    const mockProps = {
+        isOpen: true,
+        onClose: jest.fn()
+    }
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-    mockUseBreakpointValue.mockReturnValue(true); // Default to desktop view
-  });
+    beforeEach(() => {
+        jest.clearAllMocks()
+        mockUseBreakpointValue.mockReturnValue(true) // Default to desktop view
+    })
 
     it('renders desktop view correctly', () => {
         mockUseBreakpointValue.mockReturnValue(true) // Desktop view

@@ -11,27 +11,27 @@ import {useStoreLocator} from './use-store-locator'
 import PropTypes from 'prop-types'
 
 // Mock the hook
-jest.mock("./use-store-locator", () => ({
-  useStoreLocator: jest.fn(),
-}));
+jest.mock('./use-store-locator', () => ({
+    useStoreLocator: jest.fn()
+}))
 
-describe("withStoreLocator", () => {
-  const mockConfig = {
-    defaultCountryCode: "US",
-    defaultPostalCode: "94105",
-    defaultPageSize: 10,
-    defaultDistance: 100,
-    defaultDistanceUnit: "mi",
-    supportedCountries: [],
-  };
+describe('withStoreLocator', () => {
+    const mockConfig = {
+        defaultCountryCode: 'US',
+        defaultPostalCode: '94105',
+        defaultPageSize: 10,
+        defaultDistance: 100,
+        defaultDistanceUnit: 'mi',
+        supportedCountries: []
+    }
 
-  beforeEach(() => {
-    useStoreLocator.mockReturnValue({
-      searchStoresParams: {},
-      setSearchStoresParams: jest.fn(),
-      config: mockConfig,
-    });
-  });
+    beforeEach(() => {
+        useStoreLocator.mockReturnValue({
+            searchStoresParams: {},
+            setSearchStoresParams: jest.fn(),
+            config: mockConfig
+        })
+    })
 
     it('wraps component with StoreLocatorProvider', () => {
         const TestComponent = () => <div>Test Component</div>

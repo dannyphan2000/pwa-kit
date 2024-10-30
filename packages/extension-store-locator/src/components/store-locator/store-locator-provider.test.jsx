@@ -10,60 +10,60 @@ import {StoreLocatorProvider} from './store-locator-provider'
 import {useStoreLocator} from './use-store-locator'
 
 const mockConfig = {
-  defaultCountryCode: "US",
-  defaultPostalCode: "94105",
-  defaultPageSize: 10,
-  defaultDistance: 100,
-  defaultDistanceUnit: "mi",
-  supportedCountries: [],
-};
+    defaultCountryCode: 'US',
+    defaultPostalCode: '94105',
+    defaultPageSize: 10,
+    defaultDistance: 100,
+    defaultDistanceUnit: 'mi',
+    supportedCountries: []
+}
 
-describe("StoreLocatorProvider", () => {
-  const wrapper = ({ children }) => (
-    <StoreLocatorProvider config={mockConfig}>{children}</StoreLocatorProvider>
-  );
+describe('StoreLocatorProvider', () => {
+    const wrapper = ({children}) => (
+        <StoreLocatorProvider config={mockConfig}>{children}</StoreLocatorProvider>
+    )
 
-  it("provides initial context values", () => {
-    const { result } = renderHook(() => useStoreLocator(), { wrapper });
+    it('provides initial context values', () => {
+        const {result} = renderHook(() => useStoreLocator(), {wrapper})
 
-    expect(result.current.searchStoresParams).toEqual({
-      countryCode: "US",
-      postalCode: "94105",
-      limit: 10,
-    });
-    expect(result.current.userHasSetManualGeolocation).toBe(false);
-    expect(result.current.config).toEqual(mockConfig);
-  });
+        expect(result.current.searchStoresParams).toEqual({
+            countryCode: 'US',
+            postalCode: '94105',
+            limit: 10
+        })
+        expect(result.current.userHasSetManualGeolocation).toBe(false)
+        expect(result.current.config).toEqual(mockConfig)
+    })
 
-  it("updates search parameters", () => {
-    const { result } = renderHook(() => useStoreLocator(), { wrapper });
+    it('updates search parameters', () => {
+        const {result} = renderHook(() => useStoreLocator(), {wrapper})
 
-    act(() => {
-      result.current.setSearchStoresParams({
-        countryCode: "DE",
-        postalCode: "10178",
-        limit: 20,
-      });
-    });
+        act(() => {
+            result.current.setSearchStoresParams({
+                countryCode: 'DE',
+                postalCode: '10178',
+                limit: 20
+            })
+        })
 
-    expect(result.current.searchStoresParams).toEqual({
-      countryCode: "DE",
-      postalCode: "10178",
-      limit: 20,
-    });
-  });
+        expect(result.current.searchStoresParams).toEqual({
+            countryCode: 'DE',
+            postalCode: '10178',
+            limit: 20
+        })
+    })
 
-  it("updates geolocation states", () => {
-    const { result } = renderHook(() => useStoreLocator(), { wrapper });
+    it('updates geolocation states', () => {
+        const {result} = renderHook(() => useStoreLocator(), {wrapper})
 
-    act(() => {
-      result.current.setUserHasSetManualGeolocation(true);
-      result.current.setAutomaticGeolocationHasFailed(true);
-      result.current.setUserWantsToShareLocation(true);
-    });
+        act(() => {
+            result.current.setUserHasSetManualGeolocation(true)
+            result.current.setAutomaticGeolocationHasFailed(true)
+            result.current.setUserWantsToShareLocation(true)
+        })
 
-    expect(result.current.userHasSetManualGeolocation).toBe(true);
-    expect(result.current.automaticGeolocationHasFailed).toBe(true);
-    expect(result.current.userWantsToShareLocation).toBe(true);
-  });
-});
+        expect(result.current.userHasSetManualGeolocation).toBe(true)
+        expect(result.current.automaticGeolocationHasFailed).toBe(true)
+        expect(result.current.userWantsToShareLocation).toBe(true)
+    })
+})
