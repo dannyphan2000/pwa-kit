@@ -6,34 +6,34 @@
  */
 
 // Third-Party
-import React from "react";
-import { RouteProps } from "react-router-dom";
+import React from 'react'
+import {RouteProps} from 'react-router-dom'
 
 // Platform Imports
-import { ApplicationExtension } from "@salesforce/pwa-kit-extension-sdk/react";
+import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 
 // Local Imports
-import withRedBorder from "*/components/with-red-border";
-import { Config } from "./types";
+import withRedBorder from '*/components/with-red-border'
+import {Config} from './types'
 
-import SamplePage from "./pages/sample";
+import SamplePage from './pages/sample'
 
-const defaultPath = "/sample-page";
+const defaultPath = '/sample-page'
 class Sample extends ApplicationExtension<Config> {
-  extendApp<T>(App: React.ComponentType<T>): React.ComponentType<T> {
-    return withRedBorder(App);
-  }
+    extendApp<T>(App: React.ComponentType<T>): React.ComponentType<T> {
+        return withRedBorder(App)
+    }
 
-  extendRoutes(routes: RouteProps[]): RouteProps[] {
-    return [
-      {
-        exact: true,
-        path: this.getConfig().path || defaultPath,
-        component: SamplePage,
-      },
-      ...routes,
-    ];
-  }
+    extendRoutes(routes: RouteProps[]): RouteProps[] {
+        return [
+            {
+                exact: true,
+                path: this.getConfig().path || defaultPath,
+                component: SamplePage
+            },
+            ...routes
+        ]
+    }
 }
 
-export default Sample;
+export default Sample

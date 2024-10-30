@@ -6,29 +6,27 @@
  */
 
 // Third-Party Imports
-import { Application } from "express";
+import {Application} from 'express'
 
 // Platform Imports
-import { ApplicationExtension } from "@salesforce/pwa-kit-extension-sdk/express";
+import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/express'
 
 // Local Imports
-import { Config } from "./types";
+import {Config} from './types'
 
 class SampleExtension extends ApplicationExtension<Config> {
-  extendApp(app: Application): Application {
-    // console.log('setup-server: SampleExtension: extendApp: ', app)
-    app.get("/sample", (req, res) => {
-      console.log("SampleExtension extendApp GET /sample");
-      res.send(
-        `<p>Hello from an express SampleExtension!</p>
-                <pre>extensionConfig = ${JSON.stringify(
-                  this.getConfig()
-                )}</pre>`
-      );
-    });
+    extendApp(app: Application): Application {
+        // console.log('setup-server: SampleExtension: extendApp: ', app)
+        app.get('/sample', (req, res) => {
+            console.log('SampleExtension extendApp GET /sample')
+            res.send(
+                `<p>Hello from an express SampleExtension!</p>
+                <pre>extensionConfig = ${JSON.stringify(this.getConfig())}</pre>`
+            )
+        })
 
-    return app;
-  }
+        return app
+    }
 }
 
-export default SampleExtension;
+export default SampleExtension

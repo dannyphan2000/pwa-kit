@@ -18,7 +18,7 @@ import {Config} from './types'
 
 import SamplePage from './pages/sample'
 
-const defaultPath: string = '/sample-page'
+const defaultPath = '/sample-page'
 class Sample extends ApplicationExtension<Config> {
     extendApp<T>(App: React.ComponentType<T>): React.ComponentType<T> {
         return withRedBorder(App)
