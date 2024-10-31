@@ -6,13 +6,7 @@
  */
 
 import React from 'react'
-import {
-    AccordionItem,
-    AccordionButton,
-    AccordionIcon,
-    AccordionPanel,
-    Box
-} from '@chakra-ui/react'
+import {AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Box} from '@chakra-ui/react'
 import {Store} from '../../types/store'
 
 interface StoreLocatorListItemProps {
@@ -66,4 +60,4 @@ export const StoreLocatorListItem: React.FC<StoreLocatorListItemProps> = ({store
             </Box>
         </AccordionItem>
     )
-} 
+}

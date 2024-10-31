@@ -54,7 +54,13 @@ export const StoreLocatorForm: React.FC = () => {
     }
 
     return (
-        <form id="store-locator-form" onSubmit={form.handleSubmit(submitForm)}>
+        <form
+            id="store-locator-form"
+            onSubmit={(e) => {
+                e.preventDefault()
+                void form.handleSubmit(submitForm)(e)
+            }}
+        >
             <InputGroup>
                 {showCountrySelector && (
                     <Controller

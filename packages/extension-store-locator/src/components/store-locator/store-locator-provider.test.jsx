@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2024, Salesforce, Inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ */
 import React from 'react'
 import {render, act} from '@testing-library/react'
 import {StoreLocatorProvider, StoreLocatorContext} from './store-locator-provider'
@@ -78,4 +84,4 @@ describe('StoreLocatorProvider', () => {
 
         expect(getByText('Test Child')).toBeTruthy()
     })
-}) 
+})

@@ -12,8 +12,8 @@ import {StoreLocatorHeading} from './store-locator-heading'
 describe('StoreLocatorHeading', () => {
     test('renders heading with correct text', () => {
         render(<StoreLocatorHeading />)
-        
+
         const heading = screen.getByText('Find a Store')
         expect(heading).toBeTruthy()
     })
-}) 
+})

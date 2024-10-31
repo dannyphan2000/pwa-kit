@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2024, Salesforce, Inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ */
 import {renderHook, act} from '@testing-library/react'
 import {useGeolocation} from './use-geo-location'
 
@@ -9,12 +15,12 @@ describe('useGeolocation', () => {
     beforeEach(() => {
         // Mock GeolocationPositionError if it's not defined
         if (!global.GeolocationPositionError) {
-            global.GeolocationPositionError = function() {
-                this.code = 1;
-                this.message = '';
-                this.PERMISSION_DENIED = 1;
-                this.POSITION_UNAVAILABLE = 2;
-                this.TIMEOUT = 3;
+            global.GeolocationPositionError = function () {
+                this.code = 1
+                this.message = ''
+                this.PERMISSION_DENIED = 1
+                this.POSITION_UNAVAILABLE = 2
+                this.TIMEOUT = 3
             }
         }
 
@@ -76,15 +82,13 @@ describe('useGeolocation', () => {
     })
 
     it('handles geolocation errors', async () => {
-        const mockError = new global.GeolocationPositionError();
-        mockError.code = 1;
-        mockError.message = 'User denied geolocation';
+        const mockError = new global.GeolocationPositionError()
+        mockError.code = 1
+        mockError.message = 'User denied geolocation'
 
-        mockGeolocation.getCurrentPosition.mockImplementation(
-            (_success, error) => {
-                error(mockError)
-            }
-        )
+        mockGeolocation.getCurrentPosition.mockImplementation((_success, error) => {
+            error(mockError)
+        })
 
         const {result} = renderHook(() => useGeolocation())
 
@@ -155,4 +159,4 @@ describe('useGeolocation', () => {
             longitude: null
         })
     })
-}) 
+})

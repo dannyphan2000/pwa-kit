@@ -47,7 +47,7 @@ describe('StoreLocatorListItem', () => {
         }
 
         renderWithAccordion(<StoreLocatorListItem store={storeWithMissingFields} />)
-        
+
         expect(screen.getByText('Basic Store')).toBeTruthy()
         expect(screen.getByText('789 Basic St')).toBeTruthy()
         expect(screen.getByText(/Simple City/)).toBeTruthy()
@@ -55,4 +55,4 @@ describe('StoreLocatorListItem', () => {
         expect(screen.queryByText(/Phone:/)).toBeNull()
         expect(screen.queryByText('View More')).toBeNull()
     })
-}) 
+})

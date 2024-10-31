@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2024, Salesforce, Inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ */
 import {renderHook, act} from '@testing-library/react'
 import {useStoreLocator} from './use-store-locator'
 import {StoreLocatorProvider} from './store-locator-provider'
@@ -15,12 +21,8 @@ const wrapper = ({children}) => {
         defaultDistance: 100,
         defaultDistanceUnit: 'mi'
     }
-    
-    return (
-        <StoreLocatorProvider config={config}>
-            {children}
-        </StoreLocatorProvider>
-    )
+
+    return <StoreLocatorProvider config={config}>{children}</StoreLocatorProvider>
 }
 
 describe('useStoreLocator', () => {
@@ -34,21 +36,19 @@ describe('useStoreLocator', () => {
     })
 
     it('throws error when used outside provider', () => {
-        const consoleError = console.error
-        console.error = jest.fn()
-        
+        let error
         try {
             renderHook(() => useStoreLocator())
-        } catch (error) {
-            expect(error).toEqual(Error('useStoreLocator must be used within a StoreLocatorProvider'))
+        } catch (err) {
+            error = err
         }
-        
-        console.error = consoleError
+
+        expect(error).toEqual(Error('useStoreLocator must be used within a StoreLocatorProvider'))
     })
 
     it('initializes with default values', () => {
         const {result} = renderHook(() => useStoreLocator(), {wrapper})
-        
+
         expect(result.current).toMatchObject({
             mode: 'input',
             formValues: {countryCode: '', postalCode: ''},
@@ -156,21 +156,23 @@ describe('useStoreLocator', () => {
         })
 
         const {result} = renderHook(() => useStoreLocator(), {wrapper})
-        
+
         expect(result.current.isLoading).toBe(true)
     })
 
     it('handles store data', () => {
-        const mockStoreData = [{
-            id: '1',
-            name: 'Test Store',
-            address: {
-                address1: '123 Test St',
-                city: 'Test City',
-                stateCode: 'CA',
-                postalCode: '94105'
+        const mockStoreData = [
+            {
+                id: '1',
+                name: 'Test Store',
+                address: {
+                    address1: '123 Test St',
+                    city: 'Test City',
+                    stateCode: 'CA',
+                    postalCode: '94105'
+                }
             }
-        }]
+        ]
 
         useSearchStores.mockReturnValue({
             data: mockStoreData,
@@ -178,7 +180,7 @@ describe('useStoreLocator', () => {
         })
 
         const {result} = renderHook(() => useStoreLocator(), {wrapper})
-        
+
         expect(result.current.data).toEqual(mockStoreData)
     })
-}) 
+})

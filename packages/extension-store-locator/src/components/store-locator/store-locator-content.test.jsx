@@ -26,8 +26,8 @@ describe('StoreLocatorContent', () => {
         render(<StoreLocatorContent />)
 
         // Verify that all child components are rendered
-        expect(screen.queryByTestId('store-locator-heading')).not.toBe(null)
-        expect(screen.queryByTestId('store-locator-form')).not.toBe(null)
-        expect(screen.queryByTestId('store-locator-list')).not.toBe(null)
+        expect(screen.queryByTestId('store-locator-heading')).not.toBeNull()
+        expect(screen.queryByTestId('store-locator-form')).not.toBeNull()
+        expect(screen.queryByTestId('store-locator-list')).not.toBeNull()
     })
 })

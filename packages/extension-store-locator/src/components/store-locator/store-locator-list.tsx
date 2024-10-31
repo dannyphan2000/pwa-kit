@@ -5,13 +5,8 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, { useEffect, useState } from 'react'
-import {
-    Accordion,
-    AccordionItem,
-    Box,
-    Button
-} from '@chakra-ui/react'
+import React, {useEffect, useState} from 'react'
+import {Accordion, AccordionItem, Box, Button} from '@chakra-ui/react'
 import {StoreLocatorListItem} from './store-locator-list-item'
 import {useStoreLocator} from './use-store-locator'
 import {Stores, Store} from '../../types/store'
@@ -38,8 +33,7 @@ export const StoreLocatorList: React.FC<StoreLocatorListProps> = () => {
                 ${
                     config.supportedCountries.length !== 0
                         ? config.supportedCountries.find(
-                              (o: {countryCode: string}) =>
-                                  o.countryCode === formValues.countryCode
+                              (o: {countryCode: string}) => o.countryCode === formValues.countryCode
                           )?.countryName || config.defaultCountry
                         : config.defaultCountry
                 }`
@@ -54,25 +48,25 @@ export const StoreLocatorList: React.FC<StoreLocatorListProps> = () => {
 
     return (
         <>
-        <Accordion allowMultiple flex={[1, 1, 1, 5]}>
-            <AccordionItem>
-                <Box
-                    flex="1"
-                    fontWeight="semibold"
-                    fontSize="md"
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        margin: '20px'
-                    }}
-                >
-                    {displayStoreLocatorStatusMessage()}
-                </Box>
-            </AccordionItem>
-            {storesToShow?.map((store: Store, index: number) => (
-                <StoreLocatorListItem key={index} store={store} />
-            ))}
+            <Accordion allowMultiple flex={[1, 1, 1, 5]}>
+                <AccordionItem>
+                    <Box
+                        flex="1"
+                        fontWeight="semibold"
+                        fontSize="md"
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            margin: '20px'
+                        }}
+                    >
+                        {displayStoreLocatorStatusMessage()}
+                    </Box>
+                </AccordionItem>
+                {storesToShow?.map((store: Store, index: number) => (
+                    <StoreLocatorListItem key={index} store={store} />
+                ))}
             </Accordion>
             {showLoadMoreButton && (
                 <Box paddingTop={3} marginTop={3}>

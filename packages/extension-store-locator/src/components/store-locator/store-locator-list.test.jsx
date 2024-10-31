@@ -48,9 +48,7 @@ const defaultConfig = {
     defaultDistanceUnit: 'mi',
     defaultPageSize: 2,
     defaultCountry: 'United States',
-    supportedCountries: [
-        {countryCode: 'US', countryName: 'United States'}
-    ]
+    supportedCountries: [{countryCode: 'US', countryName: 'United States'}]
 }
 
 describe('StoreLocatorList', () => {
@@ -94,7 +92,7 @@ describe('StoreLocatorList', () => {
         })
 
         render(<StoreLocatorList />)
-        
+
         // Initially shows only first 2 stores (defaultPageSize)
         expect(screen.getByText('Store 1')).toBeTruthy()
         expect(screen.getByText('Store 2')).toBeTruthy()
@@ -123,7 +121,9 @@ describe('StoreLocatorList', () => {
         })
 
         render(<StoreLocatorList />)
-        expect(screen.getByText(/Viewing stores within 10mi of 02108 in United States/)).toBeTruthy()
+        expect(
+            screen.getByText(/Viewing stores within 10mi of 02108 in United States/)
+        ).toBeTruthy()
     })
 
     test('renders correct status message for geolocation mode', () => {

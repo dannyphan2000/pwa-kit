@@ -15,10 +15,11 @@ interface StoreLocatorActions {
     setDeviceCoordinates: (coordinates: DeviceCoordinates) => void
 }
 
-type UseStoreLocatorReturn = StoreLocatorState & StoreLocatorActions & {
-    data: NonNullable<ReturnType<typeof useSearchStores>['data']> | undefined
-    isLoading: boolean
-}
+type UseStoreLocatorReturn = StoreLocatorState &
+    StoreLocatorActions & {
+        data: NonNullable<ReturnType<typeof useSearchStores>['data']> | undefined
+        isLoading: boolean
+    }
 
 const useStores = (state: StoreLocatorState) => {
     //This is an API limit and is therefore not configurable
@@ -67,7 +68,7 @@ export const useStoreLocator = (): UseStoreLocatorReturn => {
     const {state, setState} = context
     const {data, isLoading} = useStores(state)
 
-    // There are two modes, input and device. 
+    // There are two modes, input and device.
     // The input mode is when the user is searching for a store
     // by entering a postal code and country code.
     // The device mode is when the user is searching for a store by sharing their location.

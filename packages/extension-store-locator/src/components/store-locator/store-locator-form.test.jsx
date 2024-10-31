@@ -53,30 +53,30 @@ describe('StoreLocatorForm', () => {
     it('renders postal code input field', () => {
         render(<StoreLocatorForm />)
         const postalCodeInput = screen.queryByPlaceholderText('Enter postal code')
-        expect(postalCodeInput).not.toBe(null)
+        expect(postalCodeInput).not.toBeNull()
     })
 
     it('renders country selector when supportedCountries exist', () => {
         render(<StoreLocatorForm />)
         const countrySelect = screen.queryByText('Select a country')
-        expect(countrySelect).not.toBe(null)
+        expect(countrySelect).not.toBeNull()
     })
 
     it('renders "Use My Location" button', () => {
         render(<StoreLocatorForm />)
         const locationButton = screen.queryByText('Use My Location')
-        expect(locationButton).not.toBe(null)
+        expect(locationButton).not.toBeNull()
     })
 
     it('submits form with entered values', async () => {
         render(<StoreLocatorForm />)
-        
+
         const countrySelect = screen.getByRole('combobox')
         const postalCodeInput = screen.getByPlaceholderText('Enter postal code')
-        
+
         await user.selectOptions(countrySelect, 'US')
         await user.type(postalCodeInput, '12345')
-        
+
         const findButton = screen.getByText('Find')
         await user.click(findButton)
 
@@ -88,12 +88,12 @@ describe('StoreLocatorForm', () => {
 
     it('shows validation error for empty postal code', async () => {
         render(<StoreLocatorForm />)
-        
+
         const findButton = screen.getByText('Find')
         await user.click(findButton)
 
         const errorMessage = screen.queryByText('Please enter a postal code.')
-        expect(errorMessage).not.toBe(null)
+        expect(errorMessage).not.toBeNull()
     })
 
     it('clears form when "Use My Location" is clicked', async () => {
@@ -105,16 +105,15 @@ describe('StoreLocatorForm', () => {
         }))
 
         render(<StoreLocatorForm />)
-        
+
         const countrySelect = screen.getByRole('combobox')
         const postalCodeInput = screen.getByPlaceholderText('Enter postal code')
-        
+
         await user.selectOptions(countrySelect, 'US')
         await user.type(postalCodeInput, '12345')
 
         const locationButton = screen.getByText('Use My Location')
         await user.click(locationButton)
-
 
         expect(mockSetFormValues).toHaveBeenCalledWith({
             countryCode: '',
@@ -146,6 +145,6 @@ describe('StoreLocatorForm', () => {
         render(<StoreLocatorForm />)
 
         const errorMessage = screen.queryByText('Please agree to share your location')
-        expect(errorMessage).not.toBe(null)
+        expect(errorMessage).not.toBeNull()
     })
 })
