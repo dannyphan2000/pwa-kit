@@ -28,7 +28,6 @@
   },
   "types": "dist/index.d.ts",
   "scripts": {
-    "build-old": "tsc",
     "build": "cross-env NODE_ENV=production internal-lib-build build && tsc",
     "prepare": "npm run build",
     "lint": "npm run lint:js",
