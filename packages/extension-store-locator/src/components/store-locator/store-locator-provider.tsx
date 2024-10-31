@@ -42,8 +42,8 @@ export const StoreLocatorProvider: React.FC<StoreLocatorProviderProps> = ({confi
     const [state, setState] = useState<StoreLocatorState>({
         mode: 'input',
         formValues: {
-            countryCode: '',
-            postalCode: ''
+            countryCode: config.defaultCountryCode,
+            postalCode: config.defaultPostalCode
         },
         deviceCoordinates: {
             latitude: null,
