@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+// Third-Party
 import React from 'react'
 import {RouteProps} from 'react-router-dom'
 
@@ -13,10 +14,10 @@ import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 
 // Local Imports
 import {Config} from './types'
-import withRedBorder from '*/components/with-red-border'
+import withRedBorder from '$/components/with-red-border'
 import SamplePage from './pages/sample'
 
-const defaultPath: string = '/sample-page'
+const defaultPath = '/sample-page'
 class Sample extends ApplicationExtension<Config> {
     extendApp<T>(App: React.ComponentType<T>): React.ComponentType<T> {
         return withRedBorder(App)
