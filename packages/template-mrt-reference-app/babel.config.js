@@ -7,9 +7,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const base = require('@salesforce/pwa-kit-dev/configs/babel/babel-config').default
 
-module.exports = (api) => {
-    return {
-        ...base(api),
-        exclude: ['./app/ssr.js', './app/ssr.test.js']
-    }
+module.exports = {
+    ...base,
+    exclude: ['./app/ssr.js', './app/ssr.test.js']
 }
