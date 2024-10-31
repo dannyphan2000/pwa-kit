@@ -7,49 +7,19 @@
 
 import React, {useState} from 'react'
 import {Box, Button, Heading} from '@chakra-ui/react'
-import {useSearchStores} from '@salesforce/commerce-sdk-react'
+
 import {StoreLocatorList} from './store-locator-list'
 import {StoreLocatorForm} from './store-locator-form'
 import {useStoreLocator} from './use-store-locator'
 
-//This is an API limit and is therefore not configurable
-const NUM_STORES_PER_REQUEST_API_MAX = 200
-
 export const StoreLocatorContent = (): JSX.Element => {
-    // const {searchStoresParams, config} = useStoreLocator()
-    // const {countryCode, postalCode, latitude, longitude, limit} = searchStoresParams
-
-    // const [numStoresToShow, setNumStoresToShow] = useState<number>(limit)
-
-    // const {
-    //     data: searchStoresData,
-    //     isLoading,
-    //     refetch,
-    //     isFetching
-    // } = useSearchStores({
-    //     parameters: {
-    //         countryCode,
-    //         postalCode,
-    //         latitude,
-    //         longitude,
-    //         locale: 'en-GB',
-    //         maxDistance: config.defaultDistance,
-    //         limit: NUM_STORES_PER_REQUEST_API_MAX,
-    //         distanceUnit: config.defaultDistanceUnit
-    //     }
-    // })
-
-    // const storesInfo =
-    //     isLoading || isFetching ? undefined : searchStoresData?.data?.slice(0, numStoresToShow)
-    // const numStores = searchStoresData?.total || 0
-
     return (
         <>
             <Heading fontSize="2xl" style={{marginBottom: '25px'}}>
                 Find a Store
             </Heading>
             <StoreLocatorForm />
-            {/* <StoreLocatorList storesInfo={storesInfo} /> */}
+            <StoreLocatorList />
             {/* {!isFetching &&
             numStoresToShow < numStores &&
             numStoresToShow < NUM_STORES_PER_REQUEST_API_MAX ? (

@@ -6,37 +6,40 @@
  */
 
 import React from 'react'
-import {useStoreLocator} from './use-store-locator'
 import {
     Accordion,
     AccordionItem,
     Box
 } from '@chakra-ui/react'
 import {StoreLocatorListItem} from './store-locator-list-item'
+import {useStoreLocator} from './v2-use-store-locator'
 import {Stores, Store} from '../../types/store'
 
 interface StoreLocatorListProps {
     storesInfo?: Stores
 }
 
-export const StoreLocatorList: React.FC<StoreLocatorListProps> = ({storesInfo}) => {
-    const {searchStoresParams, config} = useStoreLocator()
+export const StoreLocatorList: React.FC<StoreLocatorListProps> = () => {
+    const {data, isLoading, config, formValues, mode} = useStoreLocator()
 
     const displayStoreLocatorStatusMessage = (): string => {
-        if (storesInfo === undefined) return 'Loading locations...'
-        if (storesInfo.length === 0) return 'Sorry, there are no locations in this area'
-        if (searchStoresParams.postalCode !== undefined)
+        if (isLoading) return 'Loading locations...'
+        if (data?.total === 0) return 'Sorry, there are no locations in this area'
+
+        if (mode === 'input') {
             return `Viewing stores within ${String(config.defaultDistance)}${String(
                 String(config.defaultDistanceUnit)
-            )} of ${String(searchStoresParams.postalCode)} in 
+            )} of ${String(data?.data[0].postalCode)} in 
                 ${
                     config.supportedCountries.length !== 0
                         ? config.supportedCountries.find(
                               (o: {countryCode: string}) =>
-                                  o.countryCode === searchStoresParams.countryCode
+                                  o.countryCode === formValues.countryCode
                           )?.countryName || config.defaultCountry
                         : config.defaultCountry
                 }`
+        }
+
         return 'Viewing stores near your location'
     }
 
@@ -57,7 +60,7 @@ export const StoreLocatorList: React.FC<StoreLocatorListProps> = ({storesInfo}) 
                     {displayStoreLocatorStatusMessage()}
                 </Box>
             </AccordionItem>
-            {storesInfo?.map((store: Store, index: number) => (
+            {data?.data?.map((store: Store, index: number) => (
                 <StoreLocatorListItem key={index} store={store} />
             ))}
         </Accordion>

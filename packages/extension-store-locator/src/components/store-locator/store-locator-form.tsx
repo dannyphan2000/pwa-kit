@@ -18,10 +18,6 @@ import {
 import {useForm, Controller} from 'react-hook-form'
 import {useStoreLocator} from './v2-use-store-locator'
 
-interface StoreLocatorFormProps {
-    refetch: () => void
-}
-
 // todo
 interface FormData {
     countryCode: string
@@ -85,7 +81,7 @@ export function useGeolocation(options = {}) {
     }
 }
 
-export const StoreLocatorForm: React.FC<StoreLocatorFormProps> = () => {
+export const StoreLocatorForm: React.FC = () => {
     const {
         // searchStoresParams,
         // setSearchStoresParams,
