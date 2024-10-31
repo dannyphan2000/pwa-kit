@@ -129,4 +129,4 @@ export function detectCookiesAvailable(options?: CookieAttributes) {
  */
 export function isAbsoluteUrl(url: string): boolean {
     return /^(https?:\/\/)/i.test(url)
-}
+

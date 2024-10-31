@@ -6655,6 +6655,48 @@
       "value": "]"
     }
   ],
+  "social_login_redirect.message.authenticating": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Ȧŭŭŧħḗḗƞŧīƈȧȧŧīƞɠ..."
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
+  "social_login_redirect.message.redirect_link": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Īƒ ẏǿǿŭŭ ȧȧřḗḗ ƞǿǿŧ ȧȧŭŭŧǿǿḿȧȧŧīƈȧȧŀŀẏ řḗḗḓīřḗḗƈŧḗḗḓ, ƈŀīƈķ "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "ŧħīş ŀīƞķ"
+        }
+      ],
+      "type": 8,
+      "value": "link"
+    },
+    {
+      "type": 0,
+      "value": " ŧǿǿ ƥřǿǿƈḗḗḗḗḓ."
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
   "store_locator.action.find": [
     {
       "type": 0,
