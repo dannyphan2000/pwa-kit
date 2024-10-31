@@ -48,3 +48,8 @@ test('Shows passwordless login button if enabled', async () => {
     renderWithProviders(<ContactInfo isPasswordlessEnabled={true} />)
     expect(screen.getByText('Secure Link')).toBeInTheDocument()
 })
+
+test('Shows Google login button if configured', async () => {
+    renderWithProviders(<ContactInfo isSocialEnabled={true} idps={['Google']} />)
+    expect(screen.getByText('Google')).toBeInTheDocument()
+})
