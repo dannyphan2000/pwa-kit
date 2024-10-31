@@ -507,7 +507,7 @@ const PRESETS = [
         private: true
     },
     {
-        id: 'base-app-extension',
+        id: 'extension-base',
         name: 'Template base Application Extension',
         description: '',
         templateSource: {
@@ -1084,7 +1084,7 @@ const main = async (opts) => {
             // Ask for extension name if Application Extension is selected
             const extensionNameAnswers = await inquirer.prompt(APPLICATION_EXTENSION_QUESTIONS)
             context.answers.project.name = extensionNameAnswers.project.extensionName
-            context.preset = PRESETS.find(({id}) => id === 'base-app-extension')
+            context.preset = PRESETS.find(({id}) => id === 'extension-base')
         } else {
             const availableAppExtensions = fetchAvailableAppExtensions()
 

@@ -16,7 +16,6 @@ import {Config} from './types'
 
 class SampleExtension extends ApplicationExtension<Config> {
     extendApp(app: Application): Application {
-        // console.log('setup-server: SampleExtension: extendApp: ', app)
         app.get('/sample', (req, res) => {
             console.log('SampleExtension extendApp GET /sample')
             res.send(
