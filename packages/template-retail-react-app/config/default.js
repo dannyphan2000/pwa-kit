@@ -22,7 +22,7 @@ module.exports = {
             },
             social: {
                 enabled: false,
-                idps: ['Google']
+                idps: ['google', 'apple']
             }
         },
         defaultSite: 'RefArchGlobal',

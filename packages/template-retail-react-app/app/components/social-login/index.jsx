@@ -7,8 +7,9 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import {FormattedMessage} from 'react-intl'
+import {useIntl} from 'react-intl'
 import {Button, Stack} from '@salesforce/retail-react-app/app/components/shared/ui'
+import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 
 // Icons
 import {AppleIcon, GoogleIcon} from '@salesforce/retail-react-app/app/components/icons'
@@ -19,14 +20,21 @@ import {AppleIcon, GoogleIcon} from '@salesforce/retail-react-app/app/components
  * @returns
  */
 const SocialLogin = ({idps}) => {
+    const intl = useIntl()
     const IDP_CONFIG = {
         apple: {
             icon: AppleIcon,
-            message: 'Apple'
+            message: intl.formatMessage({
+                id: 'login_form.button.apple',
+                defaultMessage: 'Apple'
+            })
         },
         google: {
             icon: GoogleIcon,
-            message: 'Google'
+            message: intl.formatMessage({
+                id: 'login_form.button.google',
+                defaultMessage: 'Google'
+            })
         }
     }
 
@@ -34,6 +42,9 @@ const SocialLogin = ({idps}) => {
         idps && (
             <Stack spacing={4}>
                 {idps.map((name) => {
+                    if (!(name in IDP_CONFIG)) {
+                        logger.error('IDP "'+ name + '" is missing from IDP_CONFIG. Valid IDPs are ['+ Object.keys(IDP_CONFIG).join(', ') + '].')
+                    }
                     const config = IDP_CONFIG[name.toLowerCase()]
                     const Icon = config?.icon
                     const message = config?.message
@@ -49,11 +60,7 @@ const SocialLogin = ({idps}) => {
                                 key={`${name}-button`}
                             >
                                 <Icon sx={{marginRight: 2}} />
-                                <FormattedMessage
-                                    defaultMessage="{message}"
-                                    id="login_form.button.social"
-                                    values={{message}}
-                                />
+                                {message}
                             </Button>
                         )
                     )

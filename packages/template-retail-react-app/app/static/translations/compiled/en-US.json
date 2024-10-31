@@ -2187,10 +2187,22 @@
       "value": "Create account"
     }
   ],
+  "login_form.button.apple": [
+    {
+      "type": 0,
+      "value": "Apple"
+    }
+  ],
   "login_form.button.continue_securely": [
     {
       "type": 0,
       "value": "Continue Securely"
+    }
+  ],
+  "login_form.button.google": [
+    {
+      "type": 0,
+      "value": "Google"
     }
   ],
   "login_form.button.password": [

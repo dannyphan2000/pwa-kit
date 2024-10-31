@@ -936,8 +936,14 @@
   "login_form.action.create_account": {
     "defaultMessage": "Create account"
   },
+  "login_form.button.apple": {
+    "defaultMessage": "Apple"
+  },
   "login_form.button.continue_securely": {
     "defaultMessage": "Continue Securely"
+  },
+  "login_form.button.google": {
+    "defaultMessage": "Google"
   },
   "login_form.button.password": {
     "defaultMessage": "Password"

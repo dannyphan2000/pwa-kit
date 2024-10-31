@@ -13,7 +13,7 @@ import useLoginFields from '@salesforce/retail-react-app/app/components/forms/us
 
 const LoginFields = ({
     form,
-    clickForgotPassword,
+    handleForgotPasswordClick,
     prefix = '',
     hideEmail = false,
     hidePassword = false
@@ -25,9 +25,9 @@ const LoginFields = ({
             {!hidePassword && (
                 <Stack>
                     <Field {...fields.password} />
-                    {clickForgotPassword && (
+                    {handleForgotPasswordClick && (
                         <Box>
-                            <Button variant="link" size="sm" onClick={clickForgotPassword}>
+                            <Button variant="link" size="sm" onClick={handleForgotPasswordClick}>
                                 <FormattedMessage
                                     defaultMessage="Forgot password?"
                                     id="login_form.link.forgot_password"
@@ -42,7 +42,7 @@ const LoginFields = ({
 }
 
 LoginFields.propTypes = {
-    clickForgotPassword: PropTypes.func,
+    handleForgotPasswordClick: PropTypes.func,
 
     /** Object returned from `useForm` */
     form: PropTypes.object.isRequired,

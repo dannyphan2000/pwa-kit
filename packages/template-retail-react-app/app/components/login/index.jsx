@@ -16,7 +16,7 @@ import {noop} from '@salesforce/retail-react-app/app/utils/utils'
 
 const LoginForm = ({
     submitForm,
-    clickForgotPassword,
+    handleForgotPasswordClick,
     clickCreateAccount = noop,
     form,
     isPasswordlessEnabled = false,
@@ -51,14 +51,14 @@ const LoginForm = ({
                     {isPasswordlessEnabled ? (
                         <PasswordlessLogin
                             form={form}
-                            clickForgotPassword={clickForgotPassword}
+                            handleForgotPasswordClick={handleForgotPasswordClick}
                             isSocialEnabled={isSocialEnabled}
                             idps={idps}
                         />
                     ) : (
                         <StandardLogin
                             form={form}
-                            clickForgotPassword={clickForgotPassword}
+                            handleForgotPasswordClick={handleForgotPasswordClick}
                             isSocialEnabled={isSocialEnabled}
                             idps={idps}
                         />
@@ -86,7 +86,7 @@ const LoginForm = ({
 
 LoginForm.propTypes = {
     submitForm: PropTypes.func,
-    clickForgotPassword: PropTypes.func,
+    handleForgotPasswordClick: PropTypes.func,
     clickCreateAccount: PropTypes.func,
     form: PropTypes.object,
     isPasswordlessEnabled: PropTypes.bool,

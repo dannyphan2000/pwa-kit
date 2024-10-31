@@ -14,7 +14,7 @@ import SocialLogin from '@salesforce/retail-react-app/app/components/social-logi
 
 const StandardLogin = ({
     form,
-    clickForgotPassword,
+    handleForgotPasswordClick,
     hideEmail = false,
     isSocialEnabled = false,
     idps = []
@@ -25,7 +25,7 @@ const StandardLogin = ({
                 <LoginFields
                     form={form}
                     hideEmail={hideEmail}
-                    clickForgotPassword={clickForgotPassword}
+                    handleForgotPasswordClick={handleForgotPasswordClick}
                 />
             </Stack>
             <Stack spacing={6}>
@@ -57,7 +57,7 @@ const StandardLogin = ({
 
 StandardLogin.propTypes = {
     form: PropTypes.object,
-    clickForgotPassword: PropTypes.func,
+    handleForgotPasswordClick: PropTypes.func,
     hideEmail: PropTypes.bool,
     isSocialEnabled: PropTypes.bool,
     idps: PropTypes.array[PropTypes.string]
