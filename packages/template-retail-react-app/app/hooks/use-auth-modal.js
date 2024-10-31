@@ -35,6 +35,7 @@ import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
 import ResetPasswordForm from '@salesforce/retail-react-app/app/components/reset-password'
 import RegisterForm from '@salesforce/retail-react-app/app/components/register'
+import CheckEmail from '@salesforce/retail-react-app/app/components/check-email'
 import {noop} from '@salesforce/retail-react-app/app/utils/utils'
 import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
@@ -43,6 +44,7 @@ import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 const LOGIN_VIEW = 'login'
 const REGISTER_VIEW = 'register'
 const PASSWORD_VIEW = 'password'
+const EMAIL_VIEW = 'email'
 
 const LOGIN_ERROR = defineMessage({
     defaultMessage: "Something's not right with your email or password. Try again.",
@@ -291,6 +293,7 @@ export const AuthModal = ({
                             submitForm={submitForm}
                             clickCreateAccount={() => setCurrentView(REGISTER_VIEW)}
                             clickForgotPassword={() => setCurrentView(PASSWORD_VIEW)}
+                            clickPasswordlessLogin={() => setCurrentView(EMAIL_VIEW)}
                         />
                     )}
                     {!form.formState.isSubmitSuccessful && currentView === REGISTER_VIEW && (
@@ -309,6 +312,9 @@ export const AuthModal = ({
                     )}
                     {form.formState.isSubmitSuccessful && currentView === PASSWORD_VIEW && (
                         <PasswordResetSuccess />
+                    )}
+                    {!form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
+                        <CheckEmail />
                     )}
                 </ModalBody>
             </ModalContent>

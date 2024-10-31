@@ -21,7 +21,13 @@ import SocialLogin from '@salesforce/retail-react-app/app/components/social-logi
 import {noop} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
-const LoginForm = ({submitForm, clickForgotPassword = noop, clickCreateAccount = noop, form}) => {
+const LoginForm = ({
+    submitForm,
+    clickForgotPassword = noop,
+    clickCreateAccount = noop,
+    clickPasswordlessLogin = noop,
+    form
+}) => {
     const idps = getConfig().app?.login?.idps
 
     return (
@@ -91,6 +97,9 @@ const LoginForm = ({submitForm, clickForgotPassword = noop, clickCreateAccount =
                                 />
                             </Button>
                         </Stack>
+                        <Button variant="link" size="sm" onClick={clickPasswordlessLogin}>
+                            <FormattedMessage defaultMessage="Passwordless Login" />
+                        </Button>
                     </Stack>
                 </Stack>
             </form>
@@ -102,6 +111,7 @@ LoginForm.propTypes = {
     submitForm: PropTypes.func,
     clickForgotPassword: PropTypes.func,
     clickCreateAccount: PropTypes.func,
+    clickPasswordlessLogin: PropTypes.func,
     form: PropTypes.object
 }
 
