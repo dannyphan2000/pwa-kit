@@ -19,6 +19,16 @@ module.exports = {
             site: 'path',
             showDefaults: true
         },
+        login: {
+            passwordless: {
+                enabled: true,
+                callbackURI: 'https://webhook.site/27761b71-50c1-4097-a600-21a3b89a546c'
+            },
+            social: {
+                enabled: false,
+                idps: ['google', 'apple']
+            }
+        },
         siteAliases: {
             'site-1': 'uk',
             'site-2': 'us'
@@ -85,15 +95,6 @@ module.exports = {
             // This is temporary and is meant as a placeholder until there is a mechanism for reading
             // the is_production property from an MRT target
             isProduction: false
-        },
-        login: {
-            passwordless: {
-                enabled: false
-            },
-            social: {
-                enabled: false,
-                idps: ['google', 'apple']
-            }
         }
     },
     // This list contains server-side only libraries that you don't want to be compiled by webpack
