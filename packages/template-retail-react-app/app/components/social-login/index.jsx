@@ -9,6 +9,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {useIntl} from 'react-intl'
 import {Button, Stack} from '@salesforce/retail-react-app/app/components/shared/ui'
+import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 
 // Icons
 import {AppleIcon, GoogleIcon} from '@salesforce/retail-react-app/app/components/icons'
@@ -41,6 +42,9 @@ const SocialLogin = ({idps}) => {
         idps && (
             <Stack spacing={4}>
                 {idps.map((name) => {
+                    if (!(name in IDP_CONFIG)) {
+                        logger.error('IDP "'+ name + '" is missing from IDP_CONFIG. Valid IDPs are ['+ Object.keys(IDP_CONFIG).join(', ') + '].')
+                    }
                     const config = IDP_CONFIG[name.toLowerCase()]
                     const Icon = config?.icon
                     const message = config?.message
