@@ -1033,6 +1033,18 @@
       "value": "Log In"
     }
   ],
+  "contact_info.button.password": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "contact_info.button.secure_link": [
+    {
+      "type": 0,
+      "value": "Secure Link"
+    }
+  ],
   "contact_info.error.incorrect_username_or_password": [
     {
       "type": 0,
@@ -1043,6 +1055,12 @@
     {
       "type": 0,
       "value": "Forgot password?"
+    }
+  ],
+  "contact_info.message.or_login_with": [
+    {
+      "type": 0,
+      "value": "Or Login With"
     }
   ],
   "contact_info.title.contact_info": [
@@ -2191,6 +2209,12 @@
     {
       "type": 1,
       "value": "message"
+    }
+  ],
+  "login_form.link.forgot_password": [
+    {
+      "type": 0,
+      "value": "Forgot password?"
     }
   ],
   "login_form.message.dont_have_account": [

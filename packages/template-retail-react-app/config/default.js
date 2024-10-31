@@ -39,11 +39,11 @@ module.exports = {
         },
         login: {
             social: {
-                enabled: true,
+                enabled: false,
                 idps: ['Google']
             },
             passwordless: {
-                enabled: true,
+                enabled: false,
                 callbackURI: 'something'
             }
         }

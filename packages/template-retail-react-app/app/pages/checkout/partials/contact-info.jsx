@@ -67,6 +67,7 @@ const ContactInfo = () => {
 
     const [error, setError] = useState(null)
     const [showPasswordField, setShowPasswordField] = useState(false)
+    const [showLoginButtons, setShowLoginButtons] = useState(true)
     const [signOutConfirmDialogIsOpen, setSignOutConfirmDialogIsOpen] = useState(false)
 
     const submitForm = async (data) => {
@@ -120,6 +121,86 @@ const ContactInfo = () => {
             form.unregister('password')
         }
     }, [showPasswordField])
+
+    const renderLoginState = () => {
+        if (isSocialEnabled || isPasswordlessEnabled) {
+            return showLoginButtons ? (
+                <>
+                    <Divider />
+                    <Text align="center" fontSize="sm" marginTop={2} marginBottom={2}>
+                        <FormattedMessage
+                            defaultMessage="Or Login With"
+                            id="contact_info.message.or_login_with"
+                        />
+                    </Text>
+
+                    {/* Passwordless Login */}
+                    {isPasswordlessEnabled && (
+                        <Button
+                            variant="outline"
+                            type="submit"
+                            onClick={() => {
+                                form.clearErrors('global')
+                            }}
+                            isLoading={form.formState.isSubmitting}
+                        >
+                            <FormattedMessage
+                                defaultMessage="Secure Link"
+                                id="contact_info.button.secure_link"
+                            />
+                        </Button>
+                    )}
+
+                    {/* Standard Password Login */}
+                    {!showPasswordField && (
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                togglePasswordField()
+                                setShowLoginButtons(!showLoginButtons)
+                            }}
+                        >
+                            <FormattedMessage
+                                defaultMessage="Password"
+                                id="contact_info.button.password"
+                            />
+                        </Button>
+                    )}
+                    {/* Social Login */}
+                    {isSocialEnabled && idps && <SocialLogin idps={idps} />}
+                </>
+            ) : (
+                <Button
+                    variant="outline"
+                    onClick={() => {
+                        togglePasswordField()
+                        setShowLoginButtons(!showLoginButtons)
+                    }}
+                >
+                    <FormattedMessage
+                        defaultMessage="Checkout as Guest"
+                        id="contact_info.button.checkout_as_guest"
+                    />
+                </Button>
+            )
+        } else {
+            return (
+                <Button variant="outline" onClick={togglePasswordField}>
+                    {!showPasswordField ? (
+                        <FormattedMessage
+                            defaultMessage="Already have an account? Log in"
+                            id="contact_info.button.already_have_account"
+                        />
+                    ) : (
+                        <FormattedMessage
+                            defaultMessage="Checkout as Guest"
+                            id="contact_info.button.checkout_as_guest"
+                        />
+                    )}
+                </Button>
+            )
+        }
+    }
 
     return (
         <ToggleCard
@@ -188,7 +269,6 @@ const ContactInfo = () => {
                                             defaultMessage="Checkout as Guest"
                                             id="contact_info.button.checkout_as_guest"
                                         />
-                                        
                                     ) : (
                                         <FormattedMessage
                                             defaultMessage="Log In"
@@ -196,69 +276,7 @@ const ContactInfo = () => {
                                         />
                                     )}
                                 </Button>
-                                {(isSocialEnabled || isPasswordlessEnabled) ? (
-                                    <>
-                                        <Divider />
-                                        <Text align="center" fontSize="sm" marginTop={2} marginBottom={2}>
-                                                    <FormattedMessage
-                                                        defaultMessage="Or Login With"
-                                                        id="contact_info.message.or_login_with"
-                                                    />
-                                        </Text>
-
-                                        {/* Passwordless Login */}
-                                        {isPasswordlessEnabled && (
-                                            <Button
-                                                variant="outline"
-                                                type="submit"
-                                                onClick={() => {
-                                                    form.clearErrors('global')
-                                                }}
-                                                isLoading={form.formState.isSubmitting}
-                                            >
-                                                <FormattedMessage
-                                                    defaultMessage="Secure Link"
-                                                    id="contact_info.button.secure_link"
-                                                />
-                                            </Button>
-                                        )}
-
-                                        {/* Standard Password Login */}
-                                        <Button variant="outline" onClick={togglePasswordField}>
-                                            {!showPasswordField ? (
-                                                <FormattedMessage
-                                                    defaultMessage="Password"
-                                                    id="contact_info.button.password"
-                                                />
-                                            ) : (
-                                                <FormattedMessage
-                                                    defaultMessage="Checkout as Guest"
-                                                    id="contact_info.button.checkout_as_guest"
-                                                />
-                                            )}
-                                        </Button>
-
-                                        {/* Social Login */}
-                                        {isSocialEnabled && idps && (
-                                            <SocialLogin idps={idps} />
-
-                                        )}
-                                    </>
-                                ) : (
-                                    <Button variant="outline" onClick={togglePasswordField}>
-                                        {!showPasswordField ? (
-                                            <FormattedMessage
-                                                defaultMessage="Password"
-                                                id="contact_info.button.password"
-                                            />
-                                        ) : (
-                                            <FormattedMessage
-                                                defaultMessage="Checkout as Guest"
-                                                id="contact_info.button.checkout_as_guest"
-                                            />
-                                        )}
-                                    </Button>
-                                )}
+                                {renderLoginState()}
                             </Stack>
                         </Stack>
                     </form>
