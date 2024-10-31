@@ -6,17 +6,15 @@
  */
 
 import React from 'react'
-import {Heading} from '@chakra-ui/react'
 
 import {StoreLocatorList} from './store-locator-list'
 import {StoreLocatorForm} from './store-locator-form'
+import {StoreLocatorHeading} from '*/components/store-locator/store-locator-heading'
 
 export const StoreLocatorContent = (): JSX.Element => {
     return (
         <>
-            <Heading fontSize="2xl" marginBottom={6}>
-                Find a Store
-            </Heading>
+            <StoreLocatorHeading />
             <StoreLocatorForm />
             <StoreLocatorList />
         </>

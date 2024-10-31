@@ -78,6 +78,7 @@ The following files in the extension can be overridden in your project:
 
 ```
 /src/components/store-locator/store-locator-list-item.tsx
+/src/components/store-locator/store-locator-heading.tsx
 ```
 
 ### Store Locator List Item
