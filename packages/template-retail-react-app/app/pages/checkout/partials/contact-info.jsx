@@ -38,9 +38,8 @@ import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 import {useCurrentBasket} from '@salesforce/retail-react-app/app/hooks/use-current-basket'
 import {AuthHelpers, useAuthHelper, useShopperBasketsMutation} from '@salesforce/commerce-sdk-react'
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
-const ContactInfo = () => {
+const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, idps = []}) => {
     const {formatMessage} = useIntl()
     const authModal = useAuthModal('password')
     const navigate = useNavigation()
@@ -50,10 +49,6 @@ const ContactInfo = () => {
     const logout = useAuthHelper(AuthHelpers.Logout)
     const updateCustomerForBasket = useShopperBasketsMutation('updateCustomerForBasket')
     const transferBasket = useShopperBasketsMutation('transferBasket')
-    const {passwordless, social} = getConfig().app.login
-    const idps = social?.idps
-    const isSocialEnabled = social?.enabled
-    const isPasswordlessEnabled = passwordless?.enabled
 
     const {step, STEPS, goToStep, goToNextStep} = useCheckout()
 
@@ -297,6 +292,12 @@ const ContactInfo = () => {
             </ToggleCardSummary>
         </ToggleCard>
     )
+}
+
+ContactInfo.propTypes = {
+    isSocialEnabled: PropTypes.bool,
+    isPasswordlessEnabled: PropTypes.bool,
+    idps: PropTypes.array
 }
 
 const SignOutConfirmationDialog = ({isOpen, onConfirm, onClose}) => {

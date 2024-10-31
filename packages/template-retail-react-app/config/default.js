@@ -17,11 +17,11 @@ module.exports = {
         },
         login: {
             passwordless: {
-                enabled: true,
+                enabled: false,
                 callbackURI: 'https://webhook.site/27761b71-50c1-4097-a600-21a3b89a546c'
             },
             social: {
-                enabled: true,
+                enabled: false,
                 idps: ['Google']
             }
         },

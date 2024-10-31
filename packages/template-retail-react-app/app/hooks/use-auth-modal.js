@@ -342,7 +342,7 @@ AuthModal.propTypes = {
  */
 export const useAuthModal = (initialView = LOGIN_VIEW) => {
     const {isOpen, onOpen, onClose} = useDisclosure()
-    const {passwordless, social} = getConfig().app.login
+    const {passwordless = {}, social = {}} = getConfig().app.login || {}
 
     return {
         initialView,
