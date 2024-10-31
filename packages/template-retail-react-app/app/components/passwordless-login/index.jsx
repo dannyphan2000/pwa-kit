@@ -35,7 +35,6 @@ const PasswordlessLogin = ({form, clickForgotPassword, isSocialEnabled = false, 
                     <LoginFields
                         form={form}
                         hidePassword={true}
-                        hideEmail={hideEmail}
                         clickForgotPassword={clickForgotPassword}
                     />
                     <Button

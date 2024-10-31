@@ -32,7 +32,6 @@ import {
     ToggleCardSummary
 } from '@salesforce/retail-react-app/app/components/toggle-card'
 import Field from '@salesforce/retail-react-app/app/components/field'
-import PasswordlessLogin from '@salesforce/retail-react-app/app/components/passwordless-login'
 import SocialLogin from '@salesforce/retail-react-app/app/components/social-login'
 import {AuthModal, useAuthModal} from '@salesforce/retail-react-app/app/hooks/use-auth-modal'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'

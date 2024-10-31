@@ -21,7 +21,8 @@ module.exports = {
                 callbackURI: 'https://webhook.site/27761b71-50c1-4097-a600-21a3b89a546c'
             },
             social: {
-                enabled: false
+                enabled: true,
+                idps: ['Google']
             }
         },
         defaultSite: 'RefArchGlobal',
@@ -45,16 +46,6 @@ module.exports = {
             // This differs from the siteId in commerceAPIConfig for testing purposes
             siteId: 'aaij-MobileFirst',
             isProduction: false
-        },
-        login: {
-            social: {
-                enabled: false,
-                idps: ['Google']
-            },
-            passwordless: {
-                enabled: false,
-                callbackURI: 'something'
-            }
         }
     },
     externals: [],
