@@ -54,7 +54,7 @@ import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 const fetchGeolocation = async (appOrigin) => {
     console.log('starting geolocation fetch')
     try {
-        const url = `${appOrigin}/geolocation`
+        const url = `${appOrigin}/mobify/geolocation`
         const response = await fetch(url)
 
         // if (!response.ok) {

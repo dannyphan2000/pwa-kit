@@ -86,11 +86,11 @@ const {handler} = runtime.createHandler(options, (app) => {
         })
     )
 
-    app.use('/geolocation', 
+    app.use('/mobify/geolocation', 
         createProxyMiddleware({
-            target: 'https://prd2.phased-launch-testing.com/on/demandware.store/Sites-RefArch-Site/en_US/Geolocation-Show',
+            target: 'https://prd2.phased-launch-testing.com',
             changeOrigin: true,
-            pathRewrite: {['/geolocation']: ''}
+            pathRewrite: {['/mobify/geolocation']: '/on/demandware.store/Sites-RefArch-Site/en_US/Geolocation-Show'}
         })
     )
 
