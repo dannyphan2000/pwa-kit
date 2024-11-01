@@ -37,8 +37,12 @@ export default function ApplicationExtensibilityLoader(
     // Get the installed and configured application extensions as well as the requested
     // target type. For web targets the loader takes advantage of react-loadabled but node
     // targets (server) do not require this optimization.
-    const data = this.getOptions()
+    const data = {
+        ...this.getOptions(),
+        ...getApplicationExtensionInfo()
+    }
 
+    // @ts-ignore
     return renderTemplate(data)
 }
 
@@ -50,13 +54,12 @@ export default function ApplicationExtensibilityLoader(
  * @param {Object} [options={}] - Options to customize the Webpack rule.
  * @param {Object} [options.loaderOptions={}] - Loader-specific options.
  * @param {string} [options.loaderOptions.target=DEFAULT_TARGET] - The target environment, either 'node' or 'react'.
- * @param {Object} [options.loaderOptions.appConfig] - Optional application configuration to pass to the loader.
  *
  * @returns {Object} A Webpack rule configuration object for handling application extensions.
  */
 export const ruleForApplicationExtensibility = (options: any = {}) => {
     const {loaderOptions = {}} = options
-    const {target = DEFAULT_TARGET, appConfig} = loaderOptions
+    const {target = DEFAULT_TARGET} = loaderOptions
 
     return {
         test: new RegExp(
@@ -66,7 +69,7 @@ export const ruleForApplicationExtensibility = (options: any = {}) => {
         use: {
             loader: '@salesforce/pwa-kit-extension-sdk/configs/webpack/application-extensions-loader',
             options: {
-                ...getApplicationExtensionInfo(appConfig),
+                // ...getApplicationExtensionInfo(),
                 target
             }
         }

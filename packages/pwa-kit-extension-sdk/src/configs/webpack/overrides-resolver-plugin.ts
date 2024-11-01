@@ -15,19 +15,20 @@ import {buildCandidatePaths, expand} from '../../shared/utils/resolver'
 
 // Types
 import {ApplicationExtensionEntry} from '../../types'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 export const DEFAULT_FILE_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx', '.json']
 
 interface OverridesResolverPluginOptions {
     projectDir: string
-    extensions: ApplicationExtensionEntry[]
+    // extensions: ApplicationExtensionEntry[]
     fileExtensions?: string[]
     resolveOptions: any
 }
 
 const defaultOptions = {
     projectDir: process.cwd(),
-    extensions: [],
+    // extensions: [],
     fileExtension: DEFAULT_FILE_EXTENSIONS,
     resolveOptions: {}
 }
@@ -47,9 +48,6 @@ export class OverridesResolverPlugin {
             ...defaultOptions,
             ...options
         }
-
-        // Ensure we have the long form configuration entry.
-        this.options.extensions = expand(this.options.extensions)
     }
 
     handleHook(
@@ -76,7 +74,8 @@ export class OverridesResolverPlugin {
                 extensions: this.options.fileExtensions,
                 packageIterator: () =>
                     buildCandidatePaths(importPath, sourcePath, {
-                        extensionEntries: this.options.extensions,
+                        // Ensure we have the long form configuration entry.
+                        extensionEntries: expand(getConfig().extensions),
                         projectDir: this.options.projectDir
                     }),
                 ...this.options.resolveOptions

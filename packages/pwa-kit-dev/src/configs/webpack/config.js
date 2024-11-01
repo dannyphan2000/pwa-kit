@@ -49,8 +49,6 @@ const DEBUG = mode !== production && process.env.DEBUG === 'true'
 const CI = process.env.CI
 const disableHMR = process.env.HMR === 'false'
 
-const {app: appConfig} = getConfig()
-
 export const EXTENIONS_NAMESPACE = '__extensions'
 
 if ([production, development].indexOf(mode) < 0) {
@@ -188,7 +186,7 @@ const baseConfig = (target) => {
                     plugins: [
                         new OverridesResolverPlugin({
                             projectDir: process.cwd(),
-                            extensions: appConfig?.extensions,
+                            // extensions: appConfig?.extensions,
                             fileExtensions: SUPPORTED_FILE_EXTENSIONS
                         })
                     ],
@@ -256,13 +254,15 @@ const baseConfig = (target) => {
                         },
                         ruleForApplicationExtensibility({
                             loaderOptions: {
-                                appConfig: getConfig(),
+                                // TODO: don't call getConfig yet
+                                // appConfig: getConfig(),
                                 target: 'web'
                             }
                         }),
                         ruleForApplicationExtensibility({
                             loaderOptions: {
-                                appConfig: getConfig(),
+                                // TODO: don't call getConfig yet
+                                // appConfig: getConfig(),
                                 target: 'node'
                             }
                         })
@@ -323,7 +323,9 @@ const staticFolderCopyPlugin = new CopyPlugin({
         {
             from: 'app/static/',
             to: 'static/'
-        },
+        }
+        // TODO: bring this back
+        /*
         ...normalizeExtensionsList(appConfig?.extensions).map((extension) => {
             const {packageName} = extension
             // Parse the extension name out.
@@ -334,6 +336,7 @@ const staticFolderCopyPlugin = new CopyPlugin({
                 noErrorOnMissing: true
             }
         })
+        */
     ]
 })
 

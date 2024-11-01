@@ -189,6 +189,8 @@ describe('extensibilityUtils', () => {
             const appConfig = {app: {extensions: ['extension-from-app-config']}}
             mockPackageJson(devDependencies)
 
+            // TODO
+            // @ts-ignore
             const result = extensionUtils.getApplicationExtensionInfo(appConfig)
 
             expect(result.installed).toEqual([])
@@ -211,6 +213,7 @@ describe('extensibilityUtils', () => {
             const appConfig = {app: {extensions: ['extension-new']}}
             mockPackageJson(devDependencies, mobifyConfig)
 
+            // @ts-ignore
             const result = extensionUtils.getApplicationExtensionInfo(appConfig)
 
             expect(result.configured).toEqual([['extension-new', {enabled: true}]])

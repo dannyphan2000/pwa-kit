@@ -10,6 +10,8 @@ import fse from 'fs-extra'
 import path from 'path'
 import {resolve} from 'path'
 
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+
 // Types
 import {ApplicationExtensionEntry} from '../../types'
 
@@ -116,13 +118,12 @@ export const getExtensionNames = (extensions: ApplicationExtensionEntry[]) => {
  * found in the project's dependencies, and `configured`, which lists extensions configured
  * in the application settings.
  *
- * @param {object} [appConfig] - Optional application configuration object. If not provided,
- * defaults to the configuration in the project's `package.json` file under the `mobify` key.
  * @returns {Object} An object containing the following properties:
  * - `installed` {string[]} - An array of installed extension names based on the project's devDependencies.
  * - `configured` {string[]} - An array of configured extension names as specified in the application configuration.
  */
-export const getApplicationExtensionInfo = (appConfig?: any) => {
+export const getApplicationExtensionInfo = () => {
+    let appConfig = getConfig()
     const projectDir = process.cwd()
     const pkg = fse.readJsonSync(resolve(projectDir, 'package.json'))
 
