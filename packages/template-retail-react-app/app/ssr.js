@@ -18,6 +18,7 @@
 
 import path from 'path'
 import {getRuntime} from '@salesforce/pwa-kit-runtime/ssr/server/express'
+import {createProxyMiddleware} from 'http-proxy-middleware'
 import {defaultPwaKitSecurityHeaders} from '@salesforce/pwa-kit-runtime/utils/middleware'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import helmet from 'helmet'
@@ -82,6 +83,14 @@ const {handler} = runtime.createHandler(options, (app) => {
                     ]
                 }
             }
+        })
+    )
+
+    app.use('/geolocation', 
+        createProxyMiddleware({
+            target: 'https://prd2.phased-launch-testing.com/on/demandware.store/Sites-RefArch-Site/en_US/Geolocation-Show',
+            changeOrigin: true,
+            pathRewrite: {['/geolocation']: ''}
         })
     )
 

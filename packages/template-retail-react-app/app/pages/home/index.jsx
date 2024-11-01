@@ -35,6 +35,9 @@ import {heroFeatures, features} from '@salesforce/retail-react-app/app/pages/hom
 
 //Hooks
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
+import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
+
+import fetch from 'cross-fetch'
 
 // Constants
 import {
@@ -45,6 +48,29 @@ import {
 } from '@salesforce/retail-react-app/app/constants'
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useProductSearch} from '@salesforce/commerce-sdk-react'
+import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
+
+
+const fetchGeolocation = async (appOrigin) => {
+    console.log('starting geolocation fetch')
+    try {
+        const url = `${appOrigin}/geolocation`
+        const response = await fetch(url)
+
+        // if (!response.ok) {
+        //     throw new Error(
+        //         `Failed to fetch geolocation. Received the response: ${response.status} ${response.statusText}`
+        //     )
+        // }
+        return await response.json()
+    } catch (err) {
+        logger.error(
+            'Geolocation not fetched',
+            {namespace: 'utils.fetchGeolocation', additionalProperties: {error: err}}
+        )
+        return {}
+    }
+}
 
 /**
  * This is the home page for Retail React App.
@@ -56,6 +82,7 @@ const Home = () => {
     const intl = useIntl()
     const einstein = useEinstein()
     const {pathname} = useLocation()
+    const appOrigin = useAppOrigin()
 
     const {res} = useServerContext()
     if (res) {
@@ -79,6 +106,10 @@ const Home = () => {
     /**************** Einstein ****************/
     useEffect(() => {
         einstein.sendViewPage(pathname)
+    }, [])
+
+    useEffect(() => {
+        fetchGeolocation(appOrigin)
     }, [])
 
     return (
