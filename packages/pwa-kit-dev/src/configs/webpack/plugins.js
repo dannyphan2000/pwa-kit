@@ -6,7 +6,7 @@
  */
 import webpack from 'webpack'
 import path, {resolve} from 'path'
-import glob from 'glob'
+import {globSync} from 'glob'
 import {EXT_OVERRIDES_DIR, EXT_EXTENDS} from './config'
 import {makeRegExp} from './utils'
 
@@ -29,19 +29,19 @@ const getOverridePath = (relativePath) => {
             ...relativePath
         )}${OVERRIDES_EXTENSIONS}`
 
-        const overrideFile = glob.sync(filePath)
+        const overrideFile = globSync(filePath)
 
         if (overrideFile?.length) {
             return overrideFile?.[0]
         }
-        const extendFile = glob.sync(
+        const extendFile = globSync(
             `${resolve(projectDir, extendPath, ...relativePath)}${OVERRIDES_EXTENSIONS}`
         )
         if (extendFile?.length) {
             return extendFile?.[0]
         }
     }
-    const generatedProjectOverride = glob.sync(
+    const generatedProjectOverride = globSync(
         `${resolve(projectDir, ...relativePath)}${OVERRIDES_EXTENSIONS}`
     )
     return generatedProjectOverride?.length

@@ -11,7 +11,7 @@ import {useApplicationExtensions} from '@salesforce/pwa-kit-extension-sdk/react'
 
 import HelloTS from '../components/hello-typescript'
 import HelloJS from '../components/hello-javascript'
-
+import Translation from '../components/translation'
 interface Props {
     value: number
 }
@@ -107,6 +107,7 @@ const Home = ({value}: Props) => {
         <div>
             <style dangerouslySetInnerHTML={{__html: style}} />
 
+            <Translation />
             <div className="loading-screen">
                 <div className="panel title">
                     <h1>

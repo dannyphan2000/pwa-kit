@@ -13,7 +13,11 @@ const WebSocket = require('ws')
 const program = require('commander')
 const validator = require('validator')
 const {execSync: _execSync} = require('child_process')
+const vfs = require('vinyl-fs')
 const {getConfig} = require('@salesforce/pwa-kit-runtime/utils/ssr-config')
+const {
+    getExtensionDirectories
+} = require('@salesforce/pwa-kit-extension-sdk/shared/utils/extensibility')
 
 // Scripts in ./bin have never gone through babel, so we
 // don't have a good pattern for mixing compiled/un-compiled
@@ -526,6 +530,53 @@ const main = async () => {
             program.help({error: true})
         }
     })
+
+    // i18n support
+    program
+        .command('i18n-extract')
+        .description('extract i18n messages from the project')
+        .action(async (_, {args}) => {
+            console.log('i18n-extract')
+            const i18nextParser = await import('i18next-parser')
+            // const directories = getExtensionDirectories()
+            console.log(i18nextParser)
+
+            // TODO: get the right project directory
+            const projectDir = '/Users/kevin.he/dev/pwa-kit/packages/template-typescript-minimal'
+            return new Promise((resolve, reject) => {
+                const stream = vfs
+                    .src([`${projectDir}/app/**/*.{js,jsx,ts,tsx}`])
+                    .pipe(
+                        new i18nextParser.transform({
+                            locales: ['en', 'es'],
+                            output: `${projectDir}/i18n/untranslated/$LOCALE.json`,
+                            lexers: {
+                                mjs: ['JavascriptLexer'],
+                                js: ['JavascriptLexer'],
+                                ts: ['JavascriptLexer'],
+                                jsx: ['JavascriptLexer'],
+                                tsx: ['JavascriptLexer'],
+                                default: ['JavascriptLexer']
+                            }
+                        })
+                    )
+                    .pipe(vfs.dest(projectDir))
+
+                stream.on('error', (err) => {
+                    reject(err)
+                })
+
+                stream.on('warning', (warning) => {
+                    console.warn(warning)
+                })
+
+                stream.on('end', () => {
+                    console.log('i18n-extract completed')
+                    console.log(`Files written to ${projectDir}/i18n/untranslated/`)
+                    resolve()
+                })
+            })
+        })
 
     await program.parseAsync(process.argv)
 }

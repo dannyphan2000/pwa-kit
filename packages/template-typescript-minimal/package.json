@@ -14,6 +14,7 @@
     "start:inspect": "npm run start -- --inspect",
     "tail-logs": "pwa-kit-dev tail-logs",
     "test": "pwa-kit-dev test",
+    "i18n-extract": "pwa-kit-dev i18n-extract",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

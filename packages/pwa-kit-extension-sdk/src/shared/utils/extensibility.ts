@@ -143,3 +143,12 @@ export const getApplicationExtensionInfo = (appConfig?: any) => {
         configured: configuredExtensions
     }
 }
+
+export const getExtensionDirectories = (extensions: ApplicationExtensionEntry[]) => {
+    // return getExtensionNames(extensions).map((extension) => {
+    //     // TODO: implement this
+    //     // This function should return all directories for the extensions and the base project
+    //     // ["/project/app", "/project/node_modules/extension-a/src", "/project/node_modules/extension-b/src"]
+    // })
+    return ['/Users/kevin.he/dev/pwa-kit/packages/template-typescript-minimal/app']
+}
