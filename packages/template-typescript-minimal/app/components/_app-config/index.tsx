@@ -28,7 +28,11 @@ interface AppConfigProps {
 const reactIntlAdaptor = {
     t: (id: string, defaultMessage?: string, options?: Record<string, unknown>) => {
         const props = {id, defaultMessage}
-        console.log('t is overriden')
+        // you must use {...props} instead of <FormattedMessage id={id} defaultMessage={defaultMessage} />
+        // because the react-intl library and its babel plugin will attempt to do static analysis on the code
+        // during build time, and build will fail if react-intl thinks that you should use string literals.
+        // But we know what we are doing, we intentionally want to skip the static analysis,
+        // so we use {...props} to bypass the issue.
         return <FormattedMessage {...props} />
     },
     Provider: ({children, ...props}: {children: React.ReactNode} & IntlConfig) => {

@@ -10,7 +10,6 @@ type TranslateFunction = (
 ) => string | React.ReactNode;
 
 const defaultTranslate: TranslateFunction = (id, defaultMessage, options) => {
-  console.log('defaultTranslate')
   return defaultMessage ?? id;
 };
 
