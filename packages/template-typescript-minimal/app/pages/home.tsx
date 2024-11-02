@@ -65,7 +65,7 @@ body {
     height: 100vh;
 }
 h1 {
-    font-size: 10em;
+    font-size: 6em;
     font-weight: 900;
     letter-spacing: -0.05em;
 }
@@ -86,71 +86,14 @@ const Home = ({value}: Props) => {
     const [counter, setCounter] = useState(0)
     const applicationExtensions = useApplicationExtensions()
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCounter(counter + 1)
-        }, 1000)
-        return () => clearInterval(interval)
-    }, [counter, setCounter])
-
-    const query = useQuery(
-        ['example-data'],
-        () =>
-            new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve('This came from react-query')
-                }, 1000)
-            })
-    )
-
     return (
         <div>
             <style dangerouslySetInnerHTML={{__html: style}} />
 
-            <Translation />
+            
             <div className="loading-screen">
                 <div className="panel title">
-                    <h1>
-                        Typescript
-                        <br />
-                        Support!
-                    </h1>
-                </div>
-                <div className="panel">
-                    <div className="divider"></div>
-                </div>
-                <div className="panel">
-                    <p style={{width: '300px'}} className="fade-in fade-in-0">
-                        <>
-                            <b>This page is written in Typescript</b>
-                            <br />
-                            <br />
-                            React query works if this is not empty: &quot;{query.data}&quot;
-                            <br />
-                            <br />
-                            Server-side getProps works if this is a valid expression: &quot;5 times
-                            7 is {value}
-                            &quot;
-                            <br />
-                            <br />
-                            Client-side JS works if this counter increments: {counter}
-                            <br />
-                            <br />
-                            Application Extensions work if you see a list below:
-                            <br />
-                            <ul>
-                                {applicationExtensions?.map((extension, index) => (
-                                    <li key={index}>{extension.getName()} Extension</li>
-                                ))}
-                            </ul>
-                            <b>You can mix-and-match JS and TS</b>
-                            <br />
-                            <br />
-                            <HelloJS />
-                            &nbsp;
-                            <HelloTS message="it works!" />
-                        </>
-                    </p>
+                <Translation />
                 </div>
             </div>
         </div>

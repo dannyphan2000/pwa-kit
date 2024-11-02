@@ -9,6 +9,7 @@ import {withLegacyGetProps} from '@salesforce/pwa-kit-react-sdk/ssr/universal/co
 import {withReactQuery} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/with-react-query'
 import {I18nProvider} from '@salesforce/pwa-kit-react-sdk/i18n'
 import {IntlProvider, IntlConfig, FormattedMessage} from 'react-intl'
+import {LocaleProvider, useLocale} from './locale-context'
 
 import en from '../../../i18n/core/en.json';
 import fr from '../../../i18n/core/fr.json';
@@ -41,8 +42,27 @@ const reactIntlAdaptor = {
 }
 
 const AppConfig = ({children}: AppConfigProps) => {
-    return <I18nProvider adaptor={reactIntlAdaptor} locale="fr" messages={TRANSLATIONS['fr']}>{children}</I18nProvider>
-}
+    return (
+        <LocaleProvider>
+            <AppConfigContent>{children}</AppConfigContent>
+        </LocaleProvider>
+    );
+};
+
+// Create a new component to use the locale context
+const AppConfigContent = ({children}: {children: React.ReactNode}) => {
+    const {locale} = useLocale();
+    
+    return (
+        <I18nProvider 
+            adaptor={reactIntlAdaptor} 
+            locale={locale} 
+            messages={TRANSLATIONS[locale]}
+        >
+            {children}
+        </I18nProvider>
+    );
+};
 
 AppConfig.restore = () => {}
 AppConfig.extraGetPropsArgs = () => {}
