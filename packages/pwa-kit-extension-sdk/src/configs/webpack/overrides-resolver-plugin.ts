@@ -74,6 +74,10 @@ export class OverridesResolverPlugin {
                 extensions: this.options.fileExtensions,
                 packageIterator: () =>
                     buildCandidatePaths(importPath, sourcePath, {
+                        // TODO: does the overrides resolver need to get the _configured_ extensions at build time?
+                        // If yes, then it looks like we'll need a convention of having at least default.json config,
+                        // where ALL configured extensions are listed there, and have them all enabled.
+
                         // Ensure we have the long form configuration entry.
                         extensionEntries: expand(getConfig().extensions),
                         projectDir: this.options.projectDir
