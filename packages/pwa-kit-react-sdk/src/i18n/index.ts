@@ -1,1 +1,1 @@
-export * from './translate'
+export * from './i18nProvider'

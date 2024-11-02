@@ -6,6 +6,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /* eslint-disable @typescript-eslint/no-var-requires */
+const {finished} = require('stream/promises')
 const chalk = require('chalk')
 const p = require('path')
 const fse = require('fs-extra')
@@ -536,46 +537,53 @@ const main = async () => {
         .command('i18n-extract')
         .description('extract i18n messages from the project')
         .action(async (_, {args}) => {
-            console.log('i18n-extract')
+            // this lib only exports ESM, so we use dynamic import
+            // since this file is common.js and is not compiled
+            info('i18n-extract running...')
             const i18nextParser = await import('i18next-parser')
             // const directories = getExtensionDirectories()
-            console.log(i18nextParser)
 
             // TODO: get the right project directory
             const projectDir = '/Users/kevin.he/dev/pwa-kit/packages/template-typescript-minimal'
-            return new Promise((resolve, reject) => {
-                const stream = vfs
-                    .src([`${projectDir}/app/**/*.{js,jsx,ts,tsx}`])
-                    .pipe(
-                        new i18nextParser.transform({
-                            locales: ['en', 'es'],
-                            output: `${projectDir}/i18n/untranslated/$LOCALE.json`,
-                            lexers: {
-                                mjs: ['JavascriptLexer'],
-                                js: ['JavascriptLexer'],
-                                ts: ['JavascriptLexer'],
-                                jsx: ['JavascriptLexer'],
-                                tsx: ['JavascriptLexer'],
-                                default: ['JavascriptLexer']
-                            }
-                        })
-                    )
-                    .pipe(vfs.dest(projectDir))
 
-                stream.on('error', (err) => {
-                    reject(err)
+            info('Extracting i18n messages from your project and installed extensions...')
+            // const promise = new Promise((resolve, reject) => {
+            const stream = vfs
+                .src([`${projectDir}/app/**/*.{js,jsx,ts,tsx}`])
+                .pipe(
+                    new i18nextParser.transform({
+                        defaultNamespace: 'core',
+                        locales: ['en', 'fr'],
+                        output: `${projectDir}/i18n/$NAMESPACE/$LOCALE.json`,
+                        lexers: {
+                            mjs: ['JavascriptLexer'],
+                            js: ['JavascriptLexer'],
+                            ts: ['JavascriptLexer'],
+                            jsx: ['JavascriptLexer'],
+                            tsx: ['JavascriptLexer'],
+                            default: ['JavascriptLexer']
+                        },
+                        failOnWarnings: true
+                    })
+                )
+                .on('warning', (err) => {
+                    warn(`${err.message || err.toString()}`)
+                })
+                .on('error', (err) => {
+                    error(`${err.message || err.toString()}`)
+                })
+                .pipe(vfs.dest(projectDir))
+                .on('end', () => {
+                    success('i18n-extract completed.')
+                    success(`Files written to ${projectDir}/i18n/untranslated/`)
                 })
 
-                stream.on('warning', (warning) => {
-                    console.warn(warning)
-                })
-
-                stream.on('end', () => {
-                    console.log('i18n-extract completed')
-                    console.log(`Files written to ${projectDir}/i18n/untranslated/`)
-                    resolve()
-                })
-            })
+            try {
+                await finished(stream)
+            } catch (err) {
+                error(err.message || err.toString())
+                process.exit(1)
+            }
         })
 
     await program.parseAsync(process.argv)
