@@ -12,8 +12,8 @@ import {Alert, Button, Stack, Text} from '@salesforce/retail-react-app/app/compo
 import {AlertIcon, BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import StandardLogin from '@salesforce/retail-react-app/app/components/standard-login'
 import PasswordlessLogin from '@salesforce/retail-react-app/app/components/passwordless-login'
+import SocialLogin from '@salesforce/retail-react-app/app/components/social-login'
 import {noop} from '@salesforce/retail-react-app/app/utils/utils'
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const LoginForm = ({
     submitForm,
@@ -110,6 +110,7 @@ LoginForm.propTypes = {
     handleForgotPasswordClick: PropTypes.func,
     clickCreateAccount: PropTypes.func,
     clickPasswordlessLogin: PropTypes.func,
+    form: PropTypes.object,
     isPasswordlessEnabled: PropTypes.bool,
     isSocialEnabled: PropTypes.bool,
     idps: PropTypes.array[PropTypes.string]

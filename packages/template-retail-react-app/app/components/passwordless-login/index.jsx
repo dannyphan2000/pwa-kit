@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
 import {FormattedMessage} from 'react-intl'
 import {Button, Divider, Stack, Text} from '@salesforce/retail-react-app/app/components/shared/ui'
 import LoginFields from '@salesforce/retail-react-app/app/components/forms/login-fields'
-import StandardLogin from '../standard-login/index'
+import StandardLogin from '@salesforce/retail-react-app/app/components/standard-login'
 import SocialLogin from '@salesforce/retail-react-app/app/components/social-login'
 
 const PasswordlessLogin = ({

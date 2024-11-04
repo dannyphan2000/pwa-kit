@@ -7,7 +7,7 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import {FormattedMessage, useIntl} from 'react-intl'
+import {FormattedMessage} from 'react-intl'
 import {Button, Stack, Text} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 
@@ -25,9 +25,8 @@ const CheckEmail = ({email}) => {
                 <FormattedMessage
                     defaultMessage="We just sent a login link to <b>{email}</b>"
                     id="auth_modal.check_email.description.just_sent"
-                    //TODO: Replace with email from login form !!!
                     values={{
-                        email: 'email@email.com',
+                        email: {email},
 
                         b: (chunks) => <b>{chunks}</b>
                     }}
