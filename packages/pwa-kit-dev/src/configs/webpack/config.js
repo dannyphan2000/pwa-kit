@@ -31,7 +31,6 @@ import {CLIENT, SERVER, CLIENT_OPTIONAL, SSR, REQUEST_PROCESSOR} from './config-
 
 // Utilities
 import {ruleForApplicationExtensibility} from '@salesforce/pwa-kit-extension-sdk/configs/webpack'
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {buildAliases, nameRegex} from '@salesforce/pwa-kit-extension-sdk/shared/utils'
 
 const projectDir = process.cwd()

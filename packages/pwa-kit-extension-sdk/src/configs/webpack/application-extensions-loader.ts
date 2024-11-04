@@ -39,6 +39,8 @@ export default function ApplicationExtensibilityLoader(
     // targets (server) do not require this optimization.
     const data = {
         ...this.getOptions(),
+
+        // TODO
         ...getApplicationExtensionInfo()
     }
 

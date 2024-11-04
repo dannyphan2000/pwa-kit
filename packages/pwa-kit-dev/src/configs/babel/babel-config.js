@@ -27,8 +27,8 @@ const config = {
         [
             require('@salesforce/pwa-kit-extension-sdk/configs/babel/plugin-application-extensions'),
             {
-                target: 'node'
-                // ...getApplicationExtensionInfo(getConfig())
+                target: 'node',
+                ...getApplicationExtensionInfo()
             }
         ],
         require('@babel/plugin-transform-async-to-generator'),

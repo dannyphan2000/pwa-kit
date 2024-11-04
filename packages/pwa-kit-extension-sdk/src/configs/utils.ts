@@ -25,15 +25,16 @@ Handlebars.registerHelper('getInstanceName', (aString: string) => {
 
     return kebabToUpperCamelCase(`${namespace ? `${namespace}-` : ''}${name}`)
 })
-Handlebars.registerHelper('isNotLast', (index, arrayLength) => index !== arrayLength - 1)
 Handlebars.registerHelper('isNode', (target) => target === 'node')
 Handlebars.registerHelper('isWeb', (target) => target === 'web')
-Handlebars.registerHelper('jsonStringify', (context) => JSON.stringify(context, null, 0))
 
 // NOTE: We inline this template because it's easier to bundle it in the code than load it from the file system due
 // to issues with pathing because the current working directory for the loader isn't the same as the base project.
 // We can look to resolve this in the future as it would be nice to have a independant file for the template.
 const templateString = dedent`
+    import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+    import {expand} from '../../shared/utils/helpers'
+
     {{#if (isWeb @root.target)}}
     import loadable from '@loadable/component'
     {{/if}}
@@ -46,22 +47,44 @@ const templateString = dedent`
     {{/if}}
     {{/each}}
 
+    const installedExtensions = {
+    {{#each installed}}
+    {{#if (isNode @root.target)}}
+        '{{.}}': {{getInstanceName .}},
+    {{else}}
+        '{{.}}': {{getInstanceName .}}Loader,
+    {{/if}}
+    {{/each}}
+    }
+
+    const getConfiguredExtensions = () => expand(getConfig()?.app?.extensions || [])
+
     {{#if (isNode @root.target)}}
     const getApplicationExtensions = () => {
-        {{#if configured}}
-        return [{{#each configured}}new {{getInstanceName this.[0]}}({{{jsonStringify this.[1]}}}){{#if (isNotLast @index @root.configured.length)}}, {{/if}}{{/each}}]
-        {{else}}
+        const configuredExtensions = getConfiguredExtensions()
+        if (configuredExtensions) {
+            return configuredExtensions.map((extension) => {
+                const packageName = extension[0]
+                const config = extension[1]
+                return new installedExtensions[packageName](config)
+            })
+        }
         return []
-        {{/if}}    
     }
     {{else}}
     const getApplicationExtensions = async () => {
-    	{{#if configured}}
-        const modules = await Promise.all([{{#each configured}}{{getInstanceName this.[0]}}Loader.load(){{#if (isNotLast @index @root.configured.length)}},{{/if}}{{/each}}])
-        return [{{#each configured}}new modules[{{@index}}].default({{{jsonStringify this.[1]}}}){{#if (isNotLast @index @root.configured.length)}}, {{/if}}{{/each}}]
-        {{else}}
+        const configuredExtensions = getConfiguredExtensions()
+        if (configuredExtensions) {
+            const modules = await Promise.all(configuredExtensions.map((extension) => {
+                const packageName = extension[0]
+                return installedExtensions[packageName].load()
+            }))
+            return configuredExtensions.map((extension, index) => {
+                const config = extension[1]
+                return new modules[index].default(config)
+            })
+        }
         return []
-        {{/if}}
     }
     {{/if}}
 

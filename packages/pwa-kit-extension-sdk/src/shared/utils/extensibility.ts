@@ -16,7 +16,7 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {ApplicationExtensionEntry} from '../../types'
 
 // Local
-import {expand} from './resolver'
+import {expand} from './helpers'
 
 // CONSTANTS
 // const REACT_EXTENSIBILITY_FILE = 'setup-app'
@@ -122,21 +122,16 @@ export const getExtensionNames = (extensions: ApplicationExtensionEntry[]) => {
  * - `installed` {string[]} - An array of installed extension names based on the project's devDependencies.
  * - `configured` {string[]} - An array of configured extension names as specified in the application configuration.
  */
+// TODO: return only `installed` ?
 export const getApplicationExtensionInfo = () => {
-    let appConfig = getConfig()
     const projectDir = process.cwd()
     const pkg = fse.readJsonSync(resolve(projectDir, 'package.json'))
-
-    // Use the application configuration in the projects application if one isn't provided.
-    appConfig = appConfig
-        ? appConfig
-        : fse.readJsonSync(resolve(projectDir, 'package.json'))?.mobify || {}
+    const appConfig = getConfig() || pkg?.mobify || {}
 
     const installedExtensions = Object.keys(pkg?.devDependencies || {})
         .map((packageName) => (packageName.match(nameRegex) !== null ? packageName : undefined))
         .filter(Boolean)
 
-    // NOTE: Might have to get the expanded version of these.
     const configuredExtensions = expand(appConfig?.app?.extensions || [])
 
     return {
