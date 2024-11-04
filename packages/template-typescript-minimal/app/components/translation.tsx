@@ -13,7 +13,9 @@ const LanguageSwitcher = ({id}: {id: Locale}) => {
                 padding: '12px 24px',
                 margin: '12px 24px',
                 fontSize: '16px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                backgroundColor: 'white',
+                color: 'black'
             }}
         >
             Switch to {id} Language
