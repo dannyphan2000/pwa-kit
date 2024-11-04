@@ -31,7 +31,8 @@ import {CLIENT, SERVER, CLIENT_OPTIONAL, SSR, REQUEST_PROCESSOR} from './config-
 
 // Utilities
 import {ruleForApplicationExtensibility} from '@salesforce/pwa-kit-extension-sdk/configs/webpack'
-import {buildAliases, nameRegex} from '@salesforce/pwa-kit-extension-sdk/shared/utils'
+import {buildAliases, expand, nameRegex} from '@salesforce/pwa-kit-extension-sdk/shared/utils'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const projectDir = process.cwd()
 const pkg = fse.readJsonSync(resolve(projectDir, 'package.json'))
@@ -185,7 +186,6 @@ const baseConfig = (target) => {
                     plugins: [
                         new OverridesResolverPlugin({
                             projectDir: process.cwd(),
-                            // extensions: appConfig?.extensions,
                             fileExtensions: SUPPORTED_FILE_EXTENSIONS
                         })
                     ],
@@ -253,15 +253,11 @@ const baseConfig = (target) => {
                         },
                         ruleForApplicationExtensibility({
                             loaderOptions: {
-                                // TODO: don't call getConfig yet
-                                // appConfig: getConfig(),
                                 target: 'web'
                             }
                         }),
                         ruleForApplicationExtensibility({
                             loaderOptions: {
-                                // TODO: don't call getConfig yet
-                                // appConfig: getConfig(),
                                 target: 'node'
                             }
                         })
@@ -307,26 +303,14 @@ const withChunking = (config) => {
     }
 }
 
-// TODO: Once we create a new project for extensibility we'll have the opportunity to better move this utility
-// to a place that can be reused. This util is also used in the `extensions-loader`.
-const normalizeExtensionsList = (extensions = []) =>
-    extensions.map((extension) => {
-        return {
-            packageName: Array.isArray(extension) ? extension[0] : extension,
-            config: Array.isArray(extension) ? {enabled: true, ...extension[1]} : {enabled: true}
-        }
-    })
-
 const staticFolderCopyPlugin = new CopyPlugin({
     patterns: [
         {
             from: 'app/static/',
             to: 'static/'
-        }
-        // TODO: bring this back
-        /*
-        ...normalizeExtensionsList(appConfig?.extensions).map((extension) => {
-            const {packageName} = extension
+        },
+        ...expand(getConfig()?.app?.extensions).map((extension) => {
+            const packageName = extension[0]
             // Parse the extension name out.
             return {
                 from: `${projectDir}/node_modules/${packageName}/static`,
@@ -335,7 +319,6 @@ const staticFolderCopyPlugin = new CopyPlugin({
                 noErrorOnMissing: true
             }
         })
-        */
     ]
 })
 
