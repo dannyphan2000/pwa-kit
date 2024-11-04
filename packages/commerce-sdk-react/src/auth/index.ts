@@ -15,7 +15,13 @@ import {jwtDecode, JwtPayload} from 'jwt-decode'
 import {ApiClientConfigParams, Prettify, RemoveStringIndex} from '../hooks/types'
 import {BaseStorage, LocalStorage, CookieStorage, MemoryStorage, StorageType} from './storage'
 import {CustomerType} from '../hooks/useCustomerType'
-import {getParentOrigin, isOriginTrusted, onClient, getDefaultCookieAttributes, isAbsoluteUrl} from '../utils'
+import {
+    getParentOrigin,
+    isOriginTrusted,
+    onClient,
+    getDefaultCookieAttributes,
+    isAbsoluteUrl
+} from '../utils'
 import {
     MOBIFY_PATH,
     SLAS_PRIVATE_PROXY_PATH,
@@ -298,8 +304,11 @@ class Auth {
 
         this.isPrivate = !!this.clientSecret
 
-        this.callbackURI = callbackURI ? isAbsoluteUrl(callbackURI) 
-        ? callbackURI : `${baseUrl}${callbackURI}` : ''
+        this.callbackURI = callbackURI
+            ? isAbsoluteUrl(callbackURI)
+                ? callbackURI
+                : `${baseUrl}${callbackURI}`
+            : ''
     }
 
     get(name: AuthDataKeys) {
