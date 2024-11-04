@@ -125,7 +125,7 @@ export const StoreLocatorForm: React.FC = () => {
                 />
                 <Button key="find-button" type="submit" width="15%" marginLeft={2} variant="solid">
                     {t('find', 'Find', {
-                        ns: 'store-locator'
+                        namespace: 'extension-store-locator'
                     })}
                 </Button>
             </InputGroup>
@@ -146,7 +146,7 @@ export const StoreLocatorForm: React.FC = () => {
                 marginBottom={4}
             >
                 {t('use-my-location', 'Use My Location', {
-                    ns: 'store-locator'
+                    namespace: 'extension-store-locator'
                 })}
             </Button>
             <FormControl isInvalid={!!error}>

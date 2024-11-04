@@ -26,15 +26,13 @@ export const StoreLocatorList: React.FC<StoreLocatorListProps> = () => {
     const displayStoreLocatorStatusMessage = (): string | React.ReactNode => {
         if (isLoading) {
             return t('loading-locations', 'Loading locations...', {
-                    ns: 'store-locator'
-                })
-            
+                namespace: 'extension-store-locator'
+            })
         }
         if (data?.total === 0) {
             return t('no-locations', 'Sorry, there are no locations in this area', {
-                    ns: 'store-locator'
-                })
-            
+                namespace: 'extension-store-locator'
+            })
         }
 
         if (mode === 'input') {

@@ -14,7 +14,7 @@ export const StoreLocatorHeading = (): JSX.Element => {
         <>
             <Heading fontSize="2xl" marginBottom={6}>
                 {t('find-a-store', 'Find a Store', {
-                    ns: 'store-locator'
+                    namespace: 'extension-store-locator'
                 })}
             </Heading>
         </>

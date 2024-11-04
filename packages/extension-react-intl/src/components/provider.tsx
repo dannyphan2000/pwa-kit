@@ -3,23 +3,7 @@ import {I18nProvider} from '@salesforce/pwa-kit-react-sdk/i18n'
 import {IntlProvider, IntlConfig, FormattedMessage} from 'react-intl'
 import {useLocale, LocaleProvider} from '$/components/locale-context'
 
-// TODO: how to pass these translations JSON files from the project to this extension?
-// Loadable?
-import en from '../../../template-typescript-minimal/i18n/core/en.json'
-import fr from '../../../template-typescript-minimal/i18n/core/fr.json'
-import storeLocatorEn from '../../../template-typescript-minimal/i18n/store-locator/en.json'
-import storeLocatorFr from '../../../template-typescript-minimal/i18n/store-locator/fr.json'
-
-const TRANSLATIONS = {
-    en: {
-        ...en,
-        ...storeLocatorEn
-    },
-    fr: {
-        ...fr,
-        ...storeLocatorFr
-    }
-}
+import translations from '../translations'
 
 const reactIntlAdaptor = {
     t: (id: string, defaultMessage?: string, options?: Record<string, unknown>) => {
@@ -50,7 +34,7 @@ const Provider = ({children}: {children: React.ReactNode}) => {
 const ProviderContent = ({children}: {children: React.ReactNode}) => {
     const {locale} = useLocale()
     return (
-        <I18nProvider adaptor={reactIntlAdaptor} locale={locale} messages={TRANSLATIONS[locale]}>
+        <I18nProvider adaptor={reactIntlAdaptor} locale={locale} messages={translations[locale]}>
             {children}
         </I18nProvider>
     )

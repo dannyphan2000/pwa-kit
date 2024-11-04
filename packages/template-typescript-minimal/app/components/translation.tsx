@@ -1,7 +1,5 @@
 import React from 'react'
 import {t} from '@salesforce/pwa-kit-react-sdk/i18n'
-// import {useLocale} from './_app-config/locale-context'
-// import type {Locale} from './_app-config/locale-context'
 import {useLocale} from '$/components/locale-context'
 import type {Locale} from '$/components/locale-context'
 
