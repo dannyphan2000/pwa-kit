@@ -8,28 +8,23 @@
 import React, {Fragment} from 'react'
 import PropTypes from 'prop-types'
 import {FormattedMessage} from 'react-intl'
-import {
-    Alert,
-    Box,
-    Button,
-    Stack,
-    Text
-} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {Alert, Button, Stack, Text} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {AlertIcon, BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
-import LoginFields from '@salesforce/retail-react-app/app/components/forms/login-fields'
-import SocialLogin from '@salesforce/retail-react-app/app/components/social-login'
+import StandardLogin from '@salesforce/retail-react-app/app/components/standard-login'
+import PasswordlessLogin from '@salesforce/retail-react-app/app/components/passwordless-login'
 import {noop} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const LoginForm = ({
     submitForm,
-    clickForgotPassword = noop,
+    handleForgotPasswordClick,
     clickCreateAccount = noop,
     clickPasswordlessLogin = noop,
-    form
+    form,
+    isPasswordlessEnabled = false,
+    isSocialEnabled = false,
+    idps = []
 }) => {
-    const idps = getConfig().app?.login?.idps
-
     return (
         <Fragment>
             <Stack justify="center" align="center" spacing={8} marginBottom={8}>
@@ -46,41 +41,44 @@ const LoginForm = ({
                 onSubmit={form.handleSubmit(submitForm)}
                 data-testid="sf-auth-modal-form"
             >
-                <Stack spacing={8} paddingLeft={4} paddingRight={4}>
-                    {form.formState.errors?.global && (
-                        <Alert status="error">
-                            <AlertIcon color="red.500" boxSize={4} />
-                            <Text fontSize="sm" ml={3}>
-                                {form.formState.errors.global.message}
-                            </Text>
-                        </Alert>
+                {form.formState.errors?.global && (
+                    <Alert status="error">
+                        <AlertIcon color="red.500" boxSize={4} />
+                        <Text fontSize="sm" ml={3}>
+                            {form.formState.errors.global.message}
+                        </Text>
+                    </Alert>
+                )}
+                <Stack spacing={6}>
+                    {isPasswordlessEnabled ? (
+                        <PasswordlessLogin
+                            form={form}
+                            handleForgotPasswordClick={handleForgotPasswordClick}
+                            isSocialEnabled={isSocialEnabled}
+                            idps={idps}
+                        />
+                    ) : (
+                        <StandardLogin
+                            form={form}
+                            handleForgotPasswordClick={handleForgotPasswordClick}
+                            isSocialEnabled={isSocialEnabled}
+                            idps={idps}
+                        />
                     )}
-                    <Stack>
-                        <LoginFields form={form} />
 
-                        <Box>
-                            <Button variant="link" size="sm" onClick={clickForgotPassword}>
-                                <FormattedMessage
-                                    defaultMessage="Forgot password?"
-                                    id="login_form.link.forgot_password"
-                                />
-                            </Button>
-                        </Box>
-                    </Stack>
-                    <Stack spacing={6}>
-                        <Button
-                            type="submit"
-                            onClick={() => {
-                                form.clearErrors('global')
-                            }}
-                            isLoading={form.formState.isSubmitting}
-                        >
+                    <Stack direction="row" spacing={1} justify="center">
+                        <Text fontSize="sm">
                             <FormattedMessage
-                                defaultMessage="Sign In"
-                                id="login_form.button.sign_in"
+                                defaultMessage="Don't have an account?"
+                                id="login_form.message.dont_have_account"
+                            />
+                        </Text>
+                        <Button variant="link" size="sm" onClick={clickCreateAccount}>
+                            <FormattedMessage
+                                defaultMessage="Create account"
+                                id="login_form.action.create_account"
                             />
                         </Button>
-
                         <SocialLogin idps={idps} />
 
                         <Stack direction="row" spacing={1} justify="center">
@@ -109,10 +107,12 @@ const LoginForm = ({
 
 LoginForm.propTypes = {
     submitForm: PropTypes.func,
-    clickForgotPassword: PropTypes.func,
+    handleForgotPasswordClick: PropTypes.func,
     clickCreateAccount: PropTypes.func,
     clickPasswordlessLogin: PropTypes.func,
-    form: PropTypes.object
+    isPasswordlessEnabled: PropTypes.bool,
+    isSocialEnabled: PropTypes.bool,
+    idps: PropTypes.array[PropTypes.string]
 }
 
 export default LoginForm

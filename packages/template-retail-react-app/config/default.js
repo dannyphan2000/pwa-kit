@@ -21,7 +21,8 @@ module.exports = {
                 callbackURI: 'https://webhook.site/27761b71-50c1-4097-a600-21a3b89a546c'
             },
             social: {
-                enabled: false
+                enabled: false,
+                idps: ['google', 'apple']
             }
         },
         defaultSite: 'RefArchGlobal',

@@ -7,11 +7,29 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import {FormattedMessage} from 'react-intl'
+import {defineMessage, useIntl} from 'react-intl'
 import {Button, Stack} from '@salesforce/retail-react-app/app/components/shared/ui'
+import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 
 // Icons
 import {AppleIcon, GoogleIcon} from '@salesforce/retail-react-app/app/components/icons'
+
+const IDP_CONFIG = {
+    apple: {
+        icon: AppleIcon,
+        message: defineMessage({
+            id: 'login_form.button.apple',
+            defaultMessage: 'Apple'
+        })
+    },
+    google: {
+        icon: GoogleIcon,
+        message: defineMessage({
+            id: 'login_form.button.google',
+            defaultMessage: 'Google'
+        })
+    }
+}
 
 /**
  * Create a stack of button for social login links
@@ -19,24 +37,27 @@ import {AppleIcon, GoogleIcon} from '@salesforce/retail-react-app/app/components
  * @returns
  */
 const SocialLogin = ({idps}) => {
-    const IDP_CONFIG = {
-        apple: {
-            icon: AppleIcon,
-            message: 'Apple'
-        },
-        google: {
-            icon: GoogleIcon,
-            message: 'Google'
-        }
-    }
+    const {formatMessage} = useIntl()
 
     return (
         idps && (
             <Stack spacing={4}>
                 {idps.map((name) => {
                     const config = IDP_CONFIG[name.toLowerCase()]
+
+                    if (!config) {
+                        logger.error(
+                            'IDP "' +
+                                name +
+                                '" is missing from IDP_CONFIG. Valid IDPs are [' +
+                                Object.keys(IDP_CONFIG).join(', ') +
+                                '].'
+                        )
+                        return null
+                    }
+
                     const Icon = config?.icon
-                    const message = config?.message
+                    const message = formatMessage(config?.message)
 
                     return (
                         config && (
@@ -49,11 +70,7 @@ const SocialLogin = ({idps}) => {
                                 variant="outline"
                             >
                                 <Icon sx={{marginRight: 2}} />
-                                <FormattedMessage
-                                    defaultMessage="{message}"
-                                    id="login_form.button.social"
-                                    values={{message}}
-                                />
+                                {message}
                             </Button>
                         )
                     )
