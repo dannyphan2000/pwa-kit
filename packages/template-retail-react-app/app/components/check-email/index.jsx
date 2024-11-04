@@ -11,7 +11,7 @@ import {FormattedMessage} from 'react-intl'
 import {Button, Stack, Text} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 
-const CheckEmail = ({email}) => {
+const CheckEmail = ({email = ''}) => {
     return (
         <Stack justify="center" align="center" spacing={6}>
             <BrandLogo width="60px" height="auto" />
@@ -26,8 +26,7 @@ const CheckEmail = ({email}) => {
                     defaultMessage="We just sent a login link to <b>{email}</b>"
                     id="auth_modal.check_email.description.just_sent"
                     values={{
-                        email: {email},
-
+                        email: email,
                         b: (chunks) => <b>{chunks}</b>
                     }}
                 />
