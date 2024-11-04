@@ -238,13 +238,25 @@ const main = async () => {
                 '.bin',
                 'babel-node'
             )
+            
+            const buildBabelExtensibilityArgs = () => {
+                // Accessing the files via "node_modules" will ensure this solution works both in the mono-repo and in developers
+                // environments working on templates using extensibility. NOTE: Babel doesn't like relative paths or paths that are symlinks
+                // this is why we use realpathSync.
+                const serverPath = fse.realpathSync(p.resolve('node_modules/@salesforce/pwa-kit-runtime/ssr/server/build-remote-server.js'))
+                const placeHolderPath = fse.realpathSync(p.resolve('node_modules/@salesforce/pwa-kit-extension-sdk/express/placeholders/application-extensions.js'))
+                // TODO: Here we need to actually loop over the configured extensions.
+                const extensionSrcPaths = ['@salesforce/extension-sample'].map((packageName) => {
+                    return fse.realpathSync(p.resolve(`node_modules/${packageName}/src`))
+                })
+                
+                return `--ignore "node_modules/does_not_exist" --only "app/**,${serverPath},${placeHolderPath},${extensionSrcPaths.join(',')}/**"`
+            }
 
-            // TODO: Babel is transpiling files in the node_modules folder that is doesn't have to!! I don't know why these ignores are working
-            // there is also a set of ignores that might have to be set in the babel configuration.
             execSync(
                 `${babelNode} ${
                     inspect ? '--inspect' : ''
-                } --ignore '/node_modules\\/(?!extension-[^\\/]+\\/)/i' ${babelArgs} ${getAppEntrypoint()}`,
+                } ${buildBabelExtensibilityArgs()} ${babelArgs} ${getAppEntrypoint()}`,
                 {
                     env: {
                         ...process.env,
