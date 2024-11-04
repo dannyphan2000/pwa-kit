@@ -132,6 +132,7 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
                     {isPasswordlessEnabled && (
                         <Button
                             variant="outline"
+                            borderColor="gray.500"
                             type="submit"
                             onClick={() => {
                                 form.clearErrors('global')
@@ -149,6 +150,7 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
                     {!showPasswordField && (
                         <Button
                             variant="outline"
+                            borderColor="gray.500"
                             onClick={() => {
                                 togglePasswordField()
                                 setShowLoginButtons(!showLoginButtons)
@@ -166,6 +168,7 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
             ) : (
                 <Button
                     variant="outline"
+                    borderColor="gray.500"
                     onClick={() => {
                         togglePasswordField()
                         setShowLoginButtons(!showLoginButtons)
@@ -179,7 +182,7 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
             )
         } else {
             return (
-                <Button variant="outline" onClick={togglePasswordField}>
+                <Button variant="outline" borderColor="gray.500" onClick={togglePasswordField}>
                     {!showPasswordField ? (
                         <FormattedMessage
                             defaultMessage="Already have an account? Log in"

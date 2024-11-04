@@ -44,7 +44,13 @@ const SocialLogin = ({idps}) => {
             <Stack spacing={4}>
                 {idps.map((name) => {
                     if (!(name in IDP_CONFIG)) {
-                        logger.error('IDP "'+ name + '" is missing from IDP_CONFIG. Valid IDPs are ['+ Object.keys(IDP_CONFIG).join(', ') + '].')
+                        logger.error(
+                            'IDP "' +
+                                name +
+                                '" is missing from IDP_CONFIG. Valid IDPs are [' +
+                                Object.keys(IDP_CONFIG).join(', ') +
+                                '].'
+                        )
                     }
                     const config = IDP_CONFIG[name.toLowerCase()]
 
@@ -68,6 +74,7 @@ const SocialLogin = ({idps}) => {
                                 onClick={() => {
                                     alert(message)
                                 }}
+                                borderColor="gray.500"
                                 color="blue.600"
                                 variant="outline"
                                 key={`${name}-button`}
