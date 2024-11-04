@@ -1,5 +1,5 @@
 import React from 'react'
-import {FormattedMessage} from 'react-intl'
+import {t} from '@salesforce/pwa-kit-react-sdk/i18n'
 import {useLocale} from './_app-config/locale-context'
 import type {Locale} from './_app-config/locale-context'
 
@@ -26,8 +26,8 @@ const LanguageSwitcher = ({id}: {id: Locale}) => {
 const Translation = () => {
     return (
         <>
-            <h1><FormattedMessage id="title" defaultMessage="Hello World!" /></h1>
-            <h3><FormattedMessage id="description" defaultMessage="This is a description" /></h3>
+            <h1>{t('title', 'Hello World!')}</h1>
+            <h3>{t('description', 'This is a description')}</h3>
             <LanguageSwitcher id="fr" />
             <LanguageSwitcher id="en" />
         </>

@@ -7,6 +7,7 @@
 
 import React, {useEffect, useState} from 'react'
 import {Accordion, AccordionItem, Box, Button} from '@chakra-ui/react'
+import {t} from '@salesforce/pwa-kit-react-sdk/i18n'
 import {StoreLocatorListItem} from '$/components/store-locator/store-locator-list-item'
 import {useStoreLocator} from './use-store-locator'
 import {Stores, Store} from '../../types/store'
@@ -22,9 +23,19 @@ export const StoreLocatorList: React.FC<StoreLocatorListProps> = () => {
         setPage(1)
     }, [data])
 
-    const displayStoreLocatorStatusMessage = (): string => {
-        if (isLoading) return 'Loading locations...'
-        if (data?.total === 0) return 'Sorry, there are no locations in this area'
+    const displayStoreLocatorStatusMessage = (): string | React.ReactNode => {
+        if (isLoading) {
+            return t('loading-locations', 'Loading locations...', {
+                    ns: 'store-locator'
+                })
+            
+        }
+        if (data?.total === 0) {
+            return t('no-locations', 'Sorry, there are no locations in this area', {
+                    ns: 'store-locator'
+                })
+            
+        }
 
         if (mode === 'input') {
             return `Viewing stores within ${String(config.defaultDistance)}${String(

@@ -545,11 +545,14 @@ const main = async () => {
 
             // TODO: get the right project directory
             const projectDir = '/Users/kevin.he/dev/pwa-kit/packages/template-typescript-minimal'
+            const projectDirGlob = `${projectDir}/app/**/*.{js,jsx,ts,tsx}`
+            const extensionDir = '/Users/kevin.he/dev/pwa-kit/packages/extension-store-locator'
+            const extensionDirGlob = `${extensionDir}/src/**/*.{js,jsx,ts,tsx}`
 
             info('Extracting i18n messages from your project and installed extensions...')
             // const promise = new Promise((resolve, reject) => {
             const stream = vfs
-                .src([`${projectDir}/app/**/*.{js,jsx,ts,tsx}`])
+                .src([projectDirGlob, extensionDirGlob])
                 .pipe(
                     new i18nextParser.transform({
                         defaultNamespace: 'core',
@@ -563,7 +566,8 @@ const main = async () => {
                             tsx: ['JavascriptLexer'],
                             default: ['JavascriptLexer']
                         },
-                        failOnWarnings: true
+                        failOnWarnings: true,
+                        verbose: true
                     })
                 )
                 .on('warning', (err) => {

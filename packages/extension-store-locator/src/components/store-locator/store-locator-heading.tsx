@@ -7,12 +7,15 @@
 
 import React from 'react'
 import {Heading} from '@chakra-ui/react'
+import {t} from '@salesforce/pwa-kit-react-sdk/i18n'
 
 export const StoreLocatorHeading = (): JSX.Element => {
     return (
         <>
             <Heading fontSize="2xl" marginBottom={6}>
-                Find a Store
+                {t('find-a-store', 'Find a Store', {
+                    ns: 'store-locator'
+                })}
             </Heading>
         </>
     )

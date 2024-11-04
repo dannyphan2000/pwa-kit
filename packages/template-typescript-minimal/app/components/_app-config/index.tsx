@@ -17,11 +17,21 @@ import {LocaleProvider, useLocale} from './locale-context'
 
 import en from '../../../i18n/core/en.json'
 import fr from '../../../i18n/core/fr.json'
+import storeLocatorEn from '../../../i18n/store-locator/en.json'
+import storeLocatorFr from '../../../i18n/store-locator/fr.json'
 
 const TRANSLATIONS = {
-    en,
-    fr
+    en: {
+        ...en,
+        ...storeLocatorEn
+    },
+    fr: {
+        ...fr,
+        ...storeLocatorFr
+    }
 }
+
+console.log('TRANSLATIONS', TRANSLATIONS)
 
 const isServerSide = typeof window === 'undefined'
 
@@ -80,9 +90,9 @@ const CommerceApiProvderWrapper = ({children}: {children: React.ReactNode}) => {
 const AppConfig = ({children}: AppConfigProps) => {
     return (
         <CommerceApiProvderWrapper>
-        <LocaleProvider>
-            <AppConfigContent>{children}</AppConfigContent>
-        </LocaleProvider>
+            <LocaleProvider>
+                <AppConfigContent>{children}</AppConfigContent>
+            </LocaleProvider>
         </CommerceApiProvderWrapper>
     )
 }
@@ -90,7 +100,7 @@ const AppConfig = ({children}: AppConfigProps) => {
 // Create a new component to use the locale context
 const AppConfigContent = ({children}: {children: React.ReactNode}) => {
     const {locale} = useLocale()
-
+    console.log('locale', locale)
     return (
         <I18nProvider adaptor={reactIntlAdaptor} locale={locale} messages={TRANSLATIONS[locale]}>
             {children}
