@@ -39,8 +39,6 @@ export default function ApplicationExtensibilityLoader(
     // targets (server) do not require this optimization.
     const data = {
         ...this.getOptions(),
-
-        // TODO
         ...getApplicationExtensionInfo()
     }
 
@@ -71,7 +69,6 @@ export const ruleForApplicationExtensibility = (options: any = {}) => {
         use: {
             loader: '@salesforce/pwa-kit-extension-sdk/configs/webpack/application-extensions-loader',
             options: {
-                // ...getApplicationExtensionInfo(),
                 target
             }
         }

@@ -122,7 +122,6 @@ export const getExtensionNames = (extensions: ApplicationExtensionEntry[]) => {
  * - `installed` {string[]} - An array of installed extension names based on the project's devDependencies.
  * - `configured` {string[]} - An array of configured extension names as specified in the application configuration.
  */
-// TODO: return only `installed` ?
 export const getApplicationExtensionInfo = () => {
     const projectDir = process.cwd()
     const pkg = fse.readJsonSync(resolve(projectDir, 'package.json'))

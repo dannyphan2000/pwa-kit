@@ -7,7 +7,6 @@
 
 // PWA-Kit Imports
 import {getApplicationExtensionInfo} from '@salesforce/pwa-kit-extension-sdk/shared/utils'
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const config = {
     sourceType: 'unambiguous',

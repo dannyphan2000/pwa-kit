@@ -10,7 +10,6 @@ import {LoaderContext} from 'webpack'
 
 export interface ApplicationExtensionsLoaderOptions {
     installed: string[]
-    // configured: string[]
     target: 'node' | 'web'
 }
 

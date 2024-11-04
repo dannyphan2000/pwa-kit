@@ -41,7 +41,6 @@ module.exports = function replaceExtensionsPlaceholderContentPlugin({types: t}: 
             },
             Program(path: any, state: any) {
                 const filePath = state.file.opts.filename
-                // TODO
                 const {installed, target} = state.opts
 
                 // Add a marker to the state to prevent reprocessing
