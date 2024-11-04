@@ -1,0 +1,52 @@
+{
+  "name": "@salesforce/extension-react-intl",
+  "version": "0.1.0-dev",
+  "scripts": {
+    "lint": "npm run lint:js",
+    "lint:fix": "npm run lint:js -- --fix",
+    "test": "pwa-kit-dev test",
+    "lint:js": "pwa-kit-dev lint \"**/*.{js,jsx,ts,tsx}\""
+  },
+  "peerDependencies": {
+    "react-intl": "^5.25.1",
+    "@salesforce/pwa-kit-react-sdk": "4.0.0-dev",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "peerDependenciesMeta": {
+    "react-intl": {
+      "optional": true
+    },
+    "@salesforce/pwa-kit-react-sdk": {
+      "optional": true
+    },
+    "prop-types": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@salesforce/pwa-kit-dev": "^4.0.0-dev",
+    "@salesforce/pwa-kit-extension-sdk": "4.0.0-dev",
+    "@salesforce/pwa-kit-react-sdk": "4.0.0-dev",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/react": "~18.2.0",
+    "@types/react-dom": "~18.2.1",
+    "express": "^4.19.2",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-intl": "^5.25.1"
+  },
+  "engines": {
+    "node": "^16.11.0 || ^18.0.0 || ^20.0.0",
+    "npm": "^8.0.0 || ^9.0.0 || ^10.0.0"
+  },
+  "mobify": {}
+}

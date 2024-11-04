@@ -1,32 +1,32 @@
-import React, {createContext, useContext, useState} from 'react'
+// import React, {createContext, useContext, useState} from 'react'
 
-// Add type for supported locales
-export type Locale = 'en' | 'fr';
+// // Add type for supported locales
+// export type Locale = 'en' | 'fr';
 
-type LocaleContextType = {
-    locale: Locale;
-    setLocale: (locale: Locale) => void;
-};
+// type LocaleContextType = {
+//     locale: Locale;
+//     setLocale: (locale: Locale) => void;
+// };
 
-const LocaleContext = createContext<LocaleContextType>({
-    locale: 'fr',
-    setLocale: () => {}
-});
+// const LocaleContext = createContext<LocaleContextType>({
+//     locale: 'fr',
+//     setLocale: () => {}
+// });
 
-export const LocaleProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
-    const [locale, setLocale] = useState<Locale>('fr');
+// export const LocaleProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
+//     const [locale, setLocale] = useState<Locale>('fr');
 
-    return (
-        <LocaleContext.Provider value={{locale, setLocale}}>
-            {children}
-        </LocaleContext.Provider>
-    );
-};
+//     return (
+//         <LocaleContext.Provider value={{locale, setLocale}}>
+//             {children}
+//         </LocaleContext.Provider>
+//     );
+// };
 
-export const useLocale = () => {
-    const context = useContext(LocaleContext);
-    if (!context) {
-        throw new Error('useLocale must be used within a LocaleProvider');
-    }
-    return context;
-}; 
+// export const useLocale = () => {
+//     const context = useContext(LocaleContext);
+//     if (!context) {
+//         throw new Error('useLocale must be used within a LocaleProvider');
+//     }
+//     return context;
+// }; 

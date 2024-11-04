@@ -23,6 +23,7 @@
     "@emotion/styled": "^11.13.0",
     "@loadable/component": "^5.15.3",
     "@salesforce/commerce-sdk-react": "^3.1.0-dev",
+    "@salesforce/extension-react-intl": "^0.1.0-dev",
     "@salesforce/extension-sample": "1.0.0-dev",
     "@salesforce/extension-store-locator": "^0.1.0-dev",
     "@salesforce/pwa-kit-dev": "4.0.0-dev",
@@ -48,6 +49,12 @@
   "mobify": {
     "app": {
       "extensions": [
+        [
+          "@salesforce/extension-react-intl",
+          {
+            "enabled": true
+          }
+        ],
         [
           "@salesforce/extension-sample",
           {
