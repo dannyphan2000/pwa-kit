@@ -41,7 +41,6 @@ module.exports = function replaceExtensionsPlaceholderContentPlugin({types: t}: 
             },
             Program(path: any, state: any) {
                 const filePath = state.file.opts.filename
-                const {installed, target} = state.opts
 
                 // Add a marker to the state to prevent reprocessing
                 if (processedFiles.has(filePath)) {
@@ -51,10 +50,7 @@ module.exports = function replaceExtensionsPlaceholderContentPlugin({types: t}: 
 
                 // Check if the file matches one of the files we want to replace
                 if (filePath.endsWith(extensionsPlaceholderFile)) {
-                    const newContent = renderTemplate({
-                        installed,
-                        target
-                    })
+                    const newContent = renderTemplate(state.opts)
 
                     let parsedAst
 

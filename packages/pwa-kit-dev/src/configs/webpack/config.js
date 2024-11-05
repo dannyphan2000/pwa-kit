@@ -186,6 +186,7 @@ const baseConfig = (target) => {
                     plugins: [
                         new OverridesResolverPlugin({
                             projectDir: process.cwd(),
+                            extensions: getConfig()?.app?.extensions,
                             fileExtensions: SUPPORTED_FILE_EXTENSIONS
                         })
                     ],

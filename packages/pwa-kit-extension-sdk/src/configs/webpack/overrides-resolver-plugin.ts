@@ -7,7 +7,6 @@
 
 import resolve from 'resolve'
 import {Resolver} from 'webpack'
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 // Local
 // TODO: Is this a good place for this util? I seems to only be used in the plugin. Maybe we need to put it somewhere
@@ -15,16 +14,21 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {buildCandidatePaths} from '../../shared/utils/resolver'
 import {expand} from '../../shared/utils/helpers'
 
+// Types
+import {ApplicationExtensionEntry} from '../../types'
+
 export const DEFAULT_FILE_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx', '.json']
 
 interface OverridesResolverPluginOptions {
     projectDir: string
+    extensions: ApplicationExtensionEntry[]
     fileExtensions?: string[]
     resolveOptions: any
 }
 
 const defaultOptions = {
     projectDir: process.cwd(),
+    extensions: [],
     fileExtension: DEFAULT_FILE_EXTENSIONS,
     resolveOptions: {}
 }
@@ -44,6 +48,9 @@ export class OverridesResolverPlugin {
             ...defaultOptions,
             ...options
         }
+
+        // Ensure we have the long form configuration entry.
+        this.options.extensions = expand(this.options.extensions)
     }
 
     handleHook(
@@ -70,12 +77,7 @@ export class OverridesResolverPlugin {
                 extensions: this.options.fileExtensions,
                 packageIterator: () =>
                     buildCandidatePaths(importPath, sourcePath, {
-                        // TODO: does the overrides resolver need to get the _configured_ extensions at build time?
-                        // If yes, then it looks like we'll need a convention of having at least default.json config,
-                        // where ALL configured extensions are listed there, and have them all enabled.
-
-                        // Ensure we have the long form configuration entry.
-                        extensionEntries: expand(getConfig()?.app?.extensions),
+                        extensionEntries: this.options.extensions,
                         projectDir: this.options.projectDir
                     }),
                 ...this.options.resolveOptions
