@@ -961,11 +961,13 @@ class Auth {
         customer: ShopperCustomersTypes.Customer
         password: string
         currentPassword: string
+        shouldReloginCurrentSession?: boolean
     }) {
         const {
             customer: {customerId, login},
             password,
-            currentPassword
+            currentPassword,
+            shouldReloginCurrentSession
         } = body
 
         // login and customerId are optional fields on the Customer type
@@ -984,10 +986,13 @@ class Auth {
                 currentPassword: currentPassword
             }
         })
-        await this.loginRegisteredUserB2C({
-            username: login,
-            password
-        })
+
+        if (shouldReloginCurrentSession) {
+            await this.loginRegisteredUserB2C({
+                username: login,
+                password
+            })
+        }
         return res
     }
 

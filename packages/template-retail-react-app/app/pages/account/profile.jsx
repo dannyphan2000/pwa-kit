@@ -248,7 +248,8 @@ const PasswordCard = () => {
             await updateCustomerPassword.mutateAsync({
                 customer,
                 password: values.password,
-                currentPassword: values.currentPassword
+                currentPassword: values.currentPassword,
+                shouldReloginCurrentSession: true
             })
             setIsEditing(false)
             toast({

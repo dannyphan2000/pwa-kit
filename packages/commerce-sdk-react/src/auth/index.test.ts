@@ -606,7 +606,8 @@ describe('Auth', () => {
         await auth.updateCustomerPassword({
             customer: baseCustomer,
             password: 'test123',
-            currentPassword: 'test12'
+            currentPassword: 'test12',
+            shouldReloginCurrentSession: true
         })
         expect(helpers.loginRegisteredUserB2C).toHaveBeenCalled()
     })
