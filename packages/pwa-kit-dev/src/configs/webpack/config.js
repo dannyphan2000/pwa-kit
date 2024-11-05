@@ -31,7 +31,12 @@ import {CLIENT, SERVER, CLIENT_OPTIONAL, SSR, REQUEST_PROCESSOR} from './config-
 
 // Utilities
 import {ruleForApplicationExtensibility} from '@salesforce/pwa-kit-extension-sdk/configs/webpack'
-import {buildAliases, expand, nameRegex} from '@salesforce/pwa-kit-extension-sdk/shared/utils'
+import {
+    buildAliases,
+    expand,
+    getInstalledExtensions,
+    nameRegex
+} from '@salesforce/pwa-kit-extension-sdk/shared/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const projectDir = process.cwd()
@@ -310,9 +315,7 @@ const staticFolderCopyPlugin = new CopyPlugin({
             from: 'app/static/',
             to: 'static/'
         },
-        ...expand(getConfig()?.app?.extensions).map((extension) => {
-            const packageName = extension[0]
-            // Parse the extension name out.
+        ...getInstalledExtensions().map((packageName) => {
             return {
                 from: `${projectDir}/node_modules/${packageName}/static`,
                 to: `static/${EXTENIONS_NAMESPACE}/${packageName}`,
