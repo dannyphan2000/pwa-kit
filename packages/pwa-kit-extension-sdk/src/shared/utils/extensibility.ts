@@ -10,13 +10,8 @@ import fse from 'fs-extra'
 import path from 'path'
 import {resolve} from 'path'
 
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
-
 // Types
 import {ApplicationExtensionEntry} from '../../types'
-
-// Local
-import {expand} from './helpers'
 
 // CONSTANTS
 // const REACT_EXTENSIBILITY_FILE = 'setup-app'
@@ -110,7 +105,12 @@ export const getExtensionNames = (extensions: ApplicationExtensionEntry[]) => {
     })
 }
 
-export const getPackageNamesOfInstalledExtensions = () => {
+/**
+ * Get the _installed_ app extensions that the base project has installed via npm.
+ * They're not the same as the _configured_ extensions, which live in the project's config.
+ * @returns {string[]} An array of installed extension names based on the project's devDependencies.
+ */
+export const getInstalledExtensions = () => {
     const projectDir = process.cwd()
     const pkg = fse.readJsonSync(resolve(projectDir, 'package.json'))
 

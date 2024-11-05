@@ -7,7 +7,7 @@
 
 // Local
 import {renderTemplate} from '../utils'
-import {getPackageNamesOfInstalledExtensions} from '../../shared/utils'
+import {getInstalledExtensions} from '../../shared/utils'
 
 // Types
 import {ApplicationExtensionsLoaderContext} from './types'
@@ -39,7 +39,7 @@ export default function ApplicationExtensibilityLoader(
     // targets (server) do not require this optimization.
     const data = {
         ...this.getOptions(),
-        installed: getPackageNamesOfInstalledExtensions()
+        installed: getInstalledExtensions()
     }
 
     // @ts-ignore

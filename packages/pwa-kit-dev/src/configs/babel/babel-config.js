@@ -6,7 +6,7 @@
  */
 
 // PWA-Kit Imports
-import {getPackageNamesOfInstalledExtensions} from '@salesforce/pwa-kit-extension-sdk/shared/utils'
+import {getInstalledExtensions} from '@salesforce/pwa-kit-extension-sdk/shared/utils'
 
 const config = {
     sourceType: 'unambiguous',
@@ -27,7 +27,7 @@ const config = {
             require('@salesforce/pwa-kit-extension-sdk/configs/babel/plugin-application-extensions'),
             {
                 target: 'node',
-                installed: getPackageNamesOfInstalledExtensions()
+                installed: getInstalledExtensions()
             }
         ],
         require('@babel/plugin-transform-async-to-generator'),
