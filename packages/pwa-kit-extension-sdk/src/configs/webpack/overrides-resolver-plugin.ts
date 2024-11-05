@@ -7,15 +7,13 @@
 
 import resolve from 'resolve'
 import {Resolver} from 'webpack'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 // Local
 // TODO: Is this a good place for this util? I seems to only be used in the plugin. Maybe we need to put it somewhere
 // else?
 import {buildCandidatePaths} from '../../shared/utils/resolver'
 import {expand} from '../../shared/utils/helpers'
-
-// Types
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 export const DEFAULT_FILE_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx', '.json']
 
