@@ -160,66 +160,31 @@ describe('extensibilityUtils', () => {
         })
     })
 
-    // TODO
-    /*
-    describe('getApplicationExtensionInfo', () => {
+    describe('getInstalledExtensions', () => {
         afterEach(() => {
             jest.clearAllMocks()
         })
 
-        it('should return empty arrays if no devDependencies or mobify config', () => {
-            mockPackageJson({})
-            const result = extensionUtils.getApplicationExtensionInfo()
-            expect(result).toEqual({installed: [], configured: []})
-        })
-
-        it('should return installed extensions based on devDependencies matching regex', () => {
+        it('should return packages that are app extensions', () => {
             const devDependencies = {
                 'extension-mock': '1.0.0',
-                'not-an-extenion': '1.0.0'
+                'not-an-extension': '1.0.0'
             }
             mockPackageJson(devDependencies)
 
-            const result = extensionUtils.getApplicationExtensionInfo()
-
-            expect(result.installed).toEqual(['extension-mock'])
-            expect(result.configured).toEqual([])
+            const result = extensionUtils.getInstalledExtensions()
+            expect(result).toEqual(['extension-mock'])
         })
 
-        it('should return configured extensions from appConfig parameter', () => {
-            const devDependencies = {}
-            const appConfig = {app: {extensions: ['extension-from-app-config']}}
+        it('should return empty list if none of packages are app extensions', () => {
+            const devDependencies = {
+                'not-an-extension': '1.0.0',
+                'not-an-extension-2': '1.0.0'
+            }
             mockPackageJson(devDependencies)
 
-            // TODO
-            // @ts-ignore
-            const result = extensionUtils.getApplicationExtensionInfo(appConfig)
-
-            expect(result.installed).toEqual([])
-            expect(result.configured).toEqual([['extension-from-app-config', {enabled: true}]])
-        })
-
-        it('should use mobify config from package.json if appConfig is not provided', () => {
-            const devDependencies = {}
-            const mobifyConfig = {app: {extensions: ['extension-from-package-json']}}
-            mockPackageJson(devDependencies, mobifyConfig)
-
-            const result = extensionUtils.getApplicationExtensionInfo()
-
-            expect(result.configured).toEqual([['extension-from-package-json', {enabled: true}]])
-        })
-
-        it('should prioritize appConfig parameter over package.json mobify config', () => {
-            const devDependencies = {}
-            const mobifyConfig = {app: {extensions: ['extension-old']}}
-            const appConfig = {app: {extensions: ['extension-new']}}
-            mockPackageJson(devDependencies, mobifyConfig)
-
-            // @ts-ignore
-            const result = extensionUtils.getApplicationExtensionInfo(appConfig)
-
-            expect(result.configured).toEqual([['extension-new', {enabled: true}]])
+            const result = extensionUtils.getInstalledExtensions()
+            expect(result).toEqual([])
         })
     })
-    */
 })

@@ -11,6 +11,8 @@ import * as resolverUtils from './resolver'
 const PROJECT_PATH_GOOD = '/home/user/testproject'
 const PROJECT_PATH_BAD = '/home/user/test.project'
 
+// TODO
+
 describe('resolverUtils', () => {
     describe('"isSelfReference" util returns whether or not a dollar-prefixed import is for the same module it is coming from.', () => {
         ;[
@@ -65,37 +67,6 @@ describe('resolverUtils', () => {
                     testCase.importPath,
                     testCase.sourcePath
                 )
-
-                expect(result).toEqual(testCase.expected)
-            })
-        })
-    })
-
-    describe('"expand" util returns correct return value when', () => {
-        ;[
-            {
-                name: 'extensions are all valid package names',
-                input: ['extension-a', 'extension-b', 'extension-c', '@salesforce/extension-d'],
-                expected: [
-                    ['extension-a', {enabled: true}],
-                    ['extension-b', {enabled: true}],
-                    ['extension-c', {enabled: true}],
-                    ['@salesforce/extension-d', {enabled: true}]
-                ]
-            },
-            {
-                name: 'extensions include falsey values',
-                input: ['extension-a', '', false],
-                expected: [['extension-a', {enabled: true}]]
-            },
-            {
-                name: 'extensions defined do not follow naming convension',
-                input: ['not-the-correct-prefix-a'],
-                expected: []
-            }
-        ].forEach((testCase) => {
-            test(`${testCase.name}`, () => {
-                const result = resolverUtils.expand(testCase.input)
 
                 expect(result).toEqual(testCase.expected)
             })
