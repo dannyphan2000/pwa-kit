@@ -7,19 +7,24 @@
 
 // Third-Party
 import React from 'react'
-import {ChakraProvider} from '@chakra-ui/react'
 import {RouteProps} from 'react-router-dom'
 import loadable from '@loadable/component'
 
 // Platform Imports
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
-import {CommerceApiProvider} from '@salesforce/commerce-sdk-react'
+// TODO: Can I include the below inport with the one above?
+import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 
 // Local Imports
 import {Config} from './types'
 import {configureRoutes} from './utils/routes-utils'
-import theme from './theme'
-import {MultiSiteProvider} from './contexts'
+import {withAppLayout} from './components/with-app-layout'
+import {withChakraUI} from './components/with-chakra-ui'
+import {withCommerceSdkReact} from './components/with-commerce-sdk-react'
+import {withCurrency} from './components/with-currency'
+import {withMultiSite} from './components/with-multi-site'
+import {withReactIntl} from './components/with-react-intl'
+import {withStorefrontPreview} from './components/with-storefront-preview'
 
 // Components
 import {Skeleton} from '@chakra-ui/react'
@@ -55,33 +60,17 @@ const PageNotFound = loadable(() => import('./pages/page-not-found'))
 
 class Sample extends ApplicationExtension<Config> {
     extendApp<T>(App: React.ComponentType<T>): React.ComponentType<T> {
-        const {commerceAPI} = this.getConfig()
-
-        return (
-            <CommerceApiProvider
-                shortCode={commerceAPI.parameters.shortCode}
-                clientId={commerceAPI.parameters.clientId}
-                organizationId={commerceAPI.parameters.organizationId}
-                // siteId={locals.site?.id}
-                // locale={locals.locale?.id}
-                // currency={locals.locale?.preferredCurrency}
-                redirectURI={`${appOrigin}/callback`}
-                proxy={`${appOrigin}${commerceApiConfig.proxyPath}`}
-                headers={headers}
-                // Uncomment 'enablePWAKitPrivateClient' to use SLAS private client login flows.
-                // Make sure to also enable useSLASPrivateClient in ssr.js when enabling this setting.
-                // enablePWAKitPrivateClient={true}
-                OCAPISessionsURL={`${appOrigin}${proxyBasePath}/ocapi/s/${locals.site?.id}/dw/shop/v22_8/sessions`}
-                logger={createLogger({packageName: 'commerce-sdk-react'})}
-            >
-                <MultiSiteProvider site={locals.site} locale={locals.locale} buildUrl={locals.buildUrl}>
-                    <ChakraProvider theme={theme}>
-                        <App />
-                    </ChakraProvider>
-                </MultiSiteProvider>
-                <ReactQueryDevtools />
-            </CommerceApiProvider>
-        )
+        // NOTE: The order of these HOCs is important!
+        const requiredHOCs = [
+            withAppLayout,
+            withChakraUI, 
+            withCurrency,
+            withReactIntl,
+            withMultiSite, 
+            withStorefrontPreview,
+            withCommerceSdkReact
+        ]
+        return applyHOCs(App, requiredHOCs)
     }
 
     extendRoutes(routes: RouteProps[]): RouteProps[] {

@@ -18,8 +18,11 @@ import hoistNonReactStatics from 'hoist-non-react-statics'
  * @returns {T} - The React component wrapped with the provided HOCs.
  */
 export const applyHOCs = <T extends React.ComponentType<any>>(Component: T, hocs: any): T => {
+    console.log('applyHOCs:')
     return hocs.reduce((AccumulatedComponent: any, hoc: any) => {
+        console.log('hoc: ', hoc)
         const WrappedComponent = hoc(AccumulatedComponent)
+        console.log('WrappedComponent: ', WrappedComponent)
         return hoistNonReactStatics(WrappedComponent, AccumulatedComponent) as T
     }, Component)
 }

@@ -5,7 +5,9 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+// import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+import {getExtensionConfig as getConfig} from '../utils/get-extension-config'
+
 import {absoluteUrl} from './url'
 
 /**
@@ -49,14 +51,14 @@ export const resolveSiteFromUrl = (url) => {
  * @returns {object} site - a site object from app config
  */
 export const getDefaultSite = () => {
-    const {app} = getConfig()
+    const {defaultSite} = getConfig()
     const sites = getSites()
 
     if (sites.length === 1) {
         return sites[0]
     }
 
-    return sites.find((site) => site.id === app.defaultSite)
+    return sites.find((site) => site.id === defaultSite)
 }
 
 /**
@@ -64,7 +66,7 @@ export const getDefaultSite = () => {
  * @return {array} sites - list of sites including their aliases
  */
 export const getSites = () => {
-    const {sites = [], siteAliases = {}} = getConfig().app || {}
+    const {sites = [], siteAliases = {}} = getConfig() || {}
 
     if (!sites.length) {
         throw new Error("Can't find any sites from the config. Please check your configuration")

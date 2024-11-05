@@ -7,10 +7,10 @@
 import React from 'react'
 import {FormattedMessage, useIntl} from 'react-intl'
 import {Badge, Box, Button, Flex, Center} from '@chakra-ui/react'
-import Link from '../../components/link'
-import {BasketIcon, BrandLogo} from '../../components/icons'
-import {HOME_HREF} from '../../constants'
-import {useCurrentBasket} from '../../hooks/use-current-basket'
+import Link from '../../../components/link'
+import {BasketIcon, BrandLogo} from '../../../components/icons'
+import {HOME_HREF} from '../../../constants'
+import {useCurrentBasket} from '../../../hooks/use-current-basket'
 
 const CheckoutHeader = () => {
     const intl = useIntl()
