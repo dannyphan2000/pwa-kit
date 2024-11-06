@@ -109,7 +109,7 @@ const Login = () => {
                     form={form}
                     submitForm={submitForm}
                     clickCreateAccount={() => navigate('/registration')}
-                    clickPasswordlessLogin={() => navigate('/check-email')}
+                    handlePasswordlessLoginClick={() => navigate('/check-email')}
                     handleForgotPasswordClick={() => navigate('/reset-password')}
                     isPasswordlessEnabled={passwordless?.enabled}
                     isSocialEnabled={social?.enabled}

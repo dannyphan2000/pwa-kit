@@ -16,6 +16,7 @@ import SocialLogin from '@salesforce/retail-react-app/app/components/social-logi
 const PasswordlessLogin = ({
     form,
     handleForgotPasswordClick,
+    handlePasswordlessLoginClick,
     isSocialEnabled = false,
     idps = []
 }) => {
@@ -46,6 +47,7 @@ const PasswordlessLogin = ({
                         type="submit"
                         onClick={() => {
                             form.clearErrors('global')
+                            handlePasswordlessLoginClick()
                         }}
                         isLoading={form.formState.isSubmitting}
                     >
@@ -93,6 +95,7 @@ const PasswordlessLogin = ({
 PasswordlessLogin.propTypes = {
     form: PropTypes.object,
     handleForgotPasswordClick: PropTypes.func,
+    handlePasswordlessLoginClick: PropTypes.func,
     isSocialEnabled: PropTypes.bool,
     idps: PropTypes.arrayOf[PropTypes.string]
 }

@@ -296,8 +296,7 @@ export const AuthModal = ({
                             form={form}
                             submitForm={submitForm}
                             clickCreateAccount={() => setCurrentView(REGISTER_VIEW)}
-                            clickForgotPassword={() => setCurrentView(PASSWORD_VIEW)}
-                            clickPasswordlessLogin={() => setCurrentView(EMAIL_VIEW)}
+                            handlePasswordlessLoginClick={() => setCurrentView(EMAIL_VIEW)}
                             handleForgotPasswordClick={() => setCurrentView(PASSWORD_VIEW)}
                             isPasswordlessEnabled={isPasswordlessEnabled}
                             isSocialEnabled={isSocialEnabled}
@@ -322,7 +321,7 @@ export const AuthModal = ({
                         <PasswordResetSuccess />
                     )}
                     {!form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
-                        <CheckEmail />
+                        <CheckEmail form={form} />
                     )}
                 </ModalBody>
             </ModalContent>

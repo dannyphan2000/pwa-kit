@@ -12,14 +12,13 @@ import {Alert, Button, Stack, Text} from '@salesforce/retail-react-app/app/compo
 import {AlertIcon, BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import StandardLogin from '@salesforce/retail-react-app/app/components/standard-login'
 import PasswordlessLogin from '@salesforce/retail-react-app/app/components/passwordless-login'
-import SocialLogin from '@salesforce/retail-react-app/app/components/social-login'
 import {noop} from '@salesforce/retail-react-app/app/utils/utils'
 
 const LoginForm = ({
     submitForm,
     handleForgotPasswordClick,
+    handlePasswordlessLoginClick,
     clickCreateAccount = noop,
-    clickPasswordlessLogin = noop,
     form,
     isPasswordlessEnabled = false,
     isSocialEnabled = false,
@@ -54,6 +53,7 @@ const LoginForm = ({
                         <PasswordlessLogin
                             form={form}
                             handleForgotPasswordClick={handleForgotPasswordClick}
+                            handlePasswordlessLoginClick={handlePasswordlessLoginClick}
                             isSocialEnabled={isSocialEnabled}
                             idps={idps}
                         />
@@ -79,25 +79,6 @@ const LoginForm = ({
                                 id="login_form.action.create_account"
                             />
                         </Button>
-                        <SocialLogin idps={idps} />
-
-                        <Stack direction="row" spacing={1} justify="center">
-                            <Text fontSize="sm">
-                                <FormattedMessage
-                                    defaultMessage="Don't have an account?"
-                                    id="login_form.message.dont_have_account"
-                                />
-                            </Text>
-                            <Button variant="link" size="sm" onClick={clickCreateAccount}>
-                                <FormattedMessage
-                                    defaultMessage="Create account"
-                                    id="login_form.action.create_account"
-                                />
-                            </Button>
-                        </Stack>
-                        <Button variant="link" size="sm" onClick={clickPasswordlessLogin}>
-                            <FormattedMessage defaultMessage="Passwordless Login" />
-                        </Button>
                     </Stack>
                 </Stack>
             </form>
@@ -109,7 +90,7 @@ LoginForm.propTypes = {
     submitForm: PropTypes.func,
     handleForgotPasswordClick: PropTypes.func,
     clickCreateAccount: PropTypes.func,
-    clickPasswordlessLogin: PropTypes.func,
+    handlePasswordlessLoginClick: PropTypes.func,
     form: PropTypes.object,
     isPasswordlessEnabled: PropTypes.bool,
     isSocialEnabled: PropTypes.bool,
