@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, {useEffect} from 'react'
+import React, {useEffect, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useIntl, defineMessage} from 'react-intl'
 import {Box, Container} from '@salesforce/retail-react-app/app/components/shared/ui'
@@ -35,6 +35,7 @@ const Login = () => {
     const {formatMessage} = useIntl()
     const navigate = useNavigation()
     const form = useForm()
+    const submittedEmail = useRef()
     const location = useLocation()
     const einstein = useEinstein()
     const {isRegistered, customerType} = useCustomerType()
@@ -109,11 +110,16 @@ const Login = () => {
                     form={form}
                     submitForm={submitForm}
                     clickCreateAccount={() => navigate('/registration')}
-                    handlePasswordlessLoginClick={() => navigate('/check-email')}
+                    handlePasswordlessLoginClick={() => {
+                        navigate('/check-email', {
+                            state: {email: submittedEmail.current}
+                        })
+                    }}
                     handleForgotPasswordClick={() => navigate('/reset-password')}
                     isPasswordlessEnabled={passwordless?.enabled}
                     isSocialEnabled={social?.enabled}
                     idps={social?.idps}
+                    submittedEmail={submittedEmail}
                 />
             </Container>
         </Box>

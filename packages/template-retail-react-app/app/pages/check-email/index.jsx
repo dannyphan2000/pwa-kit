@@ -6,11 +6,16 @@
  */
 
 import React from 'react'
+import {useLocation} from 'react-router-dom'
 import {Box, Container} from '@salesforce/retail-react-app/app/components/shared/ui'
 import Seo from '@salesforce/retail-react-app/app/components/seo'
 import CheckEmail from '@salesforce/retail-react-app/app/components/check-email'
 
 const CheckEmailPage = () => {
+    const location = useLocation()
+    console.log('location.state = ' + location.state)
+    const email = ''
+
     return (
         <Box data-testid="check-email-page" bg="gray.50" py={[8, 16]}>
             <Seo title="Check your email" description="Check your email" />
@@ -23,7 +28,7 @@ const CheckEmailPage = () => {
                 marginBottom={8}
                 borderRadius="base"
             >
-                <CheckEmail />
+                <CheckEmail email={email} />
             </Container>
         </Box>
     )
