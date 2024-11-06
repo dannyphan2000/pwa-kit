@@ -950,7 +950,7 @@ class Auth {
             })
         }
         this.clearStorage()
-        return await this.loginGuestUser()
+        return await this.ready()
     }
 
     /**

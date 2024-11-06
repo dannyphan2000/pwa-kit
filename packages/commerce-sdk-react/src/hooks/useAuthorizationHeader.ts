@@ -36,10 +36,9 @@ export const useAuthorizationHeader = <Options extends ApiOptions, Data>(
                 const response = await error?.response?.json()
                 if (response?.detail === 'Customer credentials changed after token was issued.') {
                     logger.info('Login was invalidated. Clearing login state.')
-                    await auth.logout()
+                    const {access_token} = await auth.logout()
 
                     // Retry again after resetting auth state
-                    const {access_token} = await auth.ready()
                     return await method({
                         ...options,
                         headers: {
