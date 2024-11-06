@@ -9,6 +9,7 @@ import dedent from 'dedent'
 import path from 'path'
 
 import {runWebpackCompiler} from './test-utils'
+import {ruleForApplicationExtensibility} from './application-extensions-loader'
 
 const BASE_VIRTUAL_FILES = {
     // Virtual Project Files
@@ -223,5 +224,12 @@ describe('Application Extension Loader', () => {
 
             expects(output, error)
         })
+    })
+})
+
+describe('ruleForApplicationExtensibility', () => {
+    test('without any arguments, uses the node target', () => {
+        const result = ruleForApplicationExtensibility()
+        expect(result.use.options.target).toBe('node')
     })
 })
