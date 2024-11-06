@@ -1089,12 +1089,6 @@
       "value": "站点地图"
     }
   ],
-  "drawer_menu.link.store_locator": [
-    {
-      "type": 0,
-      "value": "实体店地址搜索"
-    }
-  ],
   "drawer_menu.link.terms_and_conditions": [
     {
       "type": 0,
@@ -1269,12 +1263,6 @@
     {
       "type": 0,
       "value": "站点地图"
-    }
-  ],
-  "footer.link.store_locator": [
-    {
-      "type": 0,
-      "value": "实体店地址搜索"
     }
   ],
   "footer.link.terms_conditions": [

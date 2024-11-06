@@ -16,7 +16,7 @@ import {defaultPwaKitSecurityHeaders} from '@salesforce/pwa-kit-runtime/utils/mi
 // Local Imports
 import {Config} from './types'
 
-class SampleExtension extends ApplicationExtension<Config> {
+class RetailReactAppExtension extends ApplicationExtension<Config> {
     extendApp(app: Application): Application {
         // Set default HTTP security headers required by PWA Kit
         app.use(defaultPwaKitSecurityHeaders)
@@ -55,4 +55,4 @@ class SampleExtension extends ApplicationExtension<Config> {
     }
 }
 
-export default SampleExtension
+export default RetailReactAppExtension

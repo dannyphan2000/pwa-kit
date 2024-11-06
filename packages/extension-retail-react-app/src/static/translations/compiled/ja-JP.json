@@ -1089,12 +1089,6 @@
       "value": "サイトマップ"
     }
   ],
-  "drawer_menu.link.store_locator": [
-    {
-      "type": 0,
-      "value": "店舗検索"
-    }
-  ],
   "drawer_menu.link.terms_and_conditions": [
     {
       "type": 0,
@@ -1265,12 +1259,6 @@
     {
       "type": 0,
       "value": "サイトマップ"
-    }
-  ],
-  "footer.link.store_locator": [
-    {
-      "type": 0,
-      "value": "店舗検索"
     }
   ],
   "footer.link.terms_conditions": [

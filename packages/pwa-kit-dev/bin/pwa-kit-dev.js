@@ -246,7 +246,7 @@ const main = async () => {
                 const serverPath = fse.realpathSync(p.resolve('node_modules/@salesforce/pwa-kit-runtime/ssr/server/build-remote-server.js'))
                 const placeHolderPath = fse.realpathSync(p.resolve('node_modules/@salesforce/pwa-kit-extension-sdk/express/placeholders/application-extensions.js'))
                 // TODO: Here we need to actually loop over the configured extensions.
-                const extensionSrcPaths = ['@salesforce/extension-retail-react-app'].map((packageName) => {
+                const extensionSrcPaths = ['@salesforce/extension-store-locator', '@salesforce/extension-retail-react-app'].map((packageName) => {
                     return fse.realpathSync(p.resolve(`node_modules/${packageName}/src`))
                 })
                 

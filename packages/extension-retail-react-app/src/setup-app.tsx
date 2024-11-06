@@ -50,15 +50,12 @@ const ProductDetail = loadable(() => import('./pages/product-detail'), {fallback
 const ProductList = loadable(() => import('./pages/product-list'), {
     fallback
 })
-const StoreLocator = loadable(() => import('./pages/store-locator'), {
-    fallback
-})
 const Wishlist = loadable(() => import('./pages/account/wishlist'), {
     fallback
 })
 const PageNotFound = loadable(() => import('./pages/page-not-found'))
 
-class Sample extends ApplicationExtension<Config> {
+class RetailReactApp extends ApplicationExtension<Config> {
     extendApp<T>(App: React.ComponentType<T>): React.ComponentType<T> {
         // NOTE: The order of these HOCs is important!
         const requiredHOCs = [
@@ -136,10 +133,6 @@ class Sample extends ApplicationExtension<Config> {
                 component: Wishlist
             },
             {
-                path: '/store-locator',
-                component: StoreLocator
-            },
-            {
                 path: '*',
                 component: PageNotFound
             }
@@ -151,4 +144,4 @@ class Sample extends ApplicationExtension<Config> {
     }
 }
 
-export default Sample
+export default RetailReactApp

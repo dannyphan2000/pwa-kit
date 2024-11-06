@@ -1089,12 +1089,6 @@
       "value": "Plan du site"
     }
   ],
-  "drawer_menu.link.store_locator": [
-    {
-      "type": 0,
-      "value": "Localisateur de magasins"
-    }
-  ],
   "drawer_menu.link.terms_and_conditions": [
     {
       "type": 0,
@@ -1269,12 +1263,6 @@
     {
       "type": 0,
       "value": "Plan du site"
-    }
-  ],
-  "footer.link.store_locator": [
-    {
-      "type": 0,
-      "value": "Localisateur de magasins"
     }
   ],
   "footer.link.terms_conditions": [

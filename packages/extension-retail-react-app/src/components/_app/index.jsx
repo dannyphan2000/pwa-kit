@@ -34,7 +34,6 @@ import {DrawerMenu} from '../../components/drawer-menu'
 import {ListMenu, ListMenuContent} from '../../components/list-menu'
 import {HideOnDesktop, HideOnMobile} from '../../components/responsive'
 import AboveHeader from '../above-header'
-import StoreLocatorModal from '../../components/store-locator-modal'
 
 // Hooks
 import {AuthModal, useAuthModal} from '../../hooks/use-auth-modal'
@@ -120,12 +119,6 @@ const App = (props) => {
     const styles = useStyleConfig('App')
 
     const {isOpen, onOpen, onClose} = useDisclosure()
-    const {
-        isOpen: isOpenStoreLocator,
-        onOpen: onOpenStoreLocator,
-        onClose: onCloseStoreLocator
-    } = useDisclosure()
-
 
     // Used to conditionally render header/footer for checkout page
     const isCheckout = /\/checkout$/.test(location?.pathname)
@@ -265,10 +258,6 @@ const App = (props) => {
 
             <Box id="app" display="flex" flexDirection="column" flex={1}>
                 <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>
-                <StoreLocatorModal
-                    isOpen={isOpenStoreLocator}
-                    onClose={onCloseStoreLocator}
-                />
                 <Box {...styles.headerWrapper}>
                     {!isCheckout ? (
                         <>
@@ -279,7 +268,6 @@ const App = (props) => {
                                 onMyCartClick={onCartClick}
                                 onMyAccountClick={onAccountClick}
                                 onWishlistClick={onWishlistClick}
-                                onStoreLocatorClick={onOpenStoreLocator}
                             >
                                 <HideOnDesktop>
                                     <DrawerMenu

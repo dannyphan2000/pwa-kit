@@ -1093,12 +1093,6 @@
       "value": "Mapa do site"
     }
   ],
-  "drawer_menu.link.store_locator": [
-    {
-      "type": 0,
-      "value": "Localizador de lojas"
-    }
-  ],
   "drawer_menu.link.terms_and_conditions": [
     {
       "type": 0,
@@ -1273,12 +1267,6 @@
     {
       "type": 0,
       "value": "Mapa do site"
-    }
-  ],
-  "footer.link.store_locator": [
-    {
-      "type": 0,
-      "value": "Localizador de lojas"
     }
   ],
   "footer.link.terms_conditions": [

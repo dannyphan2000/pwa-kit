@@ -1085,12 +1085,6 @@
       "value": "網站地圖"
     }
   ],
-  "drawer_menu.link.store_locator": [
-    {
-      "type": 0,
-      "value": "商店位置搜尋"
-    }
-  ],
   "drawer_menu.link.terms_and_conditions": [
     {
       "type": 0,
@@ -1265,12 +1259,6 @@
     {
       "type": 0,
       "value": "網站地圖"
-    }
-  ],
-  "footer.link.store_locator": [
-    {
-      "type": 0,
-      "value": "商店位置搜尋"
     }
   ],
   "footer.link.terms_conditions": [

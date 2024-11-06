@@ -1089,12 +1089,6 @@
       "value": "Sitemap"
     }
   ],
-  "drawer_menu.link.store_locator": [
-    {
-      "type": 0,
-      "value": "Shop-Finder"
-    }
-  ],
   "drawer_menu.link.terms_and_conditions": [
     {
       "type": 0,
@@ -1269,12 +1263,6 @@
     {
       "type": 0,
       "value": "Sitemap"
-    }
-  ],
-  "footer.link.store_locator": [
-    {
-      "type": 0,
-      "value": "Shop-Finder"
     }
   ],
   "footer.link.terms_conditions": [

@@ -39,7 +39,6 @@ import OfflineBanner from '../offline-banner'
 import OfflineBoundary from '../offline-boundary'
 import Seo from '../seo'
 import ScrollToTop from '../scroll-to-top'
-import StoreLocatorModal from '../store-locator-modal'
 
 // Local Project Hooks
 import {AuthModal, useAuthModal} from '../../hooks/use-auth-modal'
@@ -125,11 +124,6 @@ const withAppLayout = <P extends object>(WrappedComponent: React.ComponentType<P
     const styles = useStyleConfig('App')
 
     const {isOpen, onOpen, onClose} = useDisclosure()
-    const {
-        isOpen: isOpenStoreLocator,
-        onOpen: onOpenStoreLocator,
-        onClose: onCloseStoreLocator
-    } = useDisclosure()
 
     // Used to conditionally render header/footer for checkout page
     const isCheckout = /\/checkout$/.test(location?.pathname)
@@ -269,10 +263,6 @@ const withAppLayout = <P extends object>(WrappedComponent: React.ComponentType<P
 
                 <Box id="app" display="flex" flexDirection="column" flex={1}>
                     <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>
-                    <StoreLocatorModal
-                        isOpen={isOpenStoreLocator}
-                        onClose={onCloseStoreLocator}
-                    />
                     <Box {...styles.headerWrapper}>
                         {!isCheckout ? (
                             <>
@@ -283,7 +273,6 @@ const withAppLayout = <P extends object>(WrappedComponent: React.ComponentType<P
                                     onMyCartClick={onCartClick}
                                     onMyAccountClick={onAccountClick}
                                     onWishlistClick={onWishlistClick}
-                                    onStoreLocatorClick={onOpenStoreLocator}
                                 >
                                     <HideOnDesktop>
                                         <DrawerMenu

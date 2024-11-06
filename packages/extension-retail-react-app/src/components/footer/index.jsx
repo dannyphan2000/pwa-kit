@@ -30,7 +30,6 @@ import {getPathWithLocale} from '../../utils/url'
 import LocaleText from '../../components/locale-text'
 import useMultiSite from '../../hooks/use-multi-site'
 import styled from '@emotion/styled'
-import {STORE_LOCATOR_IS_ENABLED} from '../../constants'
 
 const [StylesProvider, useStyles] = createStylesContext('Footer')
 const Footer = ({...otherProps}) => {
@@ -51,14 +50,6 @@ const Footer = ({...otherProps}) => {
     })
     const makeOurCompanyLinks = () => {
         const links = []
-        if (STORE_LOCATOR_IS_ENABLED)
-            links.push({
-                href: '/store-locator',
-                text: intl.formatMessage({
-                    id: 'footer.link.store_locator',
-                    defaultMessage: 'Store Locator'
-                })
-            })
         links.push({
             href: '/',
             text: intl.formatMessage({

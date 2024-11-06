@@ -50,7 +50,7 @@ import useNavigation from '../../hooks/use-navigation'
 import LoadingSpinner from '../../components/loading-spinner'
 import {HideOnDesktop, HideOnMobile} from '../../components/responsive'
 import {isHydrated, noop} from '../../utils/utils'
-import {STORE_LOCATOR_IS_ENABLED} from '../../constants'
+
 const IconButtonWithRegistration = withRegistration(IconButton)
 
 /**
@@ -105,7 +105,6 @@ const Header = ({
     onLogoClick = noop,
     onMyCartClick = noop,
     onWishlistClick = noop,
-    onStoreLocatorClick = noop,
     ...props
 }) => {
     const intl = useIntl()
@@ -307,18 +306,6 @@ const Header = ({
                         {...styles.wishlistIcon}
                         onClick={onWishlistClick}
                     />
-                    {STORE_LOCATOR_IS_ENABLED && (
-                        <IconButton
-                            aria-label={intl.formatMessage({
-                                defaultMessage: 'Store Locator',
-                                id: 'header.button.assistive_msg.store_locator'
-                            })}
-                            icon={<StoreIcon />}
-                            {...styles.icons}
-                            variant="unstyled"
-                            onClick={onStoreLocatorClick}
-                        />
-                    )}
                     <IconButton
                         aria-label={intl.formatMessage(
                             {
@@ -355,7 +342,6 @@ Header.propTypes = {
     onMyAccountClick: PropTypes.func,
     onWishlistClick: PropTypes.func,
     onMyCartClick: PropTypes.func,
-    onStoreLocatorClick: PropTypes.func,
     searchInputRef: PropTypes.oneOfType([
         PropTypes.func,
         PropTypes.shape({current: PropTypes.elementType})

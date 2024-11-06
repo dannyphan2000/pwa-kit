@@ -1089,12 +1089,6 @@
       "value": "Mappa del sito"
     }
   ],
-  "drawer_menu.link.store_locator": [
-    {
-      "type": 0,
-      "value": "Store locator"
-    }
-  ],
   "drawer_menu.link.terms_and_conditions": [
     {
       "type": 0,
@@ -1269,12 +1263,6 @@
     {
       "type": 0,
       "value": "Mappa del sito"
-    }
-  ],
-  "footer.link.store_locator": [
-    {
-      "type": 0,
-      "value": "Store locator"
     }
   ],
   "footer.link.terms_conditions": [

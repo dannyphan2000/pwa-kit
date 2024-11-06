@@ -54,7 +54,6 @@ import LoadingSpinner from '../../components/loading-spinner'
 import useNavigation from '../../hooks/use-navigation'
 import useMultiSite from '../../hooks/use-multi-site'
 
-import {STORE_LOCATOR_IS_ENABLED} from '../../constants'
 // The FONT_SIZES and FONT_WEIGHTS constants are used to control the styling for
 // the accordion buttons as their current depth. In the below definition we assign
 // values for depths 0 - 3, any depth deeper than that will use the default styling.
@@ -71,7 +70,6 @@ const DrawerSeparator = () => (
 
 // CUSTOMIZE YOUR NAVIGATION BY ALTERING THESE VALUES
 const SIGN_IN_HREF = '/login'
-const STORE_LOCATOR_HREF = '/store-locator'
 
 /**
  * This is the navigation component used for mobile devices (phone and tablet). It's
@@ -264,21 +262,6 @@ const DrawerMenu = ({
                                     </Link>
                                 )}
                             </Box>
-                            {STORE_LOCATOR_IS_ENABLED && (
-                                <Box {...styles.actionsItem}>
-                                    <Link to={STORE_LOCATOR_HREF}>
-                                        <HStack>
-                                            <StoreIcon {...styles.icon} />{' '}
-                                            <Text>
-                                                {intl.formatMessage({
-                                                    id: 'drawer_menu.link.store_locator',
-                                                    defaultMessage: 'Store Locator'
-                                                })}
-                                            </Text>
-                                        </HStack>
-                                    </Link>
-                                </Box>
-                            )}
                             {showLocaleSelector && (
                                 <Box>
                                     <LocaleSelector
