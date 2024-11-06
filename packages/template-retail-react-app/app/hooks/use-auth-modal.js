@@ -331,7 +331,7 @@ export const AuthModal = ({
 }
 
 AuthModal.propTypes = {
-    initialView: PropTypes.oneOf([LOGIN_VIEW, REGISTER_VIEW, PASSWORD_VIEW]),
+    initialView: PropTypes.oneOf([LOGIN_VIEW, REGISTER_VIEW, PASSWORD_VIEW, EMAIL_VIEW]),
     isOpen: PropTypes.bool.isRequired,
     onOpen: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -344,7 +344,7 @@ AuthModal.propTypes = {
 
 /**
  *
- * @param {('register'|'login'|'password')} initialView - the initial view for the modal
+ * @param {('register'|'login'|'password'|'email')} initialView - the initial view for the modal
  * @returns {Object} - Object props to be spread on to the AuthModal component
  */
 export const useAuthModal = (initialView = LOGIN_VIEW) => {
