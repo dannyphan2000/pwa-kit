@@ -59,7 +59,6 @@ import {
 // Define a type for the HOC props
 type WithAppLayoutProps = React.ComponentPropsWithoutRef<any>
 
-// TODO: Move these somewhere in their own file.
 const PlaceholderComponent = () => (
     <Center p="2">
         <Spinner size="lg" />
@@ -102,8 +101,8 @@ const ListMenuContentWithData = withCommerceSdkReactHookData(
 )
 
 // Define the HOC function
-const withAppLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
-    const WithAppLayout: React.FC<P> = (props: WithAppLayoutProps) => {
+const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
+    const WithLayout: React.FC<P> = (props: WithAppLayoutProps) => {
         const {data: categoriesTree} = useCategory({
             parameters: {id: CAT_MENU_DEFAULT_ROOT_CATEGORY, levels: CAT_MENU_DEFAULT_NAV_SSR_DEPTH}
         })
@@ -346,7 +345,7 @@ const withAppLayout = <P extends object>(WrappedComponent: React.ComponentType<P
         )
     }
 
-    return WithAppLayout
+    return WithLayout
 }
 
-export default withAppLayout
+export default withLayout

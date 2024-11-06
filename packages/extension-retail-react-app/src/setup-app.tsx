@@ -18,10 +18,10 @@ import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 // Local Imports
 import {Config} from './types'
 import {configureRoutes} from './utils/routes-utils'
-import {withAppLayout} from './components/with-app-layout'
 import {withChakraUI} from './components/with-chakra-ui'
 import {withCommerceSdkReact} from './components/with-commerce-sdk-react'
 import {withCurrency} from './components/with-currency'
+import {withLayout} from './components/with-layout'
 import {withMultiSite} from './components/with-multi-site'
 import {withReactIntl} from './components/with-react-intl'
 import {withStorefrontPreview} from './components/with-storefront-preview'
@@ -59,7 +59,7 @@ class RetailReactApp extends ApplicationExtension<Config> {
     extendApp<T>(App: React.ComponentType<T>): React.ComponentType<T> {
         // NOTE: The order of these HOCs is important!
         const requiredHOCs = [
-            withAppLayout,
+            withLayout,
             withChakraUI,
             withCurrency,
             withReactIntl,
