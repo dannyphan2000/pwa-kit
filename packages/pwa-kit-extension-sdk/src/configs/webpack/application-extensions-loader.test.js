@@ -25,70 +25,96 @@ const BASE_VIRTUAL_FILES = {
     // QUIRK! These entries are required to access the files in the actual file system. The resolve method fails if
     // they don't exist. This is a sharpe edge, but it's not too bad.
     [`${path.resolve(__dirname, './application-extensions-loader.ts')}`]: '',
-    [`${path.resolve(__dirname, '../../../node_modules/@loadable/component')}`]: ''
+    [`${path.resolve(__dirname, '../../../node_modules/@loadable/component')}`]: '',
+    [`${path.resolve(
+        __dirname,
+        '../../../node_modules/@salesforce/pwa-kit-runtime/utils/ssr-config'
+    )}`]: '',
+    [`${path.resolve(
+        __dirname,
+        '../../../node_modules/@salesforce/pwa-kit-extension-sdk/shared/utils/helpers'
+    )}`]: ''
 }
 
 describe('Application Extension Loader', () => {
     const testCases = [
         {
-            description: 'Returns expected file content without empty options',
+            description: 'Without target and installed extensions, returns expected file content',
             entryPoint: './app/main.jsx',
             expects: (output) => {
-                const emptyFile = dedent`
+                const file = dedent`
+                    import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+                    import {expand} from '../../shared/utils/helpers'
+
+
+
+                    const installedExtensions = {
+                    }
+
+                    const getConfiguredExtensions = () => expand(getConfig()?.app?.extensions || [])
+
                     const getApplicationExtensions = async () => {
+                        const configuredExtensions = getConfiguredExtensions()
+                        if (configuredExtensions) {
+                            const modules = await Promise.all(configuredExtensions.map((extension) => {
+                                const packageName = extension[0]
+                                return installedExtensions[packageName].load()
+                            }))
+                            return configuredExtensions.map((extension, index) => {
+                                const config = extension[1]
+                                return new modules[index].default(config)
+                            })
+                        }
                         return []
                     }
-                    
+
                     export {
                         getApplicationExtensions
                     }
                 `
-                expect(output.modules[1].source).toBe(emptyFile)
+                expect(output.modules[1].source).toBe(file)
             },
             files: BASE_VIRTUAL_FILES
         },
         {
-            description: 'Loadable is used for web targets.',
+            description:
+                'If web target, uses loadable and certain logic for getApplicationExtensions',
             entryPoint: './app/main.jsx',
             expects: (output) => {
-                const emptyFile = dedent`
-                    import loadable from '@loadable/component'
+                const file = dedent`
+                    import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+                    import {expand} from '../../shared/utils/helpers'
 
-
-                    const getApplicationExtensions = async () => {
-                        return []
-                    }
-                    
-                    export {
-                        getApplicationExtensions
-                    }
-                `
-                expect(output.modules[1].source).toBe(emptyFile)
-            },
-            files: BASE_VIRTUAL_FILES,
-            loaderOptions: {
-                target: 'web'
-            }
-        },
-        {
-            description: 'Non-configured extensions are not exported (web)',
-            entryPoint: './app/main.jsx',
-            expects: (output) => {
-                const emptyFile = dedent`
                     import loadable from '@loadable/component'
 
                     const SalesforceSampleALoader = loadable.lib(() => import('@salesforce/extension-sample-a/setup-app'))
 
+                    const installedExtensions = {
+                        '@salesforce/extension-sample-a': SalesforceSampleALoader,
+                    }
+
+                    const getConfiguredExtensions = () => expand(getConfig()?.app?.extensions || [])
+
                     const getApplicationExtensions = async () => {
+                        const configuredExtensions = getConfiguredExtensions()
+                        if (configuredExtensions) {
+                            const modules = await Promise.all(configuredExtensions.map((extension) => {
+                                const packageName = extension[0]
+                                return installedExtensions[packageName].load()
+                            }))
+                            return configuredExtensions.map((extension, index) => {
+                                const config = extension[1]
+                                return new modules[index].default(config)
+                            })
+                        }
                         return []
                     }
-                    
+
                     export {
                         getApplicationExtensions
                     }
                 `
-
-                expect(output.modules[1].source).toBe(emptyFile)
+                expect(output.modules[1].source).toBe(file)
             },
             files: {
                 ...BASE_VIRTUAL_FILES,
@@ -103,22 +129,39 @@ describe('Application Extension Loader', () => {
             }
         },
         {
-            description: 'Non-configured extensions are not exported (node)',
+            description: 'If node target, uses certain logic for getApplicationExtensions',
             entryPoint: './app/main.jsx',
             expects: (output) => {
-                const emptyFile = dedent`
+                const file = dedent`
+                    import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+                    import {expand} from '../../shared/utils/helpers'
+
+
                     import SalesforceSampleA from '@salesforce/extension-sample-a/setup-server'
 
+                    const installedExtensions = {
+                        '@salesforce/extension-sample-a': SalesforceSampleA,
+                    }
+
+                    const getConfiguredExtensions = () => expand(getConfig()?.app?.extensions || [])
+
                     const getApplicationExtensions = () => {
+                        const configuredExtensions = getConfiguredExtensions()
+                        if (configuredExtensions) {
+                            return configuredExtensions.map((extension) => {
+                                const packageName = extension[0]
+                                const config = extension[1]
+                                return new installedExtensions[packageName](config)
+                            })
+                        }
                         return []
                     }
-                    
+
                     export {
                         getApplicationExtensions
                     }
                 `
-
-                expect(output.modules[1].source).toBe(emptyFile)
+                expect(output.modules[1].source).toBe(file)
             },
             files: {
                 ...BASE_VIRTUAL_FILES,
@@ -129,139 +172,6 @@ describe('Application Extension Loader', () => {
             },
             loaderOptions: {
                 installed: ['@salesforce/extension-sample-a'],
-                configured: [],
-                target: 'node'
-            }
-        },
-
-        {
-            description: 'Disabled extensions are still exported (web)',
-            entryPoint: './app/main.jsx',
-            expects: (output) => {
-                const emptyFile = dedent`
-                    import loadable from '@loadable/component'
-
-                    const SalesforceSampleALoader = loadable.lib(() => import('@salesforce/extension-sample-a/setup-app'))
-
-                    const getApplicationExtensions = async () => {
-                        const modules = await Promise.all([SalesforceSampleALoader.load()])
-                        return [new modules[0].default({"enabled":false})]
-                    }
-                    
-                    export {
-                        getApplicationExtensions
-                    }
-                `
-
-                expect(output.modules[1].source).toBe(emptyFile)
-            },
-            files: {
-                ...BASE_VIRTUAL_FILES,
-                [`${path.resolve(
-                    __dirname,
-                    '../../../../node_modules/@salesforce/extension-sample-a/setup-app'
-                )}`]: ''
-            },
-            loaderOptions: {
-                installed: ['@salesforce/extension-sample-a'],
-                configured: [['@salesforce/extension-sample-a', {enabled: false}]],
-                target: 'web'
-            }
-        },
-        {
-            description: 'Disabled extensions are are still exported (node)',
-            entryPoint: './app/main.jsx',
-            expects: (output) => {
-                const emptyFile = dedent`
-                    import SalesforceSampleA from '@salesforce/extension-sample-a/setup-server'
-
-                    const getApplicationExtensions = () => {
-                        return [new SalesforceSampleA({"enabled":false})]
-                    }
-                    
-                    export {
-                        getApplicationExtensions
-                    }
-                `
-
-                expect(output.modules[1].source).toBe(emptyFile)
-            },
-            files: {
-                ...BASE_VIRTUAL_FILES,
-                [`${path.resolve(
-                    __dirname,
-                    '../../../../node_modules/@salesforce/extension-sample-a/setup-server'
-                )}`]: ''
-            },
-            loaderOptions: {
-                installed: ['@salesforce/extension-sample-a'],
-                configured: [['@salesforce/extension-sample-a', {enabled: false}]],
-                target: 'node'
-            }
-        },
-
-        {
-            description: 'Loadable is used for web targets.',
-            entryPoint: './app/main.jsx',
-            expects: (output) => {
-                const emptyFile = dedent`
-                    import loadable from '@loadable/component'
-
-                    const SalesforceSampleALoader = loadable.lib(() => import('@salesforce/extension-sample-a/setup-app'))
-
-                    const getApplicationExtensions = async () => {
-                        const modules = await Promise.all([SalesforceSampleALoader.load()])
-                        return [new modules[0].default({"enabled":true})]
-                    }
-                    
-                    export {
-                        getApplicationExtensions
-                    }
-                `
-
-                expect(output.modules[1].source).toBe(emptyFile)
-            },
-            files: {
-                ...BASE_VIRTUAL_FILES,
-                [`${path.resolve(
-                    __dirname,
-                    '../../../../node_modules/@salesforce/extension-sample-a/setup-app'
-                )}`]: ''
-            },
-            loaderOptions: {
-                installed: ['@salesforce/extension-sample-a'],
-                configured: [['@salesforce/extension-sample-a', {enabled: true}]],
-                target: 'web'
-            }
-        },
-        {
-            description: 'Loadable is not used for node targets.',
-            entryPoint: './app/main.jsx',
-            expects: (output) => {
-                const emptyFile = dedent`
-                    import SalesforceSampleA from '@salesforce/extension-sample-a/setup-server'
-
-                    const getApplicationExtensions = () => {
-                        return [new SalesforceSampleA({"enabled":true})]
-                    }
-                    
-                    export {
-                        getApplicationExtensions
-                    }
-                `
-
-                expect(output.modules[1].source).toBe(emptyFile)
-            },
-            files: {
-                ...BASE_VIRTUAL_FILES,
-                [`${path.resolve(
-                    __dirname,
-                    '../../../../node_modules/@salesforce/extension-sample-a/setup-server'
-                )}`]: ''
-            },
-            loaderOptions: {
-                installed: ['@salesforce/extension-sample-a'],
-                configured: [['@salesforce/extension-sample-a', {enabled: true}]],
                 target: 'node'
             }
         }
@@ -279,6 +189,14 @@ describe('Application Extension Loader', () => {
                         '@loadable/component$': path.resolve(
                             __dirname,
                             '../../../node_modules/@loadable/component'
+                        ),
+                        '@salesforce/pwa-kit-runtime/utils/ssr-config$': path.resolve(
+                            __dirname,
+                            '../../../node_modules/@salesforce/pwa-kit-runtime/utils/ssr-config'
+                        ),
+                        '../../shared/utils/helpers$': path.resolve(
+                            __dirname,
+                            '../../../node_modules/@salesforce/pwa-kit-extension-sdk/shared/utils/helpers'
                         )
                     },
                     files,
@@ -299,6 +217,7 @@ describe('Application Extension Loader', () => {
                 // Here we are looking at the first module imported via the wildcard syntax and testing that it's right.
                 output = stats.toJson({source: true})
             } catch (e) {
+                console.error(e)
                 error = e
             }
 
