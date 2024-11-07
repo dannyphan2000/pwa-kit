@@ -7,6 +7,7 @@
 import {ApiOptions, ApiMethod} from './types'
 import useAuthContext from './useAuthContext'
 import useConfig from './useConfig'
+import {handleInvalidToken} from './helpers'
 
 /**
  * Creates a method that waits for authentication to complete and automatically includes an
@@ -32,26 +33,16 @@ export const useAuthorizationHeader = <Options extends ApiOptions, Data>(
                 ...options.headers
             }
         }).catch(async (error) => {
-            if (error?.response?.status == 401) {
-                const response = await error?.response?.json()
-                if (response?.detail === 'Customer credentials changed after token was issued.') {
-                    logger.info('Login was invalidated. Clearing login state.')
-                    const {access_token} = await auth.logout()
+            const {access_token} = await handleInvalidToken(error, auth, logger)
 
-                    // Retry again after resetting auth state
-                    return await method({
-                        ...options,
-                        headers: {
-                            Authorization: `Bearer ${access_token}`,
-                            ...options.headers
-                        }
-                    })
-                } else {
-                    throw error
+            // Retry again after resetting auth state
+            return await method({
+                ...options,
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                    ...options.headers
                 }
-            } else {
-                throw error
-            }
+            })
         })
     }
 }

@@ -19,12 +19,14 @@ import {
     ApiOptions,
     CacheUpdateGetter,
     MergedOptions,
-    OptionalCustomEndpointClientConfig
+    OptionalCustomEndpointClientConfig,
+    TMutationVariables
 } from './types'
 import {useAuthorizationHeader} from './useAuthorizationHeader'
 import useCustomerId from './useCustomerId'
 import {mergeOptions, updateCache} from './utils'
 import {CommerceApiProviderProps} from '../provider'
+import {handleInvalidToken, generateCustomEndpointOptions} from './helpers'
 
 /**
  * Helper for mutation hooks, contains most of the logic in order to keep individual hooks small.
@@ -55,12 +57,6 @@ export const useMutation = <
     })
 }
 
-type TMutationVariables = {
-    body?: unknown
-    parameters?: {[key: string]: string | number | boolean | string[] | number[]}
-    headers?: {[key: string]: string}
-} | void
-
 /**
  * A hook for SCAPI custom endpoint mutations.
  *
@@ -84,34 +80,13 @@ export const useCustomMutation = <TData = unknown, TError = unknown>(
             const {access_token} = await auth.ready()
             return (await helpers
                 .callCustomEndpoint(
-                    generateCustomEndpointOptions(args, apiOptions, globalConfig, access_token)
+                    generateCustomEndpointOptions(apiOptions, globalConfig, access_token, args)
                 )
                 .catch(async (error) => {
-                    if (error?.response?.status == 401) {
-                        const response = await error?.response?.json()
-                        if (
-                            response?.detail ===
-                            'Customer credentials changed after token was issued.'
-                        ) {
-                            logger.info('Login was invalidated. Clearing login state.')
-                            await auth.logout()
-
-                            // Retry again after resetting auth state
-                            const {access_token} = await auth.ready()
-                            return await helpers.callCustomEndpoint(
-                                generateCustomEndpointOptions(
-                                    args,
-                                    apiOptions,
-                                    globalConfig,
-                                    access_token
-                                )
-                            )
-                        } else {
-                            throw error
-                        }
-                    } else {
-                        throw error
-                    }
+                    const {access_token} = await handleInvalidToken(error, auth, logger)
+                    return await helpers.callCustomEndpoint(
+                        generateCustomEndpointOptions(apiOptions, globalConfig, access_token, args)
+                    )
                 })) as TData
         }
     }
@@ -120,44 +95,4 @@ export const useCustomMutation = <TData = unknown, TError = unknown>(
         createMutationFnWithAuth(),
         mutationOptions
     )
-}
-
-const generateCustomEndpointOptions = (
-    args: TMutationVariables,
-    apiOptions: OptionalCustomEndpointClientConfig,
-    config: Omit<CommerceApiProviderProps, 'children'>,
-    access_token: string
-) => {
-    const globalHeaders = config.headers || {}
-    const globalClientConfig = {
-        parameters: {
-            clientId: config.clientId,
-            siteId: config.siteId,
-            organizationId: config.organizationId,
-            shortCode: config.shortCode
-        },
-        proxy: config.proxy,
-        throwOnBadResponse: true
-    }
-
-    return {
-        ...apiOptions,
-        options: {
-            ...apiOptions.options,
-            headers: {
-                Authorization: `Bearer ${access_token}`,
-                // Note the order of the following destructred objects is important.
-                // Priority assending order: global config < mutation config < mutate func args
-                ...globalHeaders,
-                ...apiOptions.options?.headers,
-                ...(args?.headers ? args.headers : {})
-            },
-            ...(args?.body ? {body: args.body} : {}),
-            ...(args?.parameters ? {parameters: args.parameters} : {})
-        },
-        clientConfig: {
-            ...globalClientConfig,
-            ...(apiOptions.clientConfig || {})
-        }
-    }
 }
