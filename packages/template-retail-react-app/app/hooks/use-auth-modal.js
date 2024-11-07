@@ -349,8 +349,8 @@ export const useAuthModal = (initialView = LOGIN_VIEW) => {
         isOpen,
         onOpen,
         onClose,
-        isPasswordlessEnabled: passwordless?.enabled,
-        isSocialEnabled: social?.enabled,
+        isPasswordlessEnabled: !!passwordless?.enabled,
+        isSocialEnabled: !!social?.enabled,
         idps: social?.idps
     }
 }

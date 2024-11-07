@@ -49,8 +49,8 @@ const Checkout = () => {
     const {mutateAsync: createOrder} = useShopperOrdersMutation('createOrder')
     const {passwordless, social} = getConfig().app.login
     const idps = social?.idps
-    const isSocialEnabled = social?.enabled
-    const isPasswordlessEnabled = passwordless?.enabled
+    const isSocialEnabled = !!social?.enabled
+    const isPasswordlessEnabled = !!passwordless?.enabled
 
     useEffect(() => {
         if (error || step === 4) {

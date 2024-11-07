@@ -112,8 +112,8 @@ const Login = () => {
                     submitForm={submitForm}
                     clickCreateAccount={() => navigate('/registration')}
                     handleForgotPasswordClick={() => navigate('/reset-password')}
-                    isPasswordlessEnabled={passwordless?.enabled}
-                    isSocialEnabled={social?.enabled}
+                    isPasswordlessEnabled={!!passwordless?.enabled}
+                    isSocialEnabled={!!social?.enabled}
                     idps={social?.idps}
                 />
             </Container>
