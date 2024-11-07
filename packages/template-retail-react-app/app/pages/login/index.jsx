@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, {useEffect, useRef} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import PropTypes from 'prop-types'
 import {useIntl, defineMessage} from 'react-intl'
 import {Box, Container} from '@salesforce/retail-react-app/app/components/shared/ui'
@@ -23,6 +23,7 @@ import {useForm} from 'react-hook-form'
 import {useLocation} from 'react-router-dom'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
+import CheckEmail from '@salesforce/retail-react-app/app/components/check-email'
 import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
@@ -31,7 +32,11 @@ const LOGIN_ERROR_MESSAGE = defineMessage({
     defaultMessage: 'Incorrect username or password, please try again.',
     id: 'login_page.error.incorrect_username_or_password'
 })
-const Login = () => {
+
+const LOGIN_VIEW = 'login'
+const EMAIL_VIEW = 'email'
+
+const Login = ({initialView = LOGIN_VIEW}) => {
     const {formatMessage} = useIntl()
     const navigate = useNavigation()
     const form = useForm()
@@ -41,6 +46,9 @@ const Login = () => {
     const {isRegistered, customerType} = useCustomerType()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const {passwordless, social} = getConfig().app.login
+    const isPasswordlessEnabled = !!passwordless?.enabled
+    const isSocialEnabled = !!social?.enabled
+    const idps = social?.idps
 
     const customerId = useCustomerId()
     const prevAuthType = usePrevious(customerType)
@@ -49,6 +57,11 @@ const Login = () => {
         {enabled: !!customerId && !isServer, keepPreviousData: true}
     )
     const mergeBasket = useShopperBasketsMutation('mergeBasket')
+    const [currentView, setCurrentView] = useState(initialView)
+
+    const handlePasswordLoginClick = () => {
+        setCurrentView(EMAIL_VIEW)
+    }
 
     const submitForm = async (data) => {
         try {
@@ -94,6 +107,7 @@ const Login = () => {
     useEffect(() => {
         einstein.sendViewPage(location.pathname)
     }, [])
+
     return (
         <Box data-testid="login-page" bg="gray.50" py={[8, 16]}>
             <Seo title="Sign in" description="Customer sign in" />
@@ -106,21 +120,22 @@ const Login = () => {
                 marginBottom={8}
                 borderRadius="base"
             >
-                <LoginForm
-                    form={form}
-                    submitForm={submitForm}
-                    clickCreateAccount={() => navigate('/registration')}
-                    handlePasswordlessLoginClick={() => {
-                        navigate('/check-email', {
-                            state: {email: submittedEmail.current}
-                        })
-                    }}
-                    handleForgotPasswordClick={() => navigate('/reset-password')}
-                    isPasswordlessEnabled={passwordless?.enabled}
-                    isSocialEnabled={social?.enabled}
-                    idps={social?.idps}
-                    submittedEmail={submittedEmail}
-                />
+                {!form.formState.isSubmitSuccessful && currentView === LOGIN_VIEW && (
+                    <LoginForm
+                        form={form}
+                        submitForm={submitForm}
+                        clickCreateAccount={() => navigate('/registration')}
+                        handlePasswordlessLoginClick={handlePasswordLoginClick}
+                        handleForgotPasswordClick={() => navigate('/reset-password')}
+                        isPasswordlessEnabled={isPasswordlessEnabled}
+                        isSocialEnabled={isSocialEnabled}
+                        idps={idps}
+                        submittedEmail={submittedEmail}
+                    />
+                )}
+                {!form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
+                    <CheckEmail email={submittedEmail.current} />
+                )}
             </Container>
         </Box>
     )
@@ -129,6 +144,7 @@ const Login = () => {
 Login.getTemplateName = () => 'login'
 
 Login.propTypes = {
+    initialView: PropTypes.oneOf([LOGIN_VIEW, EMAIL_VIEW]),
     match: PropTypes.object
 }
 

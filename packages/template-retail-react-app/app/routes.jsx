@@ -29,7 +29,6 @@ const Registration = loadable(() => import('./pages/registration'), {
     fallback
 })
 const ResetPassword = loadable(() => import('./pages/reset-password'), {fallback})
-const CheckEmailPage = loadable(() => import('./pages/check-email'), {fallback})
 const Account = loadable(() => import('./pages/account'), {fallback})
 const Cart = loadable(() => import('./pages/cart'), {fallback})
 const Checkout = loadable(() => import('./pages/checkout'), {
@@ -69,11 +68,6 @@ export const routes = [
     {
         path: '/reset-password',
         component: ResetPassword,
-        exact: true
-    },
-    {
-        path: '/check-email',
-        component: CheckEmailPage,
         exact: true
     },
     {

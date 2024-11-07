@@ -19,7 +19,7 @@ const PasswordlessLogin = ({
     handlePasswordlessLoginClick,
     isSocialEnabled = false,
     idps = [],
-    submittedEmail = ''
+    submittedEmail
 }) => {
     const [showPasswordView, setShowPasswordView] = useState(false)
 
@@ -35,7 +35,6 @@ const PasswordlessLogin = ({
     }
 
     const updateSubmittedEmailRef = () => {
-        console.log('hellooooooooo')
         submittedEmail.current = document.getElementById('email').value
     }
 
@@ -105,7 +104,7 @@ PasswordlessLogin.propTypes = {
     handlePasswordlessLoginClick: PropTypes.func,
     isSocialEnabled: PropTypes.bool,
     idps: PropTypes.arrayOf[PropTypes.string],
-    submittedEmail: PropTypes.string
+    submittedEmail: PropTypes.object
 }
 
 export default PasswordlessLogin

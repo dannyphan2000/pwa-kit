@@ -23,7 +23,7 @@ const LoginForm = ({
     isPasswordlessEnabled = false,
     isSocialEnabled = false,
     idps = [],
-    submittedEmail = ''
+    submittedEmail
 }) => {
     return (
         <Fragment>
@@ -97,7 +97,7 @@ LoginForm.propTypes = {
     isPasswordlessEnabled: PropTypes.bool,
     isSocialEnabled: PropTypes.bool,
     idps: PropTypes.array[PropTypes.string],
-    submittedEmail: PropTypes.string
+    submittedEmail: PropTypes.object
 }
 
 export default LoginForm
