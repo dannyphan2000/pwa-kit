@@ -148,9 +148,6 @@ export const SHIPPING_COUNTRY_CODES = [
     {value: 'US', label: 'United States'}
 ]
 
-// Constant to Enable Active Data
-export const ACTIVE_DATA_ENABLED = false
-
 export const REMOVE_UNAVAILABLE_CART_ITEM_DIALOG_CONFIG = {
     dialogTitle: defineMessage({
         defaultMessage: 'Items Unavailable',

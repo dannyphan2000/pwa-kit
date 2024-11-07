@@ -8,13 +8,13 @@
 import React from 'react'
 
 // Platform Imports
-import {useApplicationExtensions} from '@salesforce/pwa-kit-extension-sdk/react'
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 
 // Local
 import {createUrlTemplate} from '../../utils/url'
 import {MultiSiteProvider} from '../../contexts'
 import {resolveSiteFromUrl, resolveLocaleFromUrl} from '../../utils/site-utils'
+import {useConfig} from '../../hooks/use-config'
 
 // Define a type for the HOC props
 // TODO: update the type to have site, locale, and buildUrl
@@ -23,14 +23,11 @@ type WithMultiSiteProps = React.ComponentPropsWithoutRef<any>
 // Define the HOC function
 const withMultiSite = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const WithMultiSite: React.FC<P> = (props: WithMultiSiteProps) => {
-        const applicationExtensions = useApplicationExtensions()
-        const thisApplicationExtension = applicationExtensions[0]
-
         const {req} = useServerContext()
         const path = req?.originalUrl || `${window.location.pathname}${window.location.search}`
 
-        // TODO:
-        const config = thisApplicationExtension.getConfig()
+        // TODO: Fix  type
+        const config: any = useConfig()
 
         const site: any = resolveSiteFromUrl(path)
         const locale: any = resolveLocaleFromUrl(path)

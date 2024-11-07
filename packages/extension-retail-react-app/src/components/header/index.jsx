@@ -41,7 +41,8 @@ import {
     HamburgerIcon,
     ChevronDownIcon,
     HeartIcon,
-    SignoutIcon
+    SignoutIcon,
+    StoreIcon
 } from '../../components/icons'
 
 import {navLinks, messages} from '../../pages/account/constant'
@@ -199,7 +200,6 @@ const Header = ({
                         onClick={onMyAccountClick}
                         onMouseOver={isDesktop ? onAccountMenuOpen : noop}
                     />
-
                     {isRegistered && isHydrated() && (
                         <Popover
                             isLazy

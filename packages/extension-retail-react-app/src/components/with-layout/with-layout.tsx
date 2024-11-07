@@ -14,7 +14,7 @@ import {Helmet} from 'react-helmet'
 import 'focus-visible/dist/focus-visible'
 
 // Platform Imports
-import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
+import {getStaticAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
 import {useCategory, useShopperBasketsMutation} from '@salesforce/commerce-sdk-react'
 
@@ -40,6 +40,7 @@ import ScrollToTop from '../scroll-to-top'
 // Local Project Hooks
 import {AuthModal, useAuthModal} from '../../hooks/use-auth-modal'
 import {AddToCartModalProvider} from '../../hooks/use-add-to-cart-modal'
+import {useConfig} from '../../hooks/use-config'
 import {useCurrentCustomer} from '../../hooks/use-current-customer'
 import {useCurrentBasket} from '../../hooks/use-current-basket'
 import {watchOnlineStatus, flatten} from '../../utils/utils'
@@ -110,6 +111,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
         const appOrigin = getAppOrigin()
         const activeData = useActiveData()
+        const config = useConfig()
         const history = useHistory()
         const location = useLocation()
         const authModal = useAuthModal()
@@ -216,9 +218,9 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         return (
             <Box className="sf-app" {...styles.container}>
                 <Helmet>
-                    {ACTIVE_DATA_ENABLED && (
+                    {config.activeDataEnabled && (
                         <script
-                            src={getAssetUrl('static/head-active_data.js')}
+                            src={getStaticAssetUrl('libs/head-active_data.js', {appExtensionPackageName: '@salesforce/extension-retail-react-app'})}
                             id="headActiveData"
                             type="text/javascript"
                         ></script>
@@ -228,12 +230,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 <Seo>
                     <meta name="theme-color" content={THEME_COLOR} />
                     <meta name="apple-mobile-web-app-title" content={DEFAULT_SITE_TITLE} />
-                    <link
-                        rel="apple-touch-icon"
-                        href={getAssetUrl('static/img/global/apple-touch-icon.png')}
-                    />
-                    <link rel="manifest" href={getAssetUrl('static/manifest.json')} />
-
+                    
                     {/* Urls for all localized versions of this page (including current page)
                     For more details on hrefLang, see https://developers.google.com/search/docs/advanced/crawling/localized-versions */}
                     {site.l10n?.supportedLocales.map((locale: any) => (
@@ -324,10 +321,10 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                         <AuthModal {...authModal} />
                     </AddToCartModalProvider>
                 </Box>
-                {ACTIVE_DATA_ENABLED && (
+                {config.activeDataEnabled as boolean && (
                     <script
                         type="text/javascript"
-                        src={getAssetUrl('static/dwanalytics-22.2.js')}
+                        src={getStaticAssetUrl('libs/dwanalytics-22.2.js', {appExtensionPackageName: '@salesforce/extension-retail-react-app'})}
                         id="dwanalytics"
                         async="async"
                         onLoad={trackPage}
@@ -335,7 +332,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 )}
                 {ACTIVE_DATA_ENABLED && (
                     <script
-                        src={getAssetUrl('static/dwac-21.7.js')}
+                        src={getStaticAssetUrl('libs/dwac-21.7.js', {appExtensionPackageName: '@salesforce/extension-retail-react-app'})}
                         type="text/javascript"
                         id="dwac"
                         async="async"

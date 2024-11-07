@@ -49,6 +49,9 @@
         [
           "@salesforce/extension-retail-react-app", 
           {
+            "pages": {
+              "ProductDetail": false
+            },
             "url": {
               "site": "path",
               "locale": "path",

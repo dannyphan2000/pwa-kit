@@ -50,16 +50,27 @@ type UrlPlacement = 'path' | 'query_string' | 'none'
 
 // Main configuration type, extending ApplicationExtensionConfig for additional settings.
 export interface Config extends ApplicationExtensionConfig {
-    urlConfig: {
+    activeDataEnabled: boolean // default = false
+    commerceAPI: CommerceAPIConfig
+    defaultSite: Site['id']
+    einsteinAPI: EinsteinAPI
+    enabled: boolean,
+    pages: Record<string, boolean>
+    siteAliases: Record<Site['id'], string>
+    sites: Site[]
+    url: {
         site: UrlPlacement
         locale: UrlPlacement
         showDefaults: boolean
         interpretPlusSignAsSpace: boolean
     }
-    defaultSite: Site['id']
-    siteAliases: Record<Site['id'], string>
-    sites: Site[]
-    commerceAPI: CommerceAPIConfig
-    einsteinAPI: EinsteinAPI
-    enabled: boolean
+    // TODO: Add pages to enabled disable easily. ✅
+    // TODO: Move static assets to proper destination. ✅
+    // NOTE: Think about namespacing for extensions.
+    // TODO: Think about the _error and how it works with extensions, right now I don't think it does
+    // anything.
+    // TODO: Write tests for HOCs
+    // TODO: Add default config value ✅? Maybe move this to another PR
+    // TODO: Write Readme
+    // TODO: Fix getting static image.. we need a way to get the id of the extension. ✅ We need a way to get
 }
