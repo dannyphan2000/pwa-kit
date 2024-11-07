@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {useIntl, defineMessage} from 'react-intl'
 import {Box, Container} from '@salesforce/retail-react-app/app/components/shared/ui'
@@ -40,7 +40,6 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const {formatMessage} = useIntl()
     const navigate = useNavigation()
     const form = useForm()
-    const submittedEmail = useRef()
     const location = useLocation()
     const einstein = useEinstein()
     const {isRegistered, customerType} = useCustomerType()
@@ -58,34 +57,50 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     )
     const mergeBasket = useShopperBasketsMutation('mergeBasket')
     const [currentView, setCurrentView] = useState(initialView)
+    const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
+    const [loginType, setLoginType] = useState('password')
 
     const submitForm = async (data) => {
-        try {
-            await login.mutateAsync({username: data.email, password: data.password})
-            const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
-            // we only want to merge basket when the user is logged in as a recurring user
-            // only recurring users trigger the login mutation, new user triggers register mutation
-            // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
-            // if you change logic here, also change it in login page
-            const shouldMergeBasket = hasBasketItem && prevAuthType === 'guest'
-            if (shouldMergeBasket) {
-                mergeBasket.mutate({
-                    headers: {
-                        // This is not required since the request has no body
-                        // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
-                        'Content-Type': 'application/json'
-                    },
-                    parameters: {
-                        createDestinationBasket: true
+        form.clearErrors()
+
+        return {
+            login: async (data) => {
+                if (loginType === 'password') {
+                    try {
+                        await login.mutateAsync({username: data.email, password: data.password})
+                        const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
+                        // we only want to merge basket when the user is logged in as a recurring user
+                        // only recurring users trigger the login mutation, new user triggers register mutation
+                        // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
+                        // if you change logic here, also change it in login page
+                        const shouldMergeBasket = hasBasketItem && prevAuthType === 'guest'
+                        if (shouldMergeBasket) {
+                            mergeBasket.mutate({
+                                headers: {
+                                    // This is not required since the request has no body
+                                    // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
+                                    'Content-Type': 'application/json'
+                                },
+                                parameters: {
+                                    createDestinationBasket: true
+                                }
+                            })
+                        }
+                    } catch (error) {
+                        const message = /Unauthorized/i.test(error.message)
+                            ? formatMessage(LOGIN_ERROR_MESSAGE)
+                            : formatMessage(API_ERROR_MESSAGE)
+                        form.setError('global', {type: 'manual', message})
                     }
-                })
+                } else if (loginType === 'passwordless') {
+                    setCurrentView(EMAIL_VIEW)
+                    setPasswordlessLoginEmail(data.email)
+                    // Handle passwordless login logic here
+                } else if (loginType === 'social') {
+                    // Handle social login logic here
+                }
             }
-        } catch (error) {
-            const message = /Unauthorized/i.test(error.message)
-                ? formatMessage(LOGIN_ERROR_MESSAGE)
-                : formatMessage(API_ERROR_MESSAGE)
-            form.setError('global', {type: 'manual', message})
-        }
+        }[currentView](data)
     }
 
     // If customer is registered push to account page
@@ -122,17 +137,16 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                         submitForm={submitForm}
                         clickCreateAccount={() => navigate('/registration')}
                         handlePasswordlessLoginClick={() => {
-                            setCurrentView(EMAIL_VIEW)
+                            setLoginType('passwordless')
                         }}
                         handleForgotPasswordClick={() => navigate('/reset-password')}
                         isPasswordlessEnabled={isPasswordlessEnabled}
                         isSocialEnabled={isSocialEnabled}
                         idps={idps}
-                        submittedEmail={submittedEmail}
                     />
                 )}
-                {!form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
-                    <CheckEmail email={submittedEmail.current} />
+                {form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
+                    <CheckEmail email={passwordlessLoginEmail} />
                 )}
             </Container>
         </Box>

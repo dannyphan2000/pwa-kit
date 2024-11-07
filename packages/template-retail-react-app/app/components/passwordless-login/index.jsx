@@ -18,8 +18,7 @@ const PasswordlessLogin = ({
     handleForgotPasswordClick,
     handlePasswordlessLoginClick,
     isSocialEnabled = false,
-    idps = [],
-    submittedEmail
+    idps = []
 }) => {
     const [showPasswordView, setShowPasswordView] = useState(false)
 
@@ -34,10 +33,6 @@ const PasswordlessLogin = ({
         }
     }
 
-    const updateSubmittedEmailRef = () => {
-        submittedEmail.current = document.getElementById('email').value
-    }
-
     return (
         <>
             {((!form.formState.isSubmitSuccessful && !showPasswordView) ||
@@ -50,11 +45,7 @@ const PasswordlessLogin = ({
                     />
                     <Button
                         type="submit"
-                        onClick={() => {
-                            form.clearErrors('global')
-                            updateSubmittedEmailRef()
-                            handlePasswordlessLoginClick()
-                        }}
+                        onClick={handlePasswordlessLoginClick}
                         isLoading={form.formState.isSubmitting}
                     >
                         <FormattedMessage
@@ -103,8 +94,7 @@ PasswordlessLogin.propTypes = {
     handleForgotPasswordClick: PropTypes.func,
     handlePasswordlessLoginClick: PropTypes.func,
     isSocialEnabled: PropTypes.bool,
-    idps: PropTypes.arrayOf[PropTypes.string],
-    submittedEmail: PropTypes.object
+    idps: PropTypes.arrayOf[PropTypes.string]
 }
 
 export default PasswordlessLogin

@@ -81,6 +81,8 @@ export const AuthModal = ({
     const toast = useToast()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const register = useAuthHelper(AuthHelpers.Register)
+    const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
+    const [loginType, setLoginType] = useState('password')
 
     const getResetPasswordToken = useShopperCustomersMutation(
         ShopperCustomersMutations.GetResetPasswordToken
@@ -101,34 +103,42 @@ export const AuthModal = ({
 
         return {
             login: async (data) => {
-                try {
-                    await login.mutateAsync({
-                        username: data.email,
-                        password: data.password
-                    })
-                    const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
-                    // we only want to merge basket when the user is logged in as a recurring user
-                    // only recurring users trigger the login mutation, new user triggers register mutation
-                    // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
-                    // if you change logic here, also change it in login page
-                    const shouldMergeBasket = hasBasketItem && prevAuthType === 'guest'
-                    if (shouldMergeBasket) {
-                        mergeBasket.mutate({
-                            headers: {
-                                // This is not required since the request has no body
-                                // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
-                                'Content-Type': 'application/json'
-                            },
-                            parameters: {
-                                createDestinationBasket: true
-                            }
+                if (loginType === 'password') {
+                    try {
+                        await login.mutateAsync({
+                            username: data.email,
+                            password: data.password
                         })
+                        const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
+                        // we only want to merge basket when the user is logged in as a recurring user
+                        // only recurring users trigger the login mutation, new user triggers register mutation
+                        // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
+                        // if you change logic here, also change it in login page
+                        const shouldMergeBasket = hasBasketItem && prevAuthType === 'guest'
+                        if (shouldMergeBasket) {
+                            mergeBasket.mutate({
+                                headers: {
+                                    // This is not required since the request has no body
+                                    // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
+                                    'Content-Type': 'application/json'
+                                },
+                                parameters: {
+                                    createDestinationBasket: true
+                                }
+                            })
+                        }
+                    } catch (error) {
+                        const message = /Unauthorized/i.test(error.message)
+                            ? formatMessage(LOGIN_ERROR)
+                            : formatMessage(API_ERROR_MESSAGE)
+                        form.setError('global', {type: 'manual', message})
                     }
-                } catch (error) {
-                    const message = /Unauthorized/i.test(error.message)
-                        ? formatMessage(LOGIN_ERROR)
-                        : formatMessage(API_ERROR_MESSAGE)
-                    form.setError('global', {type: 'manual', message})
+                } else if (loginType === 'passwordless') {
+                    setCurrentView(EMAIL_VIEW)
+                    setPasswordlessLoginEmail(data.email)
+                    // Handle passwordless login logic here
+                } else if (loginType === 'social') {
+                    // Handle social login logic here
                 }
             },
             register: async (data) => {
@@ -241,6 +251,7 @@ export const AuthModal = ({
     const onBackToSignInClick = () =>
         initialView === PASSWORD_VIEW ? onClose() : setCurrentView(LOGIN_VIEW)
 
+    // TODO: Remove this to a separate component when fixing password reset flow
     const PasswordResetSuccess = () => (
         <Stack justify="center" align="center" spacing={6}>
             <BrandLogo width="60px" height="auto" />
@@ -272,6 +283,7 @@ export const AuthModal = ({
             </Stack>
         </Stack>
     )
+
     return (
         <Modal
             size="sm"
@@ -296,12 +308,11 @@ export const AuthModal = ({
                             form={form}
                             submitForm={submitForm}
                             clickCreateAccount={() => setCurrentView(REGISTER_VIEW)}
-                            handlePasswordlessLoginClick={() => setCurrentView(EMAIL_VIEW)}
+                            handlePasswordlessLoginClick={() => setLoginType('passwordless')}
                             handleForgotPasswordClick={() => setCurrentView(PASSWORD_VIEW)}
                             isPasswordlessEnabled={isPasswordlessEnabled}
                             isSocialEnabled={isSocialEnabled}
                             idps={idps}
-                            submittedEmail={submittedEmail}
                         />
                     )}
                     {!form.formState.isSubmitSuccessful && currentView === REGISTER_VIEW && (
@@ -322,7 +333,7 @@ export const AuthModal = ({
                         <PasswordResetSuccess />
                     )}
                     {!form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
-                        <CheckEmail email={submittedEmail.current} />
+                        <CheckEmail email={passwordlessLoginEmail} />
                     )}
                 </ModalBody>
             </ModalContent>
