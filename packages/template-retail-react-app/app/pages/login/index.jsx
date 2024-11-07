@@ -41,7 +41,7 @@ const Login = () => {
     const einstein = useEinstein()
     const {isRegistered, customerType} = useCustomerType()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
-    const {passwordless, social} = getConfig().app.login
+    const {passwordless = {}, social = {}} = getConfig().app.login || {}
 
     const customerId = useCustomerId()
     const prevAuthType = usePrevious(customerType)
