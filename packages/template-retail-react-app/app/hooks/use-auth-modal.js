@@ -35,7 +35,7 @@ import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
 import ResetPasswordForm from '@salesforce/retail-react-app/app/components/reset-password'
 import RegisterForm from '@salesforce/retail-react-app/app/components/register'
-import CheckEmail from '@salesforce/retail-react-app/app/components/check-email'
+import PasswordlessEmailConfirmation from '@salesforce/retail-react-app/app/components/email-confirmation/index'
 import {noop} from '@salesforce/retail-react-app/app/utils/utils'
 import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
@@ -174,6 +174,9 @@ export const AuthModal = ({
                         message: formatMessage(API_ERROR_MESSAGE)
                     })
                 }
+            },
+            email: async (data) => {
+                // Handle resend passwordless email logic here
             }
         }[currentView](data)
     }
@@ -332,8 +335,12 @@ export const AuthModal = ({
                     {form.formState.isSubmitSuccessful && currentView === PASSWORD_VIEW && (
                         <PasswordResetSuccess />
                     )}
-                    {!form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
-                        <CheckEmail email={passwordlessLoginEmail} />
+                    {form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
+                        <PasswordlessEmailConfirmation
+                            form={form}
+                            submitForm={submitForm}
+                            email={passwordlessLoginEmail}
+                        />
                     )}
                 </ModalBody>
             </ModalContent>

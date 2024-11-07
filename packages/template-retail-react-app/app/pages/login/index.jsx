@@ -23,7 +23,7 @@ import {useForm} from 'react-hook-form'
 import {useLocation} from 'react-router-dom'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
-import CheckEmail from '@salesforce/retail-react-app/app/components/check-email'
+import PasswordlessEmailConfirmation from '@salesforce/retail-react-app/app/components/email-confirmation/index'
 import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
@@ -99,6 +99,9 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                 } else if (loginType === 'social') {
                     // Handle social login logic here
                 }
+            },
+            email: async (data) => {
+                // Handle resend passwordless email logic here
             }
         }[currentView](data)
     }
@@ -146,7 +149,11 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                     />
                 )}
                 {form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
-                    <CheckEmail email={passwordlessLoginEmail} />
+                    <PasswordlessEmailConfirmation
+                        form={form}
+                        submitForm={submitForm}
+                        email={passwordlessLoginEmail}
+                    />
                 )}
             </Container>
         </Box>

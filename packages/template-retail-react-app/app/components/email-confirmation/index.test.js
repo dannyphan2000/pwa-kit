@@ -7,10 +7,16 @@
 import React from 'react'
 import {screen} from '@testing-library/react'
 import {renderWithProviders} from '@salesforce/retail-react-app/app/utils/test-utils'
-import CheckEmail from '@salesforce/retail-react-app/app/components/check-email'
+import PasswordlessEmailConfirmation from '@salesforce/retail-react-app/app/components/email-confirmation/index'
+import {useForm} from 'react-hook-form'
 
-test('renders CheckEmail component with passed email', () => {
+const WrapperComponent = ({...props}) => {
+    const form = useForm()
+    return <PasswordlessEmailConfirmation form={form} {...props} />
+}
+
+test('renders PasswordlessEmailConfirmation component with passed email', () => {
     const email = 'test@salesforce.com'
-    renderWithProviders(<CheckEmail email={email} />)
+    renderWithProviders(<WrapperComponent email={email} />)
     expect(screen.getByText(email)).toBeInTheDocument()
 })
