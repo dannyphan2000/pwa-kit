@@ -59,10 +59,6 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const mergeBasket = useShopperBasketsMutation('mergeBasket')
     const [currentView, setCurrentView] = useState(initialView)
 
-    const handlePasswordLoginClick = () => {
-        setCurrentView(EMAIL_VIEW)
-    }
-
     const submitForm = async (data) => {
         try {
             await login.mutateAsync({username: data.email, password: data.password})
@@ -125,7 +121,9 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                         form={form}
                         submitForm={submitForm}
                         clickCreateAccount={() => navigate('/registration')}
-                        handlePasswordlessLoginClick={handlePasswordLoginClick}
+                        handlePasswordlessLoginClick={() => {
+                            setCurrentView(EMAIL_VIEW)
+                        }}
                         handleForgotPasswordClick={() => navigate('/reset-password')}
                         isPasswordlessEnabled={isPasswordlessEnabled}
                         isSocialEnabled={isSocialEnabled}
