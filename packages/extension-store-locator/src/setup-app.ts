@@ -29,7 +29,9 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
         const config = this.getConfig()
 
         if (!config.supportedCountries || config.supportedCountries.length === 0) {
-            console.warn('[extension-store-locator] Missing supportedCountries, this extension will not work.')
+            console.warn(
+                '[extension-store-locator] Missing supportedCountries, this extension will not work.'
+            )
         }
 
         return withStoreLocator(withOptionalChakra(App), {
@@ -37,9 +39,9 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
             radius: config.radius ?? this.DEFAULT_RADIUS,
             radiusUnit: config.radiusUnit ?? this.DEFAULT_RADIUS_UNIT,
             defaultPageSize: config.defaultPageSize ?? this.DEFAULT_PAGE_SIZE,
-            defaultCountry: config.defaultCountry ?? "",
-            defaultCountryCode: config.defaultCountryCode ?? "",
-            defaultPostalCode: config.defaultPostalCode ?? "",
+            defaultCountry: config.defaultCountry ?? '',
+            defaultCountryCode: config.defaultCountryCode ?? '',
+            defaultPostalCode: config.defaultPostalCode ?? '',
             supportedCountries: config.supportedCountries ?? []
         })
     }
