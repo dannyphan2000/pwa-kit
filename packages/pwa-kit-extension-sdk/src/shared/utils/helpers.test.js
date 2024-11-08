@@ -5,7 +5,12 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import {kebabToLowerCamelCase, kebabToUpperCamelCase} from './helpers'
+import {
+    kebabToLowerCamelCase,
+    kebabToUpperCamelCase,
+    expand,
+    getConfiguredExtensions
+} from './helpers'
 
 describe('kebabToLowerCamelCase', () => {
     test('converts a simple kebab-case string to lowerCamelCase', () => {
@@ -72,5 +77,60 @@ describe('kebabToUpperCamelCase', () => {
 
     test('handles strings that start or end with hyphens', () => {
         expect(kebabToUpperCamelCase('-foo-bar-')).toBe('FooBar')
+    })
+})
+
+describe('"expand" util returns correct return value when', () => {
+    ;[
+        {
+            name: 'extensions are all valid package names',
+            input: ['extension-a', 'extension-b', 'extension-c', '@salesforce/extension-d'],
+            expected: [
+                ['extension-a', {enabled: true}],
+                ['extension-b', {enabled: true}],
+                ['extension-c', {enabled: true}],
+                ['@salesforce/extension-d', {enabled: true}]
+            ]
+        },
+        {
+            name: 'extensions include falsey values',
+            input: ['extension-a', '', false],
+            expected: [['extension-a', {enabled: true}]]
+        },
+        {
+            name: 'extensions defined do not follow naming convension',
+            input: ['not-the-correct-prefix-a'],
+            expected: []
+        }
+    ].forEach((testCase) => {
+        test(`${testCase.name}`, () => {
+            const result = expand(testCase.input)
+
+            expect(result).toEqual(testCase.expected)
+        })
+    })
+})
+
+describe('getConfiguredExtensions', () => {
+    test('parses the given config and normalizes the list', () => {
+        const extensions = getConfiguredExtensions({
+            app: {
+                extensions: [
+                    '@salesforce/extension-sample',
+                    ['@salesforce/extension-sample-2', {foo: 'bar'}]
+                ]
+            }
+        })
+        const firstExtension = extensions[0]
+        const secondExtension = extensions[1]
+
+        expect(Array.isArray(firstExtension)).toBe(true)
+        expect(firstExtension[0]).toBe('@salesforce/extension-sample')
+        expect(secondExtension[0]).toBe('@salesforce/extension-sample-2')
+    })
+
+    test('returns empty array for config without extensions', () => {
+        const extensions = getConfiguredExtensions({app: {}})
+        expect(Array.isArray(extensions) && extensions.length === 0).toBe(true)
     })
 })
