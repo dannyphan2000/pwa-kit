@@ -25,6 +25,7 @@ import {
     SimpleGrid,
     Grid,
     Select,
+    Heading,
     Text,
     FormControl,
     Stack,
@@ -57,6 +58,7 @@ import SelectedRefinements from '@salesforce/retail-react-app/app/pages/product-
 import EmptySearchResults from '@salesforce/retail-react-app/app/pages/product-list/partials/empty-results'
 import PageHeader from '@salesforce/retail-react-app/app/pages/product-list/partials/page-header'
 import AbovePageHeader from '@salesforce/retail-react-app/app/pages/product-list/partials/above-page-header'
+import PageDesignerPromotionalBanner from '@salesforce/retail-react-app/app/pages/product-list/partials/page-designer-promotional-banner'
 
 // Icons
 import {FilterIcon, ChevronDownIcon} from '@salesforce/retail-react-app/app/components/icons'
@@ -148,6 +150,7 @@ const ProductList = (props) => {
 
     const {
         isLoading,
+        isFetched,
         isRefetching,
         data: productSearchResult
     } = useProductSearch(
@@ -193,7 +196,7 @@ const ProductList = (props) => {
         case 404:
             throw new HTTPNotFound('Category Not Found.')
         default:
-            throw new HTTPError(`HTTP Error ${errorStatus} occurred.`)
+            throw new HTTPError(errorStatus, `HTTP Error ${errorStatus} occurred.`)
     }
 
     /**************** Response Handling ****************/
@@ -415,6 +418,8 @@ const ProductList = (props) => {
             ) : (
                 <>
                     <AbovePageHeader />
+                    <PageDesignerPromotionalBanner />
+
                     {/* Header */}
                     <Stack
                         display={{base: 'none', lg: 'flex'}}
@@ -450,6 +455,7 @@ const ProductList = (props) => {
                         </Box>
                     </Stack>
 
+                    {/* Filter Button for Mobile */}
                     <HideOnDesktop>
                         <Stack spacing={6}>
                             <PageHeader
@@ -539,7 +545,8 @@ const ProductList = (props) => {
                                 spacingX={4}
                                 spacingY={{base: 12, lg: 16}}
                             >
-                                {isHydrated() && (isRefetching || !productSearchResult)
+                                {isHydrated() &&
+                                ((isRefetching && !isFetched) || !productSearchResult)
                                     ? new Array(searchParams.limit)
                                           .fill(0)
                                           .map((value, index) => (
@@ -559,6 +566,7 @@ const ProductList = (props) => {
                                                   product={productSearchItem}
                                                   enableFavourite={true}
                                                   isFavourite={isInWishlist}
+                                                  isRefreshingData={isRefetching && isFetched}
                                                   imageViewType={PRODUCT_LIST_IMAGE_VIEW_TYPE}
                                                   selectableAttributeId={
                                                       PRODUCT_LIST_SELECTABLE_ATTRIBUTE_ID
@@ -635,12 +643,12 @@ const ProductList = (props) => {
                 <ModalOverlay />
                 <ModalContent top={0} marginTop={0}>
                     <ModalHeader>
-                        <Text fontWeight="bold" fontSize="2xl">
+                        <Heading as="h1" fontWeight="bold" fontSize="2xl">
                             <FormattedMessage
                                 defaultMessage="Filter"
                                 id="product_list.modal.title.filter"
                             />
-                        </Text>
+                        </Heading>
                     </ModalHeader>
                     <ModalCloseButton />
                     <ModalBody py={4}>

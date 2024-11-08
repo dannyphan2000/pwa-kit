@@ -13,6 +13,7 @@ import {screen, waitFor} from '@testing-library/react'
 import PropTypes from 'prop-types'
 import {rest} from 'msw'
 import {basketWithProductSet} from '@salesforce/retail-react-app/app/pages/product-detail/index.mock'
+import {mockProductBundle} from '@salesforce/retail-react-app/app/mocks/product-bundle'
 
 const MockedComponent = ({variant}) => {
     return (
@@ -52,7 +53,7 @@ test('the Add To Cart button', async () => {
     const {user} = renderWithProviders(<MockedComponent variant={variant} />)
 
     const addToCartButton = await screen.findByRole('button', {
-        name: /add to cart/i
+        name: new RegExp(`Add ${variant.name} to cart`, 'i')
     })
     await user.click(addToCartButton)
 
@@ -64,8 +65,9 @@ test('the Add To Cart button', async () => {
 test('the Add Set To Cart button', async () => {
     const productSetWithoutVariants = mockWishListDetails.data[1]
     const {user} = renderWithProviders(<MockedComponent variant={productSetWithoutVariants} />)
-
-    const button = await screen.findByRole('button', {name: /add set to cart/i})
+    const button = await screen.findByRole('button', {
+        name: new RegExp(`Add ${productSetWithoutVariants.name} set to cart`, 'i')
+    })
     await user.click(button)
 
     await waitFor(() => {
@@ -97,3 +99,10 @@ test('the View Options button', async () => {
         {timeout: 5000}
     )
 }, 30000)
+
+test('bundle in wishlist renders the View Full Details button', async () => {
+    renderWithProviders(<MockedComponent variant={mockProductBundle} />)
+
+    const link = await screen.findByText(/view full details/i)
+    expect(link).toBeInTheDocument()
+})

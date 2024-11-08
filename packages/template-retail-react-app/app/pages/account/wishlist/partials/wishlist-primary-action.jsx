@@ -25,6 +25,7 @@ const WishlistPrimaryAction = () => {
     const {formatMessage} = useIntl()
     const isMasterProduct = variant?.type?.master || false
     const isProductASet = variant?.type?.set
+    const isProductABundle = variant?.type?.bundle
     const showToast = useToast()
     const [isLoading, setIsLoading] = useState(false)
     const {isOpen, onOpen, onClose} = useDisclosure()
@@ -106,6 +107,13 @@ const WishlistPrimaryAction = () => {
                     onClick={() => handleAddToCart(variant, variant.quantity)}
                     w={'full'}
                     isLoading={isLoading}
+                    aria-label={formatMessage(
+                        {
+                            id: 'wishlist_primary_action.button.addSetToCart.label',
+                            defaultMessage: 'Add {productName} set to cart'
+                        },
+                        {productName: variant.name}
+                    )}
                 >
                     {buttonText.addSetToCart}
                 </Button>
@@ -118,16 +126,53 @@ const WishlistPrimaryAction = () => {
                     w={'full'}
                     variant={'solid'}
                     _hover={{textDecoration: 'none'}}
+                    aria-label={formatMessage(
+                        {
+                            id: 'wishlist_primary_action.button.viewFullDetails.label',
+                            defaultMessage: 'View full details for {productName}'
+                        },
+                        {productName: variant.name}
+                    )}
                 >
                     {buttonText.viewFullDetails}
                 </Button>
             )
         }
+    } else if (isProductABundle) {
+        return (
+            <Button
+                as={Link}
+                href={`/product/${variant.id}`}
+                w={'full'}
+                variant={'solid'}
+                _hover={{textDecoration: 'none'}}
+                aria-label={formatMessage(
+                    {
+                        id: 'wishlist_primary_action.button.viewFullDetails.label',
+                        defaultMessage: 'View full details for {productName}'
+                    },
+                    {productName: variant.name}
+                )}
+            >
+                {buttonText.viewFullDetails}
+            </Button>
+        )
     } else {
         if (isMasterProduct) {
             return (
                 <>
-                    <Button w={'full'} variant={'solid'} onClick={onOpen}>
+                    <Button
+                        aria-label={formatMessage(
+                            {
+                                id: 'wishlist_primary_action.button.view_options.label',
+                                defaultMessage: 'View Options for {productName}'
+                            },
+                            {productName: variant.name}
+                        )}
+                        w={'full'}
+                        variant={'solid'}
+                        onClick={onOpen}
+                    >
                         {buttonText.viewOptions}
                     </Button>
                     {isOpen && (
@@ -148,6 +193,13 @@ const WishlistPrimaryAction = () => {
                     onClick={() => handleAddToCart(variant, variant.quantity)}
                     w={'full'}
                     isLoading={isLoading}
+                    aria-label={formatMessage(
+                        {
+                            id: 'wishlist_primary_action.button.addToCart.label',
+                            defaultMessage: 'Add {productName} to cart'
+                        },
+                        {productName: variant.name}
+                    )}
                 >
                     {buttonText.addToCart}
                 </Button>

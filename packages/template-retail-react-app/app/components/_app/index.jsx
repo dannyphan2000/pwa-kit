@@ -11,7 +11,6 @@ import {useHistory, useLocation} from 'react-router-dom'
 import {StorefrontPreview} from '@salesforce/commerce-sdk-react/components'
 import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
 import useActiveData from '@salesforce/retail-react-app/app/hooks/use-active-data'
-import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
 import {useQuery} from '@tanstack/react-query'
 import {
     useAccessToken,
@@ -20,6 +19,8 @@ import {
     useShopperBasketsMutation
 } from '@salesforce/commerce-sdk-react'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
+import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
+
 // Chakra
 import {
     Box,
@@ -46,13 +47,14 @@ import {DrawerMenu} from '@salesforce/retail-react-app/app/components/drawer-men
 import {ListMenu, ListMenuContent} from '@salesforce/retail-react-app/app/components/list-menu'
 import {HideOnDesktop, HideOnMobile} from '@salesforce/retail-react-app/app/components/responsive'
 import AboveHeader from '@salesforce/retail-react-app/app/components/_app/partials/above-header'
-
+import StoreLocatorModal from '@salesforce/retail-react-app/app/components/store-locator-modal'
 // Hooks
 import {AuthModal, useAuthModal} from '@salesforce/retail-react-app/app/hooks/use-auth-modal'
 import {AddToCartModalProvider} from '@salesforce/retail-react-app/app/hooks/use-add-to-cart-modal'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 import {useCurrentBasket} from '@salesforce/retail-react-app/app/hooks/use-current-basket'
+import {useUpdateShopperContext} from '@salesforce/retail-react-app/app/hooks/use-update-shopper-context'
 
 // HOCs
 import {withCommerceSdkReact} from '@salesforce/retail-react-app/app/components/with-commerce-sdk-react/with-commerce-sdk-react'
@@ -131,7 +133,7 @@ const App = (props) => {
     })
     const categories = flatten(categoriesTree || {}, 'categories')
     const {getTokenWhenReady} = useAccessToken()
-    const appOrigin = getAppOrigin()
+    const appOrigin = useAppOrigin()
     const activeData = useActiveData()
     const history = useHistory()
     const location = useLocation()
@@ -141,9 +143,13 @@ const App = (props) => {
 
     const [isOnline, setIsOnline] = useState(true)
     const styles = useStyleConfig('App')
-
     const {isOpen, onOpen, onClose} = useDisclosure()
     const config = getConfig()
+    const {
+        isOpen: isOpenStoreLocator,
+        onOpen: onOpenStoreLocator,
+        onClose: onCloseStoreLocator
+    } = useDisclosure()
 
     const targetLocale = getTargetLocale({
         getUserPreferredLocales: () => {
@@ -178,7 +184,7 @@ const App = (props) => {
                 // Otherwise, it'll continue to fetch the missing translation file again
                 return {}
             }
-            return fetchTranslations(targetLocale)
+            return fetchTranslations(targetLocale, appOrigin)
         },
         enabled: isServer
     })
@@ -261,7 +267,7 @@ const App = (props) => {
                 ...routes
             ])
         }
-        
+
         return false
     })
 
@@ -298,6 +304,9 @@ const App = (props) => {
             setIsOnline(isOnline)
         })
     }, [])
+
+    // Handle updating the shopper context
+    useUpdateShopperContext()
 
     useEffect(() => {
         // Lets automatically close the mobile navigation when the
@@ -394,7 +403,7 @@ const App = (props) => {
                             <link rel="manifest" href={getAssetUrl('static/manifest.json')} />
 
                             {/* Urls for all localized versions of this page (including current page)
-                                For more details on hrefLang, see https://developers.google.com/search/docs/advanced/crawling/localized-versions */}
+                            For more details on hrefLang, see https://developers.google.com/search/docs/advanced/crawling/localized-versions */}
                             {site.l10n?.supportedLocales.map((locale) => (
                                 <link
                                     rel="alternate"
@@ -417,7 +426,10 @@ const App = (props) => {
 
                         <Box id="app" display="flex" flexDirection="column" flex={1}>
                             <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>
-
+                            <StoreLocatorModal
+                                isOpen={isOpenStoreLocator}
+                                onClose={onCloseStoreLocator}
+                            />
                             <Box {...styles.headerWrapper}>
                                 {!isCheckout ? (
                                     <>
@@ -428,6 +440,7 @@ const App = (props) => {
                                             onMyCartClick={onCartClick}
                                             onMyAccountClick={onAccountClick}
                                             onWishlistClick={onWishlistClick}
+                                            onStoreLocatorClick={onOpenStoreLocator}
                                         >
                                             <HideOnDesktop>
                                                 <DrawerMenu

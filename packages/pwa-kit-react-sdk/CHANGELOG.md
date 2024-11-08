@@ -1,4 +1,10 @@
-## v3.7.0-dev (Jun 25, 2024)
+## v3.9.0-dev (Oct 29, 2024)
+
+## v3.8.0 (Oct 28, 2024)
+- [Server Affinity] - Attach dwsid to SCAPI request headers [#2090](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2090)
+- Create useOrigin hook to return an app origin that takes x-forwarded-host header into consideration. [#2050](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2050)
+
+## v3.7.0 (Aug 07, 2024)
 - Add `beforeHydrate` option to withReactQuery component [#1912](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1912)
 - Add server side rendering performance metrics via query parameter `__server_timing` or environment variable `SERVER_TIMING`, the metrics is available in the console logs and response header `server-timing`. [#1895](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1895)
 

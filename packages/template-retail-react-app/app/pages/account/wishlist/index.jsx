@@ -5,9 +5,14 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React, {useState, useEffect, useRef} from 'react'
-import {Stack, Heading} from '@chakra-ui/layout'
 import {FormattedMessage, useIntl} from 'react-intl'
-import {Box, Flex, Skeleton} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {
+    Box,
+    Flex,
+    Skeleton,
+    Stack,
+    Heading
+} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {useProducts, useShopperCustomersMutation} from '@salesforce/commerce-sdk-react'
 
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
@@ -54,12 +59,11 @@ const AccountWishlist = () => {
         {enabled: productIds?.length > 0}
     )
 
-    const wishListItems = wishListData?.customerProductListItems?.map((item, i) => {
-        return {
-            ...item,
-            product: productsData?.data?.[i]
-        }
-    })
+    // If a product is added to the wishlist many times, it gets collapased into 1 line item
+    const wishListItems = wishListData?.customerProductListItems?.reduce((itemsData, item) => {
+        const productData = productsData?.data?.find((product) => product.id === item.productId)
+        return {...itemsData, [item.productId]: {...item, product: productData}}
+    }, {})
 
     const updateCustomerProductListItem = useShopperCustomersMutation(
         'updateCustomerProductListItem'
@@ -138,7 +142,7 @@ const AccountWishlist = () => {
         return isValidChange
     }
 
-    const hasWishlistItems = wishListItems?.length > 0
+    const hasWishlistItems = Object.keys(wishListItems ?? {}).length > 0
     const isPageLoading = hasWishlistItems ? isProductsLoading : isWishListLoading
 
     return (
@@ -195,33 +199,37 @@ const AccountWishlist = () => {
 
             {!isPageLoading &&
                 wishListItems &&
-                wishListItems.map((item) => (
-                    <ProductItem
-                        key={item.id}
-                        product={{
-                            ...item.product,
-                            quantity: item.quantity
-                        }}
-                        showLoading={
-                            (updateCustomerProductListItem.isLoading ||
-                                deleteCustomerProductListItem.isLoading ||
-                                isWishlistItemLoading) &&
-                            selectedItem === item.productId
-                        }
-                        primaryAction={<WishlistPrimaryAction />}
-                        onItemQuantityChange={(quantity) =>
-                            handleItemQuantityChanged(quantity, item)
-                        }
-                        secondaryActions={
-                            <WishlistSecondaryButtonGroup
-                                productListItemId={item.id}
-                                // Focus to 'Wishlist' header after remove for accessibility
-                                focusElementOnRemove={headingRef}
-                                onClick={handleSecondaryAction}
-                            />
-                        }
-                    />
-                ))}
+                Object.keys(wishListItems).map((key) => {
+                    const item = wishListItems[key]
+                    return (
+                        <ProductItem
+                            key={item.id}
+                            product={{
+                                ...item.product,
+                                quantity: item.quantity
+                            }}
+                            showLoading={
+                                (updateCustomerProductListItem.isLoading ||
+                                    deleteCustomerProductListItem.isLoading ||
+                                    isWishlistItemLoading) &&
+                                selectedItem === item.productId
+                            }
+                            primaryAction={<WishlistPrimaryAction />}
+                            onItemQuantityChange={(quantity) =>
+                                handleItemQuantityChanged(quantity, item)
+                            }
+                            secondaryActions={
+                                <WishlistSecondaryButtonGroup
+                                    productListItemId={item.id}
+                                    productName={item.product.name}
+                                    // Focus to 'Wishlist' header after remove for accessibility
+                                    focusElementOnRemove={headingRef}
+                                    onClick={handleSecondaryAction}
+                                />
+                            }
+                        />
+                    )
+                })}
 
             <UnavailableProductConfirmationModal
                 productItems={wishListData?.customerProductListItems}

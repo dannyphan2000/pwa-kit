@@ -54,6 +54,13 @@ ProductList.displayName = 'ProductList'
 PageNotFound.displayName = 'PageNotFound'
 
 const isServerSide = typeof window === 'undefined'
+const StoreLocator = loadable(() => import('./pages/store-locator'), {
+    fallback
+})
+const Wishlist = loadable(() => import('./pages/account/wishlist'), {
+    fallback
+})
+const PageNotFound = loadable(() => import('./pages/page-not-found'))
 
 export const routes = [
     {
@@ -73,6 +80,26 @@ export const routes = [
         path: '/cart',
         component: Cart,
         exact: true
+    },
+    {
+        path: '/product/:productId',
+        component: ProductDetail
+    },
+    {
+        path: '/search',
+        component: ProductList
+    },
+    {
+        path: '/category/:categoryId',
+        component: ProductList
+    },
+    {
+        path: '/account/wishlist',
+        component: Wishlist
+    },
+    {
+        path: '/store-locator',
+        component: StoreLocator
     },
     {
         path: '*',
@@ -148,10 +175,10 @@ export default async (locals) => {
         // Router Deserialization
         let _routes = window.__CONFIG__.app.routes
         configuredRoutes = await Promise.all(_routes.map(async ({path, componentName, componentProps}) => {
-            // DEVELOPER NOTE: We previously tried to dynamically load the component using the path to map to the 
+            // DEVELOPER NOTE: We previously tried to dynamically load the component using the path to map to the
             // filename and use import, but I couldn't get that to work. So here we are using the original routes
             // array to find the component for a given path from the serialized route config. It doesn't completely
-            // work as it will remove the configured routes as they don't match the path. This should be done in 
+            // work as it will remove the configured routes as they don't match the path. This should be done in
             // another way.
             let component = componentNameMap[componentName]
             if (!component) {
@@ -189,7 +216,7 @@ export default async (locals) => {
                 // locals.res.status = mapping.type
 
                 // DEVELOPER NOTE: Here is where you would use the resource type to assign the corrent component.
-                
+
                 let Component
                 let props
                 if (isRedirect) {
