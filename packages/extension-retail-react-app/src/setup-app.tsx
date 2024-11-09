@@ -105,22 +105,21 @@ class RetailReactApp extends ApplicationExtension<Config> {
                 path: '/account/wishlist',
                 component: Pages.Wishlist
             }
-            // ,
-            // {
-            //     path: '*',
-            //     component: PageNotFound
-            // }
         ].filter(({component}) => {
-            return (config.pages || [])[component.displayName] !== false 
+            return (config.pages || [])[component.displayName] !== false
         })
 
-        return configureRoutes(
-            [...extensionRoutes, ...routes],
-            {app: config},
-            {
-                ignoredRoutes: ['/callback', '*']
-            }
-        )
+        return configureRoutes([...extensionRoutes, ...routes], config, {
+            ignoredRoutes: ['/callback']
+        })
+    }
+
+    processRoutes(routes: RouteProps[]): RouteProps[] {
+        const config = this.getConfig()
+
+        return configureRoutes(routes, config, {
+            ignoredRoutes: ['/callback']
+        })
     }
 }
 

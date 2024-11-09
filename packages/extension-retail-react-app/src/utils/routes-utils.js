@@ -21,8 +21,7 @@ export const configureRoutes = (routes = [], config, {ignoredRoutes = []}) => {
     if (!routes.length) return []
     if (!config) return routes
 
-    const {url: urlConfig} = config.app
-    const {sites, siteAliases} = config.app
+    const {url: urlConfig, sites, siteAliases} = config
     const allSites = sites.map((site) => {
         const alias = siteAliases[site.id]
         return {

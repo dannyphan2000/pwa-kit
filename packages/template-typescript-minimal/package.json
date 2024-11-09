@@ -50,7 +50,7 @@
           "@salesforce/extension-retail-react-app", 
           {
             "pages": {
-              "ProductDetail": false
+              "ProductDetail": true
             },
             "url": {
               "site": "path",

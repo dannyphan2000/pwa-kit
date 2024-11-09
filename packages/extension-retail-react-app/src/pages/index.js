@@ -16,34 +16,30 @@ import {Skeleton} from '@chakra-ui/react'
 const fallback = <Skeleton height="75vh" width="100%" />
 
 // Page Loadables
-const Account = loadable(() => import('./account'), {fallback})
-const Cart = loadable(() => import('./cart'), {fallback})
-const Checkout = loadable(() => import('./checkout'), {
+const Account = loadable(() => import('$/pages/account'), {fallback})
+const Cart = loadable(() => import('$/pages/cart'), {fallback})
+const Checkout = loadable(() => import('$/pages/checkout'), {
     fallback
 })
-const CheckoutConfirmation = loadable(() => import('./checkout/confirmation'), {fallback})
-
-const Home = loadable(() => import('./home'), {fallback})
-const Login = loadable(() => import('./login'), {fallback})
-const Registration = loadable(() => import('./registration'), {
+const CheckoutConfirmation = loadable(() => import('$/pages/checkout/confirmation'), {fallback})
+const Home = loadable(() => import('$/pages/home'), {fallback})
+const Login = loadable(() => import('$/pages/login'), {fallback})
+const Registration = loadable(() => import('$/pages/registration'), {
     fallback
 })
-const ResetPassword = loadable(() => import('./reset-password'), {fallback})
-const LoginRedirect = loadable(() => import('./login-redirect'), {fallback})
-// const PageNotFound = loadable(() => import('./page-not-found'))
-const ProductDetail = loadable(() => import('./product-detail'), {fallback})
-const ProductList = loadable(() => import('./product-list'), {
+const ResetPassword = loadable(() => import('$/pages/reset-password'), {fallback})
+const LoginRedirect = loadable(() => import('$/pages/login-redirect'), {fallback})
+const ProductDetail = loadable(() => import('$/pages/product-detail'), {fallback})
+const ProductList = loadable(() => import('$/pages/product-list'), {
     fallback
 })
-const Wishlist = loadable(() => import('./account/wishlist'), {
+const Wishlist = loadable(() => import('$/pages/account/wishlist'), {
     fallback
 })
 
-// Apply "displayName" for easy filtering.
-// NOTE: This is a widely use pattern to allow filtering without triggering the loadable logic,
-// Please note that we want to keep these in aligned with name in the component itself. 
-// QUESTION: Will importing the component here include in in the chunk or can we do that in a 
-// smart way? Maybe a separate file that has all the names in it.
+// NOTE: Apply "displayName" for easy filtering. This is a widely use pattern to allow filtering without
+// triggering the loadable logic. Please note that we want to keep these in aligned with name in the
+// component itself.
 Account.displayName = 'Account'
 Cart.displayName = 'Cart'
 Checkout.displayName = 'Checkout'

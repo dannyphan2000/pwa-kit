@@ -54,7 +54,7 @@ export interface Config extends ApplicationExtensionConfig {
     commerceAPI: CommerceAPIConfig
     defaultSite: Site['id']
     einsteinAPI: EinsteinAPI
-    enabled: boolean,
+    enabled: boolean
     pages: Record<string, boolean>
     siteAliases: Record<Site['id'], string>
     sites: Site[]
@@ -68,12 +68,12 @@ export interface Config extends ApplicationExtensionConfig {
     // TODO: Move static assets to proper destination. ✅
     // TODO: Fix getting static image.. we need a way to get the id of the extension. ✅ We need a way to get
     // TODO: Think about the _error and how it works with extensions, right now I don't think it does
-    // anything. ✅ We are only going to provide the component, it's on your to hook up the error component. 
+    // anything. ✅ We are only going to provide the component, it's on your to hook up the error component.
     // TODO: Add default config value ✅
+    // TODO: Get auto integration of store locator back to working ✅ [Ticket created]
+    // TODO: Test overriding page ✅
 
-    // TODO: Test overriding page
     // TODO: Write tests for HOCs
-    // TODO: Write Readme, including steps to install.
-    // TODO: Get auto integration of store locator back to working
+    // TODO: Write README, including steps to install.
     // TODO: Fix tests
 }

@@ -95,7 +95,9 @@ const Home = () => {
                     id: 'home.title.react_starter_store'
                 })}
                 img={{
-                    src: getStaticAssetUrl('img/hero.png', {appExtensionPackageName: '@salesforce/extension-retail-react-app'}),
+                    src: getStaticAssetUrl('img/hero.png', {
+                        appExtensionPackageName: '@salesforce/extension-retail-react-app'
+                    }),
                     alt: 'npx pwa-kit-create-app'
                 }}
                 actions={

@@ -219,7 +219,9 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 <Helmet>
                     {config.activeDataEnabled && (
                         <script
-                            src={getStaticAssetUrl('libs/head-active_data.js', {appExtensionPackageName: '@salesforce/extension-retail-react-app'})}
+                            src={getStaticAssetUrl('libs/head-active_data.js', {
+                                appExtensionPackageName: '@salesforce/extension-retail-react-app'
+                            })}
                             id="headActiveData"
                             type="text/javascript"
                         ></script>
@@ -229,7 +231,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 <Seo>
                     <meta name="theme-color" content={THEME_COLOR} />
                     <meta name="apple-mobile-web-app-title" content={DEFAULT_SITE_TITLE} />
-                    
+
                     {/* Urls for all localized versions of this page (including current page)
                     For more details on hrefLang, see https://developers.google.com/search/docs/advanced/crawling/localized-versions */}
                     {site.l10n?.supportedLocales.map((locale: any) => (
@@ -320,10 +322,12 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                         <AuthModal {...authModal} />
                     </AddToCartModalProvider>
                 </Box>
-                {config.activeDataEnabled as boolean && (
+                {(config.activeDataEnabled as boolean) && (
                     <script
                         type="text/javascript"
-                        src={getStaticAssetUrl('libs/dwanalytics-22.2.js', {appExtensionPackageName: '@salesforce/extension-retail-react-app'})}
+                        src={getStaticAssetUrl('libs/dwanalytics-22.2.js', {
+                            appExtensionPackageName: '@salesforce/extension-retail-react-app'
+                        })}
                         id="dwanalytics"
                         async="async"
                         onLoad={trackPage}
@@ -331,7 +335,9 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 )}
                 {config.activeDataEnabled && (
                     <script
-                        src={getStaticAssetUrl('libs/dwac-21.7.js', {appExtensionPackageName: '@salesforce/extension-retail-react-app'})}
+                        src={getStaticAssetUrl('libs/dwac-21.7.js', {
+                            appExtensionPackageName: '@salesforce/extension-retail-react-app'
+                        })}
                         type="text/javascript"
                         id="dwac"
                         async="async"
