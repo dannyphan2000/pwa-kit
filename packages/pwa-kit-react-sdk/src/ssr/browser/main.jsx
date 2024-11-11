@@ -86,6 +86,7 @@ export const OuterApp = ({routes, error, extensions, WrappedApp, locals, onHydra
 OuterApp.propTypes = {
     routes: PropTypes.array.isRequired,
     error: PropTypes.object,
+    extensions: PropTypes.array,
     WrappedApp: PropTypes.func.isRequired,
     locals: PropTypes.object,
     onHydrate: PropTypes.func

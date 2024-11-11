@@ -107,5 +107,5 @@ export const getConfiguredExtensions = (
     config: any = getConfig()
 ): ApplicationExtensionEntryArray[] => {
     // Note: this path to the `extensions` property may change
-    return expand(config?.app?.extensions || []).filter(([,config]) => config?.enabled !== false)
+    return expand(config?.app?.extensions || []).filter(([, config]) => config?.enabled !== false)
 }
