@@ -10,6 +10,9 @@ import PropTypes from 'prop-types'
 import {defineMessage, useIntl} from 'react-intl'
 import {Button, Stack} from '@salesforce/retail-react-app/app/components/shared/ui'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
+import {useAuthHelper, AuthHelpers} from '@salesforce/commerce-sdk-react'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
 
 // Icons
 import {AppleIcon, GoogleIcon} from '@salesforce/retail-react-app/app/components/icons'
@@ -38,6 +41,12 @@ const IDP_CONFIG = {
  */
 const SocialLogin = ({idps}) => {
     const {formatMessage} = useIntl()
+    const authorizeIDP = useAuthHelper(AuthHelpers.AuthorizeIDP)
+
+    // Build redirectURI from config values
+    const appOrigin = useAppOrigin()
+    const redirectPath = getConfig().app.login.social?.redirectURI || ''
+    const redirectURI = `${appOrigin}${redirectPath}`
 
     return (
         idps && (
@@ -62,8 +71,12 @@ const SocialLogin = ({idps}) => {
                     return (
                         config && (
                             <Button
-                                onClick={() => {
+                                onClick={async () => {
                                     alert(message)
+                                    await authorizeIDP.mutateAsync({
+                                        hint: name,
+                                        redirectURI: redirectURI
+                                    })
                                 }}
                                 borderColor="gray.500"
                                 color="blue.600"
@@ -81,7 +94,8 @@ const SocialLogin = ({idps}) => {
 }
 
 SocialLogin.propTypes = {
-    idps: PropTypes.array
+    idps: PropTypes.array,
+    redirectURI: PropTypes.string
 }
 
 export default SocialLogin

@@ -14,19 +14,35 @@ import {
     Text,
     Spinner
 } from '@salesforce/retail-react-app/app/components/shared/ui'
-import {useCustomerType} from '@salesforce/commerce-sdk-react'
+
+// Hooks
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
+import {useAuthHelper, AuthHelpers} from '@salesforce/commerce-sdk-react'
+import {useSearchParams} from '@salesforce/retail-react-app/app/hooks'
+import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 
 const SocialLoginRedirect = () => {
     const navigate = useNavigation()
-    const {isRegistered} = useCustomerType()
+    const [searchParams] = useSearchParams()
+    const loginIDPUser = useAuthHelper(AuthHelpers.LoginIDPUser)
+    const {data: customer} = useCurrentCustomer()
 
-    // If customer is registered push to account page
+    // Runs after successful 3rd-party IDP authorization, processing query parameters
     useEffect(() => {
-        if (isRegistered) {
+        if (searchParams.code && searchParams.usid) {
+            loginIDPUser.mutateAsync({
+                code: searchParams.code,
+                usid: searchParams.usid
+            })
+        }
+    }, [])
+
+    // If customer is registered, push to secure account page
+    useEffect(() => {
+        if (customer?.isRegistered) {
             navigate('/account')
         }
-    }, [isRegistered])
+    }, [customer?.isRegistered])
 
     return (
         <Box data-testid="login-redirect-page" bg="gray.50" py={[8, 16]}>

@@ -22,7 +22,8 @@ module.exports = {
             },
             social: {
                 enabled: false,
-                idps: ['google', 'apple']
+                idps: ['google', 'apple'],
+                redirectURI: '/social-callback'
             }
         },
         defaultSite: 'RefArchGlobal',

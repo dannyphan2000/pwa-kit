@@ -11,8 +11,8 @@ describe('Utils', () => {
         ['/callback', false],
         ['https://pwa-kit.mobify-storefront.com/callback', true],
         ['/social-login/callback', false]
-      ])('isAbsoluteUrl', (url, expected) => {
-        const isURL = utils.isAbsoluteUrl(url);
-        expect(isURL).toBe(expected);
-      });
+    ])('isAbsoluteUrl', (url, expected) => {
+        const isURL = utils.isAbsoluteUrl(url)
+        expect(isURL).toBe(expected)
+    })
 })
