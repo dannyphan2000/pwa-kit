@@ -1,5 +1,5 @@
 {
-  "name": "@salesforce/extension-retail-react-app",
+  "name": "@salesforce/extension-chakra-storefront",
   "version": "1.0.0-dev",
   "scripts": {
     "lint": "npm run lint:js",

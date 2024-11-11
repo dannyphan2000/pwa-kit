@@ -220,7 +220,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     {config.activeDataEnabled && (
                         <script
                             src={getStaticAssetUrl('libs/head-active_data.js', {
-                                appExtensionPackageName: '@salesforce/extension-retail-react-app'
+                                appExtensionPackageName: '@salesforce/extension-chakra-storefront'
                             })}
                             id="headActiveData"
                             type="text/javascript"
@@ -326,7 +326,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     <script
                         type="text/javascript"
                         src={getStaticAssetUrl('libs/dwanalytics-22.2.js', {
-                            appExtensionPackageName: '@salesforce/extension-retail-react-app'
+                            appExtensionPackageName: '@salesforce/extension-chakra-storefront'
                         })}
                         id="dwanalytics"
                         async="async"
@@ -336,7 +336,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 {config.activeDataEnabled && (
                     <script
                         src={getStaticAssetUrl('libs/dwac-21.7.js', {
-                            appExtensionPackageName: '@salesforce/extension-retail-react-app'
+                            appExtensionPackageName: '@salesforce/extension-chakra-storefront'
                         })}
                         type="text/javascript"
                         id="dwac"

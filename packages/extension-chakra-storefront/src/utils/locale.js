@@ -28,7 +28,7 @@ export const fetchTranslations = async (locale) => {
     try {
         const file = `${getAppOrigin()}${getStaticAssetUrl(
             `translations/compiled/${targetLocale}.json`,
-            {appExtensionPackageName: '@salesforce/extension-retail-react-app'}
+            {appExtensionPackageName: '@salesforce/extension-chakra-storefront'}
         )}`
         const response = await fetch(file)
 

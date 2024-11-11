@@ -96,7 +96,7 @@ const Home = () => {
                 })}
                 img={{
                     src: getStaticAssetUrl('img/hero.png', {
-                        appExtensionPackageName: '@salesforce/extension-retail-react-app'
+                        appExtensionPackageName: '@salesforce/extension-chakra-storefront'
                     }),
                     alt: 'npx pwa-kit-create-app'
                 }}

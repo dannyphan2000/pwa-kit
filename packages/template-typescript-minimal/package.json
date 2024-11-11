@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@loadable/component": "^5.15.3",
-    "@salesforce/extension-retail-react-app": "1.0.0-dev",
+    "@salesforce/extension-chakra-storefront": "1.0.0-dev",
     "@salesforce/extension-store-locator": "0.1.0-dev",
     "@salesforce/pwa-kit-extension-sdk": "4.0.0-dev",
     "@salesforce/pwa-kit-dev": "4.0.0-dev",
@@ -48,7 +48,7 @@
     "app":{
       "extensions": [
         [
-          "@salesforce/extension-retail-react-app", 
+          "@salesforce/extension-chakra-storefront", 
           {
             "enabled": true,
             "pages": {},
