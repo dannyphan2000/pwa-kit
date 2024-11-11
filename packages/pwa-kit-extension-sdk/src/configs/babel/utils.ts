@@ -6,7 +6,8 @@
  */
 import * as fse from 'fs-extra'
 import * as p from 'path'
-import {getApplicationExtensionInfo} from '../../shared/utils/extensibility'
+import {getConfiguredExtensions} from '../../shared/utils/helpers'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 /**
  * Constants used for building Babel extensibility arguments:
@@ -36,19 +37,14 @@ const PLACEHOLDER_PATH = `${NODE_MODULES_PATH}/@salesforce/pwa-kit-extension-sdk
  * or symlinked paths that Babel doesn't support by using realpathSync.
  */
 export const buildBabelExtensibilityArgs = () => {
-    const {installed}: {installed: (string | undefined)[]} = getApplicationExtensionInfo()
-
-    // Filter out undefined values from installed extensions
-    const filteredInstalled = installed.filter(
-        (packageName): packageName is string => packageName !== undefined
-    )
+    const extensions = getConfiguredExtensions(getConfig())
 
     const serverPath = fse.realpathSync(p.resolve(SERVER_PATH))
     const placeHolderPath = fse.realpathSync(p.resolve(PLACEHOLDER_PATH))
 
     const extensionSrcPaths =
-        filteredInstalled.length > 0
-            ? filteredInstalled.map((packageName) =>
+        extensions.length > 0
+            ? extensions.map(([packageName]) =>
                   fse.realpathSync(p.resolve(`${NODE_MODULES_PATH}/${packageName}/src`))
               )
             : []

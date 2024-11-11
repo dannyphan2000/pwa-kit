@@ -7,11 +7,10 @@
 import * as fse from 'fs-extra'
 import * as path from 'path'
 import {buildBabelExtensibilityArgs} from './utils'
-import {getApplicationExtensionInfo as originalGetApplicationExtensionInfo} from '../../shared/utils/extensibility'
+import {getConfig as originalGetConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
-// Mock the utilities used in the utility
-jest.mock('../../shared/utils/extensibility', () => ({
-    getApplicationExtensionInfo: jest.fn()
+jest.mock('@salesforce/pwa-kit-runtime/utils/ssr-config', () => ({
+    getConfig: jest.fn()
 }))
 
 jest.mock('fs-extra', () => ({
@@ -19,15 +18,16 @@ jest.mock('fs-extra', () => ({
     realpathSync: jest.fn()
 }))
 
-const getApplicationExtensionInfo = originalGetApplicationExtensionInfo as jest.Mock
+const getConfig = originalGetConfig as jest.Mock
 
 describe('buildBabelExtensibilityArgs', () => {
     const realpathSyncMock = jest.spyOn(fse, 'realpathSync') as jest.Mock
 
     beforeEach(() => {
-        // Set up mock return values for getApplicationExtensionInfo
-        getApplicationExtensionInfo.mockReturnValue({
-            installed: ['@salesforce/extension-sample', '@salesforce/extension-another']
+        getConfig.mockReturnValue({
+            app: {
+                extensions: ['@salesforce/extension-sample', '@salesforce/extension-another']
+            }
         })
 
         realpathSyncMock.mockImplementation((filePath: string) => {
@@ -79,9 +79,11 @@ describe('buildBabelExtensibilityArgs', () => {
         )
     })
 
-    test('should handle an empty list of installed extensions', () => {
-        // Modify the mock return value to simulate no installed extensions
-        getApplicationExtensionInfo.mockReturnValue({installed: []})
+    test('should handle an empty list of configured extensions', () => {
+        // Modify the mock return value to simulate no configured extensions
+        getConfig.mockReturnValue({
+            app: {}
+        })
 
         const expectedArgs = `--ignore "node_modules/does_not_exist" --only "app/**,/absolute/path/to/build-remote-server.js,/absolute/path/to/application-extensions.js/**"`
         const result = buildBabelExtensibilityArgs()
