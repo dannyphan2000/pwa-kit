@@ -121,6 +121,20 @@ test('Renders login modal by default', async () => {
     })
 })
 
+test('Renders check email modal on email mode', async () => {
+    const user = userEvent.setup()
+
+    renderWithProviders(<MockedComponent initialView="email" />)
+
+    // open the modal
+    const trigger = screen.getByText(/open modal/i)
+    await user.click(trigger)
+
+    await waitFor(() => {
+        expect(screen.getByText(/check your email/i)).toBeInTheDocument()
+    })
+})
+
 // TODO: Fix flaky/broken test
 // eslint-disable-next-line jest/no-disabled-tests
 test.skip('Renders error when given incorrect log in credentials', async () => {
