@@ -415,6 +415,68 @@ const main = async () => {
                 }
             }
         )
+    
+    managedRuntimeCommand('print-ssr-only-shared-manifests')
+        .description(`show ssrOnly and ssrShared manifests that would be sent with the 'push' command`)
+        .addOption(
+            new program.Option(
+                '-b, --buildDirectory <buildDirectory>',
+                'a custom project build directory that you want to push'
+            ).default(p.join(process.cwd(), 'build'), './build')
+        )
+        .addOption(
+            new program.Option(
+                '-t, --target <target>',
+                'immediately deploy the bundle to this target once it is pushed'
+            )
+        )
+        .action(
+            async ({
+                buildDirectory,
+                target
+            }) => {
+                // Set the deployment target env var, this is required to ensure we
+                // get the correct configuration object. Do not assign the variable it if
+                // the target value is `undefined` as it will serialied as a "undefined"
+                // string value.
+                if (target) {
+                    process.env.DEPLOY_TARGET = target
+                }
+
+                if (!fse.pathExistsSync(buildDirectory)) {
+                    throw new Error(`Supplied "buildDirectory" does not exist!`)
+                }
+                const mobify = getConfig({buildDirectory, target}) || {}
+
+                const bundle = await scriptUtils.createBundle({
+                    message: "stub",
+                    ssr_parameters: mobify.ssrParameters,
+                    ssr_only: mobify.ssrOnly,
+                    ssr_shared: mobify.ssrShared,
+                    buildDirectory,
+                    projectSlug: "stub"
+                })
+
+                const definitions = {
+                    "config": mobify,
+                    "ssr_only": mobify.ssrOnly,
+                    "ssr_shared": mobify.ssrShared
+                }
+
+                const manifests = {
+                    "ssr_only": bundle.ssr_only,
+                    "ssr_shared": bundle.ssr_shared
+                }
+
+                const output = {
+                    buildDirectory,
+                    definitions,
+                    manifests
+                }
+
+                console.log(`${JSON.stringify(output, null, 2)}`)
+            }
+        )
 
     program
         .command('lint')
