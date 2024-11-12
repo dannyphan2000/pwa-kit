@@ -753,6 +753,72 @@
       "value": "]"
     }
   ],
+  "auth_modal.check_email.button.resend_link": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Řḗḗşḗḗƞḓ Ŀīƞķ"
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
+  "auth_modal.check_email.description.check_spam_folder": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Ŧħḗḗ ŀīƞķ ḿȧȧẏ ŧȧȧķḗḗ ȧȧ ƒḗḗẇ ḿīƞŭŭŧḗḗş ŧǿǿ ȧȧřřīṽḗḗ, ƈħḗḗƈķ ẏǿǿŭŭř şƥȧȧḿ ƒǿǿŀḓḗḗř īƒ ẏǿǿŭŭ'řḗḗ ħȧȧṽīƞɠ ŧřǿǿŭŭƀŀḗḗ ƒīƞḓīƞɠ īŧ"
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
+  "auth_modal.check_email.description.just_sent": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Ẇḗḗ ĵŭŭşŧ şḗḗƞŧ ȧȧ ŀǿǿɠīƞ ŀīƞķ ŧǿǿ "
+    },
+    {
+      "children": [
+        {
+          "type": 1,
+          "value": "email"
+        }
+      ],
+      "type": 8,
+      "value": "b"
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
+  "auth_modal.check_email.title.check_your_email": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Ƈħḗḗƈķ Ẏǿǿŭŭř Ḗḿȧȧīŀ"
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
   "auth_modal.description.now_signed_in": [
     {
       "type": 0,
@@ -4689,20 +4755,6 @@
     {
       "type": 0,
       "value": "Şīɠƞ Īƞ"
-    },
-    {
-      "type": 0,
-      "value": "]"
-    }
-  ],
-  "login_form.button.social": [
-    {
-      "type": 0,
-      "value": "["
-    },
-    {
-      "type": 1,
-      "value": "message"
     },
     {
       "type": 0,

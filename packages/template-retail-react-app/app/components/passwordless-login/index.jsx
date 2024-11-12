@@ -10,12 +10,13 @@ import PropTypes from 'prop-types'
 import {FormattedMessage} from 'react-intl'
 import {Button, Divider, Stack, Text} from '@salesforce/retail-react-app/app/components/shared/ui'
 import LoginFields from '@salesforce/retail-react-app/app/components/forms/login-fields'
-import StandardLogin from '../standard-login/index'
+import StandardLogin from '@salesforce/retail-react-app/app/components/standard-login'
 import SocialLogin from '@salesforce/retail-react-app/app/components/social-login'
 
 const PasswordlessLogin = ({
     form,
     handleForgotPasswordClick,
+    handlePasswordlessLoginClick,
     isSocialEnabled = false,
     idps = []
 }) => {
@@ -44,9 +45,7 @@ const PasswordlessLogin = ({
                     />
                     <Button
                         type="submit"
-                        onClick={() => {
-                            form.clearErrors('global')
-                        }}
+                        onClick={handlePasswordlessLoginClick}
                         isLoading={form.formState.isSubmitting}
                     >
                         <FormattedMessage
@@ -93,6 +92,7 @@ const PasswordlessLogin = ({
 PasswordlessLogin.propTypes = {
     form: PropTypes.object,
     handleForgotPasswordClick: PropTypes.func,
+    handlePasswordlessLoginClick: PropTypes.func,
     isSocialEnabled: PropTypes.bool,
     idps: PropTypes.arrayOf[PropTypes.string]
 }

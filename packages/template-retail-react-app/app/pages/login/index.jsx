@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {useIntl, defineMessage} from 'react-intl'
 import {Box, Container} from '@salesforce/retail-react-app/app/components/shared/ui'
@@ -23,6 +23,7 @@ import {useForm} from 'react-hook-form'
 import {useLocation} from 'react-router-dom'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
+import PasswordlessEmailConfirmation from '@salesforce/retail-react-app/app/components/email-confirmation/index'
 import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
@@ -31,7 +32,11 @@ const LOGIN_ERROR_MESSAGE = defineMessage({
     defaultMessage: 'Incorrect username or password, please try again.',
     id: 'login_page.error.incorrect_username_or_password'
 })
-const Login = () => {
+
+const LOGIN_VIEW = 'login'
+const EMAIL_VIEW = 'email'
+
+const Login = ({initialView = LOGIN_VIEW}) => {
     const {formatMessage} = useIntl()
     const navigate = useNavigation()
     const form = useForm()
@@ -40,6 +45,9 @@ const Login = () => {
     const {isRegistered, customerType} = useCustomerType()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const {passwordless, social} = getConfig().app.login
+    const isPasswordlessEnabled = !!passwordless?.enabled
+    const isSocialEnabled = !!social?.enabled
+    const idps = social?.idps
 
     const customerId = useCustomerId()
     const prevAuthType = usePrevious(customerType)
@@ -48,34 +56,54 @@ const Login = () => {
         {enabled: !!customerId && !isServer, keepPreviousData: true}
     )
     const mergeBasket = useShopperBasketsMutation('mergeBasket')
+    const [currentView, setCurrentView] = useState(initialView)
+    const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
+    const [loginType, setLoginType] = useState('password')
 
     const submitForm = async (data) => {
-        try {
-            await login.mutateAsync({username: data.email, password: data.password})
-            const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
-            // we only want to merge basket when the user is logged in as a recurring user
-            // only recurring users trigger the login mutation, new user triggers register mutation
-            // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
-            // if you change logic here, also change it in login page
-            const shouldMergeBasket = hasBasketItem && prevAuthType === 'guest'
-            if (shouldMergeBasket) {
-                mergeBasket.mutate({
-                    headers: {
-                        // This is not required since the request has no body
-                        // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
-                        'Content-Type': 'application/json'
-                    },
-                    parameters: {
-                        createDestinationBasket: true
+        form.clearErrors()
+
+        return {
+            login: async (data) => {
+                if (loginType === 'password') {
+                    try {
+                        await login.mutateAsync({username: data.email, password: data.password})
+                        const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
+                        // we only want to merge basket when the user is logged in as a recurring user
+                        // only recurring users trigger the login mutation, new user triggers register mutation
+                        // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
+                        // if you change logic here, also change it in login page
+                        const shouldMergeBasket = hasBasketItem && prevAuthType === 'guest'
+                        if (shouldMergeBasket) {
+                            mergeBasket.mutate({
+                                headers: {
+                                    // This is not required since the request has no body
+                                    // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
+                                    'Content-Type': 'application/json'
+                                },
+                                parameters: {
+                                    createDestinationBasket: true
+                                }
+                            })
+                        }
+                    } catch (error) {
+                        const message = /Unauthorized/i.test(error.message)
+                            ? formatMessage(LOGIN_ERROR_MESSAGE)
+                            : formatMessage(API_ERROR_MESSAGE)
+                        form.setError('global', {type: 'manual', message})
                     }
-                })
+                } else if (loginType === 'passwordless') {
+                    setCurrentView(EMAIL_VIEW)
+                    setPasswordlessLoginEmail(data.email)
+                    // Handle passwordless login logic here
+                } else if (loginType === 'social') {
+                    // Handle social login logic here
+                }
+            },
+            email: async (data) => {
+                // Handle resend passwordless email logic here
             }
-        } catch (error) {
-            const message = /Unauthorized/i.test(error.message)
-                ? formatMessage(LOGIN_ERROR_MESSAGE)
-                : formatMessage(API_ERROR_MESSAGE)
-            form.setError('global', {type: 'manual', message})
-        }
+        }[currentView](data)
     }
 
     // If customer is registered push to account page
@@ -93,6 +121,7 @@ const Login = () => {
     useEffect(() => {
         einstein.sendViewPage(location.pathname)
     }, [])
+
     return (
         <Box data-testid="login-page" bg="gray.50" py={[8, 16]}>
             <Seo title="Sign in" description="Customer sign in" />
@@ -105,15 +134,27 @@ const Login = () => {
                 marginBottom={8}
                 borderRadius="base"
             >
-                <LoginForm
-                    form={form}
-                    submitForm={submitForm}
-                    clickCreateAccount={() => navigate('/registration')}
-                    handleForgotPasswordClick={() => navigate('/reset-password')}
-                    isPasswordlessEnabled={passwordless?.enabled}
-                    isSocialEnabled={social?.enabled}
-                    idps={social?.idps}
-                />
+                {!form.formState.isSubmitSuccessful && currentView === LOGIN_VIEW && (
+                    <LoginForm
+                        form={form}
+                        submitForm={submitForm}
+                        clickCreateAccount={() => navigate('/registration')}
+                        handlePasswordlessLoginClick={() => {
+                            setLoginType('passwordless')
+                        }}
+                        handleForgotPasswordClick={() => navigate('/reset-password')}
+                        isPasswordlessEnabled={isPasswordlessEnabled}
+                        isSocialEnabled={isSocialEnabled}
+                        idps={idps}
+                    />
+                )}
+                {form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
+                    <PasswordlessEmailConfirmation
+                        form={form}
+                        submitForm={submitForm}
+                        email={passwordlessLoginEmail}
+                    />
+                )}
             </Container>
         </Box>
     )
@@ -122,6 +163,7 @@ const Login = () => {
 Login.getTemplateName = () => 'login'
 
 Login.propTypes = {
+    initialView: PropTypes.oneOf([LOGIN_VIEW, EMAIL_VIEW]),
     match: PropTypes.object
 }
 

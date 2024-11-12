@@ -361,6 +361,40 @@
       "value": "Close login form"
     }
   ],
+  "auth_modal.check_email.button.resend_link": [
+    {
+      "type": 0,
+      "value": "Resend Link"
+    }
+  ],
+  "auth_modal.check_email.description.check_spam_folder": [
+    {
+      "type": 0,
+      "value": "The link may take a few minutes to arrive, check your spam folder if you're having trouble finding it"
+    }
+  ],
+  "auth_modal.check_email.description.just_sent": [
+    {
+      "type": 0,
+      "value": "We just sent a login link to "
+    },
+    {
+      "children": [
+        {
+          "type": 1,
+          "value": "email"
+        }
+      ],
+      "type": 8,
+      "value": "b"
+    }
+  ],
+  "auth_modal.check_email.title.check_your_email": [
+    {
+      "type": 0,
+      "value": "Check Your Email"
+    }
+  ],
   "auth_modal.description.now_signed_in": [
     {
       "type": 0,
@@ -2197,12 +2231,6 @@
     {
       "type": 0,
       "value": "Sign In"
-    }
-  ],
-  "login_form.button.social": [
-    {
-      "type": 1,
-      "value": "message"
     }
   ],
   "login_form.link.forgot_password": [

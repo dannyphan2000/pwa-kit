@@ -147,6 +147,18 @@
   "auth_modal.button.close.assistive_msg": {
     "defaultMessage": "Close login form"
   },
+  "auth_modal.check_email.button.resend_link": {
+    "defaultMessage": "Resend Link"
+  },
+  "auth_modal.check_email.description.check_spam_folder": {
+    "defaultMessage": "The link may take a few minutes to arrive, check your spam folder if you're having trouble finding it"
+  },
+  "auth_modal.check_email.description.just_sent": {
+    "defaultMessage": "We just sent a login link to <b>{email}</b>"
+  },
+  "auth_modal.check_email.title.check_your_email": {
+    "defaultMessage": "Check Your Email"
+  },
   "auth_modal.description.now_signed_in": {
     "defaultMessage": "You're now signed in."
   },
