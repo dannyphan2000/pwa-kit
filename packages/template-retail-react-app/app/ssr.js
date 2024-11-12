@@ -90,7 +90,7 @@ async function emailLink(emailId, templateId, magicLink) {
       const emailBody = {
         definitionKey: templateId,
         recipient: {
-          //contactKey: 'Jinsu Ha',
+          contactKey: emailId,
           to: emailId,
           attributes: { 'magic-link': magicLink },
         },
@@ -179,9 +179,8 @@ const {handler} = runtime.createHandler(options, (app) => {
             token
         } = req.body
         const magicLink = `${base}/passwordless-login?email=${email_id}&token=${token}`
-        res.send(magicLink)
-        //const emailLinkResponse = await emailLink(email_id, process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE, magicLink)
-        //res.send(emailLinkResponse)
+        const emailLinkResponse = await emailLink(email_id, process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE, magicLink)
+        res.send(emailLinkResponse)
     })
 
     app.post('/reset-password-callback', async (req, res) => {
