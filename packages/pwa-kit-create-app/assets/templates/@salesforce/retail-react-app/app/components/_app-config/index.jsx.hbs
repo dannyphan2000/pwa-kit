@@ -41,7 +41,7 @@ const AppConfig = ({children, locals = {}}) => {
     const headers = {
         'correlation-id': correlationId
     }
-    const fetchOptions = {{credentials: 'include'}}
+    const fetchOptions = {{'credentials': 'include'}}
 
     const commerceApiConfig = locals.appConfig.commerceAPI
 
