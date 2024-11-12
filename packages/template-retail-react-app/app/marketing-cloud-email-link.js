@@ -1,6 +1,9 @@
 import crypto from 'crypto'
 import https from 'https'
 
+let marketingCloudToken = ""
+let marketingCloudTokenExpiration = new Date()
+
 /*
  Make a POST request using native https module, wrapped in a Promise with JSON
  encode and decode
@@ -34,23 +37,29 @@ async function emailLink(emailId, templateId, magicLink) {
       function generateUniqueId() {
         return crypto.randomBytes(16).toString('hex');
       }
+      console.log(marketingCloudToken)
 
-      const tokenOptions = {
-        method: 'POST',
-        host: `${process.env.MARKETING_CLOUD_SUBDOMAIN}.auth.marketingcloudapis.com`,
-        path: '/v2/token',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
+      if (new Date() > marketingCloudTokenExpiration) {
+        const tokenOptions = {
+            method: 'POST',
+            host: `${process.env.MARKETING_CLOUD_SUBDOMAIN}.auth.marketingcloudapis.com`,
+            path: '/v2/token',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+        };
 
-      const tokenBody = {
-        grant_type: 'client_credentials',
-        client_id: process.env.MARKETING_CLOUD_CLIENT_ID,
-        client_secret: process.env.MARKETING_CLOUD_CLIENT_SECRET
+        const tokenBody = {
+            grant_type: 'client_credentials',
+            client_id: process.env.MARKETING_CLOUD_CLIENT_ID,
+            client_secret: process.env.MARKETING_CLOUD_CLIENT_SECRET
+        }
+
+        marketingCloudToken = (await asyncJsonHttpsPost(tokenOptions, tokenBody)).access_token
+
+        marketingCloudTokenExpiration = new Date();
+        marketingCloudTokenExpiration.setTime(marketingCloudTokenExpiration.getTime() + 15 * 60 * 1000);
       }
-
-      const token = (await asyncJsonHttpsPost(tokenOptions, tokenBody)).access_token
 
       const emailOptions = {
         method: 'POST',
@@ -58,7 +67,7 @@ async function emailLink(emailId, templateId, magicLink) {
         path: `/messaging/v1/email/messages/${generateUniqueId()}`,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${marketingCloudToken}`,
         },
       };
 
