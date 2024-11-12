@@ -41,6 +41,7 @@ const AppConfig = ({children, locals = {}}) => {
     const headers = {
         'correlation-id': correlationId
     }
+    const fetchOptions = {{credentials: 'include'}}
 
     const commerceApiConfig = locals.appConfig.commerceAPI
 
@@ -55,7 +56,7 @@ const AppConfig = ({children, locals = {}}) => {
             locale={locals.locale?.id}
             currency={locals.locale?.preferredCurrency}
             redirectURI={`${appOrigin}/callback`}
-            fetchOptions={{credentials: 'include'}}
+            fetchOptions={fetchOptions}
             proxy={`${appOrigin}${commerceApiConfig.proxyPath}`}
             headers={headers}
             OCAPISessionsURL={`${appOrigin}${proxyBasePath}/ocapi/s/${locals.site?.id}/dw/shop/v22_8/sessions`}
