@@ -46,10 +46,17 @@ import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {absoluteUrl} from '@salesforce/retail-react-app/app/utils/url'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
+
 const LOGIN_VIEW = 'login'
 const REGISTER_VIEW = 'register'
 const PASSWORD_VIEW = 'password'
 const EMAIL_VIEW = 'email'
+
+const LOGIN_TYPES = {
+    PASSWORD: 'password',
+    PASSWORDLESS: 'passwordless',
+    SOCIAL:'social'
+}
 
 const LOGIN_ERROR = defineMessage({
     defaultMessage: "Something's not right with your email or password. Try again.",
@@ -86,7 +93,7 @@ export const AuthModal = ({
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const register = useAuthHelper(AuthHelpers.Register)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
-    const [loginType, setLoginType] = useState('password')
+    const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
     const {site} = useMultiSite()
 
     const getResetPasswordToken = useShopperCustomersMutation(
@@ -129,7 +136,7 @@ export const AuthModal = ({
 
         return {
             login: async (data) => {
-                if (loginType === 'password') {
+                if (loginType === LOGIN_TYPES.PASSWORD) {
                     try {
                         await login.mutateAsync({
                             username: data.email,
@@ -159,11 +166,11 @@ export const AuthModal = ({
                             : formatMessage(API_ERROR_MESSAGE)
                         form.setError('global', {type: 'manual', message})
                     }
-                } else if (loginType === 'passwordless') {
+                } else if (loginType === LOGIN_TYPES.PASSWORDLESS) {
                     setCurrentView(EMAIL_VIEW)
                     setPasswordlessLoginEmail(data.email)
                     postAuthorizePasswordlessCustomer(data.email)
-                } else if (loginType === 'social') {
+                } else if (loginType === LOGIN_TYPES.SOCIAL) {
                     // Handle social login logic here
                 }
             },
@@ -210,6 +217,7 @@ export const AuthModal = ({
     // Reset form and local state when opening the modal
     useEffect(() => {
         if (isOpen) {
+            setLoginType(LOGIN_TYPES.PASSWORD)
             setCurrentView(initialView)
             submittedEmail.current = undefined
             form.reset()
@@ -337,7 +345,7 @@ export const AuthModal = ({
                             form={form}
                             submitForm={submitForm}
                             clickCreateAccount={() => setCurrentView(REGISTER_VIEW)}
-                            handlePasswordlessLoginClick={() => setLoginType('passwordless')}
+                            handlePasswordlessLoginClick={() => setLoginType(LOGIN_TYPES.PASSWORDLESS)}
                             handleForgotPasswordClick={() => setCurrentView(PASSWORD_VIEW)}
                             isPasswordlessEnabled={isPasswordlessEnabled}
                             isSocialEnabled={isSocialEnabled}
