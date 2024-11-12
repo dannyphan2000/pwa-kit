@@ -62,6 +62,7 @@ const AppConfig = ({children, locals = {}}) => {
             locale={locals.locale?.id}
             currency={locals.locale?.preferredCurrency}
             redirectURI={`${appOrigin}/callback`}
+            fetchOptions={{ credentials: 'include' }}
             proxy={`${appOrigin}${commerceApiConfig.proxyPath}`}
             headers={headers}
             defaultDnt={DEFAULT_DNT_STATE}
