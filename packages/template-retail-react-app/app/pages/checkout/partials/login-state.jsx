@@ -106,7 +106,7 @@ LoginState.propTypes = {
     form: PropTypes.object,
     isSocialEnabled: PropTypes.bool,
     isPasswordlessEnabled: PropTypes.bool,
-    idps: PropTypes.array,
+    idps: PropTypes.arrayOf(PropTypes.string),
     showPasswordField: PropTypes.bool,
     togglePasswordField: PropTypes.func
 }

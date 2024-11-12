@@ -357,7 +357,7 @@ AuthModal.propTypes = {
     onRegistrationSuccess: PropTypes.func,
     isPasswordlessEnabled: PropTypes.bool,
     isSocialEnabled: PropTypes.bool,
-    idps: PropTypes.array[PropTypes.string]
+    idps: PropTypes.arrayOf(PropTypes.string)
 }
 
 /**

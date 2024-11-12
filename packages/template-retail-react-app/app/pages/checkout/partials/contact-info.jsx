@@ -222,7 +222,7 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
 ContactInfo.propTypes = {
     isSocialEnabled: PropTypes.bool,
     isPasswordlessEnabled: PropTypes.bool,
-    idps: PropTypes.array
+    idps: PropTypes.arrayOf(PropTypes.string)
 }
 
 const SignOutConfirmationDialog = ({isOpen, onConfirm, onClose}) => {

@@ -8,7 +8,7 @@
 import React, {useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {defineMessage, useIntl} from 'react-intl'
-import {Button, Stack} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {Button} from '@salesforce/retail-react-app/app/components/shared/ui'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 
 // Icons
@@ -38,39 +38,29 @@ const IDP_CONFIG = {
  */
 const SocialLogin = ({idps}) => {
     const {formatMessage} = useIntl()
-    let missingConfig = false
+
+    const isIdpValid = (name) => {
+        return name in IDP_CONFIG && IDP_CONFIG[name.toLowerCase()]
+    }
 
     useEffect(() => {
         idps.map((name) => {
-            if (!(name in IDP_CONFIG)) {
+            if (!isIdpValid(name)) {
                 logger.error(
-                    'IDP "' +
-                        name +
-                        '" is missing from IDP_CONFIG. Valid IDPs are [' +
-                        Object.keys(IDP_CONFIG).join(', ') +
-                        '].'
+                    `IDP "${name}" is missing or has an invalid configuration in IDP_CONFIG. Valid IDPs are [${Object.keys(
+                        IDP_CONFIG
+                    ).join(', ')}].`
                 )
-            }
-            const config = IDP_CONFIG[name.toLowerCase()]
-
-            if (!config) {
-                logger.error(
-                    'IDP "' +
-                        name +
-                        '" is missing from IDP_CONFIG. Valid IDPs are [' +
-                        Object.keys(IDP_CONFIG).join(', ') +
-                        '].'
-                )
-                missingConfig = true
             }
         })
-    }, [])
+    }, [idps])
 
     return (
         idps && (
             <>
-                {!missingConfig &&
-                    idps.map((name) => {
+                {idps
+                    .filter((name) => isIdpValid(name))
+                    .map((name) => {
                         const config = IDP_CONFIG[name.toLowerCase()]
                         const Icon = config?.icon
                         const message = formatMessage(config?.message)
@@ -98,7 +88,7 @@ const SocialLogin = ({idps}) => {
 }
 
 SocialLogin.propTypes = {
-    idps: PropTypes.array
+    idps: PropTypes.arrayOf(PropTypes.string)
 }
 
 export default SocialLogin
