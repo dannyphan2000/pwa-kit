@@ -1,7 +1,7 @@
 import crypto from 'crypto'
 import https from 'https'
 
-let marketingCloudToken = ""
+let marketingCloudToken = ''
 let marketingCloudTokenExpiration = new Date()
 
 /*
@@ -11,43 +11,41 @@ let marketingCloudTokenExpiration = new Date()
 function asyncJsonHttpsPost(options, postObject) {
     return new Promise((resolve, reject) => {
         const req = https.request(options, (response) => {
-            let data = '';
+            let data = ''
 
             response.on('data', (chunk) => {
-                data += chunk;
-            });
+                data += chunk
+            })
 
             response.on('end', () => {
-                resolve(JSON.parse(data));
-            });
-        });
+                resolve(JSON.parse(data))
+            })
+        })
 
         req.on('error', (error) => {
-            reject(error);
-        });
+            reject(error)
+        })
 
-        req.write(JSON.stringify(postObject));
+        req.write(JSON.stringify(postObject))
 
-        req.end();
-    });
+        req.end()
+    })
 }
 
 async function emailLink(emailId, templateId, magicLink) {
+    function generateUniqueId() {
+        return crypto.randomBytes(16).toString('hex')
+    }
 
-      function generateUniqueId() {
-        return crypto.randomBytes(16).toString('hex');
-      }
-      console.log(marketingCloudToken)
-
-      if (new Date() > marketingCloudTokenExpiration) {
+    if (new Date() > marketingCloudTokenExpiration) {
         const tokenOptions = {
             method: 'POST',
             host: `${process.env.MARKETING_CLOUD_SUBDOMAIN}.auth.marketingcloudapis.com`,
             path: '/v2/token',
             headers: {
-            'Content-Type': 'application/json',
-            },
-        };
+                'Content-Type': 'application/json'
+            }
+        }
 
         const tokenBody = {
             grant_type: 'client_credentials',
@@ -57,34 +55,36 @@ async function emailLink(emailId, templateId, magicLink) {
 
         marketingCloudToken = (await asyncJsonHttpsPost(tokenOptions, tokenBody)).access_token
 
-        marketingCloudTokenExpiration = new Date();
-        marketingCloudTokenExpiration.setTime(marketingCloudTokenExpiration.getTime() + 15 * 60 * 1000);
-      }
+        marketingCloudTokenExpiration = new Date()
+        marketingCloudTokenExpiration.setTime(
+            marketingCloudTokenExpiration.getTime() + 15 * 60 * 1000
+        )
+    }
 
-      const emailOptions = {
+    const emailOptions = {
         method: 'POST',
         host: `${process.env.MARKETING_CLOUD_SUBDOMAIN}.rest.marketingcloudapis.com`,
         path: `/messaging/v1/email/messages/${generateUniqueId()}`,
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${marketingCloudToken}`,
-        },
-      };
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${marketingCloudToken}`
+        }
+    }
 
-      const emailBody = {
+    const emailBody = {
         definitionKey: templateId,
         recipient: {
-          contactKey: emailId,
-          to: emailId,
-          attributes: { 'magic-link': magicLink },
-        },
-      }
-        
-      const emailResponse = await asyncJsonHttpsPost(emailOptions, emailBody)
+            contactKey: emailId,
+            to: emailId,
+            attributes: {'magic-link': magicLink}
+        }
+    }
 
-      return emailResponse
+    const emailResponse = await asyncJsonHttpsPost(emailOptions, emailBody)
+
+    return emailResponse
 }
 
 module.exports = {
     emailLink
-};
+}

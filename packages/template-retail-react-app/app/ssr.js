@@ -24,7 +24,7 @@ import helmet from 'helmet'
 
 import express from 'express'
 
-import { emailLink } from './marketing-cloud-email-link'
+import {emailLink} from './marketing-cloud-email-link'
 
 const options = {
     // The build directory (an absolute path)
@@ -99,23 +99,25 @@ const {handler} = runtime.createHandler(options, (app) => {
 
     app.post('/passwordless-login-callback', async (req, res) => {
         const base = req.protocol + '://' + req.get('host')
-        const {
-            email_id,
-            token
-        } = req.body
+        const {email_id, token} = req.body
         const magicLink = `${base}/passwordless-login?email=${email_id}&token=${token}`
-        const emailLinkResponse = await emailLink(email_id, process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE, magicLink)
+        const emailLinkResponse = await emailLink(
+            email_id,
+            process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE,
+            magicLink
+        )
         res.send(emailLinkResponse)
     })
 
     app.post('/reset-password-callback', async (req, res) => {
         const base = req.protocol + '://' + req.get('host')
-        const {
-            email_id,
-            token
-        } = req.body
+        const {email_id, token} = req.body
         const magicLink = `${base}/reset-password?email=${email_id}&token=${token}`
-        const emailLinkResponse = await emailLink(email_id, process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE, magicLink)
+        const emailLinkResponse = await emailLink(
+            email_id,
+            process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE,
+            magicLink
+        )
         res.send(emailLinkResponse)
     })
 
