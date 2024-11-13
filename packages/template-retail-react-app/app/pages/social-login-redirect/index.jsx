@@ -20,19 +20,26 @@ import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation
 import {useAuthHelper, AuthHelpers} from '@salesforce/commerce-sdk-react'
 import {useSearchParams} from '@salesforce/retail-react-app/app/hooks'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
 
 const SocialLoginRedirect = () => {
     const navigate = useNavigation()
     const [searchParams] = useSearchParams()
     const loginIDPUser = useAuthHelper(AuthHelpers.LoginIDPUser)
     const {data: customer} = useCurrentCustomer()
+    // Build redirectURI from config values
+    const appOrigin = useAppOrigin()
+    const redirectPath = getConfig().app.login.social?.redirectURI || ''
+    const redirectURI = `${appOrigin}${redirectPath}`
 
     // Runs after successful 3rd-party IDP authorization, processing query parameters
     useEffect(() => {
         if (searchParams.code && searchParams.usid) {
             loginIDPUser.mutateAsync({
                 code: searchParams.code,
-                usid: searchParams.usid
+                usid: searchParams.usid,
+                redirectURI: redirectURI
             })
         }
     }, [])

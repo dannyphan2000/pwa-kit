@@ -77,7 +77,6 @@ const SocialLogin = ({idps}) => {
                             config && (
                                 <Button
                                     onClick={async () => {
-                                        alert(message)
                                         await authorizeIDP.mutateAsync({
                                             hint: name,
                                             redirectURI: redirectURI
