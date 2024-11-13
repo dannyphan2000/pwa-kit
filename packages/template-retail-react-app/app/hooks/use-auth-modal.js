@@ -29,9 +29,7 @@ import {
     useCustomerBaskets,
     useShopperCustomersMutation,
     useShopperBasketsMutation,
-    ShopperCustomersMutations,
-    useShopperLoginMutation,
-    ShopperLoginMutations
+    ShopperCustomersMutations
 } from '@salesforce/commerce-sdk-react'
 import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
@@ -39,24 +37,17 @@ import ResetPasswordForm from '@salesforce/retail-react-app/app/components/reset
 import RegisterForm from '@salesforce/retail-react-app/app/components/register'
 import PasswordlessEmailConfirmation from '@salesforce/retail-react-app/app/components/email-confirmation/index'
 import {noop} from '@salesforce/retail-react-app/app/utils/utils'
-import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
+import {API_ERROR_MESSAGE, LOGIN_TYPES} from '@salesforce/retail-react-app/app/constants'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
+import {usePasswordlessLogin} from '@salesforce/retail-react-app/app/hooks/use-passwordless-login'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
-import {absoluteUrl} from '@salesforce/retail-react-app/app/utils/url'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
-import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 
 const LOGIN_VIEW = 'login'
 const REGISTER_VIEW = 'register'
 const PASSWORD_VIEW = 'password'
 const EMAIL_VIEW = 'email'
-
-const LOGIN_TYPES = {
-    PASSWORD: 'password',
-    PASSWORDLESS: 'passwordless',
-    SOCIAL:'social'
-}
 
 const LOGIN_ERROR = defineMessage({
     defaultMessage: "Something's not right with your email or password. Try again.",
@@ -94,7 +85,7 @@ export const AuthModal = ({
     const register = useAuthHelper(AuthHelpers.Register)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
-    const {site} = useMultiSite()
+    const {postAuthorizePasswordlessCustomer} = usePasswordlessLogin()
 
     const getResetPasswordToken = useShopperCustomersMutation(
         ShopperCustomersMutations.GetResetPasswordToken
@@ -105,27 +96,6 @@ export const AuthModal = ({
         {enabled: !!customerId && !isServer, keepPreviousData: true}
     )
     const mergeBasket = useShopperBasketsMutation('mergeBasket')
-
-    const authorizePasswordlessCustomer = useShopperLoginMutation(
-        ShopperLoginMutations.AuthorizePasswordlessCustomer
-    )
-
-    const postAuthorizePasswordlessCustomer = async (email) => {
-        try {
-            const body = {
-                user_id: email,
-                mode: 'callback',
-                channel_id: site.id,
-                callback_uri: absoluteUrl('/passwordless-login-callback')
-            }
-            await authorizePasswordlessCustomer.mutateAsync({body})
-        } catch (e) {
-            form.setError('global', {
-                type: 'manual',
-                message: formatMessage(API_ERROR_MESSAGE)
-            })
-        }
-    }
 
     const submitForm = async (data) => {
         form.clearErrors()
@@ -169,7 +139,14 @@ export const AuthModal = ({
                 } else if (loginType === LOGIN_TYPES.PASSWORDLESS) {
                     setCurrentView(EMAIL_VIEW)
                     setPasswordlessLoginEmail(data.email)
-                    postAuthorizePasswordlessCustomer(data.email)
+                    try {
+                        postAuthorizePasswordlessCustomer(data.email)
+                    } catch (e) {
+                        form.setError('global', {
+                            type: 'manual',
+                            message: formatMessage(API_ERROR_MESSAGE)
+                        })
+                    }
                 } else if (loginType === LOGIN_TYPES.SOCIAL) {
                     // Handle social login logic here
                 }
@@ -209,7 +186,14 @@ export const AuthModal = ({
                 }
             },
             email: async () => {
-                postAuthorizePasswordlessCustomer(passwordlessLoginEmail)
+                try {
+                    postAuthorizePasswordlessCustomer(passwordlessLoginEmail)
+                } catch (e) {
+                    form.setError('global', {
+                        type: 'manual',
+                        message: formatMessage(API_ERROR_MESSAGE)
+                    })
+                }
             }
         }[currentView](data)
     }
@@ -345,7 +329,9 @@ export const AuthModal = ({
                             form={form}
                             submitForm={submitForm}
                             clickCreateAccount={() => setCurrentView(REGISTER_VIEW)}
-                            handlePasswordlessLoginClick={() => setLoginType(LOGIN_TYPES.PASSWORDLESS)}
+                            handlePasswordlessLoginClick={() =>
+                                setLoginType(LOGIN_TYPES.PASSWORDLESS)
+                            }
                             handleForgotPasswordClick={() => setCurrentView(PASSWORD_VIEW)}
                             isPasswordlessEnabled={isPasswordlessEnabled}
                             isSocialEnabled={isSocialEnabled}

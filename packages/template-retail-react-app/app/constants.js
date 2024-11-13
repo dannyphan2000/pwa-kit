@@ -231,3 +231,10 @@ export const SHOPPER_CONTEXT_SEARCH_PARAMS = {
         // Add assignment qualifiers here
     }
 }
+
+// Constants for Login
+export const LOGIN_TYPES = {
+    PASSWORD: 'password',
+    PASSWORDLESS: 'passwordless',
+    SOCIAL: 'social'
+}

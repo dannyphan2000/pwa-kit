@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2024, Salesforce, Inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ */
 import crypto from 'crypto'
 import https from 'https'
 
@@ -32,7 +38,7 @@ function asyncJsonHttpsPost(options, postObject) {
     })
 }
 
-async function emailLink(emailId, templateId, magicLink) {
+export async function emailLink(emailId, templateId, magicLink) {
     function generateUniqueId() {
         return crypto.randomBytes(16).toString('hex')
     }
@@ -83,8 +89,4 @@ async function emailLink(emailId, templateId, magicLink) {
     const emailResponse = await asyncJsonHttpsPost(emailOptions, emailBody)
 
     return emailResponse
-}
-
-module.exports = {
-    emailLink
 }

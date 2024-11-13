@@ -24,10 +24,12 @@ import {useLocation} from 'react-router-dom'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
 import PasswordlessEmailConfirmation from '@salesforce/retail-react-app/app/components/email-confirmation/index'
-import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
+import {API_ERROR_MESSAGE, LOGIN_TYPES} from '@salesforce/retail-react-app/app/constants'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
+import {usePasswordlessLogin} from '@salesforce/retail-react-app/app/hooks/use-passwordless-login'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+
 const LOGIN_ERROR_MESSAGE = defineMessage({
     defaultMessage: 'Incorrect username or password, please try again.',
     id: 'login_page.error.incorrect_username_or_password'
@@ -58,14 +60,15 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const mergeBasket = useShopperBasketsMutation('mergeBasket')
     const [currentView, setCurrentView] = useState(initialView)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
-    const [loginType, setLoginType] = useState('password')
+    const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
+    const {postAuthorizePasswordlessCustomer} = usePasswordlessLogin()
 
     const submitForm = async (data) => {
         form.clearErrors()
 
         return {
             login: async (data) => {
-                if (loginType === 'password') {
+                if (loginType === LOGIN_TYPES.PASSWORD) {
                     try {
                         await login.mutateAsync({username: data.email, password: data.password})
                         const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
@@ -92,16 +95,30 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                             : formatMessage(API_ERROR_MESSAGE)
                         form.setError('global', {type: 'manual', message})
                     }
-                } else if (loginType === 'passwordless') {
+                } else if (loginType === LOGIN_TYPES.PASSWORDLESS) {
                     setCurrentView(EMAIL_VIEW)
                     setPasswordlessLoginEmail(data.email)
-                    // Handle passwordless login logic here
-                } else if (loginType === 'social') {
+                    try {
+                        postAuthorizePasswordlessCustomer(data.email)
+                    } catch (e) {
+                        form.setError('global', {
+                            type: 'manual',
+                            message: formatMessage(API_ERROR_MESSAGE)
+                        })
+                    }
+                } else if (loginType === LOGIN_TYPES.SOCIAL) {
                     // Handle social login logic here
                 }
             },
-            email: async (data) => {
-                // Handle resend passwordless email logic here
+            email: async () => {
+                try {
+                    postAuthorizePasswordlessCustomer(passwordlessLoginEmail)
+                } catch (e) {
+                    form.setError('global', {
+                        type: 'manual',
+                        message: formatMessage(API_ERROR_MESSAGE)
+                    })
+                }
             }
         }[currentView](data)
     }
@@ -140,7 +157,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                         submitForm={submitForm}
                         clickCreateAccount={() => navigate('/registration')}
                         handlePasswordlessLoginClick={() => {
-                            setLoginType('passwordless')
+                            setLoginType(LOGIN_TYPES.PASSWORDLESS)
                         }}
                         handleForgotPasswordClick={() => navigate('/reset-password')}
                         isPasswordlessEnabled={isPasswordlessEnabled}
