@@ -73,23 +73,24 @@ const SocialLogin = ({idps}) => {
                         const config = IDP_CONFIG[name.toLowerCase()]
                         const Icon = config?.icon
                         const message = formatMessage(config?.message)
-                    return (
-                        config && (
-                            <Button
-                                onClick={async () => {
-                                    alert(message)
-                                    await authorizeIDP.mutateAsync({
-                                        hint: name,
-                                        redirectURI: redirectURI
-                                    })
-                                }}
-                                borderColor="gray.500"
-                                color="blue.600"
-                                variant="outline"
-                            >
-                                <Icon sx={{marginRight: 2}} />
-                                {message}
-                            </Button>
+                        return (
+                            config && (
+                                <Button
+                                    onClick={async () => {
+                                        alert(message)
+                                        await authorizeIDP.mutateAsync({
+                                            hint: name,
+                                            redirectURI: redirectURI
+                                        })
+                                    }}
+                                    borderColor="gray.500"
+                                    color="blue.600"
+                                    variant="outline"
+                                >
+                                    <Icon sx={{marginRight: 2}} />
+                                    {message}
+                                </Button>
+                            )
                         )
                     })}
             </>
