@@ -22,6 +22,10 @@ import {useSearchParams} from '@salesforce/retail-react-app/app/hooks'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
+import {
+    getSessionJSONItem,
+    clearSessionJSONItem
+} from '@salesforce/retail-react-app/app/utils/utils'
 
 const SocialLoginRedirect = () => {
     const navigate = useNavigation()
@@ -32,6 +36,8 @@ const SocialLoginRedirect = () => {
     const appOrigin = useAppOrigin()
     const redirectPath = getConfig().app.login.social?.redirectURI || ''
     const redirectURI = `${appOrigin}${redirectPath}`
+
+    const locatedFrom = getSessionJSONItem('returnToPage')
 
     // Runs after successful 3rd-party IDP authorization, processing query parameters
     useEffect(() => {
@@ -47,7 +53,12 @@ const SocialLoginRedirect = () => {
     // If customer is registered, push to secure account page
     useEffect(() => {
         if (customer?.isRegistered) {
-            navigate('/account')
+            clearSessionJSONItem('returnToPage')
+            if (locatedFrom) {
+                navigate(locatedFrom)
+            } else {
+                navigate('/account')
+            }
         }
     }, [customer?.isRegistered])
 

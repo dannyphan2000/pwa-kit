@@ -13,6 +13,7 @@ import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 import {useAuthHelper, AuthHelpers} from '@salesforce/commerce-sdk-react'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
+import {setSessionJSONItem} from '@salesforce/retail-react-app/app/utils/utils'
 
 // Icons
 import {AppleIcon, GoogleIcon} from '@salesforce/retail-react-app/app/components/icons'
@@ -77,6 +78,8 @@ const SocialLogin = ({idps}) => {
                             config && (
                                 <Button
                                     onClick={async () => {
+                                        // Save the path where the user logged in
+                                        setSessionJSONItem('returnToPage', window.location.pathname)
                                         await authorizeIDP.mutateAsync({
                                             hint: name,
                                             redirectURI: redirectURI
