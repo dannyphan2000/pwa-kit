@@ -28,11 +28,11 @@ export const usePasswordlessLogin = () => {
             user_id: email,
             mode: 'callback',
             channel_id: site.id,
-            // TODO: Should this be set in default.js or constant?
             callback_uri: absoluteUrl('/passwordless-login-callback')
         }
         await authorizePasswordlessCustomer.mutateAsync({body})
     }
+
 
     const login = useAuthHelper(AuthHelpers.LoginPasswordlessUser)
 
