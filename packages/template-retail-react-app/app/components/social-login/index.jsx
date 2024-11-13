@@ -5,10 +5,10 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React from 'react'
+import React, {useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {defineMessage, useIntl} from 'react-intl'
-import {Button, Stack} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {Button} from '@salesforce/retail-react-app/app/components/shared/ui'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 import {useAuthHelper, AuthHelpers} from '@salesforce/commerce-sdk-react'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
@@ -48,26 +48,31 @@ const SocialLogin = ({idps}) => {
     const redirectPath = getConfig().app.login.social?.redirectURI || ''
     const redirectURI = `${appOrigin}${redirectPath}`
 
+    const isIdpValid = (name) => {
+        return name in IDP_CONFIG && IDP_CONFIG[name.toLowerCase()]
+    }
+
+    useEffect(() => {
+        idps.map((name) => {
+            if (!isIdpValid(name)) {
+                logger.error(
+                    `IDP "${name}" is missing or has an invalid configuration in IDP_CONFIG. Valid IDPs are [${Object.keys(
+                        IDP_CONFIG
+                    ).join(', ')}].`
+                )
+            }
+        })
+    }, [idps])
+
     return (
         idps && (
-            <Stack spacing={4}>
-                {idps.map((name) => {
-                    const config = IDP_CONFIG[name.toLowerCase()]
-
-                    if (!config) {
-                        logger.error(
-                            'IDP "' +
-                                name +
-                                '" is missing from IDP_CONFIG. Valid IDPs are [' +
-                                Object.keys(IDP_CONFIG).join(', ') +
-                                '].'
-                        )
-                        return null
-                    }
-
-                    const Icon = config?.icon
-                    const message = formatMessage(config?.message)
-
+            <>
+                {idps
+                    .filter((name) => isIdpValid(name))
+                    .map((name) => {
+                        const config = IDP_CONFIG[name.toLowerCase()]
+                        const Icon = config?.icon
+                        const message = formatMessage(config?.message)
                     return (
                         config && (
                             <Button
@@ -86,15 +91,14 @@ const SocialLogin = ({idps}) => {
                                 {message}
                             </Button>
                         )
-                    )
-                })}
-            </Stack>
+                    })}
+            </>
         )
     )
 }
 
 SocialLogin.propTypes = {
-    idps: PropTypes.array,
+    idps: PropTypes.arrayOf(PropTypes.string),
     redirectURI: PropTypes.string
 }
 

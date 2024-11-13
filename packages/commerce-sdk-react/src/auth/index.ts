@@ -91,6 +91,7 @@ type AuthDataKeys =
     | 'access_token_sfra'
     | typeof DNT_COOKIE_NAME
     | typeof DWSID_COOKIE_NAME
+    | 'code_verifier'
 
 type AuthDataMap = Record<
     AuthDataKeys,
@@ -186,6 +187,10 @@ const DATA_MAP: AuthDataMap = {
     dwsid: {
         storageType: 'cookie',
         key: DWSID_COOKIE_NAME
+    },
+    code_verifier: {
+        storageType: 'local',
+        key: 'code_verifier'
     }
 }
 

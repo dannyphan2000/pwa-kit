@@ -31,13 +31,14 @@ import {
     ToggleCardSummary
 } from '@salesforce/retail-react-app/app/components/toggle-card'
 import Field from '@salesforce/retail-react-app/app/components/field'
+import LoginState from '@salesforce/retail-react-app/app/pages/checkout/partials/login-state'
 import {AuthModal, useAuthModal} from '@salesforce/retail-react-app/app/hooks/use-auth-modal'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 import {useCurrentBasket} from '@salesforce/retail-react-app/app/hooks/use-current-basket'
 import {AuthHelpers, useAuthHelper, useShopperBasketsMutation} from '@salesforce/commerce-sdk-react'
 
-const ContactInfo = () => {
+const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, idps = []}) => {
     const {formatMessage} = useIntl()
     const authModal = useAuthModal('password')
     const navigate = useNavigation()
@@ -187,19 +188,14 @@ const ContactInfo = () => {
                                         />
                                     )}
                                 </Button>
-                                <Button variant="outline" onClick={togglePasswordField}>
-                                    {!showPasswordField ? (
-                                        <FormattedMessage
-                                            defaultMessage="Already have an account? Log in"
-                                            id="contact_info.button.already_have_account"
-                                        />
-                                    ) : (
-                                        <FormattedMessage
-                                            defaultMessage="Checkout as Guest"
-                                            id="contact_info.button.checkout_as_guest"
-                                        />
-                                    )}
-                                </Button>
+                                <LoginState
+                                    form={form}
+                                    isSocialEnabled={isSocialEnabled}
+                                    isPasswordlessEnabled={isPasswordlessEnabled}
+                                    idps={idps}
+                                    showPasswordField={showPasswordField}
+                                    togglePasswordField={togglePasswordField}
+                                />
                             </Stack>
                         </Stack>
                     </form>
@@ -221,6 +217,12 @@ const ContactInfo = () => {
             </ToggleCardSummary>
         </ToggleCard>
     )
+}
+
+ContactInfo.propTypes = {
+    isSocialEnabled: PropTypes.bool,
+    isPasswordlessEnabled: PropTypes.bool,
+    idps: PropTypes.arrayOf(PropTypes.string)
 }
 
 const SignOutConfirmationDialog = ({isOpen, onConfirm, onClose}) => {

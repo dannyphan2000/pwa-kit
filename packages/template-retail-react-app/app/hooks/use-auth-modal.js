@@ -357,7 +357,7 @@ AuthModal.propTypes = {
     onRegistrationSuccess: PropTypes.func,
     isPasswordlessEnabled: PropTypes.bool,
     isSocialEnabled: PropTypes.bool,
-    idps: PropTypes.array[PropTypes.string]
+    idps: PropTypes.arrayOf(PropTypes.string)
 }
 
 /**
@@ -367,15 +367,15 @@ AuthModal.propTypes = {
  */
 export const useAuthModal = (initialView = LOGIN_VIEW) => {
     const {isOpen, onOpen, onClose} = useDisclosure()
-    const {passwordless, social} = getConfig().app.login
+    const {passwordless = {}, social = {}} = getConfig().app.login || {}
 
     return {
         initialView,
         isOpen,
         onOpen,
         onClose,
-        isPasswordlessEnabled: passwordless?.enabled,
-        isSocialEnabled: social?.enabled,
+        isPasswordlessEnabled: !!passwordless?.enabled,
+        isSocialEnabled: !!social?.enabled,
         idps: social?.idps
     }
 }

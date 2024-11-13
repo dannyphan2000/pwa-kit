@@ -28,6 +28,7 @@ import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+
 const LOGIN_ERROR_MESSAGE = defineMessage({
     defaultMessage: 'Incorrect username or password, please try again.',
     id: 'login_page.error.incorrect_username_or_password'
@@ -44,7 +45,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const einstein = useEinstein()
     const {isRegistered, customerType} = useCustomerType()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
-    const {passwordless, social} = getConfig().app.login
+    const {passwordless = {}, social = {}} = getConfig().app.login || {}
     const isPasswordlessEnabled = !!passwordless?.enabled
     const isSocialEnabled = !!social?.enabled
     const idps = social?.idps
