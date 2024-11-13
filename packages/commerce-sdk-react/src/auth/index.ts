@@ -987,12 +987,12 @@ class Auth {
      *
      */
     async authorizeIDP(parameters: AuthorizeIDPParams) {
-        const redirectURI = parameters.redirectURI
+        const redirectURI = parameters.redirectURI || this.redirectURI
         const usid = this.get('usid')
         const {url, codeVerifier} = await helpers.authorizeIDP(
             this.client,
             {
-                redirectURI: redirectURI,
+                redirectURI,
                 hint: parameters.hint,
                 ...(usid && {usid})
             },
