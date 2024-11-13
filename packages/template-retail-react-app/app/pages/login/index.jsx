@@ -20,6 +20,7 @@ import {
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import Seo from '@salesforce/retail-react-app/app/components/seo'
 import {useForm} from 'react-hook-form'
+import {useRouteMatch} from 'react-router'
 import {useLocation} from 'react-router-dom'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
@@ -43,6 +44,8 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const navigate = useNavigation()
     const form = useForm()
     const location = useLocation()
+    const queryParams = new URLSearchParams(location.search)
+    const {path} = useRouteMatch()
     const einstein = useEinstein()
     const {isRegistered, customerType} = useCustomerType()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
@@ -61,7 +64,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const [currentView, setCurrentView] = useState(initialView)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
-    const {postAuthorizePasswordlessCustomer} = usePasswordlessLogin()
+    const {authorizePasswordlessLogin, fetchPasswordlessAccessToken} = usePasswordlessLogin()
 
     const submitForm = async (data) => {
         form.clearErrors()
@@ -99,7 +102,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                     setCurrentView(EMAIL_VIEW)
                     setPasswordlessLoginEmail(data.email)
                     try {
-                        postAuthorizePasswordlessCustomer(data.email)
+                        authorizePasswordlessLogin(data.email)
                     } catch (e) {
                         form.setError('global', {
                             type: 'manual',
@@ -112,7 +115,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
             },
             email: async () => {
                 try {
-                    postAuthorizePasswordlessCustomer(passwordlessLoginEmail)
+                    authorizePasswordlessLogin(passwordlessLoginEmail)
                 } catch (e) {
                     form.setError('global', {
                         type: 'manual',
@@ -122,6 +125,21 @@ const Login = ({initialView = LOGIN_VIEW}) => {
             }
         }[currentView](data)
     }
+
+    useEffect(() => {
+        if (path === '/passwordless-login-landing') {
+            const token = queryParams.get('token')
+            try {
+                fetchPasswordlessAccessToken(token)
+                // TODO Error handling (below catch is not working)
+            } catch (e) {
+                form.setError('global', {
+                    type: 'manual',
+                    message: formatMessage(API_ERROR_MESSAGE)
+                })
+            }
+        }
+    }, [path, location])
 
     // If customer is registered push to account page
     useEffect(() => {

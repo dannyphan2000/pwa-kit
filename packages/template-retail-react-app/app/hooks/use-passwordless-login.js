@@ -4,7 +4,12 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {useShopperLoginMutation, ShopperLoginMutations} from '@salesforce/commerce-sdk-react'
+import {
+    AuthHelpers,
+    useAuthHelper,
+    useShopperLoginMutation,
+    ShopperLoginMutations
+} from '@salesforce/commerce-sdk-react'
 import {absoluteUrl} from '@salesforce/retail-react-app/app/utils/url'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 
@@ -18,7 +23,7 @@ export const usePasswordlessLogin = () => {
         ShopperLoginMutations.AuthorizePasswordlessCustomer
     )
 
-    const postAuthorizePasswordlessCustomer = async (email) => {
+    const authorizePasswordlessLogin = async (email) => {
         const body = {
             user_id: email,
             mode: 'callback',
@@ -28,9 +33,14 @@ export const usePasswordlessLogin = () => {
         await authorizePasswordlessCustomer.mutateAsync({body})
     }
 
-    return {
-        postAuthorizePasswordlessCustomer
+
+    const login = useAuthHelper(AuthHelpers.LoginPasswordlessUser)
+
+    const fetchPasswordlessAccessToken = async (token) => {
+        await login.mutateAsync({pwdlessLoginToken: token})
     }
+
+    return {authorizePasswordlessLogin, fetchPasswordlessAccessToken}
 }
 
 export default usePasswordlessLogin

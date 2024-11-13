@@ -71,6 +71,16 @@ export const routes = [
         exact: true
     },
     {
+        path: '/reset-password-landing',
+        component: ResetPassword,
+        exact: true
+    },
+    {
+        path: '/passwordless-login-landing',
+        component: Login,
+        exact: true
+    },
+    {
         path: '/account',
         component: Account
     },

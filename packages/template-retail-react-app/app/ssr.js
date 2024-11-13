@@ -101,7 +101,7 @@ const {handler} = runtime.createHandler(options, (app) => {
     app.post('/passwordless-login-callback', async (req, res) => {
         const base = req.protocol + '://' + req.get('host')
         const {email_id, token} = req.body
-        const magicLink = `${base}/passwordless-login?email=${email_id}&token=${token}`
+        const magicLink = `${base}/passwordless-login-landing?token=${token}`
         const emailLinkResponse = await emailLink(
             email_id,
             process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE,
@@ -113,7 +113,7 @@ const {handler} = runtime.createHandler(options, (app) => {
     app.post('/reset-password-callback', async (req, res) => {
         const base = req.protocol + '://' + req.get('host')
         const {email_id, token} = req.body
-        const magicLink = `${base}/reset-password?email=${email_id}&token=${token}`
+        const magicLink = `${base}/reset-password-landing?token=${token}`
         const emailLinkResponse = await emailLink(
             email_id,
             process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE,

@@ -85,7 +85,7 @@ export const AuthModal = ({
     const register = useAuthHelper(AuthHelpers.Register)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
-    const {postAuthorizePasswordlessCustomer} = usePasswordlessLogin()
+    const {authorizePasswordlessLogin} = usePasswordlessLogin()
 
     const getResetPasswordToken = useShopperCustomersMutation(
         ShopperCustomersMutations.GetResetPasswordToken
@@ -140,7 +140,7 @@ export const AuthModal = ({
                     setCurrentView(EMAIL_VIEW)
                     setPasswordlessLoginEmail(data.email)
                     try {
-                        postAuthorizePasswordlessCustomer(data.email)
+                        authorizePasswordlessLogin(data.email)
                     } catch (e) {
                         form.setError('global', {
                             type: 'manual',
@@ -187,7 +187,7 @@ export const AuthModal = ({
             },
             email: async () => {
                 try {
-                    postAuthorizePasswordlessCustomer(passwordlessLoginEmail)
+                    authorizePasswordlessLogin(passwordlessLoginEmail)
                 } catch (e) {
                     form.setError('global', {
                         type: 'manual',
