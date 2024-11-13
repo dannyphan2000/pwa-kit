@@ -17,15 +17,18 @@ import {
 } from '@salesforce/retail-react-app/app/components/shared/ui'
 import {useForm} from 'react-hook-form'
 import {
-    useShopperCustomersMutation,
-    ShopperCustomersMutations
+    useShopperLoginMutation,
+    ShopperLoginMutations
 } from '@salesforce/commerce-sdk-react'
 import Seo from '@salesforce/retail-react-app/app/components/seo'
 import ResetPasswordForm from '@salesforce/retail-react-app/app/components/reset-password'
-import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
+import ResetPasswordLanding from '@salesforce/retail-react-app/app/pages/reset-password/reset-password-landing'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
+import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {useLocation} from 'react-router-dom'
+import {useRouteMatch} from 'react-router'
+import {absoluteUrl} from '@salesforce/retail-react-app/app/utils/url'
 
 const ResetPassword = () => {
     const form = useForm()
@@ -34,16 +37,24 @@ const ResetPassword = () => {
     const [showSubmittedSuccess, setShowSubmittedSuccess] = useState(false)
     const einstein = useEinstein()
     const {pathname} = useLocation()
-    const getResetPasswordToken = useShopperCustomersMutation(
-        ShopperCustomersMutations.GetResetPasswordToken
+    const {path} = useRouteMatch()
+    const {site} = useMultiSite()
+
+    const getPasswordResetToken = useShopperLoginMutation(
+        ShopperLoginMutations.GetPasswordResetToken
     )
 
     const submitForm = async ({email}) => {
         const body = {
-            login: email
+            user_id: email,
+            mode: 'callback',
+            channel_id: site.id,
+            // TODO: Should this be set in default.js or constant?
+            callback_uri: 'https://webhook.site/a134b707-0514-4655-a293-9cd92073bf12'
+            // callback_uri: absoluteUrl('/reset-password-landing')
         }
         try {
-            await getResetPasswordToken.mutateAsync({body})
+            await getPasswordResetToken.mutateAsync({body})
             setSubmittedEmail(email)
             setShowSubmittedSuccess(!showSubmittedSuccess)
         } catch (error) {
@@ -68,7 +79,9 @@ const ResetPassword = () => {
                 marginBottom={8}
                 borderRadius="base"
             >
-                {!showSubmittedSuccess ? (
+                {path === '/reset-password-landing' ? (
+                    <ResetPasswordLanding/>
+                ) : !showSubmittedSuccess ? (
                     <ResetPasswordForm
                         form={form}
                         submitForm={submitForm}
@@ -76,13 +89,6 @@ const ResetPassword = () => {
                     />
                 ) : (
                     <Stack justify="center" align="center" spacing={6}>
-                        <BrandLogo width="60px" height="auto" />
-                        <Text align="center" fontSize="md">
-                            <FormattedMessage
-                                defaultMessage={'Password Reset'}
-                                id="reset_password.title.password_reset"
-                            />
-                        </Text>
                         <Stack spacing={6} pt={4}>
                             <Text align="center" fontSize="sm">
                                 <FormattedMessage
