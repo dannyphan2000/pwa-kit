@@ -13,7 +13,7 @@ import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 import {useAuthHelper, AuthHelpers} from '@salesforce/commerce-sdk-react'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
-import {setSessionJSONItem} from '@salesforce/retail-react-app/app/utils/utils'
+import {setSessionJSONItem, buildRedirectURI} from '@salesforce/retail-react-app/app/utils/utils'
 
 // Icons
 import {AppleIcon, GoogleIcon} from '@salesforce/retail-react-app/app/components/icons'
@@ -47,7 +47,7 @@ const SocialLogin = ({idps}) => {
     // Build redirectURI from config values
     const appOrigin = useAppOrigin()
     const redirectPath = getConfig().app.login.social?.redirectURI || ''
-    const redirectURI = `${appOrigin}${redirectPath}`
+    const redirectURI = buildRedirectURI(appOrigin, redirectPath)
 
     const isIdpValid = (name) => {
         return name in IDP_CONFIG && IDP_CONFIG[name.toLowerCase()]

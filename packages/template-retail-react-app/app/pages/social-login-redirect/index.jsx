@@ -24,7 +24,8 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
 import {
     getSessionJSONItem,
-    clearSessionJSONItem
+    clearSessionJSONItem,
+    buildRedirectURI
 } from '@salesforce/retail-react-app/app/utils/utils'
 
 const SocialLoginRedirect = () => {
@@ -33,9 +34,10 @@ const SocialLoginRedirect = () => {
     const loginIDPUser = useAuthHelper(AuthHelpers.LoginIDPUser)
     const {data: customer} = useCurrentCustomer()
     // Build redirectURI from config values
+    // Build redirectURI from config values
     const appOrigin = useAppOrigin()
     const redirectPath = getConfig().app.login.social?.redirectURI || ''
-    const redirectURI = `${appOrigin}${redirectPath}`
+    const redirectURI = buildRedirectURI(appOrigin, redirectPath)
 
     const locatedFrom = getSessionJSONItem('returnToPage')
 
