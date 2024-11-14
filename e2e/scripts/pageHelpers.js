@@ -92,6 +92,35 @@ export const navigateToPDPDesktop = async ({page}) => {
 }
 
 /**
+ * Navigates to the `Cotton Turtleneck Sweater` PDP (Product Detail Page) on Desktop 
+ * with the black variant selected.
+ * 
+ * @param {Object} options.page - Object that represents a tab/window in the browser provided by playwright
+ */
+export const navigateToPDPDesktopSocial = async ({page, productName, productColor, productPrice}) => {
+    await page.goto(config.RETAIL_APP_HOME);
+
+    await page.getByRole("link", { name: "Womens" }).hover();
+    const topsNav = await page.getByRole("link", { name: "Tops", exact: true });
+    await expect(topsNav).toBeVisible();
+  
+    await topsNav.click();
+
+    // PLP
+    const productTile = page.getByRole("link", {
+      name: RegExp(productName, 'i'),
+    });
+    // selecting swatch
+    const productTileImg = productTile.locator("img");
+    await productTileImg.waitFor({state: 'visible'})
+    const initialSrc = await productTileImg.getAttribute("src");
+    await expect(productTile.getByText(RegExp(`From \\${productPrice}`, 'i'))).toBeVisible();
+  
+    await productTile.getByLabel(RegExp(productColor, 'i'), { exact: true }).hover();
+    await productTile.click();
+}
+
+/**
  * Adds the `Cotton Turtleneck Sweater` product to the cart with the variant:
  * Color: Black
  * Size: L
@@ -248,6 +277,39 @@ export const loginShopper = async ({page, userCredentials}) => {
         await expect(
           page.getByRole("heading", { name: /Account Details/i })
         ).toBeVisible({ timeout: 2000 });
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Attempts to log in a shopper with provided user credentials.
+ * 
+ * @param {Object} options.page - Object that represents a tab/window in the browser provided by playwright
+ * @return {Boolean} - denotes whether or not login was successful
+ */
+export const socialLoginShopper = async ({page}) => {
+    try {
+        await page.goto(config.RETAIL_APP_HOME + "/login");
+
+        // Assume `page` is the original page where the Google login button is clicked
+        await Promise.all([
+            page.getByRole("button", { name: /Google/i }).click() // Click the button to trigger Google login
+        ]);
+        await expect(page.getByText(/Sign in with Google/i)).toBeVisible();
+        await page.waitForSelector('input[type="email"]', { timeout: 10000 });
+
+        // // Fill in the email input
+        // await page.fill('input[type="email"]', 'yunakim@salesforce.com');
+        // await page.click('#identifierNext');
+
+        // await page.waitForLoadState();
+    
+        // // redirected to Account Details page after logging in
+        // await expect(
+        //   page.getByRole("heading", { name: /Account Details/i })
+        // ).toBeVisible({ timeout: 15000 });
         return true;
     } catch {
         return false;
