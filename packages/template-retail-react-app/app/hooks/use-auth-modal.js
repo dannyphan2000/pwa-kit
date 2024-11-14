@@ -27,9 +27,7 @@ import {
     useCustomerId,
     useCustomerType,
     useCustomerBaskets,
-    useShopperCustomersMutation,
     useShopperBasketsMutation,
-    ShopperCustomersMutations
 } from '@salesforce/commerce-sdk-react'
 import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
@@ -41,6 +39,7 @@ import {API_ERROR_MESSAGE, LOGIN_TYPES} from '@salesforce/retail-react-app/app/c
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
 import {usePasswordlessLogin} from '@salesforce/retail-react-app/app/hooks/use-passwordless-login'
+import {usePasswordReset} from '@salesforce/retail-react-app/app/hooks/use-password-reset'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
@@ -83,13 +82,10 @@ export const AuthModal = ({
     const toast = useToast()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const register = useAuthHelper(AuthHelpers.Register)
-    const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
+    const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
     const {authorizePasswordlessLogin} = usePasswordlessLogin()
-
-    const getResetPasswordToken = useShopperCustomersMutation(
-        ShopperCustomersMutations.GetResetPasswordToken
-    )
+    const {getPasswordResetToken} = usePasswordReset()
 
     const {data: baskets} = useCustomerBaskets(
         {parameters: {customerId}},
@@ -174,10 +170,7 @@ export const AuthModal = ({
             },
             password: async (data) => {
                 try {
-                    const body = {
-                        login: data.email
-                    }
-                    await getResetPasswordToken.mutateAsync({body})
+                    await getPasswordResetToken(data.email)
                 } catch (e) {
                     form.setError('global', {
                         type: 'manual',

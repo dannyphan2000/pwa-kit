@@ -13,6 +13,7 @@ import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import Field from '@salesforce/retail-react-app/app/components/field'
 import PasswordRequirements from '@salesforce/retail-react-app/app/components/forms/password-requirements'
 import useUpdatePasswordFields from '@salesforce/retail-react-app/app/components/forms/useUpdatePasswordFields'
+import usePasswordReset from '@salesforce/retail-react-app/app/hooks/use-password-reset'
 
 const ResetPasswordLanding = () => {
     const form = useForm()
@@ -22,42 +23,12 @@ const ResetPasswordLanding = () => {
     const token = queryParams.get('token')
     const fields = useUpdatePasswordFields({form})
     const password = form.watch('password')
+    const {resetPassword} = usePasswordReset()
 
     const submit = async (values) => {
-        try {
-            form.clearErrors()
-            updateCustomerMutation.mutate(
-                {
-                    parameters: {customerId},
-                    body: {
-                        firstName: values.firstName,
-                        lastName: values.lastName,
-                        phoneHome: values.phone,
-                        // NOTE/ISSUE
-                        // The sdk is allowing you to change your email to an already-existing email.
-                        // I would expect an error. We also want to keep the email and login the same
-                        // for the customer, but the sdk isn't changing the login when we submit an
-                        // updated email. This will lead to issues where you change your email but end
-                        // up not being able to login since 'login' will no longer match the email.
-                        email: values.email,
-                        login: values.email
-                    }
-                },
-                {
-                    onSuccess: () => {
-                        setIsEditing(false)
-                        toast({
-                            title: formatMessage({
-                                defaultMessage: 'Profile updated',
-                                id: 'profile_card.info.profile_updated'
-                            }),
-                            status: 'success',
-                            isClosable: true
-                        })
-                        headingRef?.current?.focus()
-                    }
-                }
-            )
+        form.clearErrors()
+        try{
+            await resetPassword({email, token, newPassword: values.password})
         } catch (error) {
             form.setError('global', {type: 'manual', message: error.message})
         }

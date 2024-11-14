@@ -16,19 +16,15 @@ import {
     Text
 } from '@salesforce/retail-react-app/app/components/shared/ui'
 import {useForm} from 'react-hook-form'
-import {
-    useShopperLoginMutation,
-    ShopperLoginMutations
-} from '@salesforce/commerce-sdk-react'
 import Seo from '@salesforce/retail-react-app/app/components/seo'
+import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import ResetPasswordForm from '@salesforce/retail-react-app/app/components/reset-password'
 import ResetPasswordLanding from '@salesforce/retail-react-app/app/pages/reset-password/reset-password-landing'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
-import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {useLocation} from 'react-router-dom'
 import {useRouteMatch} from 'react-router'
-import {absoluteUrl} from '@salesforce/retail-react-app/app/utils/url'
+import usePasswordReset from '@salesforce/retail-react-app/app/hooks/use-password-reset'
 
 const ResetPassword = () => {
     const form = useForm()
@@ -38,28 +34,16 @@ const ResetPassword = () => {
     const einstein = useEinstein()
     const {pathname} = useLocation()
     const {path} = useRouteMatch()
-    const {site} = useMultiSite()
-
-    const getPasswordResetToken = useShopperLoginMutation(
-        ShopperLoginMutations.GetPasswordResetToken
-    )
+    const {getPasswordResetToken} = usePasswordReset()
 
     const submitForm = async ({email}) => {
-        const body = {
-            user_id: email,
-            mode: 'callback',
-            channel_id: site.id,
-            // TODO: Should this be set in default.js or constant?
-            callback_uri: 'https://webhook.site/a134b707-0514-4655-a293-9cd92073bf12'
-            // callback_uri: absoluteUrl('/reset-password-landing')
-        }
         try {
-            await getPasswordResetToken.mutateAsync({body})
-            setSubmittedEmail(email)
-            setShowSubmittedSuccess(!showSubmittedSuccess)
+            await getPasswordResetToken(email)
         } catch (error) {
             form.setError('global', {type: 'manual', message: error.message})
         }
+        setSubmittedEmail(email)
+        setShowSubmittedSuccess(!showSubmittedSuccess)
     }
 
     /**************** Einstein ****************/
@@ -89,6 +73,15 @@ const ResetPassword = () => {
                     />
                 ) : (
                     <Stack justify="center" align="center" spacing={6}>
+                        <BrandLogo width="60px" height="auto" />
+                        <Stack spacing={2}>
+                            <Text align="center" fontSize="xl" fontWeight="semibold">
+                                <FormattedMessage
+                                    defaultMessage="Reset Password"
+                                    id="reset_password_form.title.reset_password"
+                                />
+                            </Text>
+                        </Stack>
                         <Stack spacing={6} pt={4}>
                             <Text align="center" fontSize="sm">
                                 <FormattedMessage
