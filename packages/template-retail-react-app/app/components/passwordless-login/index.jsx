@@ -18,11 +18,13 @@ const PasswordlessLogin = ({
     handleForgotPasswordClick,
     handlePasswordlessLoginClick,
     isSocialEnabled = false,
-    idps = []
+    idps = [],
+    setLoginType
 }) => {
     const [showPasswordView, setShowPasswordView] = useState(false)
 
     const handlePasswordButton = async (e) => {
+        setLoginType('password')
         const isValid = await form.trigger()
         // Manually trigger the browser native form validations
         const domForm = e.target.closest('form')
@@ -95,7 +97,8 @@ PasswordlessLogin.propTypes = {
     handlePasswordlessLoginClick: PropTypes.func,
     isSocialEnabled: PropTypes.bool,
     idps: PropTypes.arrayOf(PropTypes.string),
-    hideEmail: PropTypes.bool
+    hideEmail: PropTypes.bool,
+    setLoginType: PropTypes.func
 }
 
 export default PasswordlessLogin

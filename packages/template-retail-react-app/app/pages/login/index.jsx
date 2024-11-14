@@ -97,8 +97,6 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                     setCurrentView(EMAIL_VIEW)
                     setPasswordlessLoginEmail(data.email)
                     // Handle passwordless login logic here
-                } else if (loginType === 'social') {
-                    // Handle social login logic here
                 }
             },
             email: async (data) => {
@@ -147,6 +145,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                         isPasswordlessEnabled={isPasswordlessEnabled}
                         isSocialEnabled={isSocialEnabled}
                         idps={idps}
+                        setLoginType={setLoginType}
                     />
                 )}
                 {form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
