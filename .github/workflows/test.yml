@@ -44,8 +44,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [16, 18, 20]
-        npm: [8, 9, 10]
+        node: [16, 18, 20, 22]
+        npm: [8, 9, 10, 10]
         exclude: # node 16 is not compatible with npm 10
           - node: 16
             npm: 10
@@ -141,8 +141,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [16, 18, 20]
-        npm: [8, 9, 10]
+        node: [16, 18, 20, 22]
+        npm: [8, 9, 10, 10]
         exclude: # node 16 is not compatible with npm 10
           - node: 16
             npm: 10
@@ -196,7 +196,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Setup Ubuntu Machine
         uses: "./.github/actions/setup_ubuntu"
@@ -294,7 +294,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Setup Windows Machine
         uses: "./.github/actions/setup_windows"
