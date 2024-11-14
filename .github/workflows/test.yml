@@ -44,8 +44,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [16, 18, 20, 22]
-        npm: [8, 9, 10, 10]
+        node: [20, 22]
+        npm: [10, 10]
         exclude: # node 16 is not compatible with npm 10
           - node: 16
             npm: 10
@@ -141,8 +141,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [16, 18, 20, 22]
-        npm: [8, 9, 10, 10]
+        node: [20, 22]
+        npm: [10, 10]
         exclude: # node 16 is not compatible with npm 10
           - node: 16
             npm: 10
