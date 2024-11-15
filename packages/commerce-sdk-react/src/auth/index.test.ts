@@ -53,7 +53,7 @@ jest.mock('../utils', () => ({
     getParentOrigin: jest.fn().mockResolvedValue(''),
     isOriginTrusted: () => false,
     getDefaultCookieAttributes: () => {},
-    isAbsoluteUrl: () => true,
+    isAbsoluteUrl: () => true
 }))
 
 /** The auth data we store has a slightly different shape than what we use. */
@@ -82,7 +82,7 @@ const configPasswordlessSms = {
     siteId: 'siteId',
     proxy: 'proxy',
     redirectURI: 'redirectURI',
-    logger: console,
+    logger: console
 }
 
 const FAKE_SLAS_EXPIRY = DEFAULT_SLAS_REFRESH_TOKEN_REGISTERED_TTL - 1
@@ -626,10 +626,18 @@ describe('Auth', () => {
 
     test('authorizePasswordless calls isomorphic authorizePasswordless', async () => {
         const auth = new Auth(config)
-        await auth.authorizePasswordless({callbackURI: 'callbackURI', userid: 'userid', mode: 'callback'})
+        await auth.authorizePasswordless({
+            callbackURI: 'callbackURI',
+            userid: 'userid',
+            mode: 'callback'
+        })
         expect(helpers.authorizePasswordless).toHaveBeenCalled()
         const functionArg = (helpers.authorizePasswordless as jest.Mock).mock.calls[0][2]
-        expect(functionArg).toMatchObject({callbackURI: 'callbackURI', userid: 'userid', mode: 'callback'})
+        expect(functionArg).toMatchObject({
+            callbackURI: 'callbackURI',
+            userid: 'userid',
+            mode: 'callback'
+        })
     })
 
     test('authorizePasswordless sets mode to sms as configured', async () => {

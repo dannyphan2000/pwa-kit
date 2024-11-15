@@ -94,7 +94,7 @@ LoginForm.propTypes = {
     form: PropTypes.object,
     isPasswordlessEnabled: PropTypes.bool,
     isSocialEnabled: PropTypes.bool,
-    idps: PropTypes.array[PropTypes.string]
+    idps: PropTypes.arrayOf(PropTypes.string)
 }
 
 export default LoginForm

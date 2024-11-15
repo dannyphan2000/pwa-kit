@@ -15,7 +15,13 @@ import {jwtDecode, JwtPayload} from 'jwt-decode'
 import {ApiClientConfigParams, Prettify, RemoveStringIndex} from '../hooks/types'
 import {BaseStorage, LocalStorage, CookieStorage, MemoryStorage, StorageType} from './storage'
 import {CustomerType} from '../hooks/useCustomerType'
-import {getParentOrigin, isOriginTrusted, onClient, getDefaultCookieAttributes, isAbsoluteUrl} from '../utils'
+import {
+    getParentOrigin,
+    isOriginTrusted,
+    onClient,
+    getDefaultCookieAttributes,
+    isAbsoluteUrl
+} from '../utils'
 import {
     MOBIFY_PATH,
     SLAS_PRIVATE_PROXY_PATH,
@@ -85,6 +91,7 @@ type AuthDataKeys =
     | 'access_token_sfra'
     | typeof DNT_COOKIE_NAME
     | typeof DWSID_COOKIE_NAME
+    | 'code_verifier'
 
 type AuthDataMap = Record<
     AuthDataKeys,
@@ -180,6 +187,10 @@ const DATA_MAP: AuthDataMap = {
     dwsid: {
         storageType: 'cookie',
         key: DWSID_COOKIE_NAME
+    },
+    code_verifier: {
+        storageType: 'local',
+        key: 'code_verifier'
     }
 }
 
@@ -298,8 +309,11 @@ class Auth {
 
         this.isPrivate = !!this.clientSecret
 
-        this.callbackURI = callbackURI ? isAbsoluteUrl(callbackURI) 
-        ? callbackURI : `${baseUrl}${callbackURI}` : ''
+        this.callbackURI = callbackURI
+            ? isAbsoluteUrl(callbackURI)
+                ? callbackURI
+                : `${baseUrl}${callbackURI}`
+            : ''
     }
 
     get(name: AuthDataKeys) {

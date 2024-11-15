@@ -424,11 +424,20 @@
   "contact_info.button.login": {
     "defaultMessage": "Log In"
   },
+  "contact_info.button.password": {
+    "defaultMessage": "Password"
+  },
+  "contact_info.button.secure_link": {
+    "defaultMessage": "Secure Link"
+  },
   "contact_info.error.incorrect_username_or_password": {
     "defaultMessage": "Incorrect username or password, please try again."
   },
   "contact_info.link.forgot_password": {
     "defaultMessage": "Forgot password?"
+  },
+  "contact_info.message.or_login_with": {
+    "defaultMessage": "Or Login With"
   },
   "contact_info.title.contact_info": {
     "defaultMessage": "Contact Info"

@@ -49,7 +49,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const einstein = useEinstein()
     const {isRegistered, customerType} = useCustomerType()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
-    const {passwordless, social} = getConfig().app.login
+    const {passwordless = {}, social = {}} = getConfig().app.login || {}
     const isPasswordlessEnabled = !!passwordless?.enabled
     const isSocialEnabled = !!social?.enabled
     const idps = social?.idps
