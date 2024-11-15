@@ -10,14 +10,15 @@ import {
     useShopperLoginMutation,
     ShopperLoginMutations
 } from '@salesforce/commerce-sdk-react'
-import {absoluteUrl} from '@salesforce/retail-react-app/app/utils/url'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 /**
  * This hook provides commerce-react-sdk hooks to simplify the passwordless login flow.
  */
 export const usePasswordlessLogin = () => {
     const {site} = useMultiSite()
+    const {passwordless} = getConfig().app.login
 
     const authorizePasswordlessCustomer = useShopperLoginMutation(
         ShopperLoginMutations.AuthorizePasswordlessCustomer
@@ -28,7 +29,7 @@ export const usePasswordlessLogin = () => {
             user_id: email,
             mode: 'callback',
             channel_id: site.id,
-            callback_uri: absoluteUrl('/passwordless-login-callback')
+            callback_uri: passwordless.callbackURI
         }
         await authorizePasswordlessCustomer.mutateAsync({body})
     }

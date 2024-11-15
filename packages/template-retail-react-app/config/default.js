@@ -18,7 +18,7 @@ module.exports = {
         login: {
             passwordless: {
                 enabled: true,
-                callbackURI: 'https://webhook.site/27761b71-50c1-4097-a600-21a3b89a546c'
+                callbackURI: 'https://wasatch-mrt-passwordless-poc.mrt-storefront-staging.com/passwordless-login-callback'
             },
             social: {
                 enabled: false,
@@ -34,7 +34,7 @@ module.exports = {
         commerceAPI: {
             proxyPath: `/mobify/proxy/api`,
             parameters: {
-                clientId: 'c9c45bfd-0ed3-4aa2-9971-40f88962b836',
+                clientId: '80255e22-8504-45e3-b1a3-749fd4475bb7',
                 organizationId: 'f_ecom_zzrf_001',
                 shortCode: '8o7m175y',
                 siteId: 'RefArchGlobal'
