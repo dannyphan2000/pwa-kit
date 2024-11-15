@@ -23,6 +23,8 @@
 - Replace getAppOrigin with useOrigin to have a better support for an app origin building. [#2050](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2050)
 - PWA Kit projects have Active Data tracking set to "true" by default [#1983](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1983).
 
+- Add support for environment level base paths [#1970](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1970)
+
 ### Bug Fixes
 - The unused `njwt` npm package had a security vulnerability, since it was unused, the package has been dropped
 - Remove save/edit billing action in checkout page for the registered user [#1976](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1976)
