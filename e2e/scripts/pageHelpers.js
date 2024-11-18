@@ -1,4 +1,5 @@
 const { expect } = require("@playwright/test");
+const { chromium } = require("playwright");
 const config = require("../config");
 const { getCreditCardExpiry } = require("../scripts/utils.js")
 
@@ -113,7 +114,6 @@ export const navigateToPDPDesktopSocial = async ({page, productName, productColo
     // selecting swatch
     const productTileImg = productTile.locator("img");
     await productTileImg.waitFor({state: 'visible'})
-    const initialSrc = await productTileImg.getAttribute("src");
     await expect(productTile.getByText(RegExp(`From \\${productPrice}`, 'i'))).toBeVisible();
   
     await productTile.getByLabel(RegExp(productColor, 'i'), { exact: true }).hover();
@@ -293,23 +293,25 @@ export const socialLoginShopper = async ({page}) => {
     try {
         await page.goto(config.RETAIL_APP_HOME + "/login");
 
-        // Assume `page` is the original page where the Google login button is clicked
-        await Promise.all([
-            page.getByRole("button", { name: /Google/i }).click() // Click the button to trigger Google login
-        ]);
-        await expect(page.getByText(/Sign in with Google/i)).toBeVisible();
-        await page.waitForSelector('input[type="email"]', { timeout: 10000 });
+        await page.getByRole("button", { name: /Google/i }).click();
+        await expect(page.getByText(/Sign in with Google/i)).toBeVisible({ timeout: 10000 });
+        await page.waitForSelector('input[type="email"]');
 
-        // // Fill in the email input
-        // await page.fill('input[type="email"]', 'yunakim@salesforce.com');
-        // await page.click('#identifierNext');
+        // Fill in the email input
+        await page.fill('input[type="email"]', 'e2e.pwa.kit@gmail.com');
+        await page.click('#identifierNext');
 
-        // await page.waitForLoadState();
-    
-        // // redirected to Account Details page after logging in
-        // await expect(
-        //   page.getByRole("heading", { name: /Account Details/i })
-        // ).toBeVisible({ timeout: 15000 });
+        await page.waitForLoadState();
+
+        // Fill in the password input
+        await page.fill('input[type="password"]', 'hpv_pek-JZK_xkz0wzf');
+        await page.click('#passwordNext');
+
+        await page.waitForURL(config.RETAIL_APP_HOME, {timeout: 20000})
+        await expect(
+            page.getByRole("heading", { name: /Account Details/i })
+        ).toBeVisible()
+
         return true;
     } catch {
         return false;

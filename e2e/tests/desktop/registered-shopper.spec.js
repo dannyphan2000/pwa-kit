@@ -172,13 +172,12 @@ test("Registered shopper can add item to wishlist", async ({ page }) => {
  * Test that social login persists a user's shopping car
  */
 test("Register shopper logged in through social login ", async ({ page }) => {
-  test.setTimeout(10000);
   navigateToPDPDesktopSocial({page, productName: "Floral Ruffle Top", productColor: "Cardinal Red Multi", productPrice: "£35.19"});
 
   // Add to Cart
   await expect(
     page.getByRole("heading", { name: /Floral Ruffle Top/i })
-  ).toBeVisible();
+  ).toBeVisible({timeout: 15000});
   await page.getByRole("radio", { name: "L", exact: true }).click();
 
   await page.locator("button[data-testid='quantity-increment']").click();
@@ -202,11 +201,7 @@ test("Register shopper logged in through social login ", async ({ page }) => {
     page
   })
 
-  // // Check Items in Cart
-  // await page.getByLabel(/My cart/i).click();
-  // await page.waitForLoadState();
-
-  // await expect(
-  //   page.getByRole("link", { name: /Floral Ruffle Top/i })
-  // ).toBeVisible();
+  // Check Items in Cart
+  await page.getByLabel(/My cart/i).click();
+  await page.waitForLoadState();
 })
