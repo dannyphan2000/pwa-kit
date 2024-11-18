@@ -305,10 +305,13 @@ export const socialLoginShopper = async ({page}) => {
         // Fill in the password input
         await page.fill('input[type="password"]', 'hpv_pek-JZK_xkz0wzf');
         await page.click('#passwordNext');
+        await page.waitForLoadState();
 
-        await page.waitForURL(config.RETAIL_APP_HOME, {timeout: 20000})
-        await expect(page.getByRole("heading", { name: /Account Details/i })).toBeVisible()
+        await expect(page.getByRole("heading", { name: /Account Details/i })).toBeVisible({timeout: 20000})
         await expect(page.getByText(/e2e.pwa.kit@gmail.com/i)).toBeVisible()
+
+        // Password card should be hidden for social login user
+        await expect(page.getByRole("heading", { name: /Password/i })).toBeHidden()
 
         return true;
     } catch {
