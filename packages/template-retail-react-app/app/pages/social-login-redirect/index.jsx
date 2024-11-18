@@ -17,15 +17,7 @@ import {
 
 // Hooks
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
-import {
-    useAuthHelper,
-    AuthHelpers,
-    useCustomer,
-    useCustomerId,
-    useCustomerType,
-    useCustomerBaskets,
-    useShopperBasketsMutation
-} from '@salesforce/commerce-sdk-react'
+import {useAuthHelper, AuthHelpers, useShopperBasketsMutation} from '@salesforce/commerce-sdk-react'
 import {useSearchParams} from '@salesforce/retail-react-app/app/hooks'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
@@ -33,10 +25,8 @@ import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origi
 import {
     getSessionJSONItem,
     clearSessionJSONItem,
-    buildRedirectURI,
-    isServer
+    buildRedirectURI
 } from '@salesforce/retail-react-app/app/utils/utils'
-import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
 
 const SocialLoginRedirect = () => {
     const navigate = useNavigation()
@@ -58,6 +48,13 @@ const SocialLoginRedirect = () => {
                 code: searchParams.code,
                 redirectURI: redirectURI
             })
+        }
+    }, [])
+
+    // If customer is registered, push to secure account page
+    useEffect(() => {
+        if (customer?.isRegistered) {
+            clearSessionJSONItem('returnToPage')
             mergeBasket.mutate({
                 headers: {
                     // This is not required since the request has no body
@@ -68,13 +65,6 @@ const SocialLoginRedirect = () => {
                     createDestinationBasket: true
                 }
             })
-        }
-    }, [])
-
-    // If customer is registered, push to secure account page
-    useEffect(() => {
-        if (customer?.isRegistered) {
-            clearSessionJSONItem('returnToPage')
             if (locatedFrom) {
                 navigate(locatedFrom)
             } else {
