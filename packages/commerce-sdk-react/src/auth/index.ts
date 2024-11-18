@@ -1013,7 +1013,7 @@ class Auth {
     async loginIDPUser(parameters: LoginIDPUserParams) {
         const codeVerifier = this.get('code_verifier')
         const code = parameters.code
-        const usid = parameters.usid
+        const usid = this.get('usid')
         const redirectURI = parameters.redirectURI || this.redirectURI
 
         const token = await helpers.loginIDPUser(

@@ -204,4 +204,7 @@ test("Register shopper logged in through social login ", async ({ page }) => {
   // Check Items in Cart
   await page.getByLabel(/My cart/i).click();
   await page.waitForLoadState();
+  await expect(
+    page.getByRole("link", { name: /Floral Ruffle Top/i })
+  ).toBeVisible();
 })

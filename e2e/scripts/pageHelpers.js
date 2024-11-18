@@ -308,9 +308,8 @@ export const socialLoginShopper = async ({page}) => {
         await page.click('#passwordNext');
 
         await page.waitForURL(config.RETAIL_APP_HOME, {timeout: 20000})
-        await expect(
-            page.getByRole("heading", { name: /Account Details/i })
-        ).toBeVisible()
+        await expect(page.getByRole("heading", { name: /Account Details/i })).toBeVisible()
+        await expect(page.getByText(/e2e.pwa.kit@gmail.com/i)).toBeVisible()
 
         return true;
     } catch {

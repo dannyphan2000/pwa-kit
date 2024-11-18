@@ -17,7 +17,15 @@ import {
 
 // Hooks
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
-import {useAuthHelper, AuthHelpers} from '@salesforce/commerce-sdk-react'
+import {
+    useAuthHelper,
+    AuthHelpers,
+    useCustomer,
+    useCustomerId,
+    useCustomerType,
+    useCustomerBaskets,
+    useShopperBasketsMutation
+} from '@salesforce/commerce-sdk-react'
 import {useSearchParams} from '@salesforce/retail-react-app/app/hooks'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
@@ -25,8 +33,10 @@ import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origi
 import {
     getSessionJSONItem,
     clearSessionJSONItem,
-    buildRedirectURI
+    buildRedirectURI,
+    isServer
 } from '@salesforce/retail-react-app/app/utils/utils'
+import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
 
 const SocialLoginRedirect = () => {
     const navigate = useNavigation()
@@ -34,20 +44,29 @@ const SocialLoginRedirect = () => {
     const loginIDPUser = useAuthHelper(AuthHelpers.LoginIDPUser)
     const {data: customer} = useCurrentCustomer()
     // Build redirectURI from config values
-    // Build redirectURI from config values
     const appOrigin = useAppOrigin()
     const redirectPath = getConfig().app.login.social?.redirectURI || ''
     const redirectURI = buildRedirectURI(appOrigin, redirectPath)
 
     const locatedFrom = getSessionJSONItem('returnToPage')
+    const mergeBasket = useShopperBasketsMutation('mergeBasket')
 
     // Runs after successful 3rd-party IDP authorization, processing query parameters
     useEffect(() => {
         if (searchParams.code && searchParams.usid) {
             loginIDPUser.mutateAsync({
                 code: searchParams.code,
-                usid: searchParams.usid,
                 redirectURI: redirectURI
+            })
+            mergeBasket.mutate({
+                headers: {
+                    // This is not required since the request has no body
+                    // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
+                    'Content-Type': 'application/json'
+                },
+                parameters: {
+                    createDestinationBasket: true
+                }
             })
         }
     }, [])
