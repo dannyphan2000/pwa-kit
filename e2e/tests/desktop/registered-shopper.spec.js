@@ -171,7 +171,7 @@ test("Registered shopper can add item to wishlist", async ({ page }) => {
 /**
  * Test that social login persists a user's shopping car
  */
-test("Register shopper logged in through social login ", async ({ page }) => {
+test("Registered shopper logged in through social retains persisted cart", async ({ page }) => {
   navigateToPDPDesktopSocial({page, productName: "Floral Ruffle Top", productColor: "Cardinal Red Multi", productPrice: "£35.19"});
 
   // Add to Cart

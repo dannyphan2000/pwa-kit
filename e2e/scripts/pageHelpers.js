@@ -1,5 +1,4 @@
 const { expect } = require("@playwright/test");
-const { chromium } = require("playwright");
 const config = require("../config");
 const { getCreditCardExpiry } = require("../scripts/utils.js")
 
