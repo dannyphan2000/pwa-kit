@@ -106,6 +106,7 @@ const DrawerMenu = ({
     const onSignoutClick = async () => {
         setShowLoading(true)
         await logout.mutateAsync()
+        window.localStorage.removeItem('isSocialProfile')
         navigate('/login')
         setShowLoading(false)
     }

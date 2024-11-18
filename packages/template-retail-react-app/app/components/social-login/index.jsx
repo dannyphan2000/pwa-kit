@@ -80,6 +80,8 @@ const SocialLogin = ({idps}) => {
                                     onClick={async () => {
                                         // Save the path where the user logged in
                                         setSessionJSONItem('returnToPage', window.location.pathname)
+                                        // Set local storage item to indicate this is a external login
+                                        window.localStorage.setItem('isSocialProfile', true)
                                         await authorizeIDP.mutateAsync({
                                             hint: name,
                                             redirectURI: redirectURI

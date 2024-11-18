@@ -6,6 +6,7 @@
  */
 
 import React, {forwardRef, useEffect, useRef, useState} from 'react'
+import PropTypes from 'prop-types'
 import {FormattedMessage, useIntl} from 'react-intl'
 import {
     Alert,
@@ -60,7 +61,7 @@ const Skeleton = forwardRef(({children, height, width, ...rest}, ref) => {
 
 Skeleton.displayName = 'Skeleton'
 
-const ProfileCard = () => {
+const ProfileCard = ({isSocialProfile = false}) => {
     const {formatMessage} = useIntl()
     const headingRef = useRef(null)
     const {data: customer} = useCurrentCustomer()
@@ -141,6 +142,7 @@ const ProfileCard = () => {
                 </Skeleton>
             }
             editing={isEditing}
+            disableEdit={isSocialProfile}
             isLoading={form.formState.isSubmitting}
             onEdit={isRegistered ? () => setIsEditing(true) : undefined}
             layerStyle="cardBordered"
@@ -226,6 +228,10 @@ const ProfileCard = () => {
             </ToggleCardSummary>
         </ToggleCard>
     )
+}
+
+ProfileCard.propTypes = {
+    isSocialProfile: PropTypes.bool
 }
 
 const PasswordCard = () => {
@@ -343,7 +349,7 @@ const PasswordCard = () => {
     )
 }
 
-const AccountDetail = () => {
+const AccountDetail = ({isSocialProfile = false}) => {
     const headingRef = useRef()
     useEffect(() => {
         // Focus the 'Account Details' header when the component mounts for accessibility
@@ -360,11 +366,15 @@ const AccountDetail = () => {
             </Heading>
 
             <Stack spacing={4}>
-                <ProfileCard />
-                <PasswordCard />
+                <ProfileCard isSocialProfile={isSocialProfile} />
+                {!isSocialProfile && <PasswordCard />}
             </Stack>
         </Stack>
     )
+}
+
+AccountDetail.propTypes = {
+    isSocialProfile: PropTypes.bool
 }
 
 AccountDetail.getTemplateName = () => 'account-detail'
