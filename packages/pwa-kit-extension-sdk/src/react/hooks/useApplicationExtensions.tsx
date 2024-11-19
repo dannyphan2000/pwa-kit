@@ -18,7 +18,7 @@ import {ApplicationExtensionConfig as Config} from '../../types'
 /**
  * Custom React hook to get all the Application Extensions currently used
  */
-const useApplicationExtensions = (): ApplicationExtension<Config>[] => {
+export const useApplicationExtensions = (): ApplicationExtension<Config>[] => {
     const context = useContext(ApplicationExtensionsContext)
 
     if (context === undefined) {
@@ -30,4 +30,7 @@ const useApplicationExtensions = (): ApplicationExtension<Config>[] => {
     return context
 }
 
-export default useApplicationExtensions
+export const useApplicationExtension = (id: string): ApplicationExtension<Config> | undefined => {
+    const extensions = useApplicationExtensions()
+    return extensions.find(extension => (extension.constructor as typeof ApplicationExtension).id === id)
+}

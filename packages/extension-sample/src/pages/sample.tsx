@@ -6,10 +6,10 @@
  */
 import React, {Fragment} from 'react'
 import {getStaticAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
-import Extension from '../setup-app'
+import {useExtensionConfig} from '../hooks/useExtensionConfig'
 
 const Sample = () => {
-    console.log(Extension.getId())
+    const config = useExtensionConfig()
     const logoUrl = getStaticAssetUrl('salesforce-logo.svg', {
         appExtensionPackageName: '@salesforce/extension-sample'
     })
