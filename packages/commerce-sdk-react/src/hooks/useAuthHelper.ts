@@ -28,7 +28,8 @@ export const AuthHelpers = {
     LoginGuestUser: 'loginGuestUser',
     LoginRegisteredUserB2C: 'loginRegisteredUserB2C',
     Logout: 'logout',
-    Register: 'register'
+    Register: 'register',
+    UpdateCustomerPassword: 'updateCustomerPassword'
 } as const
 /**
  * @group Helpers
@@ -62,6 +63,7 @@ type CacheUpdateMatrix = {
  * - loginGuestUser
  * - logout
  * - register
+ * - updateCustomerPassword
  *
  * @group Helpers
  * @category Shopper Authentication
@@ -106,5 +108,6 @@ const cacheUpdateMatrix: CacheUpdateMatrix = {
             remove: [{queryKey: ['/commerce-sdk-react']}]
         }
     },
-    register: noop
+    register: noop,
+    updateCustomerPassword: noop
 }
