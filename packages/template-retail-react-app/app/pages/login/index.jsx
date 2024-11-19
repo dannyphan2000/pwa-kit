@@ -70,6 +70,34 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
     const {authorizePasswordlessLogin, loginWithPasswordlessAccessToken} = usePasswordlessLogin()
 
+    const handleMergeBasket = () => {
+        const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
+        // we only want to merge basket when the user is logged in as a recurring user
+        // only recurring users trigger the login mutation, new user triggers register mutation
+        // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
+        // if you change logic here, also change it in login page
+        const shouldMergeBasket = hasBasketItem && prevAuthType === 'guest'
+        if (shouldMergeBasket) {
+            try {
+                mergeBasket.mutate({
+                    headers: {
+                        // This is not required since the request has no body
+                        // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
+                        'Content-Type': 'application/json'
+                    },
+                    parameters: {
+                        createDestinationBasket: true
+                    }
+                })
+            } catch (e) {
+                form.setError('global', {
+                    type: 'manual',
+                    message: formatMessage(API_ERROR_MESSAGE)
+                })
+            }
+        }
+    }
+
     const submitForm = async (data) => {
         form.clearErrors()
 
@@ -78,30 +106,13 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                 if (loginType === LOGIN_TYPES.PASSWORD) {
                     try {
                         await login.mutateAsync({username: data.email, password: data.password})
-                        const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
-                        // we only want to merge basket when the user is logged in as a recurring user
-                        // only recurring users trigger the login mutation, new user triggers register mutation
-                        // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
-                        // if you change logic here, also change it in login page
-                        const shouldMergeBasket = hasBasketItem && prevAuthType === 'guest'
-                        if (shouldMergeBasket) {
-                            mergeBasket.mutate({
-                                headers: {
-                                    // This is not required since the request has no body
-                                    // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
-                                    'Content-Type': 'application/json'
-                                },
-                                parameters: {
-                                    createDestinationBasket: true
-                                }
-                            })
-                        }
                     } catch (error) {
                         const message = /Unauthorized/i.test(error.message)
                             ? formatMessage(LOGIN_ERROR_MESSAGE)
                             : formatMessage(API_ERROR_MESSAGE)
                         form.setError('global', {type: 'manual', message})
                     }
+                    handleMergeBasket()
                 } else if (loginType === LOGIN_TYPES.PASSWORDLESS) {
                     setCurrentView(EMAIL_VIEW)
                     setPasswordlessLoginEmail(data.email)
@@ -136,12 +147,12 @@ const Login = ({initialView = LOGIN_VIEW}) => {
             try {
                 await loginWithPasswordlessAccessToken(token)
             } catch (e) {
-                console.warn(`JINSU WARN ${e.message}`)
                 const message = /Unauthorized/i.test(e.message)
                     ? formatMessage(INVALID_TOKEN_ERROR_MESSAGE)
                     : formatMessage(API_ERROR_MESSAGE)
                 form.setError('global', {type: 'manual', message})
             }
+            handleMergeBasket()
         }
     }, [path, location])
 
