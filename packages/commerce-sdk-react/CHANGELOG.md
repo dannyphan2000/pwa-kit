@@ -1,3 +1,6 @@
+## v3.2.0-nightly-20241119080214 (Nov 19, 2024)
+## v3.2.0-dev (Nov 19, 2024)
+## v3.9.0-nightly-20241119080214 (Nov 19, 2024)
 ## v3.2.0-dev (Oct 29, 2024)
 - Clear auth state if session has been invalidated by a password change [#2092](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2092)
 
