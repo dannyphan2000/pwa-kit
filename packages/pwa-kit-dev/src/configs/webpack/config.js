@@ -142,31 +142,22 @@ const findDepInStack = (pkg) => {
     return candidate
 }
 
-
-// class SharedStatePlugin {
-//     apply(compiler) {
-//         compiler.hooks.compilation.tap('SharedStatePlugin', (compilation) => {
-//             // Initialize shared state
-//             const sharedState = {
-//                 mySharedData: {},
-//             };
-
-//             // Attach shared state to each module
-//             compilation.hooks.normalModuleLoader.tap('SharedStatePlugin', (loaderContext) => {
-//                 loaderContext.sharedState = sharedState;
-//             });
-//         });
-//     }
-// }
-class EarlyHookPlugin {
+// TODO: Move this into the extensions sdk project
+// NOTE: This is a small plugin that will inject the application extension config into
+// the current compilation. It will later be used by various plugins and loaders. E.g. the inline
+// loader for overrides.
+class ApplicationExtensionConfigPlugin {
     apply(compiler) {
-      compiler.hooks.initialize.tap('EarlyHookPlugin', () => {
-        console.log('Webpack environment setup is happening!');
-        // Modify compiler settings or environment variables here
-        compiler.customData = getConfiguredExtensions(getConfig())
-      });
+        compiler.hooks.initialize.tap('ApplicationExtensionConfigPlugin', () => {
+            // TODO: We are calling this alot, lets do it one time at the top of this file.
+            const config = getConfiguredExtensions(getConfig())
+
+            compiler.custom = {
+                extensions: config
+            }
+        })
     }
-  }
+}
   
 
 const baseConfig = (target) => {
@@ -249,7 +240,7 @@ const baseConfig = (target) => {
                     }
                 },
                 plugins: [
-                    new EarlyHookPlugin(),
+                    new ApplicationExtensionConfigPlugin(),
                     new webpack.DefinePlugin({
                         DEBUG,
                         NODE_ENV: `'${process.env.NODE_ENV}'`,
