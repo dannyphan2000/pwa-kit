@@ -4873,6 +4873,20 @@
       "value": "]"
     }
   ],
+  "login_page.error.invalid_token": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Īƞṽȧȧŀīḓ ŧǿǿķḗḗƞ, ƥŀḗḗȧȧşḗḗ ŧřẏ ȧȧɠȧȧīƞ."
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
   "offline_banner.description.browsing_offline_mode": [
     {
       "type": 0,

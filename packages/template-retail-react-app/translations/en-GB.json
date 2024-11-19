@@ -978,6 +978,9 @@
   "login_page.error.incorrect_username_or_password": {
     "defaultMessage": "Incorrect username or password, please try again."
   },
+  "login_page.error.invalid_token": {
+    "defaultMessage": "Invalid token, please try again."
+  },
   "offline_banner.description.browsing_offline_mode": {
     "defaultMessage": "You're currently browsing in offline mode"
   },

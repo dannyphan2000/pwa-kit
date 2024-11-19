@@ -2281,6 +2281,12 @@
       "value": "Incorrect username or password, please try again."
     }
   ],
+  "login_page.error.invalid_token": [
+    {
+      "type": 0,
+      "value": "Invalid token, please try again."
+    }
+  ],
   "offline_banner.description.browsing_offline_mode": [
     {
       "type": 0,

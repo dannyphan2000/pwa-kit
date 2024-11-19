@@ -35,6 +35,10 @@ const LOGIN_ERROR_MESSAGE = defineMessage({
     defaultMessage: 'Incorrect username or password, please try again.',
     id: 'login_page.error.incorrect_username_or_password'
 })
+const INVALID_TOKEN_ERROR_MESSAGE = defineMessage({
+    defaultMessage: 'Invalid token, please try again.',
+    id: 'login_page.error.invalid_token'
+})
 
 const LOGIN_VIEW = 'login'
 const EMAIL_VIEW = 'email'
@@ -113,7 +117,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                     // Handle social login logic here
                 }
             },
-            email: async () => {
+            email: () => {
                 try {
                     authorizePasswordlessLogin(passwordlessLoginEmail)
                 } catch (e) {
@@ -126,17 +130,17 @@ const Login = ({initialView = LOGIN_VIEW}) => {
         }[currentView](data)
     }
 
-    useEffect(() => {
+    useEffect(async () => {
         if (path === '/passwordless-login-landing') {
             const token = queryParams.get('token')
             try {
-                loginWithPasswordlessAccessToken(token)
-                // TODO Error handling (below catch is not working)
+                await loginWithPasswordlessAccessToken(token)
             } catch (e) {
-                form.setError('global', {
-                    type: 'manual',
-                    message: formatMessage(API_ERROR_MESSAGE)
-                })
+                console.warn(`JINSU WARN ${e.message}`)
+                const message = /Unauthorized/i.test(e.message)
+                    ? formatMessage(INVALID_TOKEN_ERROR_MESSAGE)
+                    : formatMessage(API_ERROR_MESSAGE)
+                form.setError('global', {type: 'manual', message})
             }
         }
     }, [path, location])

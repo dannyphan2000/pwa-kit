@@ -34,7 +34,6 @@ export const usePasswordlessLogin = () => {
         await authorizePasswordlessCustomer.mutateAsync({body})
     }
 
-
     const login = useAuthHelper(AuthHelpers.LoginPasswordlessUser)
 
     const loginWithPasswordlessAccessToken = async (token) => {

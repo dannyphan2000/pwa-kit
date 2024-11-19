@@ -6,10 +6,7 @@
  */
 import React from 'react'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
-import {
-    useAuthHelper,
-    useShopperLoginMutation,
-} from '@salesforce/commerce-sdk-react'
+import {useAuthHelper, useShopperLoginMutation} from '@salesforce/commerce-sdk-react'
 import mockConfig from '@salesforce/retail-react-app/config/mocks/default'
 import {renderWithProviders} from '@salesforce/retail-react-app/app/utils/test-utils'
 import usePasswordlessLogin from '@salesforce/retail-react-app/app/hooks/use-passwordless-login'
@@ -24,8 +21,14 @@ const MockComponent = () => {
 
     return (
         <div>
-            <button data-testid="authorize-passwordless-login" onClick={() => authorizePasswordlessLogin(mockEmail)} />
-            <button data-testid="login-with-passwordless-access-token" onClick={() => loginWithPasswordlessAccessToken(mockToken)} />
+            <button
+                data-testid="authorize-passwordless-login"
+                onClick={() => authorizePasswordlessLogin(mockEmail)}
+            />
+            <button
+                data-testid="login-with-passwordless-access-token"
+                onClick={() => loginWithPasswordlessAccessToken(mockToken)}
+            />
         </div>
     )
 }
@@ -35,15 +38,19 @@ jest.mock('@salesforce/commerce-sdk-react', () => {
     return {
         ...originalModule,
         useAuthHelper: jest.fn(),
-        useShopperLoginMutation: jest.fn(),
+        useShopperLoginMutation: jest.fn()
     }
 })
 
 const authorizePasswordlessCustomer = {mutateAsync: jest.fn()}
-useShopperLoginMutation.mockImplementation(() => {return authorizePasswordlessCustomer})
+useShopperLoginMutation.mockImplementation(() => {
+    return authorizePasswordlessCustomer
+})
 
 const login = {mutateAsync: jest.fn()}
-useAuthHelper.mockImplementation(() => {return login})
+useAuthHelper.mockImplementation(() => {
+    return login
+})
 
 afterEach(() => {
     jest.clearAllMocks()
@@ -57,16 +64,14 @@ describe('The usePasswordlessLogin', () => {
         await fireEvent.click(trigger)
         await waitFor(() => {
             expect(authorizePasswordlessCustomer.mutateAsync).toHaveBeenCalled()
-            expect(authorizePasswordlessCustomer.mutateAsync).toHaveBeenCalledWith(
-                {
-                    body: {
-                        user_id: mockEmail,
-                        mode: 'callback',
-                        channel_id: mockSiteId,
-                        callback_uri: mockCallbackUri
-                    }
+            expect(authorizePasswordlessCustomer.mutateAsync).toHaveBeenCalledWith({
+                body: {
+                    user_id: mockEmail,
+                    mode: 'callback',
+                    channel_id: mockSiteId,
+                    callback_uri: mockCallbackUri
                 }
-            )
+            })
         })
     })
 
@@ -77,9 +82,7 @@ describe('The usePasswordlessLogin', () => {
         await fireEvent.click(trigger)
         await waitFor(() => {
             expect(login.mutateAsync).toHaveBeenCalled()
-            expect(login.mutateAsync).toHaveBeenCalledWith(
-                {pwdlessLoginToken: mockToken}
-            )
+            expect(login.mutateAsync).toHaveBeenCalledWith({pwdlessLoginToken: mockToken})
         })
     })
 })
