@@ -64,7 +64,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const [currentView, setCurrentView] = useState(initialView)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
-    const {authorizePasswordlessLogin, fetchPasswordlessAccessToken} = usePasswordlessLogin()
+    const {authorizePasswordlessLogin, loginWithPasswordlessAccessToken} = usePasswordlessLogin()
 
     const submitForm = async (data) => {
         form.clearErrors()
@@ -130,7 +130,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
         if (path === '/passwordless-login-landing') {
             const token = queryParams.get('token')
             try {
-                fetchPasswordlessAccessToken(token)
+                loginWithPasswordlessAccessToken(token)
                 // TODO Error handling (below catch is not working)
             } catch (e) {
                 form.setError('global', {

@@ -37,11 +37,11 @@ export const usePasswordlessLogin = () => {
 
     const login = useAuthHelper(AuthHelpers.LoginPasswordlessUser)
 
-    const fetchPasswordlessAccessToken = async (token) => {
+    const loginWithPasswordlessAccessToken = async (token) => {
         await login.mutateAsync({pwdlessLoginToken: token})
     }
 
-    return {authorizePasswordlessLogin, fetchPasswordlessAccessToken}
+    return {authorizePasswordlessLogin, loginWithPasswordlessAccessToken}
 }
 
 export default usePasswordlessLogin
