@@ -42,7 +42,6 @@ export const ToggleCard = ({
             titleRef.current.focus()
         }
     }, [editing])
-    console.log('disable edit', disableEdit)
 
     return (
         <ToggleCardContext.Provider value={{editing, disabled}}>

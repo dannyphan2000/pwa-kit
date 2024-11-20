@@ -130,7 +130,6 @@ const ProfileCard = ({isEcomAccount = false}) => {
             form.setError('global', {type: 'manual', message: error.message})
         }
     }
-    console.log('is ecom account', isEcomAccount)
 
     return (
         <ToggleCard
