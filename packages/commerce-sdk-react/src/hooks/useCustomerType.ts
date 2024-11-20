@@ -15,6 +15,7 @@ type useCustomerType = {
     customerType: CustomerType
     isGuest: boolean
     isRegistered: boolean
+    uido: string | null
 }
 
 /**
@@ -50,10 +51,18 @@ const useCustomerType = (): useCustomerType => {
         customerType = null
     }
 
+    let uido: string | null = onClient
+        ? // This conditional is a constant value based on the environment, so the same path will
+          // always be followed., and the "rule of hooks" is not violated.
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          useLocalStorage(`uido_${config.siteId}`)
+        : auth.get('uido')
+
     return {
         customerType,
         isGuest,
-        isRegistered
+        isRegistered,
+        uido
     }
 }
 

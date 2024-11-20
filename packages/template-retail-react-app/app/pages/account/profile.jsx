@@ -32,7 +32,8 @@ import FormActionButtons from '@salesforce/retail-react-app/app/components/forms
 import {
     useShopperCustomersMutation,
     useAuthHelper,
-    AuthHelpers
+    AuthHelpers,
+    useCustomerType
 } from '@salesforce/commerce-sdk-react'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 
@@ -61,7 +62,7 @@ const Skeleton = forwardRef(({children, height, width, ...rest}, ref) => {
 
 Skeleton.displayName = 'Skeleton'
 
-const ProfileCard = ({isSocialProfile = false}) => {
+const ProfileCard = ({isEcomAccount = false}) => {
     const {formatMessage} = useIntl()
     const headingRef = useRef(null)
     const {data: customer} = useCurrentCustomer()
@@ -129,6 +130,7 @@ const ProfileCard = ({isSocialProfile = false}) => {
             form.setError('global', {type: 'manual', message: error.message})
         }
     }
+    console.log('is ecom account', isEcomAccount)
 
     return (
         <ToggleCard
@@ -142,7 +144,7 @@ const ProfileCard = ({isSocialProfile = false}) => {
                 </Skeleton>
             }
             editing={isEditing}
-            disableEdit={isSocialProfile}
+            disableEdit={!isEcomAccount}
             isLoading={form.formState.isSubmitting}
             onEdit={isRegistered ? () => setIsEditing(true) : undefined}
             layerStyle="cardBordered"
@@ -231,7 +233,7 @@ const ProfileCard = ({isSocialProfile = false}) => {
 }
 
 ProfileCard.propTypes = {
-    isSocialProfile: PropTypes.bool
+    isEcomAccount: PropTypes.bool
 }
 
 const PasswordCard = () => {
@@ -349,12 +351,15 @@ const PasswordCard = () => {
     )
 }
 
-const AccountDetail = ({isSocialProfile = false}) => {
+const AccountDetail = () => {
     const headingRef = useRef()
     useEffect(() => {
         // Focus the 'Account Details' header when the component mounts for accessibility
         headingRef?.current?.focus()
     }, [])
+
+    const {uido} = useCustomerType()
+    const isEcomAccount = uido === 'ecom'
 
     return (
         <Stack data-testid="account-detail-page" spacing={6}>
@@ -366,15 +371,11 @@ const AccountDetail = ({isSocialProfile = false}) => {
             </Heading>
 
             <Stack spacing={4}>
-                <ProfileCard isSocialProfile={isSocialProfile} />
-                {!isSocialProfile && <PasswordCard />}
+                <ProfileCard isEcomAccount={isEcomAccount} />
+                {isEcomAccount && <PasswordCard />}
             </Stack>
         </Stack>
     )
-}
-
-AccountDetail.propTypes = {
-    isSocialProfile: PropTypes.bool
 }
 
 AccountDetail.getTemplateName = () => 'account-detail'

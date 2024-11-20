@@ -210,7 +210,6 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
                     onClose={() => setSignOutConfirmDialogIsOpen(false)}
                     onConfirm={async () => {
                         await logout.mutateAsync()
-                        window.localStorage.removeItem('isSocialProfile')
                         navigate('/login')
                         setSignOutConfirmDialogIsOpen(false)
                     }}

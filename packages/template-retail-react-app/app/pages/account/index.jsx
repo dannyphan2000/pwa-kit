@@ -93,8 +93,6 @@ const Account = () => {
     const [mobileNavIndex, setMobileNavIndex] = useState(-1)
     const [showLoading, setShowLoading] = useState(false)
 
-    const isSocialProfile = window.localStorage.getItem('isSocialProfile') || false
-
     const einstein = useEinstein()
 
     const {buildUrl} = useMultiSite()
@@ -106,7 +104,6 @@ const Account = () => {
     const onSignoutClick = async () => {
         setShowLoading(true)
         await logout.mutateAsync()
-        window.localStorage.removeItem('isSocialProfile')
         navigate('/login')
     }
 
@@ -227,7 +224,7 @@ const Account = () => {
 
                 <Switch>
                     <Route exact path={path}>
-                        <AccountDetail isSocialProfile={isSocialProfile} />
+                        <AccountDetail />
                     </Route>
                     <Route exact path={`${path}/wishlist`}>
                         <AccountWishlist />

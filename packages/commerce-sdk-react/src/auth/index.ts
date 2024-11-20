@@ -92,6 +92,7 @@ type AuthDataKeys =
     | typeof DNT_COOKIE_NAME
     | typeof DWSID_COOKIE_NAME
     | 'code_verifier'
+    | 'uido'
 
 type AuthDataMap = Record<
     AuthDataKeys,
@@ -191,6 +192,10 @@ const DATA_MAP: AuthDataMap = {
     code_verifier: {
         storageType: 'local',
         key: 'code_verifier'
+    },
+    uido: {
+        storageType: 'local',
+        key: 'uido'
     }
 }
 
@@ -574,11 +579,13 @@ class Auth {
             responseValue,
             defaultValue
         )
+        const {uido} = this.parseSlasJWT(res.access_token)
         const expiresDate = this.convertSecondsToDate(refreshTokenTTLValue)
         this.set('refresh_token_expires_in', refreshTokenTTLValue.toString())
         this.set(refreshTokenKey, res.refresh_token, {
             expires: expiresDate
         })
+        this.set('uido', uido)
     }
 
     async refreshAccessToken() {
@@ -1013,7 +1020,7 @@ class Auth {
     async loginIDPUser(parameters: LoginIDPUserParams) {
         const codeVerifier = this.get('code_verifier')
         const code = parameters.code
-        const usid = this.get('usid')
+        const usid = parameters.usid || this.get('usid')
         const redirectURI = parameters.redirectURI || this.redirectURI
 
         const token = await helpers.loginIDPUser(
@@ -1096,6 +1103,7 @@ class Auth {
         // ISB format
         // 'uido:ecom::upn:Guest||xxxEmailxxx::uidn:FirstName LastName::gcid:xxxGuestCustomerIdxxx::rcid:xxxRegisteredCustomerIdxxx::chid:xxxSiteIdxxx',
         const isbParts = isb.split('::')
+        const uido = isbParts[0].split('uido:')[1]
         const isGuest = isbParts[1] === 'upn:Guest'
         const customerId = isGuest
             ? isbParts[3].replace('gcid:', '')
@@ -1116,7 +1124,8 @@ class Auth {
             dnt,
             loginId,
             isAgent,
-            agentId
+            agentId,
+            uido
         }
     }
 }
