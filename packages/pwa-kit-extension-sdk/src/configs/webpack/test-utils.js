@@ -38,6 +38,7 @@ export const runWebpackCompiler = (fixture, options = {}) => {
         alias = {},
         buildLoaders = () => [],
         buildPlugins = () => [],
+        buildResolvePlugins = () => [],
         files = {},
         mode = 'none'
     } = options
@@ -48,6 +49,7 @@ export const runWebpackCompiler = (fixture, options = {}) => {
 
     // Get loaders and plugins.
     const plugins = buildPlugins({fileSystem})
+    const resolvePlugins = buildResolvePlugins({fileSystem})
     const loaders = buildLoaders({fileSystem})
 
     const compiler = webpack({
@@ -60,9 +62,10 @@ export const runWebpackCompiler = (fixture, options = {}) => {
         resolve: {
             alias,
             extensions: SUPPORTED_FILE_EXTENSIONS,
-            plugins,
+            plugins: resolvePlugins,
             symlinks: true
         },
+        plugins,
         module: {
             rules: loaders
         }

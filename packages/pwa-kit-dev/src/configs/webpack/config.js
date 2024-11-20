@@ -206,13 +206,6 @@ const baseConfig = (target) => {
                     path: buildDir
                 },
                 resolve: {
-                    plugins: [
-                        // new OverridesResolverPlugin({
-                        //     projectDir: process.cwd(),
-                        //     extensions: getConfiguredExtensions(getConfig()),
-                        //     fileExtensions: SUPPORTED_FILE_EXTENSIONS
-                        // })
-                    ],
                     extensions: SUPPORTED_FILE_EXTENSIONS,
                     alias: {
                         ...Object.assign(
@@ -236,7 +229,7 @@ const baseConfig = (target) => {
                 },
                 resolveLoader: {
                     alias: {
-                        override: '/Users/bchypak/Projects/pwa-kit/packages/pwa-kit-extension-sdk/dist/configs/webpack/overrides-loader.js',
+                        overridable: '/Users/bchypak/Projects/pwa-kit/packages/pwa-kit-extension-sdk/dist/configs/webpack/overrides-loader.js',
                     }
                 },
                 plugins: [
