@@ -60,7 +60,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
 
     const customerId = useCustomerId()
     const prevAuthType = usePrevious(customerType)
-    const {data: baskets} = useCustomerBaskets(
+    const {data: baskets, isSuccess: isSuccessCustomerBaskets} = useCustomerBaskets(
         {parameters: {customerId}},
         {enabled: !!customerId && !isServer, keepPreviousData: true}
     )
@@ -141,11 +141,11 @@ const Login = ({initialView = LOGIN_VIEW}) => {
         }[currentView](data)
     }
 
-    useEffect(async () => {
-        if (path === '/passwordless-login-landing') {
+    useEffect(() => {
+        if (path === '/passwordless-login-landing' && isSuccessCustomerBaskets && prevAuthType) {
             const token = queryParams.get('token')
             try {
-                await loginWithPasswordlessAccessToken(token)
+                loginWithPasswordlessAccessToken(token)
             } catch (e) {
                 const message = /Unauthorized/i.test(e.message)
                     ? formatMessage(INVALID_TOKEN_ERROR_MESSAGE)
@@ -154,7 +154,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
             }
             handleMergeBasket()
         }
-    }, [path, location])
+    }, [path, isSuccessCustomerBaskets, prevAuthType])
 
     // If customer is registered push to account page
     useEffect(() => {
