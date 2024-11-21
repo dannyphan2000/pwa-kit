@@ -11,21 +11,14 @@ import resolve from 'resolve'
 // Local Imports
 import {buildCandidatePaths, getPackageName} from '../../shared/utils'
 
+// Types
+import type {ExtendedCompiler} from './types'
+
 // TODO: Move to constants file.
 // Constants
 const SRC = 'src'
 const OVERRIDES = 'overrides'
 const APP = 'app'
-
-/**
- * Define the ExtendedCompiler type by picking and adding properties
- * from the Webpack LoaderContext.
- */
-type ExtendedCompiler = Pick<LoaderContext<any>, '_compiler'> & {
-    custom?: {
-        extensions: any[]
-    }
-}
 
 /**
  * Webpack loader to override the resolution of a module based on the PWA-Kit applications

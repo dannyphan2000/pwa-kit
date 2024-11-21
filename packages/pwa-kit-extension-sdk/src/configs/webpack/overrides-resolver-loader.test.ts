@@ -72,7 +72,7 @@ describe('Overrides Resolver Loader', () => {
                     [`${path.resolve(__dirname, './overrides-resolver-loader.ts')}`]: ''
                 }
             },
-            expects: (output) => {
+            expects: (output: any) => {
                 expect(output.modules[1].source).toBe('// Base Project - Sample Page')
             }
         },
@@ -111,7 +111,7 @@ describe('Overrides Resolver Loader', () => {
                     [`${path.resolve(__dirname, './overrides-resolver-loader.ts')}`]: ''
                 }
             },
-            expects: (output) => {
+            expects: (output: any) => {
                 expect(output.modules[1].source).toBe('// @salesforce/extension-other')
             }
         },
@@ -150,7 +150,7 @@ describe('Overrides Resolver Loader', () => {
                     [`${path.resolve(__dirname, './overrides-resolver-loader.ts')}`]: ''
                 }
             },
-            expects: (output) => {
+            expects: (output: any) => {
                 expect(output.modules[1].source).toBe('// @salesforce/extension-that')
             }
         },
@@ -265,7 +265,7 @@ describe('Overrides Resolver Loader', () => {
                     })
 
                     // Here we are looking at the first module imported via the dollar syntax and testing that it's right.
-                    output = stats.toJson({source: true})
+                    output = stats?.toJson({source: true})
                 } catch (e) {
                     console.log(e)
                     error = e

@@ -4,12 +4,30 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import webpack from 'webpack'
-import {createFsFromVolume, Volume} from 'memfs'
+import webpack, {
+    Compiler,
+    Configuration,
+    Stats,
+    RuleSetRule,
+    InputFileSystem,
+    OutputFileSystem,
+    WebpackPluginInstance,
+    ResolvePluginInstance
+} from 'webpack'
+import {IFs, createFsFromVolume, Volume} from 'memfs'
 
 // TODO: This should be coming from a shared location (config or constants) but we can't do that just yet
 // as the config is immediately invoked so it causes errors in this file.
 export const SUPPORTED_FILE_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx', '.json']
+
+interface WebpackOptions {
+    alias?: Record<string, string>
+    buildLoaders?: (context: {fileSystem: IFs}) => RuleSetRule[]
+    buildPlugins?: (context: {fileSystem: IFs}) => WebpackPluginInstance[]
+    buildResolvePlugins?: (context: {fileSystem: IFs}) => ResolvePluginInstance[]
+    files?: Record<string, string>
+    mode?: Configuration['mode']
+}
 
 /**
  * Runs the Webpack compiler with a virtual file system.
@@ -33,7 +51,10 @@ export const SUPPORTED_FILE_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx', '.json']
  *   .then((stats) => console.log('Compilation successful'))
  *   .catch((errors) => console.error('Compilation failed', errors));
  */
-export const runWebpackCompiler = (fixture, options = {}) => {
+export const runWebpackCompiler = (
+    fixture: string,
+    options: WebpackOptions = {}
+): Promise<Stats> => {
     const {
         alias = {},
         buildLoaders = () => [],
@@ -45,14 +66,14 @@ export const runWebpackCompiler = (fixture, options = {}) => {
 
     // Setup the virtual filesystem with the provided files.
     const volume = Volume.fromJSON(files)
-    const fileSystem = createFsFromVolume(volume)
+    const fileSystem: IFs = createFsFromVolume(volume)
 
     // Get loaders and plugins.
     const plugins = buildPlugins({fileSystem})
     const resolvePlugins = buildResolvePlugins({fileSystem})
     const loaders = buildLoaders({fileSystem})
 
-    const compiler = webpack({
+    const compiler: Compiler = webpack({
         entry: `${fixture}`,
         mode,
         output: {
@@ -72,15 +93,15 @@ export const runWebpackCompiler = (fixture, options = {}) => {
     })
 
     // Tell Webpack to use the previously created virtual fs.
-    compiler.inputFileSystem = fileSystem
-    compiler.outputFileSystem = fileSystem
+    compiler.inputFileSystem = fileSystem as unknown as InputFileSystem
+    compiler.outputFileSystem = fileSystem as unknown as OutputFileSystem
 
     return new Promise((resolve, reject) => {
         compiler.run((err, stats) => {
             if (err) reject(err)
-            if (stats.hasErrors()) reject(stats.toJson().errors)
+            if (stats?.hasErrors()) reject(stats?.toJson().errors)
 
-            resolve(stats)
+            resolve(stats as Stats)
         })
     })
 }

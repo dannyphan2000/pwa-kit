@@ -25,7 +25,6 @@ class ApplicationExtensionConfigPlugin {
 
     apply(compiler: any) {
         compiler.hooks.initialize.tap('ApplicationExtensionConfigPlugin', () => {
-            console.log('ApplicationExtensionConfigPlugin!!!')
             compiler.custom = {
                 extensions: this.options.extensions
             }

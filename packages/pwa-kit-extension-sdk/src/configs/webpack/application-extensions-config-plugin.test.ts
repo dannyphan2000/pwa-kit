@@ -5,10 +5,14 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import {Stats} from 'webpack'
 import {runWebpackCompiler} from './test-utils'
 
 // Local Imports
 import ApplicationExtensionConfigPlugin from './application-extensions-config-plugin'
+
+// Types
+import type {ExtendedCompiler} from './types'
 
 describe('Overrides Resolver Loader', () => {
     const testCases = [
@@ -31,7 +35,7 @@ describe('Overrides Resolver Loader', () => {
                     '/app/overrides/pages/sample-page.jsx': '// Base Project - Sample Page'
                 }
             },
-            expects: (output) => {
+            expects: (output: any) => {
                 expect(output).toStrictEqual({
                     extensions: [
                         ['@salesforce/extension-this', {enabled: true}],
@@ -52,14 +56,14 @@ describe('Overrides Resolver Loader', () => {
                 let output, error
 
                 try {
-                    const stats = await runWebpackCompiler(entryPoint, {
+                    const stats: Stats = await runWebpackCompiler(entryPoint, {
                         files,
                         buildPlugins: () => plugins
                     })
 
                     // Here we are looking at the first module imported via the dollar syntax and testing that it's right.
-                    output = stats.compilation.compiler.custom
-                    // console.log('output: ', output)
+                    const compiler: ExtendedCompiler = stats.compilation.compiler
+                    output = compiler.custom
                 } catch (e) {
                     error = e
                 }

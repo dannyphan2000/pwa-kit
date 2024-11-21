@@ -21,8 +21,7 @@ import SpeedMeasurePlugin from 'speed-measure-webpack-plugin'
 import WebpackNotifierPlugin from 'webpack-notifier'
 
 // PWA-Kit Plugins
-// import {OverridesResolverPlugin} from '@salesforce/pwa-kit-extension-sdk/configs/webpack'
-// import OverridesLoader from '@salesforce/pwa-kit-extension-sdk/configs/webpack/overrides-loader'
+import ApplicationExtensionConfigPlugin from '@salesforce/pwa-kit-extension-sdk/configs/webpack/application-extensions-config-plugin'
 
 // Local Plugins
 import {sdkReplacementPlugin} from './plugins'
@@ -140,31 +139,13 @@ const findDepInStack = (pkg) => {
         }
     }
     return candidate
-}
-
-// TODO: Move this into the extensions sdk project
-// NOTE: This is a small plugin that will inject the application extension config into
-// the current compilation. It will later be used by various plugins and loaders. E.g. the inline
-// loader for overrides.
-class ApplicationExtensionConfigPlugin {
-    apply(compiler) {
-        compiler.hooks.initialize.tap('ApplicationExtensionConfigPlugin', () => {
-            // TODO: We are calling this alot, lets do it one time at the top of this file.
-            const config = getConfiguredExtensions(getConfig())
-
-            compiler.custom = {
-                extensions: config
-            }
-        })
-    }
-}
-  
+} 
 
 const baseConfig = (target) => {
     if (!['web', 'node'].includes(target)) {
         throw Error(`The value "${target}" is not a supported webpack target`)
     }
-
+    
     class Builder {
         constructor() {
             this.config = {
@@ -229,11 +210,13 @@ const baseConfig = (target) => {
                 },
                 resolveLoader: {
                     alias: {
-                        overridable: '/Users/bchypak/Projects/pwa-kit/packages/pwa-kit-extension-sdk/dist/configs/webpack/overrides-loader.js',
+                        overridable: findDepInStack('@salesforce/pwa-kit-extension-sdk/configs/webpack/overrides-resolver-loader.js')
                     }
                 },
                 plugins: [
-                    new ApplicationExtensionConfigPlugin(),
+                    new ApplicationExtensionConfigPlugin({
+                        extensions: getConfiguredExtensions(getConfig())
+                    }),
                     new webpack.DefinePlugin({
                         DEBUG,
                         NODE_ENV: `'${process.env.NODE_ENV}'`,
