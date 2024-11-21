@@ -14,7 +14,7 @@ import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 
 // Local Imports
 import {Config} from './types'
-import withRedBorder from '$/components/with-red-border'
+import withRedBorder from 'overridable!./components/with-red-border'
 import SamplePage from './pages/sample'
 
 const defaultPath = '/sample-page'
