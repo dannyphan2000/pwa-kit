@@ -22,7 +22,6 @@ import {
 import useConfig from './useConfig'
 import {hasAllKeys} from './utils'
 import {onClient} from '../utils'
-import {CommerceApiProviderProps} from '../provider'
 import {handleInvalidToken, generateCustomEndpointOptions} from './helpers'
 
 /**

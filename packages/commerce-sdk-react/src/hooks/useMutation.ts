@@ -25,7 +25,6 @@ import {
 import {useAuthorizationHeader} from './useAuthorizationHeader'
 import useCustomerId from './useCustomerId'
 import {mergeOptions, updateCache} from './utils'
-import {CommerceApiProviderProps} from '../provider'
 import {handleInvalidToken, generateCustomEndpointOptions} from './helpers'
 
 /**
