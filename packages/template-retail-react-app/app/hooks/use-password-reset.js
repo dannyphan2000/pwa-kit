@@ -10,12 +10,14 @@ import {
 } from '@salesforce/commerce-sdk-react'
 import {absoluteUrl} from '@salesforce/retail-react-app/app/utils/url'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 /**
  * This hook provides commerce-react-sdk hooks to simplify the reset password flow.
  */
 export const usePasswordReset = () => {
     const {site} = useMultiSite()
+    const {clientId} = getConfig().app.commerceAPI.parameters
 
     const getPasswordResetTokenMutation = useShopperLoginMutation(
         ShopperLoginMutations.GetPasswordResetToken
@@ -28,10 +30,10 @@ export const usePasswordReset = () => {
             user_id: email,
             mode: 'callback',
             channel_id: site.id,
-            // TODO: How to dynamically set the client id?
-            client_id: 'faed469c-f8b1-4427-af87-715fcd8c3240',
+            // TODO: Should this be handled by commerce-sdk-react
+            client_id: clientId,
             // TODO: Should this be set in default.js or constant?
-            callback_uri: 'https://webhook.site/a134b707-0514-4655-a293-9cd92073bf12',
+            callback_uri: 'https://webhook.site/679c46ea-a63b-41e1-b768-4db79d953646',
             // callback_uri: absoluteUrl('/reset-password-landing'),
             hint: 'cross_device'
         }
@@ -47,8 +49,8 @@ export const usePasswordReset = () => {
         const headers = {Authorization: ''}
         const body = {
             pwd_action_token: token,
-            // TODO: How to dynamically set the client id?
-            client_id: 'faed469c-f8b1-4427-af87-715fcd8c3240',
+            // TODO: Should this be handled by commerce-sdk-react
+            client_id: clientId,
             new_password: newPassword,
             channel_id: site.id,
             user_id: email

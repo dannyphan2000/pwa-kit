@@ -18,7 +18,9 @@ module.exports = {
         login: {
             passwordless: {
                 enabled: true,
-                callbackURI: 'https://webhook.site/27761b71-50c1-4097-a600-21a3b89a546c'
+                callbackURI:
+                    // Create your own callback URI using https://webhook.site/
+                    'https://webhook.site/679c46ea-a63b-41e1-b768-4db79d953646'
             },
             social: {
                 enabled: false,
@@ -34,9 +36,15 @@ module.exports = {
         commerceAPI: {
             proxyPath: `/mobify/proxy/api`,
             parameters: {
-                clientId: 'c9c45bfd-0ed3-4aa2-9971-40f88962b836',
-                organizationId: 'f_ecom_zzrf_001',
-                shortCode: '8o7m175y',
+                // clientId: 'c9c45bfd-0ed3-4aa2-9971-40f88962b836',
+                // organizationId: 'f_ecom_zzrf_001',
+                // shortCode: '8o7m175y',
+                // SLAS PRD Private Client zzrf_001
+                // clientId: '80255e22-8504-45e3-b1a3-749fd4475bb7',
+                // SLAS QA Public Client bgvn_stg
+                clientId: '3a15f34e-fecd-4fcc-8235-86b70978e629',
+                organizationId: 'f_ecom_bgvn_stg',
+                shortCode: 'sandbox-001',
                 siteId: 'RefArchGlobal'
             }
         },
@@ -63,7 +71,7 @@ module.exports = {
         ssrFunctionNodeVersion: '20.x',
         proxyConfigs: [
             {
-                host: 'kv7kzm78.api.commercecloud.salesforce.com',
+                host: 'sandbox-001.api.commercecloud.salesforce.com',
                 path: 'api'
             },
             {
