@@ -139,13 +139,13 @@ const findDepInStack = (pkg) => {
         }
     }
     return candidate
-} 
+}
 
 const baseConfig = (target) => {
     if (!['web', 'node'].includes(target)) {
         throw Error(`The value "${target}" is not a supported webpack target`)
     }
-    
+
     class Builder {
         constructor() {
             this.config = {
@@ -210,7 +210,9 @@ const baseConfig = (target) => {
                 },
                 resolveLoader: {
                     alias: {
-                        overridable: findDepInStack('@salesforce/pwa-kit-extension-sdk/configs/webpack/overrides-resolver-loader.js')
+                        overridable: findDepInStack(
+                            '@salesforce/pwa-kit-extension-sdk/configs/webpack/overrides-resolver-loader.js'
+                        )
                     }
                 },
                 plugins: [
