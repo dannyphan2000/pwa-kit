@@ -358,7 +358,7 @@ const AccountDetail = () => {
     }, [])
 
     const {uido} = useCustomerType()
-    const isEcomAccount = uido === 'ecom'
+    const isEcomAccount = uido === 'ecom' || uido === 'slas'
 
     return (
         <Stack data-testid="account-detail-page" spacing={6}>
