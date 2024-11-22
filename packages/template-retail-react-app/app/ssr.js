@@ -26,9 +26,15 @@ import express from 'express'
 
 const ENABLE_SSR_POST = (process.env.ENABLE_SSR_POST || "").toLowerCase() === "true"
 
-if (ENABLE_SSR_POST) {
-    import {emailLink} from './marketing-cloud-email-link'
+let emailLink
+async function loadMarketingCloudEmailLink() {
+    if (ENABLE_SSR_POST) {
+        const {emailLink} = await import('./marketing-cloud-email-link')
+        emailLink = emailLink
+    }
 }
+
+loadMarketingCloudEmailLink()
 
 const options = {
     // The build directory (an absolute path)
@@ -104,7 +110,7 @@ const {handler} = runtime.createHandler(options, (app) => {
         res.send()
     })
 
- .  if (ENABLE_SSR_POST) {
+    if (ENABLE_SSR_POST) {
         app.post('/passwordless-login-callback', async (req, res) => {
             const base = req.protocol + '://' + req.get('host')
             const {email_id, token} = req.body
