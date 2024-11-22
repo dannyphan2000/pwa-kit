@@ -1087,6 +1087,7 @@ class Auth {
     async authorizePasswordless(parameters: AuthorizePasswordlessParams) {
         const userid = parameters.userid
         const callbackURI = this.callbackURI
+        const usid = this.get('usid')
         const mode = callbackURI ? 'callback' : 'sms'
 
         await helpers.authorizePasswordless(
@@ -1096,8 +1097,9 @@ class Auth {
             },
             {
                 ...(callbackURI && {callbackURI: callbackURI}),
+                ...(usid && {usid}),
                 userid,
-                mode: mode
+                mode,
             }
         )
     }

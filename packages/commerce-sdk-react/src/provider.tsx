@@ -147,6 +147,7 @@ const CommerceApiProvider = (props: CommerceApiProviderProps): ReactElement => {
             silenceWarnings,
             logger: configLogger,
             defaultDnt,
+            callbackURI,
             refreshTokenRegisteredCookieTTL,
             refreshTokenGuestCookieTTL
         })
@@ -163,6 +164,8 @@ const CommerceApiProvider = (props: CommerceApiProviderProps): ReactElement => {
         clientSecret,
         silenceWarnings,
         configLogger,
+        defaultDnt,
+        callbackURI,
         refreshTokenRegisteredCookieTTL,
         refreshTokenGuestCookieTTL
     ])
