@@ -18,7 +18,7 @@ module.exports = {
         login: {
             passwordless: {
                 enabled: true,
-                callbackURI: 'https://wasatch-mrt-passwordless-poc.mrt-storefront-staging.com/passwordless-login-callback'
+                callbackURI: '/passwordless-login-callback'
             },
             social: {
                 enabled: false,
