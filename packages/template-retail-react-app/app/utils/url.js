@@ -116,6 +116,10 @@ export const productUrlBuilder = (product) => encodeURI(`/product/${product.id}`
  */
 export const searchUrlBuilder = (searchTerm) => '/search?q=' + encodeURIComponent(searchTerm)
 
+export const getBasePath = () => {
+    return window.__BASEPATH__ ? window.__BASEPATH__ : ''
+}
+
 /**
  * Returns a relative URL for a locale short code.
  * Based on your app configuration, this function will replace your current locale shortCode with a new one
@@ -128,8 +132,16 @@ export const searchUrlBuilder = (searchTerm) => '/search?q=' + encodeURIComponen
  */
 export const getPathWithLocale = (shortCode, buildUrl, opts = {}) => {
     const location = opts.location ? opts.location : window.location
-    let {siteRef, localeRef} = getParamsFromPath(`${location.pathname}${location.search}`)
     let {pathname, search} = location
+    // sanitize the base path from current url if existing
+    const basePath = getBasePath() 
+    if (basePath) {
+        pathname = pathname.replace(`${basePath}`, '')
+    }
+
+    let {siteRef, localeRef} = getParamsFromPath(`${pathname}${search}`)
+
+    console.log(`Site: ${siteRef} Locale: ${localeRef}`)
 
     // sanitize the site from current url if existing
     if (siteRef) {
@@ -166,7 +178,7 @@ export const getPathWithLocale = (shortCode, buildUrl, opts = {}) => {
         site.alias || site.id,
         locale?.alias || locale?.id
     )
-    return newUrl
+    return `${basePath}${newUrl}`
 }
 
 /**
@@ -178,6 +190,7 @@ export const getPathWithLocale = (shortCode, buildUrl, opts = {}) => {
  * @param localeRef Current selected Locale reference. The value can be the Locale id or alias.
  * @returns {function(*, *, *): string} function providing: path, site and locale generates a URL.
  */
+// THIS IS USED BOTH ON THE SERVER AND CLIENT TO BUILD URLS
 export const createUrlTemplate = (appConfig, siteRef, localeRef) => {
     const {site: siteConfig, locale: localeConfig, showDefaults: showDefaultsConfig} = appConfig.url
     const defaultSite = getDefaultSite()
@@ -189,21 +202,16 @@ export const createUrlTemplate = (appConfig, siteRef, localeRef) => {
     const isDefaultLocale =
         defaultLocale.id === localeRef || (defaultLocale.alias && defaultLocale.alias === localeRef)
 
-    const querySite =
-        (siteConfig === urlPartPositions.QUERY_PARAM && showDefaultsConfig) ||
-        (siteConfig === urlPartPositions.QUERY_PARAM && !showDefaultsConfig && !isDefaultSite)
-    const queryLocale =
-        (localeConfig === urlPartPositions.QUERY_PARAM && showDefaultsConfig) ||
-        (localeConfig === urlPartPositions.QUERY_PARAM && !showDefaultsConfig && !isDefaultLocale)
+    const hideDefaultSite = isDefaultSite && !showDefaultsConfig
+    const hideDefaultLocale = isDefaultLocale && !showDefaultsConfig
 
-    const isQuery = querySite || queryLocale
+    const includeSiteInQuery = (siteConfig === urlPartPositions.QUERY_PARAM) && !hideDefaultSite
+    const includeLocaleInQuery = (localeConfig === urlPartPositions.QUERY_PARAM) && !hideDefaultLocale
 
-    const pathSite =
-        (siteConfig === urlPartPositions.PATH && showDefaultsConfig) ||
-        (siteConfig === urlPartPositions.PATH && !showDefaultsConfig && !isDefaultSite)
-    const pathLocale =
-        (localeConfig === urlPartPositions.PATH && showDefaultsConfig) ||
-        (localeConfig === urlPartPositions.PATH && !showDefaultsConfig && !isDefaultLocale)
+    const isQuery = includeSiteInQuery || includeLocaleInQuery
+
+    const includeSiteInPath = (siteConfig === urlPartPositions.PATH) && !hideDefaultSite
+    const includeLocaleInPath = (localeConfig === urlPartPositions.PATH) && !hideDefaultLocale
 
     return (path, site, locale) => {
         const isHomeWithDefaultSiteAndLocale =
@@ -211,16 +219,16 @@ export const createUrlTemplate = (appConfig, siteRef, localeRef) => {
             (defaultSite.id === site || (defaultSite.alias && defaultSite.alias === site)) &&
             (defaultLocale.id === locale || (defaultLocale.alias && defaultLocale.alias === locale))
 
-        const sitePath = pathSite && site && !isHomeWithDefaultSiteAndLocale ? `/${site}` : ''
+        const sitePath = includeSiteInPath && site && !isHomeWithDefaultSiteAndLocale ? `/${site}` : ''
         const localePath =
-            pathLocale && locale && !isHomeWithDefaultSiteAndLocale ? `/${locale}` : ''
+            includeLocaleInPath && locale && !isHomeWithDefaultSiteAndLocale ? `/${locale}` : ''
 
         const hasQuery = isQuery && (site || locale) && !isHomeWithDefaultSiteAndLocale
         let queryString = ''
         if (hasQuery) {
             const searchParams = new URLSearchParams()
-            querySite && site && searchParams.append('site', site)
-            queryLocale && locale && searchParams.append('locale', locale)
+            includeSiteInQuery && site && searchParams.append('site', site)
+            includeLocaleInQuery && locale && searchParams.append('locale', locale)
             queryString = `?${searchParams.toString()}`
         }
         return `${sitePath}${localePath}${path}${queryString}`
@@ -257,6 +265,10 @@ export const removeQueryParamsFromPath = (path, keys) => {
 
     return `${pathname}${paramStr && '?'}${paramStr}`
 }
+
+// export const removeBasePathFromPath = (path, basePath = '') => {
+//     return path.replace(new RegExp(`${basePath}`, 'g'), '')
+// }
 
 /*
  * Remove site alias and locale from a given url, to be used for "navigate" urls

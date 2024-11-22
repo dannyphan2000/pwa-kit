@@ -106,6 +106,10 @@ AppConfig.restore = (locals = {}) => {
 
 AppConfig.freeze = () => undefined
 
+AppConfig.getBasePath = () => {
+    return getEnvBasePath()
+}
+
 AppConfig.extraGetPropsArgs = (locals = {}) => {
     return {
         buildUrl: locals.buildUrl,

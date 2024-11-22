@@ -219,7 +219,8 @@ export const render = async (req, res, next) => {
             res,
             location,
             config,
-            appJSX
+            appJSX,
+            basepath
         })
     } catch (e) {
         // This is an unrecoverable error.
@@ -285,7 +286,7 @@ const renderToString = (jsx, extractor) =>
     ReactDOMServer.renderToString(extractor.collectChunks(jsx))
 
 const renderApp = (args) => {
-    const {req, res, appStateError, appJSX, appState, config} = args
+    const {req, res, appStateError, appJSX, appState, config, basepath} = args
     const extractor = new ChunkExtractor({statsFile: BUNDLES_PATH, publicPath: getAssetUrl()})
 
     const ssrOnly = 'mobify_server_only' in req.query || '__server_only' in req.query
@@ -349,6 +350,7 @@ const renderApp = (args) => {
         __CONFIG__: config,
         __PRELOADED_STATE__: appState,
         __ERROR__: error,
+        __BASEPATH__: basepath,
         // `window.Progressive` has a long history at Mobify and some
         // client-side code depends on it. Maintain its name out of tradition.
         Progressive: getWindowProgressive(req, res)
