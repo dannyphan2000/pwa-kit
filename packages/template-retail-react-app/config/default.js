@@ -39,6 +39,7 @@ module.exports = {
         }
     },
     externals: [],
+    envBasePath: '/shop',
     pageNotFoundURL: '/page-not-found',
     ssrEnabled: true,
     ssrOnly: ['ssr.js', 'ssr.js.map', 'node_modules/**/*.*'],
