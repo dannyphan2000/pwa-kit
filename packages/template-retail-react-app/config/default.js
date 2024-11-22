@@ -25,9 +25,9 @@ module.exports = {
         commerceAPI: {
             proxyPath: `/mobify/proxy/api`,
             parameters: {
-                clientId: 'c9c45bfd-0ed3-4aa2-9971-40f88962b836',
+                clientId: 'd97d148b-3d35-4dc9-8487-9d9f564aa9bd',
                 organizationId: 'f_ecom_bgvq_prd',
-                shortCode: '8o7m175y',
+                shortCode: 'sandbox-001',
                 siteId: 'RefArch'
             }
         },
@@ -53,12 +53,21 @@ module.exports = {
     ssrParameters: {
         ssrFunctionNodeVersion: '20.x',
         proxyConfigs: [
+            // {
+            //     host: 'kv7kzm78.api.commercecloud.salesforce.com',
+            //     path: 'api'
+            // },
+            // {
+            //     host: 'zzrf-001.dx.commercecloud.salesforce.com',
+            //     path: 'ocapi'
+            // }
+
             {
-                host: 'kv7kzm78.api.commercecloud.salesforce.com',
+                host: 'sandbox-001.api.commercecloud.salesforce.com',
                 path: 'api'
             },
             {
-                host: 'zzrf-001.dx.commercecloud.salesforce.com',
+                host: 'production-qatest04-dw.demandware.net',
                 path: 'ocapi'
             }
         ]

@@ -45,6 +45,12 @@ export const ProductList = loadable(() => import('./pages/product-list'), {
     fallback
 })
 export const PageNotFound = loadable(() => import('./pages/page-not-found'))
+const StoreLocator = loadable(() => import('./pages/store-locator'), {
+    fallback
+})
+const Wishlist = loadable(() => import('./pages/account/wishlist'), {
+    fallback
+})
 
 // Set the display names
 Home.displayName = 'Home'
@@ -54,13 +60,6 @@ ProductList.displayName = 'ProductList'
 PageNotFound.displayName = 'PageNotFound'
 
 const isServerSide = typeof window === 'undefined'
-const StoreLocator = loadable(() => import('./pages/store-locator'), {
-    fallback
-})
-const Wishlist = loadable(() => import('./pages/account/wishlist'), {
-    fallback
-})
-const PageNotFound = loadable(() => import('./pages/page-not-found'))
 
 export const routes = [
     {

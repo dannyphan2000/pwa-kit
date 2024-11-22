@@ -207,8 +207,8 @@ const App = (props) => {
     const {routes, updateRoutes} = useRouteContext()
 
     useBlock(async (location) => {
-        const seoUrlMappingEnabled = !!config?.app?.url?.seoUrlMapping
-        // const seoUrlMappingEnabled = true
+        // const seoUrlMappingEnabled = !!config?.app?.url?.seoUrlMapping
+        const seoUrlMappingEnabled = true
 
         if (!seoUrlMappingEnabled) {
             // Don't block if seo url mapping is not enabled.
