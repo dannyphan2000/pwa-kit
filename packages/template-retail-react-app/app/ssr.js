@@ -23,18 +23,9 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import helmet from 'helmet'
 
 import express from 'express'
+import {emailLink} from './marketing-cloud-email-link'
 
 const ENABLE_SSR_POST = (process.env.ENABLE_SSR_POST || "").toLowerCase() === "true"
-
-let emailLink
-async function loadMarketingCloudEmailLink() {
-    if (ENABLE_SSR_POST) {
-        const {emailLink} = await import('./marketing-cloud-email-link')
-        emailLink = emailLink
-    }
-}
-
-loadMarketingCloudEmailLink()
 
 const options = {
     // The build directory (an absolute path)
