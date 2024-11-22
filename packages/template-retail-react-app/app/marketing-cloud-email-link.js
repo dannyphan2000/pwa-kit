@@ -7,6 +7,10 @@
 import crypto from 'crypto'
 import https from 'https'
 
+/**
+ * Tokens are valid for 20 minutes. We store it at the top level scope to reuse
+ * it during the lambda invocation. We'll refresh it after 15 minutes.
+ */
 let marketingCloudToken = ''
 let marketingCloudTokenExpiration = new Date()
 
@@ -14,9 +18,16 @@ let marketingCloudTokenExpiration = new Date()
  Make a POST request using native https module, wrapped in a Promise with JSON
  encode and decode
 */
-function asyncJsonHttpsPost(options, postObject) {
+export function asyncJsonHttpsPost(url, postObject, headers = {}) {
     return new Promise((resolve, reject) => {
-        const req = https.request(options, (response) => {
+        const options = {
+            method: 'POST',
+            headers: {
+                ...headers,
+                'Content-Type': 'application/json'
+            }
+        }
+        const req = https.request(url, options, (response) => {
             let data = ''
 
             response.on('data', (chunk) => {
@@ -24,7 +35,11 @@ function asyncJsonHttpsPost(options, postObject) {
             })
 
             response.on('end', () => {
-                resolve(JSON.parse(data))
+                if (response.statusCode >= 200 && response.statusCode < 300) {
+                    resolve(JSON.parse(data));
+                  } else {
+                    reject(new Error(`Request failed with status code ${response.statusCode}: ${data}`));
+                  }
             })
         })
 
@@ -38,28 +53,21 @@ function asyncJsonHttpsPost(options, postObject) {
     })
 }
 
-export async function emailLink(emailId, templateId, magicLink) {
-    function generateUniqueId() {
-        return crypto.randomBytes(16).toString('hex')
-    }
+function generateUniqueId() {
+    return crypto.randomBytes(16).toString('hex')
+}
 
+async function sendMarketingCloudEmail(emailId, marketingCloudConfig) {
     if (new Date() > marketingCloudTokenExpiration) {
-        const tokenOptions = {
-            method: 'POST',
-            host: `${process.env.MARKETING_CLOUD_SUBDOMAIN}.auth.marketingcloudapis.com`,
-            path: '/v2/token',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }
+        const tokenUrl = `https://${marketingCloudConfig.subdomain}.auth.marketingcloudapis.com/v2/token`
 
         const tokenBody = {
             grant_type: 'client_credentials',
-            client_id: process.env.MARKETING_CLOUD_CLIENT_ID,
-            client_secret: process.env.MARKETING_CLOUD_CLIENT_SECRET
+            client_id: marketingCloudConfig.clientId,
+            client_secret: marketingCloudConfig.clientSecret
         }
 
-        marketingCloudToken = (await asyncJsonHttpsPost(tokenOptions, tokenBody)).access_token
+        marketingCloudToken = (await asyncJsonHttpsPost(tokenUrl, tokenBody)).access_token
 
         marketingCloudTokenExpiration = new Date()
         marketingCloudTokenExpiration.setTime(
@@ -67,26 +75,31 @@ export async function emailLink(emailId, templateId, magicLink) {
         )
     }
 
-    const emailOptions = {
-        method: 'POST',
-        host: `${process.env.MARKETING_CLOUD_SUBDOMAIN}.rest.marketingcloudapis.com`,
-        path: `/messaging/v1/email/messages/${generateUniqueId()}`,
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${marketingCloudToken}`
-        }
-    }
+    const emailUrl = `https://${marketingCloudConfig.subdomain}.rest.marketingcloudapis.com/messaging/v1/email/messages/${generateUniqueId()}`
+
+    const emailHeaders = { Authorization: `Bearer ${marketingCloudToken}` }
 
     const emailBody = {
-        definitionKey: templateId,
+        definitionKey: marketingCloudConfig.templateId,
         recipient: {
             contactKey: emailId,
             to: emailId,
-            attributes: {'magic-link': magicLink}
+            attributes: {'magic-link': marketingCloudConfig.magicLink}
         }
     }
 
-    const emailResponse = await asyncJsonHttpsPost(emailOptions, emailBody)
+    const emailResponse = await asyncJsonHttpsPost(emailUrl, emailBody, emailHeaders)
 
     return emailResponse
+}
+
+export async function emailLink(emailId, templateId, magicLink) {
+    const marketingCloudConfig = {
+        clientId: process.env.MARKETING_CLOUD_CLIENT_ID,
+        clientSecret: process.env.MARKETING_CLOUD_CLIENT_SECRET,
+        magicLink: magicLink,
+        subdomain: process.env.MARKETING_CLOUD_SUBDOMAIN,
+        templateId: templateId
+    }
+    return await sendMarketingCloudEmail(emailId, marketingCloudConfig)
 }
