@@ -18,7 +18,7 @@ import {urlPartPositions} from '@salesforce/retail-react-app/app/constants'
  * @param {array} options.ignoredRoutes - routes that does not need be reconstructed
  * @return {array} - list of routes objects that has site and locale refs
  */
-export const configureRoutes = (routes = [], config, {ignoredRoutes = []}) => {
+export const configureRoutes = (routes = [], config, {ignoredRoutes = [], redirectUrls = []}) => {
     if (!routes.length) return []
     if (!config) return routes
 

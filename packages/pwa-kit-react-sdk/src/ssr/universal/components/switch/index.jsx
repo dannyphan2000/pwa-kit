@@ -6,7 +6,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Switch as RouterSwitch, Route} from 'react-router-dom'
+import {Switch as RouterSwitch, Route, Redirect} from 'react-router-dom'
 import AppErrorBoundary from '../app-error-boundary'
 import {UIDReset, UIDFork} from 'react-uid'
 
@@ -28,7 +28,20 @@ const Switch = (props) => {
                     <App preloadedProps={appState.appProps}>
                         <RouterSwitch>
                             {routes.map((route, i) => {
-                                const {component: Component, ...routeProps} = route
+                                const {component: Component, redirectTo, ...routeProps} = route
+                                if (redirectTo) {
+                                    // Render a Redirect inside the Route
+                                    console.log('REDIRECT TO', redirectTo)
+                                    console.log('ROUTE PROPS !!!!!!!!!!!', routeProps)
+                                    return (
+                                        <Route
+                                            key={i}
+                                            path={routeProps.path}
+                                            exact={routeProps.exact}
+                                            render={() => <Redirect to={redirectTo} />}
+                                        />
+                                    )
+                                }
                                 return (
                                     <Route key={i} {...routeProps}>
                                         <UIDFork>
@@ -44,7 +57,7 @@ const Switch = (props) => {
         </UIDReset>
     )
 }
-
+ 
 Switch.propTypes = {
     error: PropTypes.object,
     appState: PropTypes.object,

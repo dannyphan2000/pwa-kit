@@ -1,0 +1,80 @@
+{
+  "redirect-urls": {
+    "$": {
+      "xmlns": "http://www.demandware.com/xml/impex/redirecturl/2011-09-01"
+    },
+    "redirect-url": [
+      {
+        "$": {
+          "uri": "/homme"
+        },
+        "destination-id": "mens",
+        "destination-type": "category",
+        "status-code": "301",
+        "enabled-flag": "true",
+        "copy-source-params": "default"
+      },
+      {
+        "$": {
+          "uri": "/category/top-seller"
+        },
+        "destination-id": "newarrivals",
+        "destination-type": "category",
+        "status-code": "301",
+        "enabled-flag": "true",
+        "copy-source-params": "default"
+      },
+      {
+        "$": {
+          "uri": "/category/mens"
+        },
+        "status-code": "301",
+        "enabled-flag": "true",
+        "destination-url": "/category/womens",
+        "copy-source-params": "default"
+      },
+      {
+        "$": {
+          "uri": "/redirect"
+        },
+        "status-code": "301",
+        "enabled-flag": "true",
+        "destination-url": "/some/other/path",
+        "copy-source-params": "default"
+      },
+      {
+        "$": {
+          "uri": "/duplicates-test"
+        },
+        "destination-id": "008884303989M",
+        "destination-type": "product",
+        "product-category-id": "mens",
+        "status-code": "301",
+        "enabled-flag": "true",
+        "copy-source-params": "default"
+      },
+      {
+        "$": {
+          "uri": "/product/54736828M"
+        },
+        "destination-id": "83536828M",
+        "destination-type": "product",
+        "product-category-id": "mens-clothing-shorts",
+        "status-code": "301",
+        "enabled-flag": "true",
+        "copy-source-params": "default"
+      },
+      {
+        "$": {
+          "uri": "/black-gloves"
+        },
+        "destination-id": "TG250M",
+        "destination-type": "product",
+        "product-category-id": "mens-accessories",
+        "status-code": "301",
+        "enabled-flag": "true",
+        "copy-source-params": "default"
+      }
+    ]
+  }
+}

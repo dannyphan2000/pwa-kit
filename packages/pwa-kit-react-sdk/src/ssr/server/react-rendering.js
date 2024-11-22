@@ -130,6 +130,11 @@ export const render = async (req, res, next) => {
     AppConfig.restore(res.locals)
 
     const routes = getRoutes(res.locals)
+    const routesWithRedirect = routes.filter(route => route.redirectTo);
+
+    if (routesWithRedirect.length > 0) {
+        console.log('LOG: Routes with redirectTo:', routesWithRedirect);
+    }
     const WrappedApp = routeComponent(App, false, res.locals)
 
     const [pathname] = req.originalUrl.split('?')

@@ -16,6 +16,9 @@ import React from 'react'
 import loadable from '@loadable/component'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
+// BM Redirect URLs
+import redirectData from './redirect-urls/output.json'
+
 // Components
 import {Skeleton} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {configureRoutes} from '@salesforce/retail-react-app/app/utils/routes-utils'
@@ -117,6 +120,22 @@ export const routes = [
         component: PageNotFound
     }
 ]
+
+// Extract redirect routes from JSON
+const redirectRules = redirectData['redirect-urls']['redirect-url']
+
+// Handle single or multiple redirect rules
+const redirects = Array.isArray(redirectRules) ? redirectRules : [redirectRules]
+
+redirects.forEach((redirect) => {
+    routes.push({
+        path: redirect.$.uri,
+        exact: true,
+        redirectTo: redirect['destination-id']
+            ? `/${redirect['destination-id']}`
+            : redirect['destination-url']
+    })
+})
 
 export default () => {
     const config = getConfig()
