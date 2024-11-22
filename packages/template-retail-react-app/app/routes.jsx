@@ -21,6 +21,7 @@ import {Skeleton} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {configureRoutes} from '@salesforce/retail-react-app/app/utils/routes-utils'
 
 const fallback = <Skeleton height="75vh" width="100%" />
+const config = getConfig()
 
 // Pages
 const Home = loadable(() => import('./pages/home'), {fallback})
@@ -89,7 +90,7 @@ export const routes = [
         exact: true
     },
     {
-        path: '/social-callback',
+        path: config.login.social?.redirectURI || '/social-callback',
         component: SocialLoginRedirect,
         exact: true
     },

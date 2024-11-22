@@ -84,7 +84,6 @@ const SocialLoginRedirect = () => {
         } else {
             navigate('/account')
         }
-        
     }, [customer?.isRegistered])
 
     return (
