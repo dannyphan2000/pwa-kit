@@ -126,7 +126,6 @@ export const routes = [
 ]
 
 export default () => {
-    const config = getConfig()
     return configureRoutes(routes, config, {
         ignoredRoutes: ['/callback', '*']
     })
