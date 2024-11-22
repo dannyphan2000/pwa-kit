@@ -6,7 +6,7 @@
  */
 import React from 'react'
 import {fireEvent, screen, waitFor} from '@testing-library/react'
-import {useAuthHelper, useShopperLoginMutation} from '@salesforce/commerce-sdk-react'
+import {useAuthHelper, AuthHelpers} from '@salesforce/commerce-sdk-react'
 import mockConfig from '@salesforce/retail-react-app/config/mocks/default'
 import {renderWithProviders} from '@salesforce/retail-react-app/app/utils/test-utils'
 import usePasswordlessLogin from '@salesforce/retail-react-app/app/hooks/use-passwordless-login'
@@ -38,18 +38,17 @@ jest.mock('@salesforce/commerce-sdk-react', () => {
     return {
         ...originalModule,
         useAuthHelper: jest.fn(),
-        useShopperLoginMutation: jest.fn()
     }
 })
 
-const authorizePasswordlessCustomer = {mutateAsync: jest.fn()}
-useShopperLoginMutation.mockImplementation(() => {
-    return authorizePasswordlessCustomer
-})
-
-const login = {mutateAsync: jest.fn()}
-useAuthHelper.mockImplementation(() => {
-    return login
+const authorizePasswordless = {mutateAsync: jest.fn()}
+const loginPasswordlessUser = {mutateAsync: jest.fn()}
+useAuthHelper.mockImplementation((param) => {
+    if (param === AuthHelpers.LoginPasswordlessUser) {
+        return loginPasswordlessUser
+    } else if (param === AuthHelpers.AuthorizePasswordless) {
+        return authorizePasswordless
+    }
 })
 
 afterEach(() => {
@@ -63,15 +62,8 @@ describe('The usePasswordlessLogin', () => {
         const trigger = screen.getByTestId('authorize-passwordless-login')
         await fireEvent.click(trigger)
         await waitFor(() => {
-            expect(authorizePasswordlessCustomer.mutateAsync).toHaveBeenCalled()
-            expect(authorizePasswordlessCustomer.mutateAsync).toHaveBeenCalledWith({
-                body: {
-                    user_id: mockEmail,
-                    mode: 'callback',
-                    channel_id: mockSiteId,
-                    callback_uri: mockCallbackUri
-                }
-            })
+            expect(authorizePasswordless.mutateAsync).toHaveBeenCalled()
+            expect(authorizePasswordless.mutateAsync).toHaveBeenCalledWith({userid: mockEmail})
         })
     })
 
@@ -81,8 +73,8 @@ describe('The usePasswordlessLogin', () => {
         const trigger = screen.getByTestId('login-with-passwordless-access-token')
         await fireEvent.click(trigger)
         await waitFor(() => {
-            expect(login.mutateAsync).toHaveBeenCalled()
-            expect(login.mutateAsync).toHaveBeenCalledWith({pwdlessLoginToken: mockToken})
+            expect(loginPasswordlessUser.mutateAsync).toHaveBeenCalled()
+            expect(loginPasswordlessUser.mutateAsync).toHaveBeenCalledWith({pwdlessLoginToken: mockToken})
         })
     })
 })
