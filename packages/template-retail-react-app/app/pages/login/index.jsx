@@ -142,7 +142,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     }
 
     useEffect(() => {
-        if (path === '/passwordless-login-landing' && isSuccessCustomerBaskets && prevAuthType) {
+        if (path === '/passwordless-login-landing' && isSuccessCustomerBaskets) {
             const token = queryParams.get('token')
             try {
                 loginWithPasswordlessAccessToken(token)
@@ -152,13 +152,13 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                     : formatMessage(API_ERROR_MESSAGE)
                 form.setError('global', {type: 'manual', message})
             }
-            handleMergeBasket()
         }
-    }, [path, isSuccessCustomerBaskets, prevAuthType])
+    }, [path, isSuccessCustomerBaskets])
 
-    // If customer is registered push to account page
+    // If customer is registered push to account page and merge the basket
     useEffect(() => {
         if (isRegistered) {
+            handleMergeBasket()
             if (location?.state?.directedFrom) {
                 navigate(location.state.directedFrom)
             } else {
