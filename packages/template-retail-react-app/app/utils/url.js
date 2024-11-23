@@ -190,7 +190,6 @@ export const getPathWithLocale = (shortCode, buildUrl, opts = {}) => {
  * @param localeRef Current selected Locale reference. The value can be the Locale id or alias.
  * @returns {function(*, *, *): string} function providing: path, site and locale generates a URL.
  */
-// THIS IS USED BOTH ON THE SERVER AND CLIENT TO BUILD URLS
 export const createUrlTemplate = (appConfig, siteRef, localeRef) => {
     const {site: siteConfig, locale: localeConfig, showDefaults: showDefaultsConfig} = appConfig.url
     const defaultSite = getDefaultSite()
