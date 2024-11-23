@@ -340,3 +340,15 @@ test('Ignores the badges that are NOT defined as boolean custom properties', () 
     expect(badges).toHaveLength(1)
     expect(within(badges[0]).getByText(/Special/i)).toBeDefined()
 })
+
+test('Product tile swatches have non-null href attributes', () => {
+    // hrefs are required for keyboard navigable swatches
+    const {getAllByRole} = renderWithProviders(
+        <ProductTile product={mockProductSearchItem} />
+    )
+    const swatches = getAllByRole('radio')
+
+    swatches.forEach(swatch => {
+        expect(swatch.getAttribute('href')).not.toBeNull()
+    })
+})

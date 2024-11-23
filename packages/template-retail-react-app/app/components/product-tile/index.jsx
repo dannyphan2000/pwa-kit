@@ -219,7 +219,7 @@ const ProductTile = (props) => {
                                 setSelectableAttributeValue(value)
                             }}
                         >
-                            {values?.map(({name, swatch, value}) => {
+                            {values?.map(({name, swatch, value, href}) => {
                                 const content = swatch ? (
                                     <Box
                                         height="100%"
@@ -243,6 +243,14 @@ const ProductTile = (props) => {
                                         name={name}
                                         variant={'circle'}
                                         isFocusable={true}
+                                        href={href}
+                                        handleSelect={() => {
+                                            // silence is golden,
+                                            // this is empty to allow the swatch
+                                            // to be navigable for screen readers
+                                            // while maintaining the mouseOver swatch
+                                            // swapping behavior in `setSelectHandlers`
+                                        }}
                                     >
                                         {content}
                                     </Swatch>

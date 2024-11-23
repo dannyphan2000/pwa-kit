@@ -63,10 +63,8 @@ const Swatch = ({
             aria-checked={selected}
             variant="outline"
             role="radio"
-            // To mimic the behavior of native radio inputs, only one input should be focusable.
-            // (The rest are selectable via arrow keys.)
-            tabIndex={isFocusable ? 0 : -1}
-            {...(href ? {} : selectHandlers)}
+            {...(isFocusable ? {tabIndex: 0} : {})}
+            {...(href && !handleSelect ? {} : selectHandlers)}
         >
             <Center {...styles.swatchButton}>
                 {children}
