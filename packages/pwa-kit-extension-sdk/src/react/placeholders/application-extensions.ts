@@ -11,7 +11,8 @@
 
 // During build process, this file is replaced with the actual implementation.
 // see pwa-kit-extension-sdk/configs/utils.ts for more details.
-export const getApplicationExtensions = () => {
+import {ApplicationExtension} from '../classes/application-extension'
+export const getApplicationExtensions = (): Promise<ApplicationExtension<any>[] | undefined> => {
     console.error('Something went wrong. Cannot load application extensions.')
-    return []
+    return Promise.resolve([])
 }

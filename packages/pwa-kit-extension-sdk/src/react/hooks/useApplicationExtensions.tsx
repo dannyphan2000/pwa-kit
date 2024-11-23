@@ -37,5 +37,7 @@ export const useApplicationExtensions = (): ApplicationExtension<Config>[] => {
  */
 export const useApplicationExtension = (id: string): ApplicationExtension<Config> | undefined => {
     const extensions = useApplicationExtensions()
-    return extensions.find(extension => (extension.constructor as typeof ApplicationExtension).id === id)
+    return extensions.find(
+        (extension) => (extension.constructor as typeof ApplicationExtension).id === id
+    )
 }

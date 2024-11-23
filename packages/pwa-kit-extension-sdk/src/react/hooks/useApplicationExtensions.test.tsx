@@ -1,18 +1,25 @@
+/*
+ * Copyright (c) 2024, Salesforce, Inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ */
 import React, {ReactNode} from 'react'
 import {renderHook} from '@testing-library/react'
 import {useApplicationExtensions, useApplicationExtension} from './useApplicationExtensions'
 import {ApplicationExtensionsContext} from '../contexts'
 import {ApplicationExtension} from '../classes/ApplicationExtension'
 
-class TestExtension1 extends ApplicationExtension<{}> {
+class TestExtension1 extends ApplicationExtension<any> {
     static id = 'test-extension-1'
 }
 
-class TestExtension2 extends ApplicationExtension<{}> {
+class TestExtension2 extends ApplicationExtension<any> {
     static id = 'test-extension-2'
 }
 
 const createWrapper = (extensions: ApplicationExtension<any>[]) => {
+    // eslint-disable-next-line react/display-name
     return ({children}: {children: ReactNode}) => (
         <ApplicationExtensionsContext.Provider value={extensions}>
             {children}
@@ -32,7 +39,7 @@ describe('useApplicationExtensions', () => {
         const mockExtensions = [new TestExtension1({}), new TestExtension2({})]
         const wrapper = createWrapper(mockExtensions)
         const {result} = renderHook(() => useApplicationExtensions(), {wrapper})
-        
+
         expect(result.current).toEqual(mockExtensions)
     })
 })
@@ -42,7 +49,7 @@ describe('useApplicationExtension', () => {
         const mockExtensions = [new TestExtension1({})]
         const wrapper = createWrapper(mockExtensions)
         const {result} = renderHook(() => useApplicationExtension('non-existent-id'), {wrapper})
-        
+
         expect(result.current).toBeUndefined()
     })
 
@@ -52,7 +59,7 @@ describe('useApplicationExtension', () => {
         const mockExtensions = [extension1, extension2]
         const wrapper = createWrapper(mockExtensions)
         const {result} = renderHook(() => useApplicationExtension('test-extension-1'), {wrapper})
-        
+
         expect(result.current).toBe(extension1)
     })
-}) 
+})

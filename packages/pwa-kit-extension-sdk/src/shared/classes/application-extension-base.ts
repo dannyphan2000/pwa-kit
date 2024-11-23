@@ -33,9 +33,7 @@ export abstract class ApplicationExtension<Config extends ApplicationExtensionCo
             // an error here to let the developer know that they need to define the
             // static property in their subclass.
             // We can remove this once TS supports abstract static properties.
-            throw new Error(
-                `Static readonly property 'id' must be defined in class ${cls.name}`
-            )
+            throw new Error(`Static readonly property 'id' must be defined in class ${cls.name}`)
         }
         this.config = config
     }
