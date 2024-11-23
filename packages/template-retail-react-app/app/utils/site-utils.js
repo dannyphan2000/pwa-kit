@@ -101,11 +101,17 @@ export const getSiteByReference = (siteRef) => {
  * @returns {{siteRef: string, localeRef: string}} - site and locale reference (it could either be id or alias)
  */
 export const getParamsFromPath = (path) => {
+    // We should strip out the base path before pathname.match
+    // because the matcher seems unable to handle base paths
+
     const {pathname, search} = getPathnameAndSearch(path)
 
     const config = getConfig()
     const {pathMatcher, searchMatcherForSite, searchMatcherForLocale} = getConfigMatcher(config)
+
+    // This matcher returns different values compared to regex testers online!
     const pathMatch = pathname.match(pathMatcher)
+
     const searchMatchForSite = search.match(searchMatcherForSite)
     const searchMatchForLocale = search.match(searchMatcherForLocale)
 
@@ -201,6 +207,9 @@ export const resolveLocaleFromUrl = (url) => {
         throw new Error('URL is required to look for the locale object')
     }
     let {localeRef} = getParamsFromPath(url)
+
+    console.log(`LocaleRef: ${localeRef}`)
+
     const site = resolveSiteFromUrl(url)
     const {supportedLocales} = site.l10n
     // if no localeRef is found, use the default value of the current site
