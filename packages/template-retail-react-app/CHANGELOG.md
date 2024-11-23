@@ -1,5 +1,6 @@
 ## v5.1.0-dev (TBD)
 
+- Fix swatch keyboard navigation (a11y) [#2143](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2143)
 - Replace transfer basket call with merge basket on checkout [#2138])(https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2138)
 
 
