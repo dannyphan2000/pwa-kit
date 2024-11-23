@@ -30,6 +30,11 @@ export const useApplicationExtensions = (): ApplicationExtension<Config>[] => {
     return context
 }
 
+/**
+ * Custom React hook to get a specific Application Extension by its id
+ * @param id - The id of the Application Extension to get
+ * @returns The Application Extension with the given id, or undefined if it does not exist
+ */
 export const useApplicationExtension = (id: string): ApplicationExtension<Config> | undefined => {
     const extensions = useApplicationExtensions()
     return extensions.find(extension => (extension.constructor as typeof ApplicationExtension).id === id)
