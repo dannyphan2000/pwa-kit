@@ -18,8 +18,11 @@ import {withStoreLocator} from './components/store-locator/with-store-locator'
 import {Config} from './types'
 
 import StoreLocatorPage from './pages/store-locator'
+import extensionMeta from '../extension-meta.json'
 
 class StoreLocatorExtension extends ApplicationExtension<Config> {
+    static readonly id = extensionMeta.id
+
     DEFAULT_PATH = '/store-locator'
     DEFAULT_RADIUS = 100
     DEFAULT_RADIUS_UNIT = 'km'

@@ -14,9 +14,10 @@ import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/express'
 // Local Imports
 import {Config} from './types'
 
+import extensionMeta from '../extension-meta.json'
+
 class SampleExtension extends ApplicationExtension<Config> {
-    // todo: remove this, and implement the static id in the React base class
-    static override readonly id = '@salesforce/extension-sample'
+    static readonly id = extensionMeta.id
 
     extendApp(app: Application): Application {
         app.get('/sample', (req, res) => {
