@@ -41,16 +41,6 @@ export abstract class ApplicationExtension<Config extends ApplicationExtensionCo
     }
 
     /**
-     * Returns the id of the extension.
-     *
-     * @protected
-     * @returns id - The id of the extension.
-     */
-    static getId(): string {
-        return this.id
-    }
-
-    /**
      * Returns the configuration that was used to instantiate this application extension.
      *
      * @protected
