@@ -6,9 +6,12 @@
  */
 
 import {useApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
-import Extension from '../setup-app'
+import extensionMeta from '../../extension-meta.json'
 
+/**
+ * This hook returns the configuration for the current application extension.
+ */
 export const useExtensionConfig = () => {
-    const extension = useApplicationExtension(Extension.id)
+    const extension = useApplicationExtension(extensionMeta.id)
     return extension?.getConfig()
 }
