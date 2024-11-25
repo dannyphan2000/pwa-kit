@@ -7,6 +7,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+// The @jest-environment comment block *MUST* be the first line of the file for the tests to pass.
+// That conflicts with the monorepo header rule, so we must disable the rule!
+/* eslint-disable header/header */
 import React, {ReactNode} from 'react'
 import {renderHook} from '@testing-library/react'
 import {useApplicationExtensions, useApplicationExtension} from './useApplicationExtensions'
