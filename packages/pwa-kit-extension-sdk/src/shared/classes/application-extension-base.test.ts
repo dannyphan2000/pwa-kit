@@ -15,6 +15,16 @@ interface MockConfig extends ApplicationExtensionConfig {
 // Create a concrete subclass of ApplicationExtension for testing purposes
 class TestApplicationExtension extends ApplicationExtension<MockConfig> {}
 
+// Create test extensions with different default config scenarios
+class TestExtensionWithDefaults extends ApplicationExtension<MockConfig> {
+    protected defaultConfig = {
+        enabled: true,
+        testValue: 'default'
+    }
+}
+
+class TestExtensionWithoutDefaults extends ApplicationExtension<MockConfig> {}
+
 // Jest test suite
 describe('ApplicationExtension', () => {
     let config: MockConfig
@@ -46,5 +56,47 @@ describe('ApplicationExtension', () => {
     test('should return true if enabled is undefined', () => {
         config.enabled = undefined
         expect(extension.isEnabled()).toBe(true)
+    })
+
+    describe('defaultConfig behavior', () => {
+        test('should use default config when no values are provided', () => {
+            const extension = new TestExtensionWithDefaults({})
+            expect(extension.getConfig()).toEqual({
+                enabled: true,
+                testValue: 'default'
+            })
+        })
+
+        test('should override default config with provided values', () => {
+            const extension = new TestExtensionWithDefaults({
+                enabled: false,
+                testValue: 'custom'
+            })
+            expect(extension.getConfig()).toEqual({
+                enabled: false,
+                testValue: 'custom'
+            })
+        })
+
+        test('should partially override default config', () => {
+            const extension = new TestExtensionWithDefaults({
+                testValue: 'custom'
+            })
+            expect(extension.getConfig()).toEqual({
+                enabled: true,
+                testValue: 'custom'
+            })
+        })
+
+        test('should work without default config', () => {
+            const config = {enabled: true, testValue: 'test'}
+            const extension = new TestExtensionWithoutDefaults(config)
+            expect(extension.getConfig()).toEqual(config)
+        })
+
+        test('should handle empty config with no defaults', () => {
+            const extension = new TestExtensionWithoutDefaults({})
+            expect(extension.getConfig()).toEqual({})
+        })
     })
 })
