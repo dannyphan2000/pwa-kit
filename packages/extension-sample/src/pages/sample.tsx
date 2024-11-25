@@ -6,7 +6,7 @@
  */
 import React, {Fragment} from 'react'
 import {getStaticAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
-import {useExtensionConfig} from '../hooks/useExtensionConfig'
+import {useExtensionConfig} from '../hooks/use-extension-config'
 
 const Sample = () => {
     const config = useExtensionConfig()
