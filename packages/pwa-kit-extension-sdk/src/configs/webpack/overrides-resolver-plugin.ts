@@ -64,8 +64,8 @@ export class OverridesResolverPlugin {
             return
         }
         const target = resolver.ensureHook('resolved')
-        const importPath = request.request
-        const sourcePath = request.context.issuer
+        const importPath: string = request.request
+        const sourcePath: string = request.context.issuer
 
         // Resolve the import with the provided packageIterator.
         let modulePath
@@ -82,7 +82,13 @@ export class OverridesResolverPlugin {
                 ...this.options.resolveOptions
             })
         } catch (e: any) {
-            return callback(e)
+            // Return a better error message
+            return callback(
+                new Error(
+                    // sourcePath, in this case, points to a more specific file that is more helpful for debugging
+                    `Cannot find module '${importPath}' from '${sourcePath}'`
+                )
+            )
         }
 
         // Update the requests path with the one resolved from above.

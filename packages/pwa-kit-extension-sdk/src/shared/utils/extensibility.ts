@@ -7,10 +7,12 @@
 
 // Third-Party
 import fse from 'fs-extra'
-import path from 'path'
+import path, {resolve} from 'path'
 
 // Types
-import {ApplicationExtensionEntry} from '../../types'
+import {ApplicationExtensionEntry, ApplicationExtensionEntryTuple} from '../../types'
+
+import {expand} from './index'
 
 // CONSTANTS
 // const REACT_EXTENSIBILITY_FILE = 'setup-app'
@@ -102,4 +104,64 @@ export const getExtensionNames = (extensions: ApplicationExtensionEntry[]) => {
     return (extensions || []).map((extension) => {
         return Array.isArray(extension) ? extension[0] : extension
     })
+}
+
+/**
+ * Validate the given extensions to make sure that other extensions they depend on will be loaded.
+ * @returns the validation status. If it fails, then an error will also be returned, which lists what dependencies are missing or disabled.
+ */
+export const validateExtensionDependencies = (
+    appExtensions: ApplicationExtensionEntry[]
+): {success: boolean; errors?: Error[]} => {
+    const extensions = expand(appExtensions)
+
+    const hasRequiredDependencies = (extension: ApplicationExtensionEntryTuple) => {
+        const dependencies = getDependencies(extension)
+        if (dependencies.length === 0) return {success: true, dependencies}
+
+        const previousExtensions = getPreviousExtensions(extension, extensions)
+        const success = dependencies.every((dependency) => {
+            return Boolean(
+                previousExtensions.find((ext) => ext[0] === dependency && (ext[1].enabled ?? true))
+            )
+        })
+
+        return {success, dependencies}
+    }
+
+    const errors = extensions
+        .map((extension) => {
+            const {success, dependencies} = hasRequiredDependencies(extension)
+            return success
+                ? undefined
+                : new Error(
+                      `Extension(s) missing or disabled: ${dependencies.join(
+                          ', '
+                      )}, as required by ${extension[0]}`
+                  )
+        })
+        .filter((error): error is Error => Boolean(error))
+
+    const success = errors.length === 0
+
+    return {
+        success,
+        ...(!success ? {errors} : {})
+    }
+}
+
+const getDependencies = (extension: ApplicationExtensionEntryTuple) => {
+    const projectDir = process.cwd()
+    const pkg = fse.readJsonSync(resolve(projectDir, 'node_modules', extension[0], 'package.json'))
+
+    return Object.keys(pkg.peerDependencies).filter((name) => name.match(nameRegex) !== null)
+}
+
+const getPreviousExtensions = (
+    currentExtension: ApplicationExtensionEntryTuple,
+    extensions: ApplicationExtensionEntryTuple[]
+) => {
+    const array = extensions.slice().reverse()
+    const index = array.findIndex((extension) => extension[0] === currentExtension[0])
+    return array.slice(index + 1)
 }

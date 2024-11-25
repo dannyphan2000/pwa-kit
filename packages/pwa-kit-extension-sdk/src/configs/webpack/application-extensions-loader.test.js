@@ -26,11 +26,7 @@ const BASE_VIRTUAL_FILES = {
     // QUIRK! These entries are required to access the files in the actual file system. The resolve method fails if
     // they don't exist. This is a sharpe edge, but it's not too bad.
     [`${path.resolve(__dirname, './application-extensions-loader.ts')}`]: '',
-    [`${path.resolve(__dirname, '../../../node_modules/@loadable/component')}`]: '',
-    [`${path.resolve(
-        __dirname,
-        '../../../node_modules/@salesforce/pwa-kit-extension-sdk/shared/utils/helpers'
-    )}`]: ''
+    [`${path.resolve(__dirname, '../../../node_modules/@loadable/component')}`]: ''
 }
 
 describe('Application Extension Loader', () => {
@@ -40,24 +36,8 @@ describe('Application Extension Loader', () => {
             entryPoint: './app/main.jsx',
             expects: (output) => {
                 const file = dedent`
-                    import {getConfiguredExtensions} from '../../shared/utils/helpers'
-
-
-                    const imports = {
-                    }
-
                     const getApplicationExtensions = async () => {
-                        const configuredExtensions = getConfiguredExtensions()
-                        if (!configuredExtensions) return []
-
-                        const modules = await Promise.all(configuredExtensions.map((extension) => {
-                            const [packageName] = extension
-                            return imports[packageName].load()
-                        }))
-                        return configuredExtensions.map((extension, index) => {
-                            const [,config] = extension
-                            return new modules[index].default(config)
-                        })
+                        return []
                     }
 
                     export {
@@ -74,27 +54,13 @@ describe('Application Extension Loader', () => {
             entryPoint: './app/main.jsx',
             expects: (output) => {
                 const file = dedent`
-                    import {getConfiguredExtensions} from '../../shared/utils/helpers'
                     import loadable from '@loadable/component'
 
                     const SalesforceSampleALoader = loadable.lib(() => import('@salesforce/extension-sample-a/setup-app'))
 
-                    const imports = {
-                        '@salesforce/extension-sample-a': SalesforceSampleALoader,
-                    }
-
                     const getApplicationExtensions = async () => {
-                        const configuredExtensions = getConfiguredExtensions()
-                        if (!configuredExtensions) return []
-
-                        const modules = await Promise.all(configuredExtensions.map((extension) => {
-                            const [packageName] = extension
-                            return imports[packageName].load()
-                        }))
-                        return configuredExtensions.map((extension, index) => {
-                            const [,config] = extension
-                            return new modules[index].default(config)
-                        })
+                        const modules = await Promise.all([SalesforceSampleALoader.load()])
+                        return [new modules[0].default({"enabled":true})]
                     }
 
                     export {
@@ -120,22 +86,10 @@ describe('Application Extension Loader', () => {
             entryPoint: './app/main.jsx',
             expects: (output) => {
                 const file = dedent`
-                    import {getConfiguredExtensions} from '../../shared/utils/helpers'
-
                     import SalesforceSampleA from '@salesforce/extension-sample-a/setup-server'
 
-                    const imports = {
-                        '@salesforce/extension-sample-a': SalesforceSampleA,
-                    }
-
                     const getApplicationExtensions = () => {
-                        const configuredExtensions = getConfiguredExtensions()
-                        if (!configuredExtensions) return []
-
-                        return configuredExtensions.map((extension) => {
-                            const [packageName, config] = extension
-                            return new imports[packageName](config)
-                        })
+                        return [new SalesforceSampleA({"enabled":true})]
                     }
 
                     export {
@@ -170,10 +124,6 @@ describe('Application Extension Loader', () => {
                         '@loadable/component$': path.resolve(
                             __dirname,
                             '../../../node_modules/@loadable/component'
-                        ),
-                        '../../shared/utils/helpers$': path.resolve(
-                            __dirname,
-                            '../../../node_modules/@salesforce/pwa-kit-extension-sdk/shared/utils/helpers'
                         )
                     },
                     files,

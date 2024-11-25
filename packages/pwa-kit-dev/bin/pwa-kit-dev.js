@@ -17,6 +17,10 @@ const {getConfig} = require('@salesforce/pwa-kit-runtime/utils/ssr-config')
 const {
     buildBabelExtensibilityArgs
 } = require('@salesforce/pwa-kit-extension-sdk/configs/babel/utils')
+const {
+    getConfiguredExtensions,
+    validateExtensionDependencies
+} = require('@salesforce/pwa-kit-extension-sdk/shared/utils')
 
 // Scripts in ./bin have never gone through babel, so we
 // don't have a good pattern for mixing compiled/un-compiled
@@ -64,6 +68,22 @@ const getProjectName = async () => {
 
 const getAppEntrypoint = () => {
     return p.join(process.cwd(), 'app', 'ssr.js')
+}
+
+/**
+ * For some commands, we like to validate the configuration first before proceeding with the rest of the command.
+ * Currently, we're only validating the app extensions, but we plan to validate other parts of the config in the future.
+ */
+const validateAppConfiguration = () => {
+    const extensions = getConfiguredExtensions(getConfig())
+    if (extensions.length > 0) {
+        info('Validating app extensions...')
+        const {success, errors} = validateExtensionDependencies(extensions)
+        if (!success) {
+            errors.forEach((e) => error(e.message))
+            throw new Error('Please double-check your configuration.')
+        }
+    }
 }
 
 const main = async () => {
@@ -232,6 +252,9 @@ const main = async () => {
             ).default('--extensions ".js,.jsx,.ts,.tsx"')
         )
         .action(async ({inspect, noHMR, babelArgs}) => {
+            validateAppConfiguration()
+
+            info('Starting server...')
             // We use @babel/node instead of node because we want to support ES6 import syntax
             const babelNode = p.join(
                 require.resolve('webpack'),
@@ -243,9 +266,9 @@ const main = async () => {
             )
 
             execSync(
-                `${babelNode} ${
-                    inspect ? '--inspect' : ''
-                } ${buildBabelExtensibilityArgs()} ${babelArgs} ${getAppEntrypoint()}`,
+                `${babelNode} ${inspect ? '--inspect' : ''} ${buildBabelExtensibilityArgs(
+                    getConfig()
+                )} ${babelArgs} ${getAppEntrypoint()}`,
                 {
                     env: {
                         ...process.env,
@@ -267,6 +290,9 @@ const main = async () => {
         )
         .description(`build your app for production`)
         .action(async ({buildDirectory}) => {
+            validateAppConfiguration()
+
+            info('Building...')
             const webpack = p.join(require.resolve('webpack'), '..', '..', '..', '.bin', 'webpack')
             const projectWebpack = p.join(process.cwd(), 'webpack.config.js')
             const webpackConf = fse.pathExistsSync(projectWebpack)
@@ -302,6 +328,8 @@ const main = async () => {
                     '// This file is required by Managed Runtime for historical reasons.\n'
                 )
             }
+
+            success(`Build directory is at ${buildDirectory}`)
         })
 
     managedRuntimeCommand('push')

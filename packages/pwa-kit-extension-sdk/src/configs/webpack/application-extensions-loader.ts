@@ -33,9 +33,8 @@ export default function ApplicationExtensibilityLoader(
 ): string {
     // TODO: Add checking for arguments.
 
-    // Get the installed and configured application extensions as well as the requested
-    // target type. For web targets the loader takes advantage of react-loadabled but node
-    // targets (server) do not require this optimization.
+    // Get configured application extensions as well as the requested target type.
+    // For web targets, the loader takes advantage of react-loadable but node targets (server) do not require this optimization.
     const data = this.getOptions()
 
     return renderTemplate(data)

@@ -34,7 +34,6 @@ Handlebars.registerHelper('jsonStringify', (context) => JSON.stringify(context, 
 // to issues with pathing because the current working directory for the loader isn't the same as the base project.
 // We can look to resolve this in the future as it would be nice to have a independant file for the template.
 const templateString = dedent`
-    import {getConfiguredExtensions} from '../../shared/utils/helpers'
     {{#if (isWeb @root.target)}}
     import loadable from '@loadable/component'
     {{/if}}
@@ -47,39 +46,22 @@ const templateString = dedent`
     {{/if}}
     {{/each}}
 
-    const imports = {
-        {{#each configured}}
-        {{#if (isNode @root.target)}}
-        '{{this.[0]}}': {{getInstanceName this.[0]}},
-        {{else}}
-        '{{this.[0]}}': {{getInstanceName this.[0]}}Loader,
-        {{/if}}
-        {{/each}}
-    }
-
     {{#if (isNode @root.target)}}
     const getApplicationExtensions = () => {
-        const configuredExtensions = getConfiguredExtensions()
-        if (!configuredExtensions) return []
-
-        return configuredExtensions.map((extension) => {
-            const [packageName, config] = extension
-            return new imports[packageName](config)
-        })
+        {{#if configured}}
+        return [{{#each configured}}new {{getInstanceName this.[0]}}({{{jsonStringify this.[1]}}}){{#if (isNotLast @index @root.configured.length)}}, {{/if}}{{/each}}]
+        {{else}}
+        return []
+        {{/if}}
     }
     {{else}}
     const getApplicationExtensions = async () => {
-        const configuredExtensions = getConfiguredExtensions()
-        if (!configuredExtensions) return []
-
-        const modules = await Promise.all(configuredExtensions.map((extension) => {
-            const [packageName] = extension
-            return imports[packageName].load()
-        }))
-        return configuredExtensions.map((extension, index) => {
-            const [,config] = extension
-            return new modules[index].default(config)
-        })
+    	{{#if configured}}
+        const modules = await Promise.all([{{#each configured}}{{getInstanceName this.[0]}}Loader.load(){{#if (isNotLast @index @root.configured.length)}},{{/if}}{{/each}}])
+        return [{{#each configured}}new modules[{{@index}}].default({{{jsonStringify this.[1]}}}){{#if (isNotLast @index @root.configured.length)}}, {{/if}}{{/each}}]
+        {{else}}
+        return []
+        {{/if}}
     }
     {{/if}}
 
