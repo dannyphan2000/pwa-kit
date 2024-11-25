@@ -343,12 +343,10 @@ test('Ignores the badges that are NOT defined as boolean custom properties', () 
 
 test('Product tile swatches have non-null href attributes', () => {
     // hrefs are required for keyboard navigable swatches
-    const {getAllByRole} = renderWithProviders(
-        <ProductTile product={mockProductSearchItem} />
-    )
+    const {getAllByRole} = renderWithProviders(<ProductTile product={mockProductSearchItem} />)
     const swatches = getAllByRole('radio')
 
-    swatches.forEach(swatch => {
+    swatches.forEach((swatch) => {
         expect(swatch.getAttribute('href')).not.toBeNull()
     })
 })
