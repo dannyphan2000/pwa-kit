@@ -33,8 +33,8 @@ export const usePasswordReset = () => {
             // TODO: Should this be handled by commerce-sdk-react
             client_id: clientId,
             // TODO: Should this be set in default.js or constant?
-            callback_uri: 'https://webhook.site/679c46ea-a63b-41e1-b768-4db79d953646',
-            // callback_uri: absoluteUrl('/reset-password-landing'),
+            // callback_uri: 'https://webhook.site/679c46ea-a63b-41e1-b768-4db79d953646',
+            callback_uri: absoluteUrl('/reset-password-callback'),
             hint: 'cross_device'
         }
         await getPasswordResetTokenMutation.mutateAsync({headers, body})
