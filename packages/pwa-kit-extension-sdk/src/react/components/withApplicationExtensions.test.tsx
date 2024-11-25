@@ -36,6 +36,8 @@ jest.mock('../utils', () => ({
 
 // Sample mock extension
 class MockExtension extends ApplicationExtension<ApplicationExtensionConfigBase> {
+    static readonly id = 'mock-extension'
+
     extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
