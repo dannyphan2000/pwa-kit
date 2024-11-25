@@ -48,6 +48,25 @@ class MockExtension extends ApplicationExtension<ApplicationExtensionConfigBase>
     }
 }
 
+// Sample mock extension with default config
+class MockExtensionWithDefaults extends ApplicationExtension<ApplicationExtensionConfigBase> {
+    protected defaultConfig = {
+        enabled: true,
+        testOption: 'default value'
+    }
+
+    extendApp<T extends React.ComponentType<T>>(
+        App: React.ComponentType<T>
+    ): React.ComponentType<T> {
+        const EnhancedComponent: React.FC<T> = (props) => (
+            <div data-testid="mock-extension" data-test-option={this.getConfig().testOption}>
+                <App {...props} />
+            </div>
+        )
+        return EnhancedComponent
+    }
+}
+
 // Sample WrappedComponent for testing
 const WrappedComponent: React.FC = () => <div data-testid="wrapped-component">Wrapped</div>
 
@@ -126,5 +145,58 @@ describe('withApplicationExtensions HOC', () => {
 
         // expect(getApplicationExtensions).toHaveBeenCalledTimes(1)
         expect(getByTestId('wrapped-component')).toBeInTheDocument()
+    })
+
+    describe('defaultConfig behavior', () => {
+        test('should use default config when no values are provided', () => {
+            const mockExtension = new MockExtensionWithDefaults({})
+            const mockExtensions = [mockExtension]
+            ;(getApplicationExtensions as jest.Mock).mockResolvedValue(mockExtensions)
+
+            const EnhancedComponent = withApplicationExtensions(WrappedComponent, {
+                applicationExtensions: mockExtensions
+            })
+
+            const {getByTestId} = render(<EnhancedComponent />)
+            
+            expect(getByTestId('mock-extension')).toHaveAttribute('data-test-option', 'default value')
+        })
+
+        test('should override default config with provided values', () => {
+            const mockExtension = new MockExtensionWithDefaults({
+                testOption: 'custom value'
+            })
+            const mockExtensions = [mockExtension]
+            ;(getApplicationExtensions as jest.Mock).mockResolvedValue(mockExtensions)
+
+            const EnhancedComponent = withApplicationExtensions(WrappedComponent, {
+                applicationExtensions: mockExtensions
+            })
+
+            const {getByTestId} = render(<EnhancedComponent />)
+            
+            expect(getByTestId('mock-extension')).toHaveAttribute('data-test-option', 'custom value')
+        })
+
+        test('should handle extensions with no default config', () => {
+            class MockExtensionNoDefaults extends ApplicationExtension<ApplicationExtensionConfigBase> {
+                extendApp<T extends React.ComponentType<T>>(
+                    App: React.ComponentType<T>
+                ): React.ComponentType<T> {
+                    return App
+                }
+            }
+
+            const mockExtension = new MockExtensionNoDefaults({ enabled: true })
+            const mockExtensions = [mockExtension]
+            ;(getApplicationExtensions as jest.Mock).mockResolvedValue(mockExtensions)
+
+            const EnhancedComponent = withApplicationExtensions(WrappedComponent, {
+                applicationExtensions: mockExtensions
+            })
+
+            // Should render without errors
+            expect(() => render(<EnhancedComponent />)).not.toThrow()
+        })
     })
 })

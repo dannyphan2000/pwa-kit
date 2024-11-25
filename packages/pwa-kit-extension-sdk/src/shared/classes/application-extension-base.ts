@@ -21,12 +21,21 @@ export abstract class ApplicationExtension<Config extends ApplicationExtensionCo
     private config: Config
 
     /**
+     * Optional default configuration that will be merged with the provided config.
+     * Extension authors can override this to provide default values.
+     */
+    protected defaultConfig?: Config
+
+    /**
      * Constructs a new instance of the ApplicationExtension class.
      *
      * @param config - The configuration object used to set up the extension.
      */
     constructor(config: Config) {
-        this.config = config
+        this.config = {
+            ...(this.defaultConfig || {}),
+            ...config
+        }
     }
 
     /**
