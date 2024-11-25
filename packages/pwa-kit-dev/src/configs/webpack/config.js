@@ -21,7 +21,7 @@ import SpeedMeasurePlugin from 'speed-measure-webpack-plugin'
 import WebpackNotifierPlugin from 'webpack-notifier'
 
 // PWA-Kit Plugins
-import {OverridesResolverPlugin} from '@salesforce/pwa-kit-extension-sdk/configs/webpack'
+import ApplicationExtensionConfigPlugin from '@salesforce/pwa-kit-extension-sdk/configs/webpack/application-extensions-config-plugin'
 
 // Local Plugins
 import {sdkReplacementPlugin} from './plugins'
@@ -187,13 +187,6 @@ const baseConfig = (target) => {
                     path: buildDir
                 },
                 resolve: {
-                    plugins: [
-                        new OverridesResolverPlugin({
-                            projectDir: process.cwd(),
-                            extensions: getConfiguredExtensions(getConfig()),
-                            fileExtensions: SUPPORTED_FILE_EXTENSIONS
-                        })
-                    ],
                     extensions: SUPPORTED_FILE_EXTENSIONS,
                     alias: {
                         ...Object.assign(
@@ -215,14 +208,24 @@ const baseConfig = (target) => {
                     },
                     ...(target === 'web' ? {fallback: {crypto: false}} : {})
                 },
+                resolveLoader: {
+                    alias: {
+                        overridable: findDepInStack(
+                            '@salesforce/pwa-kit-extension-sdk/configs/webpack/overrides-resolver-loader.js'
+                        )
+                    }
+                },
                 plugins: [
+                    new ApplicationExtensionConfigPlugin({
+                        extensions: getConfiguredExtensions(getConfig())
+                    }),
                     new webpack.DefinePlugin({
                         DEBUG,
                         NODE_ENV: `'${process.env.NODE_ENV}'`,
                         WEBPACK_TARGET: `'${target}'`,
                         ['global.GENTLY']: false
                     }),
-
+                    // new SharedStatePlugin(),
                     mode === development && new webpack.NoEmitOnErrorsPlugin(),
 
                     sdkReplacementPlugin(),
@@ -364,6 +367,9 @@ const enableReactRefresh = (config) => {
 
     const newRule = ruleForBabelLoader([require.resolve('react-refresh/babel')])
     const rules = findAndReplace(config.module.rules, (rule) => rule.id === 'babel-loader', newRule)
+
+    // NOTE: This ensures that files processed with the override-loader do not get processed again for hmr.
+    rules[0].exclude = (resource) => resource.includes('?noHMR=true')
 
     return {
         ...config,
