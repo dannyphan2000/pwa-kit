@@ -14,7 +14,7 @@ import ApplicationExtensionConfigPlugin from './application-extensions-config-pl
 // Types
 import type {ExtendedCompiler} from './types'
 
-describe('Overrides Resolver Loader', () => {
+describe('Application Extensions Config Plugin', () => {
     const testCases = [
         {
             description: 'Plugin injects Application Extensions configuration passed to it.',

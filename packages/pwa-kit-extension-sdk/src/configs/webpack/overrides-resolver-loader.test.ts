@@ -139,7 +139,7 @@ describe('Overrides Resolver Loader', () => {
 
                     // Extension using overridable import
                     '/node_modules/@salesforce/extension-this/src/pages/sample-page.jsx':
-                        '// @salesforce/extension-other',
+                        '// @salesforce/extension-this',
                     '/node_modules/@salesforce/extension-this/package.json':
                         '{"name": "@salesforce/extension-this"}',
                     '/node_modules/@salesforce/extension-this/src/setup-app.js':
