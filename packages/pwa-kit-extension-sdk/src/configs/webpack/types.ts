@@ -6,12 +6,22 @@
  */
 
 // Third-Party
-import {LoaderContext} from 'webpack'
-import {ApplicationExtensionEntryTuple} from '../../types'
+import {Compiler, LoaderContext} from 'webpack'
+import {ApplicationExtensionEntry} from '../../types'
 
 export interface ApplicationExtensionsLoaderOptions {
-    configured: ApplicationExtensionEntryTuple[]
+    configured: ApplicationExtensionEntry[]
     target: 'node' | 'web'
 }
 
 export type ApplicationExtensionsLoaderContext = LoaderContext<ApplicationExtensionsLoaderOptions>
+
+/**
+ * Define the ExtendedCompiler type by picking and adding properties
+ * from the Webpack LoaderContext.
+ */
+export type ExtendedCompiler = Compiler & {
+    custom?: {
+        extensions: any[]
+    }
+}

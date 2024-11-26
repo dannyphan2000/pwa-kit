@@ -44,8 +44,13 @@
     "npm": "^8.0.0 || ^9.0.0 || ^10.0.0"
   },
   "mobify": {
+<<<<<<< HEAD
     "app": {
       "extensions": [["@salesforce/extension-sample", {"enabled": true}]]
+=======
+    "app":{
+      "extensions": ["@salesforce/extension-sample"]
+>>>>>>> feature/extensibility-v2
     },
     "ssrEnabled": true,
     "ssrOnly": [

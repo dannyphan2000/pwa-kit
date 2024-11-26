@@ -10,7 +10,7 @@ import React from 'react'
 // Define the HOC function
 const withRedBorder = <T extends object>(WrappedComponent: React.ComponentType<T>) => {
     const ComponentWithRedBorder: React.FC<T> = (props) => (
-        <div style={{border: '2px solid red', padding: '8px'}}>
+        <div style={{flex: 1, border: '2px solid red'}}>
             <WrappedComponent {...props} />
         </div>
     )

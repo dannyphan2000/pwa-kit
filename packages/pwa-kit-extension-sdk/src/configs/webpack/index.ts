@@ -6,4 +6,5 @@
  */
 
 export * from './application-extensions-loader'
-export * from './overrides-resolver-plugin'
+export * from './application-extensions-config-plugin'
+export * from './overrides-resolver-loader'
