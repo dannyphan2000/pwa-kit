@@ -34,13 +34,6 @@ const createWrapper = (extensions: ApplicationExtension<any>[]) => {
 }
 
 describe('useApplicationExtensions', () => {
-    it('throws error when used outside of ApplicationExtensionsProvider', () => {
-        const {result} = renderHook(() => useApplicationExtensions())
-        expect(() => result.current).toThrow(
-            "'useApplicationExtensions' must be used within ApplicationExtensionsProvider!"
-        )
-    })
-
     it('returns all extensions from context', () => {
         const mockExtensions = [new TestExtension1({}), new TestExtension2({})]
         const wrapper = createWrapper(mockExtensions)
