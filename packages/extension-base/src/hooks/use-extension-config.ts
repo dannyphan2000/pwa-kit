@@ -18,5 +18,5 @@ export const useExtensionConfig = () => {
             `'useExtensionConfig' could not find your current application extension instance!`
         )
     }
-    return extension?.getConfig()
+    return extension.getConfig()
 }
