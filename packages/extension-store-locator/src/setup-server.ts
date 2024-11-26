@@ -13,8 +13,10 @@ import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/express'
 
 // Local Imports
 import {Config} from './types'
+import extensionMeta from '../extension-meta.json'
 
 class StoreLocatorExtension extends ApplicationExtension<Config> {
+    static readonly id = extensionMeta.id
     extendApp(app: Application): Application {
         return app
     }

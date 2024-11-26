@@ -17,7 +17,7 @@ import {ApplicationExtensionConfig} from '../../types'
  * @abstract
  */
 export abstract class ApplicationExtension<Config extends ApplicationExtensionConfig> {
-    static id: string
+    static readonly id: string
     private config: Config
 
     /**
@@ -26,6 +26,15 @@ export abstract class ApplicationExtension<Config extends ApplicationExtensionCo
      * @param config - The configuration object used to set up the extension.
      */
     constructor(config: Config) {
+        const cls = this.constructor as typeof ApplicationExtension
+        if (!cls.id) {
+            // This is a long standing typescript issue that typescript cannot enforce
+            // that the static property is defined in the subclass. So we need to throw
+            // an error here to let the developer know that they need to define the
+            // static property in their subclass.
+            // We can remove this once TS supports abstract static properties.
+            throw new Error(`Static readonly property 'id' must be defined in class ${cls.name}`)
+        }
         this.config = config
     }
 

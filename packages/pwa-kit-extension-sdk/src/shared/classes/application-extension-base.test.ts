@@ -13,7 +13,9 @@ interface MockConfig extends ApplicationExtensionConfig {
 }
 
 // Create a concrete subclass of ApplicationExtension for testing purposes
-class TestApplicationExtension extends ApplicationExtension<MockConfig> {}
+class TestApplicationExtension extends ApplicationExtension<MockConfig> {
+    static readonly id = 'test-extension'
+}
 
 // Jest test suite
 describe('ApplicationExtension', () => {

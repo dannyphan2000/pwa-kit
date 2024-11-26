@@ -18,7 +18,7 @@ import createLogger from '@salesforce/pwa-kit-runtime/utils/logger-factory'
 
 // Local Imports
 import {resolveSiteFromUrl, resolveLocaleFromUrl} from '../../utils/site-utils'
-import {useConfig} from '../../hooks/use-config'
+import {useExtensionConfig} from '../../hooks/use-extension-config'
 // Define a type for the HOC props
 type WithCommerceSDKReactProps = {
     shortCode: string
@@ -41,7 +41,7 @@ const withCommerceSDKReact = <P extends object>(WrappedComponent: React.Componen
         const path = req?.originalUrl || `${window.location.pathname}${window.location.search}`
 
         // TODO: Update this type
-        const config: any = useConfig()
+        const config: any = useExtensionConfig()
 
         const appOrigin = getAppOrigin()
         const site: any = resolveSiteFromUrl(path)

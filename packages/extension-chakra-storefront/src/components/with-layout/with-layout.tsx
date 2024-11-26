@@ -40,7 +40,7 @@ import ScrollToTop from '../scroll-to-top'
 // Local Project Hooks
 import {AuthModal, useAuthModal} from '../../hooks/use-auth-modal'
 import {AddToCartModalProvider} from '../../hooks/use-add-to-cart-modal'
-import {useConfig} from '../../hooks/use-config'
+import {useExtensionConfig} from '../../hooks/use-extension-config'
 import {useCurrentCustomer} from '../../hooks/use-current-customer'
 import {useCurrentBasket} from '../../hooks/use-current-basket'
 import {watchOnlineStatus, flatten} from '../../utils/utils'
@@ -110,7 +110,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
         const appOrigin = getAppOrigin()
         const activeData = useActiveData()
-        const config = useConfig()
+        const config = useExtensionConfig()
         const history = useHistory()
         const location = useLocation()
         const authModal = useAuthModal()

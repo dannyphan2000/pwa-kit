@@ -14,13 +14,17 @@ class TestConfig implements ApplicationExtensionConfig {
     enabled = true
 }
 
+class TestExtension extends ApplicationExtension<TestConfig> {
+    static readonly id = 'test-extension'
+}
+
 describe('ApplicationExtension', () => {
     let extension: ApplicationExtension<TestConfig>
     let mockComponent: React.ComponentType<any>
 
     beforeEach(() => {
         const config = new TestConfig()
-        extension = new ApplicationExtension(config)
+        extension = new TestExtension(config)
         mockComponent = jest.fn(() => <div>Test Component</div>)
     })
 

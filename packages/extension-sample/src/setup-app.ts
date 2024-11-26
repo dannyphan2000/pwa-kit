@@ -17,9 +17,13 @@ import withRedBorder from 'overridable!./components/with-red-border'
 import {Config} from './types'
 
 import SamplePage from './pages/sample'
+import extensionMeta from '../extension-meta.json'
 
 const defaultPath = '/sample-page'
+
 class Sample extends ApplicationExtension<Config> {
+    static readonly id = extensionMeta.id
+
     extendApp<T>(App: React.ComponentType<T>): React.ComponentType<T> {
         return withRedBorder(App)
     }

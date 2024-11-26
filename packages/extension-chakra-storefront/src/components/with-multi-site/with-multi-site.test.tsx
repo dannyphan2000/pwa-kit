@@ -12,14 +12,14 @@ import withMultiSite from './with-multi-site'
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {createUrlTemplate} from '../../utils/url'
 import {resolveSiteFromUrl, resolveLocaleFromUrl} from '../../utils/site-utils'
-import {useConfig} from '../../hooks/use-config'
+import {useExtensionConfig} from '../../hooks/use-extension-config'
 
 // Mock dependencies
 jest.mock('@salesforce/pwa-kit-react-sdk/ssr/universal/hooks', () => ({
     useServerContext: jest.fn()
 }))
-jest.mock('../../hooks/use-config', () => ({
-    useConfig: jest.fn()
+jest.mock('../../hooks/use-extension-config', () => ({
+    useExtensionConfig: jest.fn()
 }))
 jest.mock('../../utils/url', () => ({
     createUrlTemplate: jest.fn()
@@ -30,7 +30,7 @@ jest.mock('../../utils/site-utils', () => ({
 }))
 
 const mockUseServerContext = useServerContext as jest.MockedFunction<typeof useServerContext>
-const mockUseConfig = useConfig as jest.MockedFunction<typeof useConfig>
+const mockUseConfig = useExtensionConfig as jest.MockedFunction<typeof useExtensionConfig>
 const mockCreateUrlTemplate = createUrlTemplate as jest.MockedFunction<typeof createUrlTemplate>
 const mockResolveSiteFromUrl = resolveSiteFromUrl as jest.MockedFunction<typeof resolveSiteFromUrl>
 const mockResolveLocaleFromUrl = resolveLocaleFromUrl as jest.MockedFunction<

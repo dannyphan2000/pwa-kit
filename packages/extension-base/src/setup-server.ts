@@ -13,8 +13,11 @@ import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/express'
 
 // Local Imports
 import {Config} from './types'
+import extensionMeta from '../extension-meta.json'
 
 class SampleExtension extends ApplicationExtension<Config> {
+    static readonly id = extensionMeta.id
+
     extendApp(app: Application): Application {
         app.get('/sample', (req, res) => {
             console.log('SampleExtension extendApp GET /sample')

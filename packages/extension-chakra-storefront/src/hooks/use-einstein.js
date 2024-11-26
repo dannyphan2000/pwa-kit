@@ -13,7 +13,7 @@ import {
     useEncUserId,
     useCustomerType
 } from '@salesforce/commerce-sdk-react'
-import {useConfig} from '../hooks/use-config'
+import {useExtensionConfig} from '../hooks/use-extension-config'
 import {keysToCamel} from '../utils/utils'
 import logger from '../utils/logger-instance'
 
@@ -390,7 +390,7 @@ export class EinsteinAPI {
 const useEinstein = () => {
     const api = useCommerceApi()
     const {getTokenWhenReady} = useAccessToken()
-    const {einsteinAPI: config} = useConfig()
+    const {einsteinAPI: config} = useExtensionConfig()
     const {host, einsteinId, siteId, isProduction} = config
 
     const {getUsidWhenReady} = useUsid()

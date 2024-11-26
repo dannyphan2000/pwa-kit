@@ -6,8 +6,10 @@
  */
 import React, {Fragment} from 'react'
 import {getStaticAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
+import {useExtensionConfig} from '../hooks/use-extension-config'
 
 const Sample = () => {
+    const config = useExtensionConfig()
     const logoUrl = getStaticAssetUrl('salesforce-logo.svg', {
         appExtensionPackageName: '@salesforce/extension-sample'
     })
@@ -25,6 +27,10 @@ const Sample = () => {
                 This <i>Application Extension</i> was installed by running the below command in your
                 PWA-Kit project. Its dependancies were automatically installed and the extension
                 configured into your projects extensions array.
+            </p>
+            <p>
+                <b>Extension config:</b>
+                <pre>{JSON.stringify(config, null, 2)}</pre>
             </p>
             <div
                 style={{
