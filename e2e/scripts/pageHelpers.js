@@ -297,13 +297,13 @@ export const socialLoginShopper = async ({page}) => {
         await page.waitForSelector('input[type="email"]');
 
         // Fill in the email input
-        await page.fill('input[type="email"]', 'e2e.pwa.kit@gmail.com');
+        await page.fill('input[type="email"]', config.PWA_E2E_USER_EMAIL);
         await page.click('#identifierNext');
 
         await page.waitForLoadState();
 
         // Fill in the password input
-        await page.fill('input[type="password"]', 'hpv_pek-JZK_xkz0wzf');
+        await page.fill('input[type="password"]', PWA_E2E_USER_PASSWORD);
         await page.click('#passwordNext');
         await page.waitForLoadState();
 
