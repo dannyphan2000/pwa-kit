@@ -62,7 +62,7 @@ const Skeleton = forwardRef(({children, height, width, ...rest}, ref) => {
 
 Skeleton.displayName = 'Skeleton'
 
-const ProfileCard = ({isEcomAccount = false}) => {
+const ProfileCard = ({allowPasswordChange = false}) => {
     const {formatMessage} = useIntl()
     const headingRef = useRef(null)
     const {data: customer} = useCurrentCustomer()
@@ -143,7 +143,7 @@ const ProfileCard = ({isEcomAccount = false}) => {
                 </Skeleton>
             }
             editing={isEditing}
-            disableEdit={!isEcomAccount}
+            disableEdit={!allowPasswordChange}
             isLoading={form.formState.isSubmitting}
             onEdit={isRegistered ? () => setIsEditing(true) : undefined}
             layerStyle="cardBordered"
@@ -232,7 +232,7 @@ const ProfileCard = ({isEcomAccount = false}) => {
 }
 
 ProfileCard.propTypes = {
-    isEcomAccount: PropTypes.bool
+    allowPasswordChange: PropTypes.bool
 }
 
 const PasswordCard = () => {
@@ -358,7 +358,7 @@ const AccountDetail = () => {
     }, [])
 
     const {uido} = useCustomerType()
-    const isEcomAccount = uido === 'ecom' || uido === 'slas'
+    const allowPasswordChange = uido === 'ecom' || uido === 'slas'
 
     return (
         <Stack data-testid="account-detail-page" spacing={6}>
@@ -370,8 +370,8 @@ const AccountDetail = () => {
             </Heading>
 
             <Stack spacing={4}>
-                <ProfileCard isEcomAccount={isEcomAccount} />
-                {isEcomAccount && <PasswordCard />}
+                <ProfileCard allowPasswordChange={allowPasswordChange} />
+                {allowPasswordChange && <PasswordCard />}
             </Stack>
         </Stack>
     )
