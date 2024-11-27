@@ -1,4 +1,5 @@
 ## v3.2.0-dev (Oct 29, 2024)
+- Clear auth state if session has been invalidated by a password change [#2092](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2092)
 -  Add wrappers for social login helpers: `authorizeIDP` and `loginIDPUser` [#2049](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2049)
 
 ## v3.1.0 (Oct 28, 2024)
