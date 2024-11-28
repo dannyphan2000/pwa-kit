@@ -14,6 +14,7 @@ describe('resolverUtils', () => {
             {
                 name: 'Correct paths are returned when overridable import is used in an application extension',
                 resourcePath: path.join('pages', 'sample'),
+                packageName: 'extension-a',
                 extensions: [['extension-a'], ['extension-b'], ['extension-c']],
                 expected: [
                     path.join(
@@ -22,6 +23,7 @@ describe('resolverUtils', () => {
                         'extension-c',
                         'src',
                         'overrides',
+                        'extension-a',
                         'pages',
                         'sample'
                     ),
@@ -31,6 +33,7 @@ describe('resolverUtils', () => {
                         'extension-b',
                         'src',
                         'overrides',
+                        'extension-a',
                         'pages',
                         'sample'
                     ),
@@ -40,6 +43,7 @@ describe('resolverUtils', () => {
                         'extension-a',
                         'src',
                         'overrides',
+                        'extension-a',
                         'pages',
                         'sample'
                     )
@@ -48,6 +52,7 @@ describe('resolverUtils', () => {
             {
                 name: 'Correct paths are returned when "some" extensions are disabled',
                 resourcePath: path.join('pages', 'sample'),
+                packageName: 'extension-a',
                 extensions: [['extension-a'], ['extension-b'], ['extension-c', {enabled: false}]],
                 expected: [
                     path.join(
@@ -56,6 +61,7 @@ describe('resolverUtils', () => {
                         'extension-b',
                         'src',
                         'overrides',
+                        'extension-a',
                         'pages',
                         'sample'
                     ),
@@ -65,6 +71,7 @@ describe('resolverUtils', () => {
                         'extension-a',
                         'src',
                         'overrides',
+                        'extension-a',
                         'pages',
                         'sample'
                     )
@@ -73,6 +80,7 @@ describe('resolverUtils', () => {
             {
                 name: 'Correct paths are returned when "all" extensions are disabled',
                 resourcePath: path.join('pages', 'sample'),
+                packageName: 'extension-a',
                 extensions: [
                     ['extension-a', {enabled: false}],
                     ['extension-b', {enabled: false}],
@@ -83,6 +91,7 @@ describe('resolverUtils', () => {
         ].forEach((testCase) => {
             test(`${testCase.name}`, () => {
                 const result = resolverUtils.buildCandidatePaths(testCase.resourcePath, {
+                    packageName: testCase.packageName,
                     extensionEntries: testCase.extensions
                 })
 

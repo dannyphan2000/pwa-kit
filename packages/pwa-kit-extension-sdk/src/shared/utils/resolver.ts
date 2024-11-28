@@ -54,15 +54,15 @@ export const getPackageName = (projectPath: string, opts: any): string | undefin
  * @param {String} opts.projectDir - Absolute path of the base project.
  */
 export const buildCandidatePaths = (importPath: string, opts: BuildCandidatePathsOptions) => {
-    const {extensionEntries = [], projectDir = process.cwd()} = opts
-
+    const {extensionEntries = [], packageName, projectDir = process.cwd()} = opts
+    console.log('buildCandidatePaths: ', importPath)
     // Map all the extensions and resolve the module names to absolute paths.
     const paths: string[] = expand(extensionEntries)
         .filter(([, {enabled}]) => typeof enabled === 'undefined' || enabled)
         .map(([name]) => name)
         .reduce(
             (acc, extensionRef) => [
-                path.join(projectDir, NODE_MODULES, extensionRef, SRC, OVERRIDES, importPath),
+                path.join(projectDir, NODE_MODULES, extensionRef, SRC, OVERRIDES, packageName, importPath),
                 ...acc
             ],
             [] as string[]

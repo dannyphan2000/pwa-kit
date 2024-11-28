@@ -59,7 +59,9 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     const applicationExtensions = compiler?.custom?.extensions || []
 
     // Get the master list of all possible candidate paths based on your current extension configuration.
+    console.log('packageName: ', packageName)
     let paths = buildCandidatePaths(projectRelPath, {
+        packageName,
         projectDir: basedir,
         extensionEntries: applicationExtensions
     })
@@ -75,7 +77,9 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     const currentExtensionIndex = paths.findIndex((path) => path.indexOf(packageName) > -1)
     paths = paths.slice(0, currentExtensionIndex)
 
-    const baseProjectOverridePath = path.join(basedir, APP, OVERRIDES, projectRelPath)
+    // TODO: think about moving this back into the buildCandidatePaths utility, so we have a single place that is dealing with
+    // resolver path generation.
+    const baseProjectOverridePath = path.join(basedir, APP, OVERRIDES, packageName, projectRelPath)
     // Here we are using the the `resolve` library to resolve the project relative path in conjunction with
     // 'packageIterator' that will allow use to search for the import in other folders/projects.
 
