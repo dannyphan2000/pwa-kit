@@ -1,3 +1,6 @@
+## v3.2.0-nightly-20241129080212 (Nov 29, 2024)
+## v3.2.0-dev (Nov 29, 2024)
+## v3.9.0-nightly-20241129080212 (Nov 29, 2024)
 ## v3.2.0-dev (Oct 29, 2024)
 
 - Update CacheUpdateMatrix for mergeBasket mutation [#2138](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2092)
