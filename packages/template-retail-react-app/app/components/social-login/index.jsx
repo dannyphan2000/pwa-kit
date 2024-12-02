@@ -46,7 +46,7 @@ const SocialLogin = ({idps}) => {
 
     // Build redirectURI from config values
     const appOrigin = useAppOrigin()
-    const redirectPath = getConfig().app.login.social?.redirectURI || ''
+    const redirectPath = getConfig()?.app?.login?.social?.redirectURI || ''
     const redirectURI = buildRedirectURI(appOrigin, redirectPath)
 
     const isIdpValid = (name) => {
