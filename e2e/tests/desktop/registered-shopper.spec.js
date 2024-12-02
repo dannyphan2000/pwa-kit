@@ -197,7 +197,7 @@ test("Registered shopper logged in through social retains persisted cart", async
   await page.getByLabel("Close").click();
 
   // Social Login
-  const isLoggedIn = await socialLoginShopper({
+  await socialLoginShopper({
     page
   })
 

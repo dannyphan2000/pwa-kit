@@ -300,10 +300,10 @@ export const socialLoginShopper = async ({page}) => {
         await page.fill('input[type="email"]', config.PWA_E2E_USER_EMAIL);
         await page.click('#identifierNext');
 
-        await page.waitForLoadState();
+        await page.waitForSelector('input[type="password"]');
 
         // Fill in the password input
-        await page.fill('input[type="password"]', PWA_E2E_USER_PASSWORD);
+        await page.fill('input[type="password"]', config.PWA_E2E_USER_PASSWORD);
         await page.click('#passwordNext');
         await page.waitForLoadState();
 
