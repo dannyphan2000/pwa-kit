@@ -90,7 +90,7 @@ export const routes = [
         exact: true
     },
     {
-        path: config.login.social?.redirectURI || '/social-callback',
+        path: config?.login?.social?.redirectURI || '/social-callback',
         component: SocialLoginRedirect,
         exact: true
     },
