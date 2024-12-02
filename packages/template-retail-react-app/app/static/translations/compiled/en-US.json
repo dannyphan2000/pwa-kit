@@ -2877,6 +2877,12 @@
       "value": "My Profile"
     }
   ],
+  "profile_fields.label.profile_form": [
+    {
+      "type": 0,
+      "value": "Profile Form"
+    }
+  ],
   "promo_code_fields.button.apply": [
     {
       "type": 0,

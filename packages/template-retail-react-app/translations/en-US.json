@@ -1222,6 +1222,9 @@
   "profile_card.title.my_profile": {
     "defaultMessage": "My Profile"
   },
+  "profile_fields.label.profile_form": {
+    "defaultMessage": "Profile Form"
+  },
   "promo_code_fields.button.apply": {
     "defaultMessage": "Apply"
   },

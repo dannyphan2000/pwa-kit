@@ -343,8 +343,7 @@ const AccountDetail = () => {
         headingRef?.current?.focus()
     }, [])
 
-    const {uido} = useCustomerType()
-    const allowPasswordChange = uido === 'ecom' || uido === 'slas'
+    const {isExternal} = useCustomerType()
 
     return (
         <Stack data-testid="account-detail-page" spacing={6}>
@@ -356,8 +355,8 @@ const AccountDetail = () => {
             </Heading>
 
             <Stack spacing={4}>
-                <ProfileCard allowPasswordChange={allowPasswordChange} />
-                {allowPasswordChange && <PasswordCard />}
+                <ProfileCard allowPasswordChange={!isExternal} />
+                {!isExternal && <PasswordCard />}
             </Stack>
         </Stack>
     )
