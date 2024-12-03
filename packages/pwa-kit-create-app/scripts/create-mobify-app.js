@@ -1156,41 +1156,41 @@ const main = async (opts) => {
     }
 
     // Inject the packageJSON into the context for extensibile projects.
-    if (context.answers.project.extend) {
-        const pkgJSON = JSON.parse(
-            sh.exec(`npm view ${selectedPreset.templateSource.id}@${templateVersion} --json`, {
-                silent: true
-            }).stdout
-        )
+    // if (context.answers.project.extend) {
+    //     const pkgJSON = JSON.parse(
+    //         sh.exec(`npm view ${selectedPreset.templateSource.id}@${templateVersion} --json`, {
+    //             silent: true
+    //         }).stdout
+    //     )
 
-        // NOTE: Here we are rewriting a specific script (extract-default-translations) in order
-        // to update the script location for extensibility. In the future we'll hopefully
-        // move transations outside of the template and into the sdk where the script for
-        // building translations will ultimately live, meaning we won't have to do this. So
-        // its OK for now.
-        if (pkgJSON?.scripts['extract-default-translations']) {
-            pkgJSON.scripts['extract-default-translations'] = pkgJSON.scripts[
-                'extract-default-translations'
-            ].replace('./', `./node_modules/${selectedPreset.templateSource.id}/`)
-        }
-        if (pkgJSON?.scripts['compile-translations']) {
-            pkgJSON.scripts['compile-translations'] = pkgJSON.scripts[
-                'compile-translations'
-            ].replace('./', `./node_modules/${selectedPreset.templateSource.id}/`)
-        }
-        if (pkgJSON?.scripts['compile-translations:pseudo']) {
-            pkgJSON.scripts['compile-translations:pseudo'] = pkgJSON.scripts[
-                'compile-translations:pseudo'
-            ].replace('./', `./node_modules/${selectedPreset.templateSource.id}/`)
-        }
+    //     // NOTE: Here we are rewriting a specific script (extract-default-translations) in order
+    //     // to update the script location for extensibility. In the future we'll hopefully
+    //     // move transations outside of the template and into the sdk where the script for
+    //     // building translations will ultimately live, meaning we won't have to do this. So
+    //     // its OK for now.
+    //     if (pkgJSON?.scripts['extract-default-translations']) {
+    //         pkgJSON.scripts['extract-default-translations'] = pkgJSON.scripts[
+    //             'extract-default-translations'
+    //         ].replace('./', `./node_modules/${selectedPreset.templateSource.id}/`)
+    //     }
+    //     if (pkgJSON?.scripts['compile-translations']) {
+    //         pkgJSON.scripts['compile-translations'] = pkgJSON.scripts[
+    //             'compile-translations'
+    //         ].replace('./', `./node_modules/${selectedPreset.templateSource.id}/`)
+    //     }
+    //     if (pkgJSON?.scripts['compile-translations:pseudo']) {
+    //         pkgJSON.scripts['compile-translations:pseudo'] = pkgJSON.scripts[
+    //             'compile-translations:pseudo'
+    //         ].replace('./', `./node_modules/${selectedPreset.templateSource.id}/`)
+    //     }
 
-        context = merge(
-            context,
-            expandObject({
-                ['answers.general.packageJSON']: pkgJSON
-            })
-        )
-    }
+    //     context = merge(
+    //         context,
+    //         expandObject({
+    //             ['answers.general.packageJSON']: pkgJSON
+    //         })
+    //     )
+    // }
 
     // Generate the project.
     runGenerator(context, {outputDir, templateVersion, verbose})
