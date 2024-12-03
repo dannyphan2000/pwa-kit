@@ -341,13 +341,16 @@ const PRESETS = [
         name: 'Retail React App Test Project',
         description: '',
         templateSource: {
-            type: TEMPLATE_SOURCE_NPM,
-            id: '@salesforce/retail-react-app'
+            type: TEMPLATE_SOURCE_BUNDLE,
+            id: 'template-typescript'
         },
         questions: [...EXTENSIBILITY_QUESTIONS, ...RETAIL_REACT_APP_QUESTIONS],
         answers: {
             ['project.extend']: true,
             ['project.hybrid']: false,
+            ['project.type']: 'PWAKitAppProject',
+            ['project.useApplicationExtensibility']: true,
+            ['project.selectedAppExtensions']: ['@salesforce/extension-chakra-storefront'],
             ['project.name']: 'retail-react-app',
             ['project.commerce.instanceUrl']: 'https://zzrf-001.dx.commercecloud.salesforce.com',
             ['project.commerce.clientId']: 'c9c45bfd-0ed3-4aa2-9971-40f88962b836',
@@ -1094,7 +1097,6 @@ const main = async (opts) => {
     // If no preset argument is provided, ask Application Extensibility questions
     if (!presetId) {
         // Ask initial question
-        console.log('initialQuestions:')
         const initialAnswers = await inquirer.prompt(INITIAL_QUESTION)
         context = {...context, answers: {project: initialAnswers.project}}
 
