@@ -1079,7 +1079,7 @@ const main = async (opts) => {
     const {prompt} = inquirer
     const OUTPUT_DIR_FLAG_ACTIVE = !!outputDir
     const presetId = preset || process.env.GENERATOR_PRESET
-
+    console.log('presetId: ', presetId)
     // Exit if the preset provided is not valid.
     if (presetId && !validPreset(presetId)) {
         console.error(
@@ -1095,6 +1095,7 @@ const main = async (opts) => {
     // If no preset argument is provided, ask Application Extensibility questions
     if (!presetId) {
         // Ask initial question
+        console.log('initialQuestions:')
         const initialAnswers = await inquirer.prompt(INITIAL_QUESTION)
         context = {...context, answers: {project: initialAnswers.project}}
 
