@@ -66,7 +66,7 @@ const LoginState = ({
                     </Button>
                 )}
                 {/* Social Login */}
-                {isSocialEnabled && idps && <SocialLogin idps={idps} />}
+                {isSocialEnabled && idps && <SocialLogin form={form} idps={idps} />}
             </>
         ) : (
             <Button

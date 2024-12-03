@@ -18,6 +18,8 @@ import {setSessionJSONItem, buildRedirectURI} from '@salesforce/retail-react-app
 // Icons
 import {AppleIcon, GoogleIcon} from '@salesforce/retail-react-app/app/components/icons'
 
+import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
+
 const IDP_CONFIG = {
     apple: {
         icon: AppleIcon,
@@ -40,7 +42,7 @@ const IDP_CONFIG = {
  * @param {array} idps - array of known IDPs to show buttons for
  * @returns
  */
-const SocialLogin = ({idps}) => {
+const SocialLogin = ({form, idps}) => {
     const {formatMessage} = useIntl()
     const authorizeIDP = useAuthHelper(AuthHelpers.AuthorizeIDP)
 
@@ -65,6 +67,20 @@ const SocialLogin = ({idps}) => {
         })
     }, [idps])
 
+    const onSocialLoginClick = async () => {
+        try {
+            // Save the path where the user logged in
+            setSessionJSONItem('returnToPage', window.location.pathname)
+            await authorizeIDP.mutateAsync({
+                hint: name,
+                redirectURI: redirectURI
+            })
+        } catch (error) {
+            const message = formatMessage(API_ERROR_MESSAGE)
+            form.setError('global', {type: 'manual', message})
+        }
+    }
+
     return (
         idps && (
             <>
@@ -77,14 +93,7 @@ const SocialLogin = ({idps}) => {
                         return (
                             config && (
                                 <Button
-                                    onClick={async () => {
-                                        // Save the path where the user logged in
-                                        setSessionJSONItem('returnToPage', window.location.pathname)
-                                        await authorizeIDP.mutateAsync({
-                                            hint: name,
-                                            redirectURI: redirectURI
-                                        })
-                                    }}
+                                    onClick={onSocialLoginClick}
                                     borderColor="gray.500"
                                     color="blue.600"
                                     variant="outline"
@@ -101,8 +110,8 @@ const SocialLogin = ({idps}) => {
 }
 
 SocialLogin.propTypes = {
-    idps: PropTypes.arrayOf(PropTypes.string),
-    redirectURI: PropTypes.string
+    form: PropTypes.object,
+    idps: PropTypes.arrayOf(PropTypes.string)
 }
 
 export default SocialLogin

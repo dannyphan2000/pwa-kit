@@ -74,7 +74,7 @@ const PasswordlessLogin = ({
                                 id="login_form.button.password"
                             />
                         </Button>
-                        {isSocialEnabled && <SocialLogin idps={idps} />}
+                        {isSocialEnabled && <SocialLogin form={form} idps={idps} />}
                     </Stack>
                 </Stack>
             )}
