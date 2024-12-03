@@ -348,6 +348,7 @@ const PRESETS = [
         answers: {
             ['project.extend']: false,
             ['project.hybrid']: false,
+            ['project.extractAppExtensions']: true,
             ['project.type']: 'PWAKitAppProject',
             ['project.useApplicationExtensibility']: true,
             ['project.selectedAppExtensions']: ['@salesforce/extension-chakra-storefront'],
