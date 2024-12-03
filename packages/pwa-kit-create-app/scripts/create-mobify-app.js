@@ -1078,7 +1078,7 @@ const main = async (opts) => {
     const {prompt} = inquirer
     const OUTPUT_DIR_FLAG_ACTIVE = !!outputDir
     const presetId = preset || process.env.GENERATOR_PRESET
-    console.log('presetId: ', presetId)
+
     // Exit if the preset provided is not valid.
     if (presetId && !validPreset(presetId)) {
         console.error(
