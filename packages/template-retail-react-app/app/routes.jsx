@@ -46,6 +46,9 @@ const StoreLocator = loadable(() => import('./pages/store-locator'), {
 const Wishlist = loadable(() => import('./pages/account/wishlist'), {
     fallback
 })
+const ProductSearch = loadable(() => import('./pages/product-search'), {
+    fallback
+})
 const PageNotFound = loadable(() => import('./pages/page-not-found'))
 
 export const routes = [
@@ -77,6 +80,10 @@ export const routes = [
         path: '/checkout',
         component: Checkout,
         exact: true
+    },
+    {
+        path: '/product-search',
+        component: ProductSearch
     },
     {
         path: '/checkout/confirmation/:orderNo',
