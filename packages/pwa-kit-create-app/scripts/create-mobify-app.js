@@ -1034,6 +1034,7 @@ const runGenerator = async (
             return acc
         }, {})
 
+        console.log('Updating the package json.. here are the selected extensions: ', selectedAppExtensions)
         updatePackageJson(p.resolve(outputDir, 'package.json'), {
             name: getSlugifiedProjectName(context.answers.project.name || context.preset.id),
             version: GENERATED_PROJECT_VERSION,
