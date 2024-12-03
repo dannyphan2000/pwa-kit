@@ -926,133 +926,118 @@ const runGenerator = async (
         sync: true
     })
 
-    if (extend) {
-        // Bootstrap the projects.
-        getFiles(BOOTSTRAP_DIR)
-            .map((file) => file.replace(BOOTSTRAP_DIR, ''))
-            .forEach((relFilePath) =>
-                processTemplate(relFilePath, BOOTSTRAP_DIR, outputDir, context)
-            )
+    // Copy the base template either from the package or npm.
+    sh.cp('-rf', p.join(packagePath, '*'), outputDir)
 
-        // Copy required assets defined on the preset level.
-        const {assets = []} = preset
-        assets.forEach((asset) => {
-            sh.cp('-rf', p.join(packagePath, asset), outputDir)
+    // Copy template specific assets over.
+    const assetsDir = p.join(ASSETS_TEMPLATES_DIR, id)
+    if (sh.test('-e', assetsDir)) {
+        getFiles(assetsDir)
+            .map((file) => {
+                const relFilePath = file.replace(assetsDir, '')
+                return relFilePath
+            })
+            .forEach((relFilePath) => {
+                processTemplate(relFilePath, assetsDir, outputDir, context)
+            })
+    }
+
+    // Check project type and handle appropriately
+    if (answers.project.type === 'PWAKitAppExtensionProject') {
+        const devOutputDir = p.join(outputDir, LOCAL_DEV_PROJECT_DIR)
+
+        // Update the root package.json to add a start script
+        updatePackageJson(p.resolve(outputDir, 'package.json'), {
+            scripts: {
+                start: `npm --prefix ./${LOCAL_DEV_PROJECT_DIR} start`,
+                'start:inspect': `npm --prefix ./${LOCAL_DEV_PROJECT_DIR} run start:inspect`
+            }
+        })
+
+        // Recursively call runGenerator for the 'typescript-minimal' local dev project
+        const localDevProjectContext = {
+            ...context,
+            preset: {
+                id: 'typescript-minimal',
+                templateSource: {type: TEMPLATE_SOURCE_BUNDLE, id: 'typescript-minimal'},
+                private: true
+            },
+            answers: {project: {type: 'PWAKitAppProject', name: 'local-dev-project'}}
+        }
+
+        await runGenerator(localDevProjectContext, {
+            outputDir: devOutputDir,
+            templateVersion,
+            verbose,
+            installDependencies: false
+        })
+
+        // Update the typescript-minimal dev package.json with dependencies
+        updatePackageJson(p.resolve(devOutputDir, 'package.json'), {
+            devDependencies: {[answers.project.name]: 'file:../'},
+            mobify: {app: {extensions: [answers.project.name]}}
+        })
+
+        // TODO: The generator is growing, we should refactor this to be more maintainable.
+        const processGeneratedExtension = () => {
+            // do a file content replacement for extension-meta.json in the outputDir
+            // find all instances of "@salesforce/extension-base" and replace with answers.project.name
+            const extensionMetaJsonPath = p.join(outputDir, 'extension-meta.json')
+            if (fs.existsSync(extensionMetaJsonPath)) {
+                let extensionMetaJsonContent = fs.readFileSync(extensionMetaJsonPath, 'utf8')
+                extensionMetaJsonContent = extensionMetaJsonContent.replace(
+                    /@salesforce\/extension-base/g,
+                    answers.project.name
+                )
+                fs.writeFileSync(extensionMetaJsonPath, extensionMetaJsonContent)
+            }
+        }
+
+        processGeneratedExtension()
+
+        // Create the .npmignore file, excluding the typescript-minimal local dev project folder
+        createNpmIgnoreFile(outputDir, [`${LOCAL_DEV_PROJECT_DIR}/`])
+
+        npmInstall(devOutputDir, {
+            verbose,
+            projectName: localDevProjectContext.answers.project.name
         })
     } else {
-        // Copy the base template either from the package or npm.
-        sh.cp('-rf', p.join(packagePath, '*'), outputDir)
-
-        // Copy template specific assets over.
-        const assetsDir = p.join(ASSETS_TEMPLATES_DIR, id)
-        if (sh.test('-e', assetsDir)) {
-            getFiles(assetsDir)
-                .map((file) => {
-                    const relFilePath = file.replace(assetsDir, '')
-                    return relFilePath
-                })
-                .forEach((relFilePath) => {
-                    processTemplate(relFilePath, assetsDir, outputDir, context)
-                })
-        }
-
-        // Check project type and handle appropriately
-        if (answers.project.type === 'PWAKitAppExtensionProject') {
-            const devOutputDir = p.join(outputDir, LOCAL_DEV_PROJECT_DIR)
-
-            // Update the root package.json to add a start script
-            updatePackageJson(p.resolve(outputDir, 'package.json'), {
-                scripts: {
-                    start: `npm --prefix ./${LOCAL_DEV_PROJECT_DIR} start`,
-                    'start:inspect': `npm --prefix ./${LOCAL_DEV_PROJECT_DIR} run start:inspect`
-                }
-            })
-
-            // Recursively call runGenerator for the 'typescript-minimal' local dev project
-            const localDevProjectContext = {
-                ...context,
-                preset: {
-                    id: 'typescript-minimal',
-                    templateSource: {type: TEMPLATE_SOURCE_BUNDLE, id: 'typescript-minimal'},
-                    private: true
-                },
-                answers: {project: {type: 'PWAKitAppProject', name: 'local-dev-project'}}
-            }
-
-            await runGenerator(localDevProjectContext, {
-                outputDir: devOutputDir,
-                templateVersion,
-                verbose,
-                installDependencies: false
-            })
-
-            // Update the typescript-minimal dev package.json with dependencies
-            updatePackageJson(p.resolve(devOutputDir, 'package.json'), {
-                devDependencies: {[answers.project.name]: 'file:../'},
-                mobify: {app: {extensions: [answers.project.name]}}
-            })
-
-            // TODO: The generator is growing, we should refactor this to be more maintainable.
-            const processGeneratedExtension = () => {
-                // do a file content replacement for extension-meta.json in the outputDir
-                // find all instances of "@salesforce/extension-base" and replace with answers.project.name
-                const extensionMetaJsonPath = p.join(outputDir, 'extension-meta.json')
-                if (fs.existsSync(extensionMetaJsonPath)) {
-                    let extensionMetaJsonContent = fs.readFileSync(extensionMetaJsonPath, 'utf8')
-                    extensionMetaJsonContent = extensionMetaJsonContent.replace(
-                        /@salesforce\/extension-base/g,
-                        answers.project.name
-                    )
-                    fs.writeFileSync(extensionMetaJsonPath, extensionMetaJsonContent)
-                }
-            }
-
-            processGeneratedExtension()
-
-            // Create the .npmignore file, excluding the typescript-minimal local dev project folder
-            createNpmIgnoreFile(outputDir, [`${LOCAL_DEV_PROJECT_DIR}/`])
-
-            npmInstall(devOutputDir, {
-                verbose,
-                projectName: localDevProjectContext.answers.project.name
-            })
-        } else {
-            processAppExtensions(selectedAppExtensions, extractAppExtensions, appExtensionsDir)
-        }
-
-        // Add selected Application Extensions to devDependencies and mobify object
-        const appExtensionDeps = selectedAppExtensions.reduce((acc, appExtensionName) => {
-            // Find the corresponding Application Extension details
-            const appExtensionDetails = context.availableAppExtensions.find(
-                (ext) => ext.value === appExtensionName
-            )
-            const version = appExtensionDetails ? appExtensionDetails.version : '1.0.0-dev'
-
-            acc[appExtensionName] = extractAppExtensions
-                ? `file:./app/application-extensions/${appExtensionName}`
-                : version
-            return acc
-        }, {})
-
-        console.log('Updating the package json.. here are the selected extensions: ', selectedAppExtensions)
-        updatePackageJson(p.resolve(outputDir, 'package.json'), {
-            name: getSlugifiedProjectName(context.answers.project.name || context.preset.id),
-            version: GENERATED_PROJECT_VERSION,
-            devDependencies: appExtensionDeps,
-            ...(selectedAppExtensions.length > 0 && {
-                mobify: {
-                    app: {
-                        extensions: selectedAppExtensions.map(
-                            (appExtensionName) => appExtensionName
-                        )
-                    }
-                }
-            })
-        })
-
-        // Clean up the temporary directory
-        sh.rm('-rf', tmp)
+        processAppExtensions(selectedAppExtensions, extractAppExtensions, appExtensionsDir)
     }
+
+    // Add selected Application Extensions to devDependencies and mobify object
+    const appExtensionDeps = selectedAppExtensions.reduce((acc, appExtensionName) => {
+        // Find the corresponding Application Extension details
+        const appExtensionDetails = context.availableAppExtensions.find(
+            (ext) => ext.value === appExtensionName
+        )
+        const version = appExtensionDetails ? appExtensionDetails.version : '1.0.0-dev'
+
+        acc[appExtensionName] = extractAppExtensions
+            ? `file:./app/application-extensions/${appExtensionName}`
+            : version
+        return acc
+    }, {})
+
+    console.log('Updating the package json.. here are the selected extensions: ', selectedAppExtensions)
+    updatePackageJson(p.resolve(outputDir, 'package.json'), {
+        name: getSlugifiedProjectName(context.answers.project.name || context.preset.id),
+        version: GENERATED_PROJECT_VERSION,
+        devDependencies: appExtensionDeps,
+        ...(selectedAppExtensions.length > 0 && {
+            mobify: {
+                app: {
+                    extensions: selectedAppExtensions.map(
+                        (appExtensionName) => appExtensionName
+                    )
+                }
+            }
+        })
+    })
+
+    // Clean up the temporary directory
+    sh.rm('-rf', tmp)
 
     if (installDependencies) {
         // Install dependencies for the newly minted project.
