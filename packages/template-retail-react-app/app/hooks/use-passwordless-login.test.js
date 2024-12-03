@@ -37,7 +37,7 @@ jest.mock('@salesforce/commerce-sdk-react', () => {
     const originalModule = jest.requireActual('@salesforce/commerce-sdk-react')
     return {
         ...originalModule,
-        useAuthHelper: jest.fn(),
+        useAuthHelper: jest.fn()
     }
 })
 
@@ -74,7 +74,9 @@ describe('The usePasswordlessLogin', () => {
         await fireEvent.click(trigger)
         await waitFor(() => {
             expect(loginPasswordlessUser.mutateAsync).toHaveBeenCalled()
-            expect(loginPasswordlessUser.mutateAsync).toHaveBeenCalledWith({pwdlessLoginToken: mockToken})
+            expect(loginPasswordlessUser.mutateAsync).toHaveBeenCalledWith({
+                pwdlessLoginToken: mockToken
+            })
         })
     })
 })

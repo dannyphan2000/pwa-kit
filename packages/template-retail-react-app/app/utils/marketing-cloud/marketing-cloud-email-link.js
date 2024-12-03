@@ -36,10 +36,12 @@ export function asyncJsonHttpsPost(url, postObject, headers = {}) {
 
             response.on('end', () => {
                 if (response.statusCode >= 200 && response.statusCode < 300) {
-                    resolve(JSON.parse(data));
-                  } else {
-                    reject(new Error(`Request failed with status code ${response.statusCode}: ${data}`));
-                  }
+                    resolve(JSON.parse(data))
+                } else {
+                    reject(
+                        new Error(`Request failed with status code ${response.statusCode}: ${data}`)
+                    )
+                }
             })
         })
 
@@ -75,9 +77,11 @@ async function sendMarketingCloudEmail(emailId, marketingCloudConfig) {
         )
     }
 
-    const emailUrl = `https://${marketingCloudConfig.subdomain}.rest.marketingcloudapis.com/messaging/v1/email/messages/${generateUniqueId()}`
+    const emailUrl = `https://${
+        marketingCloudConfig.subdomain
+    }.rest.marketingcloudapis.com/messaging/v1/email/messages/${generateUniqueId()}`
 
-    const emailHeaders = { Authorization: `Bearer ${marketingCloudToken}` }
+    const emailHeaders = {Authorization: `Bearer ${marketingCloudToken}`}
 
     const emailBody = {
         definitionKey: marketingCloudConfig.templateId,
