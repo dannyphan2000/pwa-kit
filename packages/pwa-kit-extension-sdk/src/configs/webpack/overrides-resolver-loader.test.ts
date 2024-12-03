@@ -193,7 +193,8 @@ describe('Overrides Resolver Loader', () => {
 
     describe('overridable!', () => {
         testCases.forEach((options: any) => {
-            const {compilerConfig, description, entryPoint, expects, loaderTest, bypassWindows} = options
+            const {compilerConfig, description, entryPoint, expects, loaderTest, bypassWindows} =
+                options
             const {extensions, files} = compilerConfig
 
             test(`${description as string}`, async () => {
@@ -276,8 +277,9 @@ describe('Overrides Resolver Loader', () => {
 
                 // NOTE: We are going to bypass windows tests in order to get CI happy. We have created a ticket to fix this test. There
                 // are 2 approaches we can look at, 1. have windows specific paths in this test file 2. leave paths as is, and ensure our
-                // implementation allows use to configure the path separator. 
+                // implementation allows use to configure the path separator.
                 if (bypassWindows && process.platform === 'win32') {
+                    // eslint-disable-next-line jest/no-conditional-expect
                     expect(true).toBe(true)
                     return
                 }
