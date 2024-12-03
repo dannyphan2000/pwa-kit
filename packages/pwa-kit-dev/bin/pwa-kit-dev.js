@@ -464,7 +464,9 @@ const main = async () => {
         .action(async (_, {args}) => {
             const jest = p.join(require.resolve('jest'), '..', '..', '..', '.bin', 'jest')
             execSync(
-                `"${jest}" --passWithNoTests --maxWorkers=2${args.length ? ' ' + args.join(' ') : ''}`
+                `"${jest}" --passWithNoTests --maxWorkers=2${
+                    args.length ? ' ' + args.join(' ') : ''
+                }`
             )
         })
 
