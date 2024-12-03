@@ -36,7 +36,7 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     // use `packageIterator` in the "resolve" function used later on.
     const {resourcePath, _compiler} = this
     const compiler = _compiler as ExtendedCompiler
-    const projectRelPath = resourcePath.split(`${SRC}/`)[1].split('.')[0] // File path relative to the project directory without file extension
+    const projectRelPath = resourcePath.split(`${SRC}${path.sep}`)[1].split('.')[0] // File path relative to the project directory without file extension
     const projectPath = resourcePath.split(SRC)[0]
     const options = this.getOptions()
 

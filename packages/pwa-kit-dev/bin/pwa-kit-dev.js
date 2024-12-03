@@ -266,9 +266,9 @@ const main = async () => {
             )
 
             execSync(
-                `${babelNode} ${inspect ? '--inspect' : ''} ${buildBabelExtensibilityArgs(
+                `"${babelNode}" ${inspect ? '--inspect' : ''} ${buildBabelExtensibilityArgs(
                     getConfig()
-                )} ${babelArgs} ${getAppEntrypoint()}`,
+                )} ${babelArgs} "${getAppEntrypoint()}"`,
                 {
                     env: {
                         ...process.env,
