@@ -17,6 +17,10 @@ module.exports = {
         }
     },
     collectCoverageFrom: ['app/**'],
+    coveragePathIgnorePatterns: [
+        "app/application-extensions",
+        "/node_modules/"
+    ],
 
     // This is a monorepo only issue!
     // Jest doesn't know how to resolve this dependency unless we upgrade to jest 29
@@ -25,5 +29,7 @@ module.exports = {
     moduleNameMapper: {
         'tsx/cjs/api': '<rootDir>/../pwa-kit-dev/node_modules/tsx/dist/cjs/api/index.cjs'
     },
-    testEnvironment: 'node'
+    testEnvironment: 'node',
+    testPathIgnorePatterns: ['app/application-extensions']
 }
+
