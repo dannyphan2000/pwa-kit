@@ -64,7 +64,7 @@ export const usePasswordReset = () => {
                             id: 'password_reset_success.toast'
                         }),
                         status: 'success',
-                        position: 'top-right',
+                        position: 'bottom-right',
                         isClosable: true
                     })
                 }

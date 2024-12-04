@@ -39,8 +39,7 @@ const ResetPasswordLanding = () => {
         form.clearErrors()
         try {
             await resetPassword({email, token, newPassword: values.password})
-            console.log('resetPassword', resetPassword)
-            navigate('/login)')
+            navigate('/login')
         } catch (error) {
             form.setError('global', {type: 'manual', message: error.message})
         }
