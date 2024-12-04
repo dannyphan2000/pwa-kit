@@ -1002,12 +1002,10 @@ const runGenerator = async (
         })
     } else {
         processAppExtensions(selectedAppExtensions, extractAppExtensions, appExtensionsDir)
-
     }
 
     // Add selected Application Extensions to devDependencies and mobify object
     const appExtensionDeps = selectedAppExtensions.reduce((acc, appExtensionName) => {
-
         // Find the corresponding Application Extension details
         const appExtensionDetails = context?.availableAppExtensions?.find(
             (ext) => ext.value === appExtensionName
@@ -1027,9 +1025,7 @@ const runGenerator = async (
         ...(selectedAppExtensions.length > 0 && {
             mobify: {
                 app: {
-                    extensions: selectedAppExtensions.map(
-                        (appExtensionName) => appExtensionName
-                    )
+                    extensions: selectedAppExtensions.map((appExtensionName) => appExtensionName)
                 }
             }
         })
