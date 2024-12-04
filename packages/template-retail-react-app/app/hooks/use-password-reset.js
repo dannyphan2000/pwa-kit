@@ -8,6 +8,8 @@ import {useShopperLoginMutation, ShopperLoginMutations} from '@salesforce/commer
 import {absoluteUrl} from '@salesforce/retail-react-app/app/utils/url'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+import {useToast} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {useIntl} from 'react-intl'
 
 /**
  * This hook provides commerce-react-sdk hooks to simplify the reset password flow.
@@ -15,6 +17,8 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 export const usePasswordReset = () => {
     const {site} = useMultiSite()
     const {clientId} = getConfig().app.commerceAPI.parameters
+    const toast = useToast()
+    const {formatMessage} = useIntl()
 
     const getPasswordResetTokenMutation = useShopperLoginMutation(
         ShopperLoginMutations.GetPasswordResetToken
@@ -50,7 +54,22 @@ export const usePasswordReset = () => {
             channel_id: site.id,
             user_id: email
         }
-        await resetPasswordMutation.mutateAsync({headers, body})
+        await resetPasswordMutation.mutateAsync(
+            {headers, body},
+            {
+                onSuccess: () => {
+                    toast({
+                        title: formatMessage({
+                            defaultMessage: 'Password Reset Success',
+                            id: 'password_reset_success.toast'
+                        }),
+                        status: 'success',
+                        position: 'top-right',
+                        isClosable: true
+                    })
+                }
+            }
+        )
     }
 
     return {getPasswordResetToken, resetPassword}

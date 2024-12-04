@@ -22,10 +22,12 @@ import Field from '@salesforce/retail-react-app/app/components/field'
 import PasswordRequirements from '@salesforce/retail-react-app/app/components/forms/password-requirements'
 import useUpdatePasswordFields from '@salesforce/retail-react-app/app/components/forms/useUpdatePasswordFields'
 import usePasswordReset from '@salesforce/retail-react-app/app/hooks/use-password-reset'
+import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 
 const ResetPasswordLanding = () => {
     const form = useForm()
     const {search} = useLocation()
+    const navigate = useNavigation()
     const queryParams = new URLSearchParams(search)
     const email = queryParams.get('email')
     const token = queryParams.get('token')
@@ -37,6 +39,8 @@ const ResetPasswordLanding = () => {
         form.clearErrors()
         try {
             await resetPassword({email, token, newPassword: values.password})
+            console.log('resetPassword', resetPassword)
+            navigate('/login)')
         } catch (error) {
             form.setError('global', {type: 'manual', message: error.message})
         }
