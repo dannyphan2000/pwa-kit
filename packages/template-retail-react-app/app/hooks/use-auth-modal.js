@@ -27,7 +27,7 @@ import {
     useCustomerId,
     useCustomerType,
     useCustomerBaskets,
-    useShopperBasketsMutation,
+    useShopperBasketsMutation
 } from '@salesforce/commerce-sdk-react'
 import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'

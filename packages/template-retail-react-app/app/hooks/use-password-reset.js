@@ -4,10 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {
-    useShopperLoginMutation,
-    ShopperLoginMutations
-} from '@salesforce/commerce-sdk-react'
+import {useShopperLoginMutation, ShopperLoginMutations} from '@salesforce/commerce-sdk-react'
 import {absoluteUrl} from '@salesforce/retail-react-app/app/utils/url'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
@@ -40,9 +37,7 @@ export const usePasswordReset = () => {
         await getPasswordResetTokenMutation.mutateAsync({headers, body})
     }
 
-    const resetPasswordMutation = useShopperLoginMutation(
-        ShopperLoginMutations.ResetPassword
-    )
+    const resetPasswordMutation = useShopperLoginMutation(ShopperLoginMutations.ResetPassword)
 
     const resetPassword = async ({email, token, newPassword}) => {
         // TODO: how to remove the auth header when public client is being used
@@ -55,24 +50,9 @@ export const usePasswordReset = () => {
             channel_id: site.id,
             user_id: email
         }
-        await resetPasswordMutation.mutateAsync({headers, body},
-            {
-                onSuccess: () => {
-                    setIsEditing(false)
-                    toast({
-                        title: formatMessage({
-                            defaultMessage: 'Profile updated',
-                            id: 'profile_card.info.profile_updated'
-                        }),
-                        status: 'success',
-                        isClosable: true
-                    })
-                    headingRef?.current?.focus()
-                }
-            }
-        )
+        await resetPasswordMutation.mutateAsync({headers, body})
     }
-    
+
     return {getPasswordResetToken, resetPassword}
 }
 

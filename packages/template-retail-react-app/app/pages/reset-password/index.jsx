@@ -64,7 +64,7 @@ const ResetPassword = () => {
                 borderRadius="base"
             >
                 {path === '/reset-password-landing' ? (
-                    <ResetPasswordLanding/>
+                    <ResetPasswordLanding />
                 ) : !showSubmittedSuccess ? (
                     <ResetPasswordForm
                         form={form}
