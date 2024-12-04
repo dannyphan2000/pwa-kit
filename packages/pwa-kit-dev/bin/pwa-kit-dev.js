@@ -445,7 +445,9 @@ const main = async () => {
         .action(async (path, {fix}) => {
             const eslint = p.join(require.resolve('eslint'), '..', '..', '..', '.bin', 'eslint')
             execSync(
-                `${eslint} --resolve-plugins-relative-to ${pkgRoot}${fix ? ' --fix' : ''} "${path}"`
+                `"${eslint}" --resolve-plugins-relative-to "${pkgRoot}"${
+                    fix ? ' --fix' : ''
+                } "${path}"`
             )
         })
 
