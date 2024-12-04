@@ -112,18 +112,18 @@ export function detectCookiesAvailable(options?: CookieAttributes) {
     }
 }
 
-/** 
- * Determines whether the given URL string is a valid absolute URL. 
- * 
+/**
+ * Determines whether the given URL string is a valid absolute URL.
+ *
  * Valid absolute URLs:
  * - https://example.com
  * - http://example.com
- * 
+ *
  * Invalid or relative URLs:
  * - http://example
  * - example.com
  * - /relative/path
- * 
+ *
  * @param {string} url - The URL string to be checked.
  * @returns {boolean} - Returns true if the given string is a valid absolute URL, false otherwise.
  */

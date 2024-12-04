@@ -15,7 +15,13 @@ import {jwtDecode, JwtPayload} from 'jwt-decode'
 import {ApiClientConfigParams, Prettify, RemoveStringIndex} from '../hooks/types'
 import {BaseStorage, LocalStorage, CookieStorage, MemoryStorage, StorageType} from './storage'
 import {CustomerType} from '../hooks/useCustomerType'
-import {getParentOrigin, isOriginTrusted, onClient, getDefaultCookieAttributes, isAbsoluteUrl} from '../utils'
+import {
+    getParentOrigin,
+    isOriginTrusted,
+    onClient,
+    getDefaultCookieAttributes,
+    isAbsoluteUrl
+} from '../utils'
 import {
     MOBIFY_PATH,
     SLAS_PRIVATE_PROXY_PATH,
@@ -85,6 +91,7 @@ type AuthDataKeys =
     | 'access_token_sfra'
     | typeof DNT_COOKIE_NAME
     | typeof DWSID_COOKIE_NAME
+    | 'code_verifier'
 
 type AuthDataMap = Record<
     AuthDataKeys,
@@ -180,6 +187,10 @@ const DATA_MAP: AuthDataMap = {
     dwsid: {
         storageType: 'cookie',
         key: DWSID_COOKIE_NAME
+    },
+    code_verifier: {
+        storageType: 'local',
+        key: 'code_verifier'
     }
 }
 
@@ -298,8 +309,11 @@ class Auth {
 
         this.isPrivate = !!this.clientSecret
 
-        this.callbackURI = callbackURI ? isAbsoluteUrl(callbackURI) 
-        ? callbackURI : `${baseUrl}${callbackURI}` : ''
+        this.callbackURI = callbackURI
+            ? isAbsoluteUrl(callbackURI)
+                ? callbackURI
+                : `${baseUrl}${callbackURI}`
+            : ''
     }
 
     get(name: AuthDataKeys) {
@@ -965,7 +979,50 @@ class Auth {
             })
         }
         this.clearStorage()
-        return await this.loginGuestUser()
+        return await this.ready()
+    }
+
+    /**
+     * Handle updating customer password and re-log in after the access token is invalidated.
+     *
+     */
+    async updateCustomerPassword(body: {
+        customer: ShopperCustomersTypes.Customer
+        password: string
+        currentPassword: string
+        shouldReloginCurrentSession?: boolean
+    }) {
+        const {
+            customer: {customerId, login},
+            password,
+            currentPassword,
+            shouldReloginCurrentSession
+        } = body
+
+        // login and customerId are optional fields on the Customer type
+        // here we had to guard it to avoid ts error
+        if (!login || !customerId) {
+            throw new Error('Customer is missing required fields.')
+        }
+
+        const res = await this.shopperCustomersClient.updateCustomerPassword({
+            headers: {
+                authorization: `Bearer ${this.get('access_token')}`
+            },
+            parameters: {customerId},
+            body: {
+                password: password,
+                currentPassword: currentPassword
+            }
+        })
+
+        if (shouldReloginCurrentSession) {
+            await this.loginRegisteredUserB2C({
+                username: login,
+                password
+            })
+        }
+        return res
     }
 
     /**
@@ -1030,6 +1087,7 @@ class Auth {
     async authorizePasswordless(parameters: AuthorizePasswordlessParams) {
         const userid = parameters.userid
         const callbackURI = this.callbackURI
+        const usid = this.get('usid')
         const mode = callbackURI ? 'callback' : 'sms'
 
         await helpers.authorizePasswordless(
@@ -1039,8 +1097,9 @@ class Auth {
             },
             {
                 ...(callbackURI && {callbackURI: callbackURI}),
+                ...(usid && {usid}),
                 userid,
-                mode: mode
+                mode,
             }
         )
     }

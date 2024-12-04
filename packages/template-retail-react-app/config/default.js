@@ -18,9 +18,7 @@ module.exports = {
         login: {
             passwordless: {
                 enabled: true,
-                callbackURI:
-                    // Create your own callback URI using https://webhook.site/
-                    'https://webhook.site/679c46ea-a63b-41e1-b768-4db79d953646'
+                callbackURI: '/passwordless-login-callback'
             },
             social: {
                 enabled: false,
@@ -36,6 +34,7 @@ module.exports = {
         commerceAPI: {
             proxyPath: `/mobify/proxy/api`,
             parameters: {
+                // TODO: Revert before merging
                 // clientId: 'c9c45bfd-0ed3-4aa2-9971-40f88962b836',
                 // organizationId: 'f_ecom_zzrf_001',
                 // shortCode: '8o7m175y',

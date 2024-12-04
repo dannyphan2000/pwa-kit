@@ -7,7 +7,7 @@
 import Auth, {AuthData} from './'
 import {waitFor} from '@testing-library/react'
 import jwt from 'jsonwebtoken'
-import {helpers} from 'commerce-sdk-isomorphic'
+import {helpers, ShopperCustomersTypes} from 'commerce-sdk-isomorphic'
 import * as utils from '../utils'
 import {SLAS_SECRET_PLACEHOLDER} from '../constant'
 import {ShopperLoginTypes} from 'commerce-sdk-isomorphic'
@@ -15,6 +15,12 @@ import {
     DEFAULT_SLAS_REFRESH_TOKEN_REGISTERED_TTL,
     DEFAULT_SLAS_REFRESH_TOKEN_GUEST_TTL
 } from './index'
+import {RequireKeys} from '../hooks/types'
+
+const baseCustomer: RequireKeys<ShopperCustomersTypes.Customer, 'login'> = {
+    customerId: 'customerId',
+    login: 'test@test.com'
+}
 
 // Use memory storage for all our storage types.
 jest.mock('./storage', () => {
@@ -43,7 +49,12 @@ jest.mock('commerce-sdk-isomorphic', () => {
             authorizeIDP: jest.fn().mockResolvedValue(''),
             authorizePasswordless: jest.fn().mockResolvedValue(''),
             getPasswordLessAccessToken: jest.fn().mockResolvedValue('')
-        }
+        },
+        ShopperCustomers: jest.fn().mockImplementation(() => {
+            return {
+                updateCustomerPassword: () => {}
+            }
+        })
     }
 })
 
@@ -53,7 +64,7 @@ jest.mock('../utils', () => ({
     getParentOrigin: jest.fn().mockResolvedValue(''),
     isOriginTrusted: () => false,
     getDefaultCookieAttributes: () => {},
-    isAbsoluteUrl: () => true,
+    isAbsoluteUrl: () => true
 }))
 
 /** The auth data we store has a slightly different shape than what we use. */
@@ -82,7 +93,7 @@ const configPasswordlessSms = {
     siteId: 'siteId',
     proxy: 'proxy',
     redirectURI: 'redirectURI',
-    logger: console,
+    logger: console
 }
 
 const FAKE_SLAS_EXPIRY = DEFAULT_SLAS_REFRESH_TOKEN_REGISTERED_TTL - 1
@@ -626,10 +637,18 @@ describe('Auth', () => {
 
     test('authorizePasswordless calls isomorphic authorizePasswordless', async () => {
         const auth = new Auth(config)
-        await auth.authorizePasswordless({callbackURI: 'callbackURI', userid: 'userid', mode: 'callback'})
+        await auth.authorizePasswordless({
+            callbackURI: 'callbackURI',
+            userid: 'userid',
+            mode: 'callback'
+        })
         expect(helpers.authorizePasswordless).toHaveBeenCalled()
         const functionArg = (helpers.authorizePasswordless as jest.Mock).mock.calls[0][2]
-        expect(functionArg).toMatchObject({callbackURI: 'callbackURI', userid: 'userid', mode: 'callback'})
+        expect(functionArg).toMatchObject({
+            callbackURI: 'callbackURI',
+            userid: 'userid',
+            mode: 'callback'
+        })
     })
 
     test('authorizePasswordless sets mode to sms as configured', async () => {
@@ -664,6 +683,16 @@ describe('Auth', () => {
         await auth.logout()
         expect(helpers.logout).not.toHaveBeenCalled()
         expect(helpers.loginGuestUser).toHaveBeenCalled()
+    })
+    test('updateCustomerPassword calls registered login', async () => {
+        const auth = new Auth(config)
+        await auth.updateCustomerPassword({
+            customer: baseCustomer,
+            password: 'test123',
+            currentPassword: 'test12',
+            shouldReloginCurrentSession: true
+        })
+        expect(helpers.loginRegisteredUserB2C).toHaveBeenCalled()
     })
     test('PWA private client mode takes priority', async () => {
         const auth = new Auth({...configSLASPrivate, clientSecret: 'someSecret'})

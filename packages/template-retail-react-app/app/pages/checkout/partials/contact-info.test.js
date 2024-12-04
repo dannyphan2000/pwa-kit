@@ -26,7 +26,9 @@ jest.mock('../util/checkout-context', () => {
 })
 
 test('renders component', async () => {
-    const {user} = renderWithProviders(<ContactInfo />)
+    const {user} = renderWithProviders(
+        <ContactInfo isPasswordlessEnabled={false} isSocialEnabled={false} />
+    )
 
     // switch to login
     const trigger = screen.getByText(/Already have an account\? Log in/i)
@@ -40,4 +42,14 @@ test('renders component', async () => {
     // check that forgot password modal is open
     const withinForm = within(screen.getByTestId('sf-auth-modal-form'))
     expect(withinForm.getByText(/Reset Password/i)).toBeInTheDocument()
+})
+
+test('Shows passwordless login button if enabled', async () => {
+    renderWithProviders(<ContactInfo isPasswordlessEnabled={true} />)
+    expect(screen.getByText('Secure Link')).toBeInTheDocument()
+})
+
+test('Shows Google login button if configured', async () => {
+    renderWithProviders(<ContactInfo isSocialEnabled={true} idps={['Google']} />)
+    expect(screen.getByText('Google')).toBeInTheDocument()
 })
