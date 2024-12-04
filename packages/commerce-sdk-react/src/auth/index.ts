@@ -1099,7 +1099,7 @@ class Auth {
                 ...(callbackURI && {callbackURI: callbackURI}),
                 ...(usid && {usid}),
                 userid,
-                mode,
+                mode
             }
         )
     }
@@ -1124,6 +1124,62 @@ class Auth {
             void this.clearECOMSession()
         }
         return token
+    }
+
+    /**
+     * A wrapper method for the SLAS endpoint: getPasswordResetToken.
+     *
+     */
+    async getPasswordResetToken(parameters: ShopperLoginTypes.PasswordActionRequest) {
+        const slasClient = this.client
+        const callbackURI = this.callbackURI
+        // Only set authorization header if using private client
+        let authHeader = ''
+        if (this.clientSecret) {
+            authHeader = `Basic ${Buffer.from(
+                `${slasClient.clientConfig.parameters.clientId}:${this.clientSecret}`
+            ).toString('base64')}`
+        }
+        const body = {
+            user_id: parameters.user_id,
+            mode: 'callback',
+            channel_id: slasClient.clientConfig.parameters.siteId,
+            client_id: slasClient.clientConfig.parameters.clientId,
+            callback_uri: callbackURI,
+            hint: 'cross_device'
+        }
+        const headers = {
+            Authorization: authHeader
+        }
+
+        const res = await this.client.getPasswordResetToken({headers, body})
+        return res
+    }
+
+    /**
+     * A wrapper method for the SLAS endpoint: resetPassword.
+     *
+     */
+    async resetPassword(parameters: ShopperLoginTypes.PasswordActionVerifyRequest) {
+        const slasClient = this.client
+        // Only set authorization header if using private client
+        let authHeader = ''
+        if (this.clientSecret) {
+            authHeader = `Basic ${Buffer.from(
+                `${slasClient.clientConfig.parameters.clientId}:${this.clientSecret}`
+            ).toString('base64')}`
+        }
+        const body = {
+            pwd_action_token: parameters.pwd_action_token,
+            channel_id: slasClient.clientConfig.parameters.siteId,
+            client_id: slasClient.clientConfig.parameters.clientId,
+            new_password: parameters.new_password,
+            user_id: parameters.user_id
+        }
+        const headers = {Authorization: authHeader}
+        // no code verifier needed with the fix blair has made
+        const res = await this.client.resetPassword({headers, body})
+        return res
     }
 
     /**
