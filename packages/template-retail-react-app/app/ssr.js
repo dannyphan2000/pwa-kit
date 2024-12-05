@@ -120,7 +120,6 @@ const {handler} = runtime.createHandler(options, (app) => {
         res.send(emailLinkResponse)
     })
 
-
     app.get('/robots.txt', runtime.serveStaticFile('static/robots.txt'))
     app.get('/favicon.ico', runtime.serveStaticFile('static/ico/favicon.ico'))
 
