@@ -96,7 +96,7 @@ export const buildCandidatePaths = (
                     extensionRef,
                     SRC,
                     OVERRIDES,
-                    importSourceExtension,
+                    ...(importSourceExtension.split(path.sep)),
                     importPath
                 ),
                 ...acc
@@ -107,7 +107,7 @@ export const buildCandidatePaths = (
     // Include the base projects override folder as a potential source. Also include the canonical source if one is
     // provided.
     paths = [
-        path.join(projectDir, APP, OVERRIDES, importSourceExtension, importPath),
+        path.join(projectDir, APP, OVERRIDES, ...(importSourceExtension.split(path.sep)), importPath),
         ...paths,
         ...(canonicalSource ? [canonicalSource] : [])
     ]
