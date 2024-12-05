@@ -25,8 +25,6 @@ import helmet from 'helmet'
 import express from 'express'
 import {emailLink} from '@salesforce/retail-react-app/app/utils/marketing-cloud/marketing-cloud-email-link'
 
-const ENABLE_SSR_POST = (process.env.ENABLE_SSR_POST || '').toLowerCase() === 'true'
-
 const options = {
     // The build directory (an absolute path)
     buildDir: path.resolve(process.cwd(), 'build'),
