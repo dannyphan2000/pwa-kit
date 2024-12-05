@@ -162,13 +162,35 @@ export const getConfigMatcher = (config) => {
     const sites = [...siteIds, ...siteAliases].filter(Boolean)
     const locales = [...localesIds, ...localeAliases].filter(Boolean)
 
+    // const sitesString = sites.join('|')
+    // const localesString = locales.join('|')
+
+    const urlFormat = config.app.url.format
+    // console.log(urlFormat)
+
+    const urlParts = urlFormat.split('?')
+    const pathPart = urlParts[0]
+    const queryPart = urlParts[1] ? urlParts[1] : ''
+
+    const basePath = ''
+
+    // console.log(pathPart)
+    // console.log(queryPart)
+    let pathPattern = pathPart
+    pathPattern = pathPattern.replace('/:basepath', basePath)
+    pathPattern = pathPattern.replace('/:site', `\/(?<site>${sites.join('|')})`)
+    pathPattern = pathPattern.replace('/:locale', `\/(?<locale>${locales.join('|')})`)
+    console.log(pathPattern)
+    
+    // prettier-ignore
+    // eslint-disable-next-line
+    //const pathPattern = `(?:\/(?<site>${sites.join('|')}))? (?:\/(?<locale>${locales.join("|")}))? (?!\\w)`
+
     // prettier-ignore
     const searchPatternForSite = `site=(?<site>${sites.join('|')})`
     // prettier-ignore
-    // eslint-disable-next-line
-    const pathPattern = `(?:\/(?<site>${sites.join('|')}))?(?:\/(?<locale>${locales.join("|")}))?(?!\\w)`
-    // prettier-ignore
     const searchPatternForLocale = `locale=(?<locale>${locales.join('|')})`
+
     const pathMatcher = new RegExp(pathPattern)
     const searchMatcherForSite = new RegExp(searchPatternForSite)
     const searchMatcherForLocale = new RegExp(searchPatternForLocale)

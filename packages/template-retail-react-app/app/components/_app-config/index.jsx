@@ -82,15 +82,15 @@ const AppConfig = ({children, locals = {}}) => {
 }
 
 AppConfig.restore = (locals = {}) => {
-    let path =
+    const path =
         typeof window === 'undefined'
             ? locals.originalUrl
             : `${window.location.pathname}${window.location.search}`
 
     //remove base path because matchers are not set up to handle base path matching
-    const basePath = AppConfig.getBasePath()
-    console.log(path)
-    path = path.replace(basePath, '/')
+    // const basePath = AppConfig.getBasePath()
+    // console.log(path)
+    // path = path.replace(basePath, '/')
 
     const site = resolveSiteFromUrl(path)
     const locale = resolveLocaleFromUrl(path)

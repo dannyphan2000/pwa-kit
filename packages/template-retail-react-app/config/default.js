@@ -12,6 +12,7 @@ module.exports = {
         url: {
             site: 'path',
             locale: 'path',
+            format: '/:basepath/:site/:locale',
             showDefaults: true,
             interpretPlusSignAsSpace: false
         },
