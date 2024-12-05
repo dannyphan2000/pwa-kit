@@ -1,5 +1,5 @@
 {
-  "name": "@salesforce/extension-store-locator",
+  "name": "@salesforce/extension-chakra-store-locator",
   "version": "0.1.0-dev",
   "scripts": {
     "lint": "npm run lint:js",

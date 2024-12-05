@@ -52,12 +52,13 @@ describe('Overrides Resolver Loader', () => {
                     // Overrides
 
                     // Local project with overrides
-                    '/app/overrides/pages/sample-page.jsx': '// Base Project - Sample Page',
+                    '/app/overrides/@salesforce/extension-this/pages/sample-page.jsx':
+                        '// Base Project - Sample Page',
 
                     // Extensions with overrides
-                    '/node_modules/@salesforce/extension-this/src/overrides/pages/sample-page.jsx':
-                        '// @salesforce/extension-this',
-                    '/node_modules/@salesforce/extension-other/src/overrides/pages/sample-page.jsx':
+                    '/node_modules/@salesforce/extension-that/src/overrides/@salesforce/extension-this/pages/sample-page.jsx':
+                        '// @salesforce/extension-that',
+                    '/node_modules/@salesforce/extension-other/src/overrides/@salesforce/extension-this/pages/sample-page.jsx':
                         '// @salesforce/extension-other',
 
                     // Extension using overridable import
@@ -95,14 +96,14 @@ describe('Overrides Resolver Loader', () => {
                     // Overrides
 
                     // Extensions with overrides
-                    '/node_modules/@salesforce/extension-other/src/overrides/pages/sample-page.jsx':
+                    '/node_modules/@salesforce/extension-other/src/overrides/@salesforce/extension-this/pages/sample-page.jsx':
                         '// @salesforce/extension-other',
-                    '/node_modules/@salesforce/extension-that/src/overrides/pages/sample-page.jsx':
+                    '/node_modules/@salesforce/extension-that/src/overrides/@salesforce/extension-this/pages/sample-page.jsx':
                         '// @salesforce/extension-that',
 
                     // Extension using overridable import
                     '/node_modules/@salesforce/extension-this/src/pages/sample-page.jsx':
-                        '// @salesforce/extension-other',
+                        '// @salesforce/extension-this',
                     '/node_modules/@salesforce/extension-this/package.json':
                         '{"name": "@salesforce/extension-this"}',
                     '/node_modules/@salesforce/extension-this/src/setup-app.js':
@@ -135,9 +136,9 @@ describe('Overrides Resolver Loader', () => {
                     // Overrides
 
                     // Extensions with overrides
-                    '/node_modules/@salesforce/extension-other/src/overrides/pages/sample-page.jsx':
+                    '/node_modules/@salesforce/extension-other/src/overrides/@salesforce/extension-this/pages/sample-page.jsx':
                         '// @salesforce/extension-other',
-                    '/node_modules/@salesforce/extension-that/src/overrides/pages/sample-page.jsx':
+                    '/node_modules/@salesforce/extension-that/src/overrides/@salesforce/extension-this/pages/sample-page.jsx':
                         '// @salesforce/extension-that',
 
                     // Extension using overridable import
