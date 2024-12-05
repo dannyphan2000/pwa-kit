@@ -5,17 +5,13 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {AuthHelpers, useAuthHelper} from '@salesforce/commerce-sdk-react'
-import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useToast} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {useIntl} from 'react-intl'
-
+import {absoluteUrl} from '@salesforce/retail-react-app/app/utils/url'
 /**
  * This hook provides commerce-react-sdk hooks to simplify the reset password flow.
  */
 export const usePasswordReset = () => {
-    const {site} = useMultiSite()
-    const {clientId} = getConfig().app.commerceAPI.parameters
     const toast = useToast()
     const {formatMessage} = useIntl()
 
@@ -23,7 +19,10 @@ export const usePasswordReset = () => {
     const resetPasswordMutation = useAuthHelper(AuthHelpers.ResetPassword)
 
     const getPasswordResetToken = async (email) => {
-        await getPasswordResetTokenMutation.mutateAsync({user_id: email})
+        await getPasswordResetTokenMutation.mutateAsync({
+            user_id: email,
+            callback_uri: absoluteUrl('/reset-password-callback')
+        })
     }
 
     const resetPassword = async ({email, token, newPassword}) => {

@@ -20,7 +20,8 @@ import {
     isOriginTrusted,
     onClient,
     getDefaultCookieAttributes,
-    isAbsoluteUrl
+    isAbsoluteUrl,
+    stringToBase64
 } from '../utils'
 import {
     MOBIFY_PATH,
@@ -1132,27 +1133,32 @@ class Auth {
      */
     async getPasswordResetToken(parameters: ShopperLoginTypes.PasswordActionRequest) {
         const slasClient = this.client
-        const callbackURI = this.callbackURI
-        // Only set authorization header if using private client
-        let authHeader = ''
-        if (this.clientSecret) {
-            authHeader = `Basic ${Buffer.from(
-                `${slasClient.clientConfig.parameters.clientId}:${this.clientSecret}`
-            ).toString('base64')}`
-        }
-        const body = {
-            user_id: parameters.user_id,
-            mode: 'callback',
-            channel_id: slasClient.clientConfig.parameters.siteId,
-            client_id: slasClient.clientConfig.parameters.clientId,
-            callback_uri: callbackURI,
-            hint: 'cross_device'
-        }
-        const headers = {
-            Authorization: authHeader
+        const callbackURI = parameters.callback_uri || this.callbackURI
+        console.log(callbackURI)
+        console.log('THIS.CLIENTSECRET', this.clientSecret)
+
+        const options = {
+            headers: {
+                Authorization: ''
+            },
+            body: {
+                user_id: parameters.user_id,
+                mode: 'callback',
+                channel_id: slasClient.clientConfig.parameters.siteId,
+                client_id: slasClient.clientConfig.parameters.clientId,
+                callback_uri: callbackURI,
+                hint: 'cross_device'
+            }
         }
 
-        const res = await this.client.getPasswordResetToken({headers, body})
+        // Only set authorization header if using private client
+        if (this.clientSecret) {
+            options.headers.Authorization = `Basic ${stringToBase64(
+                `${slasClient.clientConfig.parameters.clientId}:${this.clientSecret}`
+            )}`
+        }
+
+        const res = await slasClient.getPasswordResetToken(options)
         return res
     }
 
@@ -1162,23 +1168,28 @@ class Auth {
      */
     async resetPassword(parameters: ShopperLoginTypes.PasswordActionVerifyRequest) {
         const slasClient = this.client
+        const options = {
+            headers: {
+                Authorization: ''
+            },
+            body: {
+                pwd_action_token: parameters.pwd_action_token,
+                channel_id: slasClient.clientConfig.parameters.siteId,
+                client_id: slasClient.clientConfig.parameters.clientId,
+                new_password: parameters.new_password,
+                user_id: parameters.user_id
+            }
+        }
+
         // Only set authorization header if using private client
-        let authHeader = ''
         if (this.clientSecret) {
-            authHeader = `Basic ${Buffer.from(
+            options.headers.Authorization = `Basic ${stringToBase64(
                 `${slasClient.clientConfig.parameters.clientId}:${this.clientSecret}`
-            ).toString('base64')}`
+            )}`
         }
-        const body = {
-            pwd_action_token: parameters.pwd_action_token,
-            channel_id: slasClient.clientConfig.parameters.siteId,
-            client_id: slasClient.clientConfig.parameters.clientId,
-            new_password: parameters.new_password,
-            user_id: parameters.user_id
-        }
-        const headers = {Authorization: authHeader}
-        // no code verifier needed with the fix blair has made
-        const res = await this.client.resetPassword({headers, body})
+        // TODO: no code verifier needed with the fix blair has made, delete this when the fix has been merged to production
+        // @ts-ignore
+        const res = await this.client.resetPassword(options)
         return res
     }
 
