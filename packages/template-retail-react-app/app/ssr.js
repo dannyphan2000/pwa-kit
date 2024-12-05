@@ -89,9 +89,6 @@ const {handler} = runtime.createHandler(options, (app) => {
             }
         })
     )
-    if (ENABLE_SSR_POST) {
-        app.use(express.json())
-    }
 
     // Handle the redirect from SLAS as to avoid error
     app.get('/callback?*', (req, res) => {
@@ -101,31 +98,29 @@ const {handler} = runtime.createHandler(options, (app) => {
         res.send()
     })
 
-    if (ENABLE_SSR_POST) {
-        app.post('/passwordless-login-callback', async (req, res) => {
-            const base = req.protocol + '://' + req.get('host')
-            const {email_id, token} = req.body
-            const magicLink = `${base}/passwordless-login-landing?token=${token}`
-            const emailLinkResponse = await emailLink(
-                email_id,
-                process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE,
-                magicLink
-            )
-            res.send(emailLinkResponse)
-        })
+    app.post('/passwordless-login-callback', express.json(), async (req, res) => {
+        const base = req.protocol + '://' + req.get('host')
+        const {email_id, token} = req.body
+        const magicLink = `${base}/passwordless-login-landing?token=${token}`
+        const emailLinkResponse = await emailLink(
+            email_id,
+            process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE,
+            magicLink
+        )
+        res.send(emailLinkResponse)
+    })
 
-        app.post('/reset-password-callback', async (req, res) => {
-            const base = req.protocol + '://' + req.get('host')
-            const {email_id, token} = req.body
-            const magicLink = `${base}/reset-password-landing?token=${token}`
-            const emailLinkResponse = await emailLink(
-                email_id,
-                process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE,
-                magicLink
-            )
-            res.send(emailLinkResponse)
-        })
-    }
+    app.post('/reset-password-callback', express.json(), async (req, res) => {
+        const base = req.protocol + '://' + req.get('host')
+        const {email_id, token} = req.body
+        const magicLink = `${base}/reset-password-landing?token=${token}`
+        const emailLinkResponse = await emailLink(
+            email_id,
+            process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE,
+            magicLink
+        )
+        res.send(emailLinkResponse)
+    })
 
     app.get('/robots.txt', runtime.serveStaticFile('static/robots.txt'))
     app.get('/favicon.ico', runtime.serveStaticFile('static/ico/favicon.ico'))
