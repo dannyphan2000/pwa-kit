@@ -131,4 +131,15 @@ export function isAbsoluteUrl(url: string): boolean {
     return /^(https?:\/\/)/i.test(url)
 }
 
-export const stringToBase64 = typeof window === 'object' && typeof window.document === 'object' ? btoa : (unencoded: string): string => Buffer.from(unencoded).toString('base64');
+/**
+ * Provides a platform-specific method for Base64 encoding.
+ *
+ * - In a browser environment (where `window` and `document` are defined), 
+ *   the native `btoa` function is used.
+ * - In a non-browser environment (like Node.js), a fallback is provided 
+ *   that uses `Buffer` to perform the Base64 encoding.
+ */
+export const stringToBase64 =
+    typeof window === 'object' && typeof window.document === 'object'
+        ? btoa
+        : (unencoded: string): string => Buffer.from(unencoded).toString('base64')
