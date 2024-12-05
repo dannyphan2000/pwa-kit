@@ -50,8 +50,8 @@ const options = {
     // Set this to false if using a SLAS public client
     // When setting this to true, make sure to also set the PWA_KIT_SLAS_CLIENT_SECRET
     // environment variable as this endpoint will return HTTP 501 if it is not set
-    useSLASPrivateClient: false,
-    // applySLASPrivateClientToEndpoints: /oauth2\/(token|passwordless|password\/(login|token|reset))/,
+    useSLASPrivateClient: true,
+    applySLASPrivateClientToEndpoints: /oauth2\/(token|passwordless|password\/(login|token|reset))/,
 
     // If this is enabled, any HTTP header that has a non ASCII value will be URI encoded
     // If there any HTTP headers that have been encoded, an additional header will be
