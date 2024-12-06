@@ -32,7 +32,7 @@ This SDK consists of both Webpack and Babel plugins/loaders that are used to int
 
  - `webpack/application-extensions-loader`
 
-    Before deploying your PWA-Kit experience to the Managed Runtime, it's transilpiled using Webpack. Similar to the Babel plugin described above, this loader, aptly named `application-extensions-loader`, replaces all imports of the Application Extensions array with a customized version specific to your applications currently configured extensions.
+    Before deploying your PWA-Kit experience to the Managed Runtime, it's transpiled using Webpack. Similar to the Babel plugin described above, this loader, aptly named `application-extensions-loader`, replaces all imports of the Application Extensions array with a customized version specific to your applications currently configured extensions.
 
  - `webpack/override-resolver-loader`
 
