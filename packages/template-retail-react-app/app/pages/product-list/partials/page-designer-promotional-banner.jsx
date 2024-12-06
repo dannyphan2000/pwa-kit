@@ -8,7 +8,7 @@ import React from 'react'
 import {usePage, useUsid, useShopperContext} from '@salesforce/commerce-sdk-react'
 
 // Components
-import {Box} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {Box} from '@chakra-ui/react'
 import {Page} from '@salesforce/commerce-sdk-react/components'
 
 // Page Designer Components
