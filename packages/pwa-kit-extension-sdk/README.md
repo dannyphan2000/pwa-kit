@@ -10,7 +10,7 @@ Thank you for being a part of our community and for your continuous support! :ra
 
 # The PWA Kit Extension SDK
 
-A library of ExpressJS middleware, React Hooks, Custom Extension APIs and utilities use to enhance PWA-Kit applications created with extensiblity support. NOTE: All applications built using the PWA-Kit plateform 4.x and later will automatically have application extension support by default. If you are currently using version prior to 4.x please upgrade youre `@salesforce/pwa-kit-react-sdk` and `@salesforce/pwa-kit-runtime` packages.
+A library of ExpressJS middleware, React Hooks, Custom Extension APIs and utilities used to enhance PWA-Kit applications created with extensibility support. NOTE: All applications built using the PWA-Kit platform 4.x and later will automatically have application extension support by default. If you are currently using version prior to 4.x, please upgrade your `@salesforce/pwa-kit-react-sdk` and `@salesforce/pwa-kit-runtime` packages.
 
 ## SDK Contents
 
