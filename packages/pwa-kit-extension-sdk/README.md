@@ -22,7 +22,7 @@ This SDK consists of both Webpack and Babel plugins/loaders that are used to int
 
  -  `babel/plugin-application-extensions`
 
-    The PWA-Kit dev server uses Babel to transpile sourcecode at runtime on the developers machine. This plugin is integrated via the default babel configuration file located in your projects root folder. This plugin ensures all Application Exensions are loaded based on the current `extension` configuration.
+    The PWA-Kit dev server uses Babel to transpile source code at runtime on the developer's machine. This plugin is integrated via the default babel configuration file located in your projects root folder. This plugin ensures all Application Extensions are loaded based on the current `extension` configuration.
 
  - `webpack/application-extensions-config-plugin` 
 
