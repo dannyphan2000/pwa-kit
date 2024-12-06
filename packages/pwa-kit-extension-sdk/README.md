@@ -36,7 +36,7 @@ This SDK consists of both Webpack and Babel plugins/loaders that are used to int
 
  - `webpack/override-resolver-loader`
 
-    This _inline_ loader is responsible for buildtime overrides support in your PWA-Kit application. This loader allows Application Extension developer the means to define what files are and are not overrideable. 
+    This _inline_ loader is responsible for buildtime overrides support in your PWA-Kit application. This loader allows Application Extension developers the means to define what files are and are not overridable. 
 
     By using this loader in your extension code it instructs webpack to bypass the normal modules resolution and use a custom resolution path which include all the `/overrides` folders defined in subsequent extensions and your base application.
 
