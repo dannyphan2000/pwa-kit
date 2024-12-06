@@ -9,7 +9,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {useForm} from 'react-hook-form'
 import {useLocation} from 'react-router-dom'
-import {FormattedMessage} from 'react-intl'
+import {useIntl, FormattedMessage} from 'react-intl'
 import {
     Alert,
     Button,
@@ -23,9 +23,14 @@ import PasswordRequirements from '@salesforce/retail-react-app/app/components/fo
 import useUpdatePasswordFields from '@salesforce/retail-react-app/app/components/forms/useUpdatePasswordFields'
 import usePasswordReset from '@salesforce/retail-react-app/app/hooks/use-password-reset'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
+import {
+    API_ERROR_MESSAGE,
+    INVALID_TOKEN_ERROR_MESSAGE
+} from '@salesforce/retail-react-app/app/constants'
 
 const ResetPasswordLanding = () => {
     const form = useForm()
+    const {formatMessage} = useIntl()
     const {search} = useLocation()
     const navigate = useNavigation()
     const queryParams = new URLSearchParams(search)
@@ -41,7 +46,10 @@ const ResetPasswordLanding = () => {
             await resetPassword({email, token, newPassword: values.password})
             navigate('/login')
         } catch (error) {
-            form.setError('global', {type: 'manual', message: error.message})
+            const message = /Unauthorized/i.test(error.message)
+                ? formatMessage(INVALID_TOKEN_ERROR_MESSAGE)
+                : formatMessage(API_ERROR_MESSAGE)
+            form.setError('global', {type: 'manual', message})
         }
     }
 
@@ -59,11 +67,11 @@ const ResetPasswordLanding = () => {
             <Container variant="form">
                 <form onSubmit={form.handleSubmit(submit)}>
                     <Stack spacing={6} paddingLeft={4} paddingRight={4}>
-                        {form.formState.errors?.root?.global && (
+                        {form.formState.errors?.global && (
                             <Alert data-testid="password-update-error" status="error">
                                 <AlertIcon color="red.500" boxSize={4} />
                                 <Text fontSize="sm" ml={3}>
-                                    {form.formState.errors.root.global.message}
+                                    {form.formState.errors.global.message}
                                 </Text>
                             </Alert>
                         )}

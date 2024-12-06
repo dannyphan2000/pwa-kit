@@ -25,7 +25,11 @@ import {useLocation} from 'react-router-dom'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
 import PasswordlessEmailConfirmation from '@salesforce/retail-react-app/app/components/email-confirmation/index'
-import {API_ERROR_MESSAGE, LOGIN_TYPES} from '@salesforce/retail-react-app/app/constants'
+import {
+    API_ERROR_MESSAGE,
+    INVALID_TOKEN_ERROR_MESSAGE,
+    LOGIN_TYPES
+} from '@salesforce/retail-react-app/app/constants'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
 import {usePasswordlessLogin} from '@salesforce/retail-react-app/app/hooks/use-passwordless-login'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
@@ -34,10 +38,6 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 const LOGIN_ERROR_MESSAGE = defineMessage({
     defaultMessage: 'Incorrect username or password, please try again.',
     id: 'login_page.error.incorrect_username_or_password'
-})
-const INVALID_TOKEN_ERROR_MESSAGE = defineMessage({
-    defaultMessage: 'Invalid token, please try again.',
-    id: 'login_page.error.invalid_token'
 })
 
 const LOGIN_VIEW = 'login'
