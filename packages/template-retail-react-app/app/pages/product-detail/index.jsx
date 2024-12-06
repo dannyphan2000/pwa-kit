@@ -55,8 +55,10 @@ import {rebuildPathWithParams} from '@salesforce/retail-react-app/app/utils/url'
 import {useHistory, useLocation, useParams} from 'react-router-dom'
 import {useToast} from '@salesforce/retail-react-app/app/hooks/use-toast'
 import {useWishList} from '@salesforce/retail-react-app/app/hooks/use-wish-list'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 const ProductDetail = () => {
+    const queryClient = useQueryClient()
     const {formatMessage} = useIntl()
     const history = useHistory()
     const location = useLocation()
@@ -67,7 +69,7 @@ const ProductDetail = () => {
     const customerId = useCustomerId()
 
     /****************************** Basket *********************************/
-    const {isLoading: isBasketLoading} = useCurrentBasket()
+    const {isLoading: isBasketLoading, data: basket, refetch: refetchBasket} = useCurrentBasket()
     const {addItemToNewOrExistingBasket} = useShopperBasketsMutationHelper()
     const updateItemsInBasketMutation = useShopperBasketsMutation('updateItemsInBasket')
     const {res} = useServerContext()
@@ -298,7 +300,10 @@ const ProductDetail = () => {
                 price: variant.price,
                 quantity
             }))
-
+            console.log('basket data 1', JSON.stringify(basket))
+            queryClient.invalidateQueries()
+            await refetchBasket()
+            console.log('basket data 2', JSON.stringify(basket))
             await addItemToNewOrExistingBasket(productItems)
 
             einstein.sendAddToCart(productItems)
