@@ -16,7 +16,7 @@ A library of ExpressJS middleware, React Hooks, Custom Extension APIs and utilit
 
 ### Build Tools
 
-This SDK consists of both Webpack and Babel plugins/loaders that are use to integrate Application Extensions support in the the PWA-Kit platform. These are pre-integrated in version 4.x and you will not have to interact with these plugins directly. 
+This SDK consists of both Webpack and Babel plugins/loaders that are used to integrate Application Extensions support in the PWA-Kit platform. These are pre-integrated in version 4.x and you will not have to interact with these plugins directly. 
 
 #### Plugins 🔌
 
