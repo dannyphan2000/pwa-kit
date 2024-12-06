@@ -1,3 +1,4 @@
+## v4.0.0-extensibility-preview.0 (Nov 28, 2024)
 ## v4.0.0-dev (Jun 21, 2024)
 - Fix build script execution on windows when spaces exists in users home path. [#2156](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2156)
 - Integrate Application Extensions Project. (#2099)[https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2099]
