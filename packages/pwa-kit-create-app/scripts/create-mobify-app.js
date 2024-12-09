@@ -842,26 +842,27 @@ const processAppExtensions = (
  * Fetch available Application Extensions using npm search command.
  * The command searches for packages starting with '@salesforce/extension-'.
  *
+ * Currently, the npm search command is not returning the expected results for known extension packages.
+ * Therefore, we are using a static value to ensure the correct extensions are available.
+ *
  * @returns {Array} A list of available Application Extension names and their versions.
  */
 const fetchAvailableAppExtensions = () => {
+    const filePath = p.join(__dirname, '..', 'assets', 'available-app-extensions.json')
     try {
-        const result = child_proc.execSync('npm search @salesforce/extension- --json', {
-            encoding: 'utf-8'
-        })
-        const parsedData = JSON.parse(result)
+        const data = fs.readFileSync(filePath)
+        const staticResult = JSON.parse(data)
 
-        // Include both name and version in the choices
-        return parsedData.map((pkg) => {
-            const latestVersion = pkg['dist-tags'].latest
+        // Use the static result for names but always use the npm label "latest" for versions
+        return staticResult.map((pkg) => {
             return {
-                name: `${pkg.name} (v${latestVersion})`,
+                name: pkg.name,
                 value: pkg.name,
-                version: latestVersion
+                version: 'latest'
             }
         })
     } catch (error) {
-        console.error('Failed to fetch Application Extensions via npm search:', error.message)
+        console.error('Failed to fetch Application Extensions:', error.message)
         return []
     }
 }
@@ -1011,9 +1012,9 @@ const runGenerator = async (
     const appExtensionDeps = selectedAppExtensions.reduce((acc, appExtensionName) => {
         // Find the corresponding Application Extension details
         const appExtensionDetails = context?.availableAppExtensions?.find(
-            (ext) => ext.value === appExtensionName
+            (ext) => ext.value === `${appExtensionName}@latest`
         )
-        const version = appExtensionDetails ? appExtensionDetails.version : '1.0.0-dev'
+        const version = appExtensionDetails ? appExtensionDetails.version : 'latest'
 
         acc[appExtensionName] = extractAppExtensions
             ? `file:./app/application-extensions/${appExtensionName}`
