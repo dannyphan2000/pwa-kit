@@ -23,37 +23,26 @@ import extensionMeta from '../extension-meta.json'
 class StoreLocatorExtension extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 
-    DEFAULT_PATH = '/store-locator'
-    DEFAULT_RADIUS = 100
-    DEFAULT_RADIUS_UNIT = 'km'
-    DEFAULT_PAGE_SIZE = 10
-
-    extendApp<T>(App: React.ComponentType<T>): React.ComponentType<T> {
+    extendApp<T extends React.ComponentType<T>>(
+        App: React.ComponentType<T>
+    ): React.ComponentType<T> {
         const config = this.getConfig()
 
         if (!config.supportedCountries || config.supportedCountries.length === 0) {
+            // TODO: use our logger
             console.warn(
                 '[extension-chakra-store-locator] Missing supportedCountries, this extension will not work.'
             )
         }
 
-        return withStoreLocator(withOptionalChakra(App), {
-            path: config.path ?? this.DEFAULT_PATH,
-            radius: config.radius ?? this.DEFAULT_RADIUS,
-            radiusUnit: config.radiusUnit ?? this.DEFAULT_RADIUS_UNIT,
-            defaultPageSize: config.defaultPageSize ?? this.DEFAULT_PAGE_SIZE,
-            defaultCountry: config.defaultCountry ?? '',
-            defaultCountryCode: config.defaultCountryCode ?? '',
-            defaultPostalCode: config.defaultPostalCode ?? '',
-            supportedCountries: config.supportedCountries ?? []
-        })
+        return withStoreLocator(withOptionalChakra(App), config)
     }
 
     extendRoutes(routes: RouteProps[]): RouteProps[] {
         return [
             {
                 exact: true,
-                path: this.getConfig().path || this.DEFAULT_PATH,
+                path: this.getConfig().path,
                 component: StoreLocatorPage
             },
             ...routes

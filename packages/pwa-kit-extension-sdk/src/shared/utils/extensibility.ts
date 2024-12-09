@@ -8,9 +8,14 @@
 // Third-Party
 import fse from 'fs-extra'
 import path, {resolve} from 'path'
+import merge from 'lodash.merge'
 
 // Types
-import {ApplicationExtensionEntry, ApplicationExtensionEntryTuple} from '../../types'
+import {
+    ApplicationExtensionConfig,
+    ApplicationExtensionEntry,
+    ApplicationExtensionEntryTuple
+} from '../../types'
 
 import {expand} from './index'
 
@@ -164,4 +169,27 @@ const getPreviousExtensions = (
     const array = extensions.slice().reverse()
     const index = array.findIndex((extension) => extension[0] === currentExtension[0])
     return array.slice(index + 1)
+}
+
+/**
+ * For the given extension, merge its user-defined config and default config
+ */
+export const mergeWithDefaultConfig = (
+    extension: ApplicationExtensionEntryTuple,
+    defaultConfig?: ApplicationExtensionEntryTuple[1]
+): ApplicationExtensionEntryTuple => {
+    const packageName = extension[0]
+    const userDefinedConfig = extension[1]
+    defaultConfig = defaultConfig ?? getExtensionDefaultConfig(packageName)
+
+    return [packageName, merge(defaultConfig, userDefinedConfig)]
+}
+
+const getExtensionDefaultConfig = (
+    packageName: string
+): ApplicationExtensionConfig & Record<string, unknown> => {
+    const projectDir = process.cwd()
+    return fse.readJsonSync(
+        resolve(projectDir, 'node_modules', packageName, 'config', 'default.json')
+    )
 }

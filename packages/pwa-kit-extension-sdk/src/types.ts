@@ -9,14 +9,17 @@
  * This is the base configuration type for all Application Extensions. Modify this
  * type if you are adding new configurations that are general to all extensions.
  */
-export interface ApplicationExtensionConfig extends Record<string, unknown> {
+export interface ApplicationExtensionConfig {
     enabled?: boolean
 }
 
 /**
  * When configuring your PWA-Kit Application to use Application Extensions via the config
  */
-export type ApplicationExtensionEntryTuple = [string, ApplicationExtensionConfig]
+export type ApplicationExtensionEntryTuple = [
+    string,
+    ApplicationExtensionConfig & Record<string, unknown>
+]
 
 /**
  * This type represents the array entry in the "extensions" property of your PWA-Kit

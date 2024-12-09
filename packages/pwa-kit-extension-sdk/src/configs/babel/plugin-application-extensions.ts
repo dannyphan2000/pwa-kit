@@ -15,7 +15,7 @@ const path = require('path')
 
 // Local
 import {renderTemplate} from '../utils'
-import {buildAliases} from '../../shared/utils'
+import {buildAliases, expand, mergeWithDefaultConfig} from '../../shared/utils'
 import {ApplicationExtensionsLoaderOptions} from '../webpack/types'
 
 // Constants
@@ -53,7 +53,12 @@ module.exports = function replaceExtensionsPlaceholderContentPlugin({types: t}: 
 
                 // Check if the file matches one of the files we want to replace
                 if (filePath.endsWith(extensionsPlaceholderFile)) {
-                    const newContent = renderTemplate(state.opts)
+                    const newContent = renderTemplate({
+                        ...(state.opts as ApplicationExtensionsLoaderOptions),
+                        configured: expand(state.opts.configured).map((extension) =>
+                            mergeWithDefaultConfig(extension)
+                        )
+                    })
 
                     let parsedAst
 
