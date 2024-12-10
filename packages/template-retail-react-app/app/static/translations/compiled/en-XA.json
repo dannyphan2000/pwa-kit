@@ -3185,6 +3185,20 @@
       "value": "]"
     }
   ],
+  "global.error.invalid_token": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Īƞṽȧȧŀīḓ ŧǿǿķḗḗƞ, ƥŀḗḗȧȧşḗḗ ŧřẏ ȧȧɠȧȧīƞ."
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
   "global.error.something_went_wrong": [
     {
       "type": 0,
@@ -4867,20 +4881,6 @@
     {
       "type": 0,
       "value": "Īƞƈǿǿřřḗḗƈŧ ŭŭşḗḗřƞȧȧḿḗḗ ǿǿř ƥȧȧşşẇǿǿřḓ, ƥŀḗḗȧȧşḗḗ ŧřẏ ȧȧɠȧȧīƞ."
-    },
-    {
-      "type": 0,
-      "value": "]"
-    }
-  ],
-  "login_page.error.invalid_token": [
-    {
-      "type": 0,
-      "value": "["
-    },
-    {
-      "type": 0,
-      "value": "Īƞṽȧȧŀīḓ ŧǿǿķḗḗƞ, ƥŀḗḗȧȧşḗḗ ŧřẏ ȧȧɠȧȧīƞ."
     },
     {
       "type": 0,

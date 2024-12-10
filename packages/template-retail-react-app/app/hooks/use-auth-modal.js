@@ -78,7 +78,6 @@ export const AuthModal = ({
     const navigate = useNavigation()
     const [currentView, setCurrentView] = useState(initialView)
     const form = useForm()
-    const submittedEmail = useRef()
     const toast = useToast()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const register = useAuthHelper(AuthHelpers.Register)
@@ -196,7 +195,6 @@ export const AuthModal = ({
         if (isOpen) {
             setLoginType(LOGIN_TYPES.PASSWORD)
             setCurrentView(initialView)
-            submittedEmail.current = undefined
             form.reset()
         }
     }, [isOpen])
@@ -265,39 +263,6 @@ export const AuthModal = ({
     const onBackToSignInClick = () =>
         initialView === PASSWORD_VIEW ? onClose() : setCurrentView(LOGIN_VIEW)
 
-    // TODO: Remove this to a separate component when fixing password reset flow
-    const PasswordResetSuccess = () => (
-        <Stack justify="center" align="center" spacing={6}>
-            <BrandLogo width="60px" height="auto" />
-            <Text align="center" fontSize="md">
-                <FormattedMessage
-                    defaultMessage={'Password Reset'}
-                    id="auth_modal.password_reset_success.title.password_reset"
-                />
-            </Text>
-            <Stack spacing={6} pt={4}>
-                <Text align="center" fontSize="sm">
-                    <FormattedMessage
-                        defaultMessage="You will receive an email at <b>{email}</b> with a link to reset your password shortly."
-                        id="auth_modal.password_reset_success.info.will_email_shortly"
-                        values={{
-                            email: submittedEmail.current,
-
-                            b: (chunks) => <b>{chunks}</b>
-                        }}
-                    />
-                </Text>
-
-                <Button onClick={onBackToSignInClick}>
-                    <FormattedMessage
-                        defaultMessage="Back to Sign In"
-                        id="auth_modal.password_reset_success.button.back_to_sign_in"
-                    />
-                </Button>
-            </Stack>
-        </Stack>
-    )
-
     return (
         <Modal
             size="sm"
@@ -338,15 +303,12 @@ export const AuthModal = ({
                             clickSignIn={onBackToSignInClick}
                         />
                     )}
-                    {!form.formState.isSubmitSuccessful && currentView === PASSWORD_VIEW && (
+                    {currentView === PASSWORD_VIEW && (
                         <ResetPasswordForm
                             form={form}
                             submitForm={submitForm}
                             clickSignIn={onBackToSignInClick}
                         />
-                    )}
-                    {form.formState.isSubmitSuccessful && currentView === PASSWORD_VIEW && (
-                        <PasswordResetSuccess />
                     )}
                     {form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
                         <PasswordlessEmailConfirmation

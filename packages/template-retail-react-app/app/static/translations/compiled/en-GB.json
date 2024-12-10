@@ -1521,6 +1521,12 @@
       "value": "Wishlist"
     }
   ],
+  "global.error.invalid_token": [
+    {
+      "type": 0,
+      "value": "Invalid token, please try again."
+    }
+  ],
   "global.error.something_went_wrong": [
     {
       "type": 0,
@@ -2279,12 +2285,6 @@
     {
       "type": 0,
       "value": "Incorrect username or password, please try again."
-    }
-  ],
-  "login_page.error.invalid_token": [
-    {
-      "type": 0,
-      "value": "Invalid token, please try again."
     }
   ],
   "offline_banner.description.browsing_offline_mode": [
