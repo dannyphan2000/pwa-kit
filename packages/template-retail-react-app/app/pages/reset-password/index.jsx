@@ -88,7 +88,7 @@ const ResetPassword = () => {
                                     defaultMessage="You will receive an email at <b>{email}</b> with a link to reset your password shortly."
                                     id="reset_password.info.receive_email_shortly"
                                     values={{
-                                        email: submittedEmail,
+                                        email: form.getValues('email'),
 
                                         b: (chunks) => <b>{chunks}</b>
                                     }}
