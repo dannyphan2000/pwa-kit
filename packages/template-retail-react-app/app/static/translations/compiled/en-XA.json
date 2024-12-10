@@ -6321,48 +6321,6 @@
       "value": "]"
     }
   ],
-  "reset_password.button.back_to_sign_in": [
-    {
-      "type": 0,
-      "value": "["
-    },
-    {
-      "type": 0,
-      "value": "Ɓȧȧƈķ ŧǿǿ Şīɠƞ Īƞ"
-    },
-    {
-      "type": 0,
-      "value": "]"
-    }
-  ],
-  "reset_password.info.receive_email_shortly": [
-    {
-      "type": 0,
-      "value": "["
-    },
-    {
-      "type": 0,
-      "value": "Ẏǿǿŭŭ ẇīŀŀ řḗḗƈḗḗīṽḗḗ ȧȧƞ ḗḗḿȧȧīŀ ȧȧŧ "
-    },
-    {
-      "children": [
-        {
-          "type": 1,
-          "value": "email"
-        }
-      ],
-      "type": 8,
-      "value": "b"
-    },
-    {
-      "type": 0,
-      "value": " ẇīŧħ ȧȧ ŀīƞķ ŧǿǿ řḗḗşḗḗŧ ẏǿǿŭŭř ƥȧȧşşẇǿǿřḓ şħǿǿřŧŀẏ."
-    },
-    {
-      "type": 0,
-      "value": "]"
-    }
-  ],
   "reset_password_form.action.sign_in": [
     {
       "type": 0,

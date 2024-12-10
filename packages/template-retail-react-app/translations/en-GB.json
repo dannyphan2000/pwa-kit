@@ -1264,12 +1264,6 @@
   "register_form.message.create_an_account": {
     "defaultMessage": "Create an account and get first access to the very best products, inspiration and community."
   },
-  "reset_password.button.back_to_sign_in": {
-    "defaultMessage": "Back to Sign In"
-  },
-  "reset_password.info.receive_email_shortly": {
-    "defaultMessage": "You will receive an email at <b>{email}</b> with a link to reset your password shortly."
-  },
   "reset_password_form.action.sign_in": {
     "defaultMessage": "Sign in"
   },

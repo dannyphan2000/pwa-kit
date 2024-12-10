@@ -2985,32 +2985,6 @@
       "value": "Create an account and get first access to the very best products, inspiration and community."
     }
   ],
-  "reset_password.button.back_to_sign_in": [
-    {
-      "type": 0,
-      "value": "Back to Sign In"
-    }
-  ],
-  "reset_password.info.receive_email_shortly": [
-    {
-      "type": 0,
-      "value": "You will receive an email at "
-    },
-    {
-      "children": [
-        {
-          "type": 1,
-          "value": "email"
-        }
-      ],
-      "type": 8,
-      "value": "b"
-    },
-    {
-      "type": 0,
-      "value": " with a link to reset your password shortly."
-    }
-  ],
   "reset_password_form.action.sign_in": [
     {
       "type": 0,
