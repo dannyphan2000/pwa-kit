@@ -81,7 +81,7 @@ const ResetPasswordForm = ({submitForm, clickSignIn = noop, form}) => {
             {form.formState.isSubmitSuccessful && (
                 <Stack justify="center" align="center" spacing={6}>
                     <BrandLogo width="60px" height="auto" />
-                    <Text align="center" fontSize="md">
+                    <Text align="center" fontSize="xl" fontWeight="semibold">
                         <FormattedMessage
                             defaultMessage={'Password Reset'}
                             id="auth_modal.password_reset_success.title.password_reset"
