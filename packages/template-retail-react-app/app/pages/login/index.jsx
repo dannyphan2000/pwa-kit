@@ -124,8 +124,6 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                             message: formatMessage(API_ERROR_MESSAGE)
                         })
                     }
-                } else if (loginType === LOGIN_TYPES.SOCIAL) {
-                    // Handle social login logic here
                 }
             },
             email: () => {
@@ -196,6 +194,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                         isPasswordlessEnabled={isPasswordlessEnabled}
                         isSocialEnabled={isSocialEnabled}
                         idps={idps}
+                        setLoginType={setLoginType}
                     />
                 )}
                 {form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (

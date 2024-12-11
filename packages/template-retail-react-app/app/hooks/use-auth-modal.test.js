@@ -18,6 +18,7 @@ import {BrowserRouter as Router, Route} from 'react-router-dom'
 import Account from '@salesforce/retail-react-app/app/pages/account'
 import {rest} from 'msw'
 import {mockedRegisteredCustomer} from '@salesforce/retail-react-app/app/mocks/mock-data'
+import * as ReactHookForm from 'react-hook-form'
 
 jest.setTimeout(60000)
 
@@ -48,7 +49,7 @@ const mockRegisteredCustomer = {
 
 let authModal = undefined
 const MockedComponent = (props) => {
-    const {initialView} = props
+    const {initialView, isPasswordlessEnabled = false} = props
     authModal = useAuthModal(initialView || undefined)
     const match = {
         params: {pageName: 'profile'}
@@ -56,7 +57,7 @@ const MockedComponent = (props) => {
     return (
         <Router>
             <button onClick={authModal.onOpen}>Open Modal</button>
-            <AuthModal {...authModal} />
+            <AuthModal {...authModal} isPasswordlessEnabled={isPasswordlessEnabled} />
             <Route path={createPathWithDefaults('/account')}>
                 <Account match={match} />
             </Route>
@@ -64,7 +65,8 @@ const MockedComponent = (props) => {
     )
 }
 MockedComponent.propTypes = {
-    initialView: PropTypes.string
+    initialView: PropTypes.string,
+    isPasswordlessEnabled: PropTypes.bool
 }
 
 // Set up and clean up
@@ -122,6 +124,23 @@ test('Renders login modal by default', async () => {
 })
 
 test('Renders check email modal on email mode', async () => {
+    // Store the original useForm function
+    const originalUseForm = ReactHookForm.useForm
+
+    // Spy on useForm
+    const mockUseForm = jest.spyOn(ReactHookForm, 'useForm').mockImplementation((...args) => {
+        // Call the original useForm
+        const methods = originalUseForm(...args)
+
+        // Override only formState
+        return {
+            ...methods,
+            formState: {
+                ...methods.formState,
+                isSubmitSuccessful: true // Set to true to render the Check Your Email modal
+            }
+        }
+    })
     const user = userEvent.setup()
 
     renderWithProviders(<MockedComponent initialView="email" />)
@@ -132,6 +151,21 @@ test('Renders check email modal on email mode', async () => {
 
     await waitFor(() => {
         expect(screen.getByText(/check your email/i)).toBeInTheDocument()
+    })
+    mockUseForm.mockRestore()
+})
+
+test('Renders passwordless login when enabled', async () => {
+    const user = userEvent.setup()
+
+    renderWithProviders(<MockedComponent isPasswordlessEnabled={true} />)
+
+    // open the modal
+    const trigger = screen.getByText(/open modal/i)
+    await user.click(trigger)
+
+    await waitFor(() => {
+        expect(screen.getByText(/continue securely/i)).toBeInTheDocument()
     })
 })
 

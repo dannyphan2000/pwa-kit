@@ -21,8 +21,9 @@ module.exports = {
                 callbackURI: '/passwordless-login-callback'
             },
             social: {
-                enabled: false,
-                idps: ['google', 'apple']
+                enabled: true,
+                idps: ['google', 'apple'],
+                redirectURI: '/social-callback'
             }
         },
         defaultSite: 'RefArchGlobal',

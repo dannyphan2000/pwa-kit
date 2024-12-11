@@ -92,6 +92,34 @@ export const navigateToPDPDesktop = async ({page}) => {
 }
 
 /**
+ * Navigates to the `Cotton Turtleneck Sweater` PDP (Product Detail Page) on Desktop 
+ * with the black variant selected.
+ * 
+ * @param {Object} options.page - Object that represents a tab/window in the browser provided by playwright
+ */
+export const navigateToPDPDesktopSocial = async ({page, productName, productColor, productPrice}) => {
+    await page.goto(config.RETAIL_APP_HOME);
+
+    await page.getByRole("link", { name: "Womens" }).hover();
+    const topsNav = await page.getByRole("link", { name: "Tops", exact: true });
+    await expect(topsNav).toBeVisible();
+  
+    await topsNav.click();
+
+    // PLP
+    const productTile = page.getByRole("link", {
+      name: RegExp(productName, 'i'),
+    });
+    // selecting swatch
+    const productTileImg = productTile.locator("img");
+    await productTileImg.waitFor({state: 'visible'})
+    await expect(productTile.getByText(RegExp(`From \\${productPrice}`, 'i'))).toBeVisible();
+  
+    await productTile.getByLabel(RegExp(productColor, 'i'), { exact: true }).hover();
+    await productTile.click();
+}
+
+/**
  * Adds the `Cotton Turtleneck Sweater` product to the cart with the variant:
  * Color: Black
  * Size: L
@@ -248,6 +276,43 @@ export const loginShopper = async ({page, userCredentials}) => {
         await expect(
           page.getByRole("heading", { name: /Account Details/i })
         ).toBeVisible({ timeout: 2000 });
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Attempts to log in a shopper with provided user credentials.
+ * 
+ * @param {Object} options.page - Object that represents a tab/window in the browser provided by playwright
+ * @return {Boolean} - denotes whether or not login was successful
+ */
+export const socialLoginShopper = async ({page}) => {
+    try {
+        await page.goto(config.RETAIL_APP_HOME + "/login");
+
+        await page.getByRole("button", { name: /Google/i }).click();
+        await expect(page.getByText(/Sign in with Google/i)).toBeVisible({ timeout: 10000 });
+        await page.waitForSelector('input[type="email"]');
+
+        // Fill in the email input
+        await page.fill('input[type="email"]', config.PWA_E2E_USER_EMAIL);
+        await page.click('#identifierNext');
+
+        await page.waitForSelector('input[type="password"]');
+
+        // Fill in the password input
+        await page.fill('input[type="password"]', config.PWA_E2E_USER_PASSWORD);
+        await page.click('#passwordNext');
+        await page.waitForLoadState();
+
+        await expect(page.getByRole("heading", { name: /Account Details/i })).toBeVisible({timeout: 20000})
+        await expect(page.getByText(/e2e.pwa.kit@gmail.com/i)).toBeVisible()
+
+        // Password card should be hidden for social login user
+        await expect(page.getByRole("heading", { name: /Password/i })).toBeHidden()
+
         return true;
     } catch {
         return false;

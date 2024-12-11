@@ -14,6 +14,8 @@ const {
   validateWishlist,
   loginShopper,
   navigateToPDPDesktop,
+  navigateToPDPDesktopSocial,
+  socialLoginShopper,
 } = require("../../scripts/pageHelpers");
 const {
   generateUserCredentials,
@@ -165,3 +167,44 @@ test("Registered shopper can add item to wishlist", async ({ page }) => {
   // wishlist
   await validateWishlist({page})
 });
+
+/**
+ * Test that social login persists a user's shopping cart
+ */
+test("Registered shopper logged in through social retains persisted cart", async ({ page }) => {
+  navigateToPDPDesktopSocial({page, productName: "Floral Ruffle Top", productColor: "Cardinal Red Multi", productPrice: "£35.19"});
+
+  // Add to Cart
+  await expect(
+    page.getByRole("heading", { name: /Floral Ruffle Top/i })
+  ).toBeVisible({timeout: 15000});
+  await page.getByRole("radio", { name: "L", exact: true }).click();
+
+  await page.locator("button[data-testid='quantity-increment']").click();
+
+  // Selected Size and Color texts are broken into multiple elements on the page.
+  // So we need to look at the page URL to verify selected variants
+  const updatedPageURL = await page.url();
+  const params = updatedPageURL.split("?")[1];
+  expect(params).toMatch(/size=9LG/i);
+  expect(params).toMatch(/color=JJ9DFXX/i);
+  await page.getByRole("button", { name: /Add to Cart/i }).click();
+
+  const addedToCartModal = page.getByText(/2 items added to cart/i);
+
+  await addedToCartModal.waitFor();
+
+  await page.getByLabel("Close").click();
+
+  // Social Login
+  await socialLoginShopper({
+    page
+  })
+
+  // Check Items in Cart
+  await page.getByLabel(/My cart/i).click();
+  await page.waitForLoadState();
+  await expect(
+    page.getByRole("link", { name: /Floral Ruffle Top/i })
+  ).toBeVisible();
+})

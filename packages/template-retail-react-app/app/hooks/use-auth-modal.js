@@ -147,8 +147,6 @@ export const AuthModal = ({
                             message: formatMessage(API_ERROR_MESSAGE)
                         })
                     }
-                } else if (loginType === LOGIN_TYPES.SOCIAL) {
-                    // Handle social login logic here
                 }
             },
             register: async (data) => {
@@ -336,6 +334,7 @@ export const AuthModal = ({
                             isPasswordlessEnabled={isPasswordlessEnabled}
                             isSocialEnabled={isSocialEnabled}
                             idps={idps}
+                            setLoginType={setLoginType}
                         />
                     )}
                     {!form.formState.isSubmitSuccessful && currentView === REGISTER_VIEW && (

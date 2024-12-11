@@ -22,7 +22,8 @@ const LoginForm = ({
     form,
     isPasswordlessEnabled = false,
     isSocialEnabled = false,
-    idps = []
+    idps = [],
+    setLoginType
 }) => {
     return (
         <Fragment>
@@ -56,6 +57,7 @@ const LoginForm = ({
                             handlePasswordlessLoginClick={handlePasswordlessLoginClick}
                             isSocialEnabled={isSocialEnabled}
                             idps={idps}
+                            setLoginType={setLoginType}
                         />
                     ) : (
                         <StandardLogin
@@ -94,7 +96,8 @@ LoginForm.propTypes = {
     form: PropTypes.object,
     isPasswordlessEnabled: PropTypes.bool,
     isSocialEnabled: PropTypes.bool,
-    idps: PropTypes.arrayOf(PropTypes.string)
+    idps: PropTypes.arrayOf(PropTypes.string),
+    setLoginType: PropTypes.func
 }
 
 export default LoginForm
