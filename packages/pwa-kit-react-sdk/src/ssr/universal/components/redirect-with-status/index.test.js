@@ -7,22 +7,24 @@
 
 import React from 'react'
 import {render} from '@testing-library/react'
-import {StaticRouter, Route} from 'react-router-dom'
-import {RedirectWithStatus} from './index'
+import {Router, StaticRouter, Route} from 'react-router-dom'
+import {createMemoryHistory} from 'history'
+import RedirectWithStatus from './index'
 
 describe('RedirectWithStatus', () => {
-    // Dummy test needed for code coverage (the case where there is no static context)
-    test('Renders correctly', () => {
+    test('Redirects if no status or context is provided', () => {
         const targetUrl = '/target'
-        render(
-            <StaticRouter location="/redirect">
+        const history = createMemoryHistory()
+        history.push('/redirect')
+       render(
+            <Router history={history}>
                 <Route path="/redirect">
                     <RedirectWithStatus to={targetUrl} />
                 </Route>
-            </StaticRouter>
+            </Router>
         )
-    }),
-
+        expect(history.location.pathname).toBe(targetUrl)
+    })
     test('Redirect renders with correct status', async () => {
         const context = {}
         const status = 303

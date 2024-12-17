@@ -1,5 +1,5 @@
 ## v3.9.0-dev (Oct 29, 2024)
-- Add support for redirects with HTTP status other than 302 [#2173](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2173)
+- Add RedirectWithStatus component, allowing finer grained control of rediriects and their status code [#2173](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2173)
 
 ## v3.8.0 (Oct 28, 2024)
 - [Server Affinity] - Attach dwsid to SCAPI request headers [#2090](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2090)
