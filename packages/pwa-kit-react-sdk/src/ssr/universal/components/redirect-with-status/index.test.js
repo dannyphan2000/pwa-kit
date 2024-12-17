@@ -11,6 +11,18 @@ import {StaticRouter, Route} from 'react-router-dom'
 import {RedirectWithStatus} from './index'
 
 describe('RedirectWithStatus', () => {
+    // Dummy test needed for code coverage (the case where there is no static context)
+    test('Renders correctly', () => {
+        const targetUrl = '/target'
+        render(
+            <StaticRouter location="/redirect">
+                <Route path="/redirect">
+                    <RedirectWithStatus to={targetUrl} />
+                </Route>
+            </StaticRouter>
+        )
+    }),
+
     test('Redirect renders with correct status', async () => {
         const context = {}
         const status = 303
