@@ -16,7 +16,7 @@ describe('RedirectWithStatus', () => {
         const targetUrl = '/target'
         const history = createMemoryHistory()
         history.push('/redirect')
-       render(
+        render(
             <Router history={history}>
                 <Route path="/redirect">
                     <RedirectWithStatus to={targetUrl} />
