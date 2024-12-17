@@ -6,29 +6,32 @@
  */
 
 import React from 'react'
-import {Redirect, Route} from 'react-router-dom'
+import {Redirect, withRouter} from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 /**
- * The `RedirectWithStatus` HOC component is used to specify a different status code when redirecting via
+ * The `RedirectWithStatus` component is used to specify a different status code when redirecting via
  * the Redirect component.
  * The default redirect behavior when this component is not used is to set a 302 status.
  *
  * @param {number} status - The HTTP status code. Defaults to 302 if not specified
- * @param {string} to - The redirect's target path 
+ * @param {string} to - The redirect's target path
  */
-export const RedirectWithStatus = ({status = 302, ...props}) => {
-    return (
-        <Route
-            render={({staticContext}) => {
-                if (staticContext) staticContext.status = status
-                return <Redirect {...props} />
-            }}
-        />
-    )
+const RedirectWithStatus = ({status = 302, staticContext, ...props}) => {
+  // Handle server-side rendering
+  if (staticContext) {
+    staticContext.status = status
+  }
+
+  return <Redirect {...props} />
 }
 
 RedirectWithStatus.propTypes = {
     status: PropTypes.number,
-    to: PropTypes.string
+    to: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object
+    ])
 }
+
+export default withRouter(RedirectWithStatus)
