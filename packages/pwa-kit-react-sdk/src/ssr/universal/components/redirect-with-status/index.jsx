@@ -15,6 +15,7 @@ import PropTypes from 'prop-types'
  * The default redirect behavior when this component is not used is to set a 302 status.
  *
  * @param {number} status - The HTTP status code. Defaults to 302 if not specified
+ * @param {string} to - The redirect's target path 
  */
 export const RedirectWithStatus = ({status = 302, ...props}) => {
     return (
