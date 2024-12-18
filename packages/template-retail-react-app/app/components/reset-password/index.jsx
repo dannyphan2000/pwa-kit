@@ -16,7 +16,7 @@ import ResetPasswordFields from '@salesforce/retail-react-app/app/components/for
 const ResetPasswordForm = ({submitForm, clickSignIn = noop, form}) => {
     return (
         <Fragment>
-            {!form.formState.isSubmitSuccessful && (
+            {!form.formState.isSubmitSuccessful ? (
                 <>
                     <Stack justify="center" align="center" spacing={8}>
                         <BrandLogo width="60px" height="auto" />
@@ -77,8 +77,7 @@ const ResetPasswordForm = ({submitForm, clickSignIn = noop, form}) => {
                         </Stack>
                     </form>
                 </>
-            )}
-            {form.formState.isSubmitSuccessful && (
+            ) : (
                 <Stack justify="center" align="center" spacing={6}>
                     <BrandLogo width="60px" height="auto" />
                     <Text align="center" fontSize="xl" fontWeight="semibold">
