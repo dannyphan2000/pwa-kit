@@ -90,7 +90,7 @@ Your base project uses two extensions as defined in its `extensions` configurati
 // package.json
 {
     ...
-    extensions: ['extension-a', 'extension-b]
+    extensions: ['extension-a', 'extension-b']
     ...
 }
 ```
