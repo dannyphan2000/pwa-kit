@@ -17,6 +17,7 @@ import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
 import {useLocation} from 'react-router-dom'
 import {useRouteMatch} from 'react-router'
 import {usePasswordReset} from '@salesforce/retail-react-app/app/hooks/use-password-reset'
+import {RESET_PASSWORD_LANDING_PATH} from '@salesforce/retail-react-app/app/constants'
 
 const ResetPassword = () => {
     const form = useForm()
@@ -51,7 +52,7 @@ const ResetPassword = () => {
                 marginBottom={8}
                 borderRadius="base"
             >
-                {path === '/reset-password-landing' ? (
+                {path === RESET_PASSWORD_LANDING_PATH ? (
                     <ResetPasswordLanding />
                 ) : (
                     <ResetPasswordForm

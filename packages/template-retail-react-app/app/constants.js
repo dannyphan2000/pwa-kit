@@ -242,3 +242,6 @@ export const LOGIN_TYPES = {
     PASSWORDLESS: 'passwordless',
     SOCIAL: 'social'
 }
+
+// Constants for Password Reset
+export const RESET_PASSWORD_LANDING_PATH = '/reset-password-landing'

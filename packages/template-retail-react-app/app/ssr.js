@@ -24,6 +24,7 @@ import helmet from 'helmet'
 
 import express from 'express'
 import {emailLink} from '@salesforce/retail-react-app/app/utils/marketing-cloud/marketing-cloud-email-link'
+import {RESET_PASSWORD_LANDING_PATH} from '@salesforce/retail-react-app/app/constants'
 
 const config = getConfig()
 
@@ -117,7 +118,7 @@ const {handler} = runtime.createHandler(options, (app) => {
     app.post(resetPasswordCallback, express.json(), async (req, res) => {
         const base = req.protocol + '://' + req.get('host')
         const {email_id, token} = req.body
-        const magicLink = `${base}/reset-password-landing?token=${token}&email=${email_id}`
+        const magicLink = `${base}${RESET_PASSWORD_LANDING_PATH}?token=${token}&email=${email_id}`
         const emailLinkResponse = await emailLink(
             email_id,
             process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE,
