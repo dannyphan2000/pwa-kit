@@ -21,7 +21,7 @@ import {AlertIcon, BrandLogo} from '@salesforce/retail-react-app/app/components/
 import Field from '@salesforce/retail-react-app/app/components/field'
 import PasswordRequirements from '@salesforce/retail-react-app/app/components/forms/password-requirements'
 import useUpdatePasswordFields from '@salesforce/retail-react-app/app/components/forms/useUpdatePasswordFields'
-import usePasswordReset from '@salesforce/retail-react-app/app/hooks/use-password-reset'
+import {usePasswordReset} from '@salesforce/retail-react-app/app/hooks/use-password-reset'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import {
     API_ERROR_MESSAGE,
@@ -79,11 +79,7 @@ const ResetPasswordLanding = () => {
                             <Field {...fields.password} />
                             <PasswordRequirements value={password} />
                         </Stack>
-                        <Button
-                            type="submit"
-                            onClick={() => form.clearErrors('global')}
-                            isLoading={form.formState.isSubmitting}
-                        >
+                        <Button type="submit" isLoading={form.formState.isSubmitting}>
                             <FormattedMessage
                                 defaultMessage="Reset Password"
                                 id="reset_password_form.button.reset_password"

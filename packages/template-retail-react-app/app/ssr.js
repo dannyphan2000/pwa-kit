@@ -25,6 +25,8 @@ import helmet from 'helmet'
 import express from 'express'
 import {emailLink} from '@salesforce/retail-react-app/app/utils/marketing-cloud/marketing-cloud-email-link'
 
+const config = getConfig()
+
 const options = {
     // The build directory (an absolute path)
     buildDir: path.resolve(process.cwd(), 'build'),
@@ -33,7 +35,7 @@ const options = {
     defaultCacheTimeSeconds: 600,
 
     // The contents of the config file for the current environment
-    mobify: getConfig(),
+    mobify: config,
 
     // The port that the local dev server listens on
     port: 3000,
@@ -62,6 +64,9 @@ const options = {
 }
 
 const runtime = getRuntime()
+
+const resetPasswordCallback =
+    config.app.login?.resetPassword?.callbackURI || '/reset-password-callback'
 
 const {handler} = runtime.createHandler(options, (app) => {
     // Set default HTTP security headers required by PWA Kit
@@ -109,7 +114,7 @@ const {handler} = runtime.createHandler(options, (app) => {
         res.send(emailLinkResponse)
     })
 
-    app.post('/reset-password-callback', express.json(), async (req, res) => {
+    app.post(resetPasswordCallback, express.json(), async (req, res) => {
         const base = req.protocol + '://' + req.get('host')
         const {email_id, token} = req.body
         const magicLink = `${base}/reset-password-landing?token=${token}&email=${email_id}`

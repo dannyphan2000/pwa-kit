@@ -5,15 +5,21 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {AuthHelpers, useAuthHelper} from '@salesforce/commerce-sdk-react'
-import {useToast} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {useToast} from '@salesforce/retail-react-app/app/hooks/use-toast'
 import {useIntl} from 'react-intl'
-import {absoluteUrl} from '@salesforce/retail-react-app/app/utils/url'
+import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+
 /**
  * This hook provides commerce-react-sdk hooks to simplify the reset password flow.
  */
 export const usePasswordReset = () => {
-    const toast = useToast()
+    const showToast = useToast()
     const {formatMessage} = useIntl()
+    const appOrigin = useAppOrigin()
+    const config = getConfig()
+    const resetPasswordCallback =
+        config.app.login?.resetPassword?.callbackURI || '/reset-password-callback'
 
     const getPasswordResetTokenMutation = useAuthHelper(AuthHelpers.GetPasswordResetToken)
     const resetPasswordMutation = useAuthHelper(AuthHelpers.ResetPassword)
@@ -21,7 +27,7 @@ export const usePasswordReset = () => {
     const getPasswordResetToken = async (email) => {
         await getPasswordResetTokenMutation.mutateAsync({
             user_id: email,
-            callback_uri: absoluteUrl('/reset-password-callback')
+            callback_uri: `${appOrigin}${resetPasswordCallback}`
         })
     }
 
@@ -30,14 +36,13 @@ export const usePasswordReset = () => {
             {user_id: email, pwd_action_token: token, new_password: newPassword},
             {
                 onSuccess: () => {
-                    toast({
+                    showToast({
                         title: formatMessage({
                             defaultMessage: 'Password Reset Success',
                             id: 'password_reset_success.toast'
                         }),
                         status: 'success',
-                        position: 'bottom-right',
-                        isClosable: true
+                        position: 'bottom-right'
                     })
                 }
             }
@@ -46,5 +51,3 @@ export const usePasswordReset = () => {
 
     return {getPasswordResetToken, resetPassword}
 }
-
-export default usePasswordReset

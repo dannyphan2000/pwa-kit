@@ -16,7 +16,7 @@ import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
 import {useLocation} from 'react-router-dom'
 import {useRouteMatch} from 'react-router'
-import usePasswordReset from '@salesforce/retail-react-app/app/hooks/use-password-reset'
+import {usePasswordReset} from '@salesforce/retail-react-app/app/hooks/use-password-reset'
 
 const ResetPassword = () => {
     const form = useForm()

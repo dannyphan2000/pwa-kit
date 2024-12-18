@@ -23,6 +23,9 @@ module.exports = {
             social: {
                 enabled: false,
                 idps: ['google', 'apple']
+            },
+            resetPassword: {
+                callbackURI: '/reset-password-callback'
             }
         },
         defaultSite: 'RefArchGlobal',
