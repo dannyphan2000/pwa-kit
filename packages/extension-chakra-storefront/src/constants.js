@@ -9,6 +9,7 @@ import {defineMessage} from 'react-intl'
 import {noop} from './utils/utils'
 
 // Global app defaults
+// TODO: find a good place for these values in config
 export const DEFAULT_LOCALE = 'en-US'
 export const DEFAULT_SITE_TITLE = 'Retail React App'
 export const MAX_CACHE_AGE = 60 * 15 // 15 min

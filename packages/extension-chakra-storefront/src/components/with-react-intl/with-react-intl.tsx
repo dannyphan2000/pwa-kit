@@ -18,6 +18,7 @@ import {getTargetLocale, fetchTranslations} from '../../utils/locale'
 import {isServer} from '../../utils/utils'
 import logger from '../../utils/logger-instance'
 import useMultiSite from '../../hooks/use-multi-site'
+import {useExtensionConfig} from '../..//hooks/use-extension-config'
 
 // Define a type for the HOC props
 type WithReactIntlProps = React.ComponentPropsWithoutRef<any>
@@ -27,7 +28,7 @@ const withReactIntl = <P extends object>(WrappedComponent: React.ComponentType<P
     const WithReactIntl: React.FC<P> = (props: WithReactIntlProps) => {
         const {site, locale} = useMultiSite()
         const location = useLocation()
-
+        const config = useExtensionConfig()
         const targetLocale = getTargetLocale({
             getUserPreferredLocales: () => {
                 // CONFIG: This function should return an array of preferred locales. They can be
@@ -41,7 +42,7 @@ const withReactIntl = <P extends object>(WrappedComponent: React.ComponentType<P
                 // then the app would use the default locale as the fallback.
 
                 // NOTE: Your implementation may differ, this is just what we did.
-                return [locale?.id || DEFAULT_LOCALE]
+                return [locale?.id || config.DEFAULT_LOCALE]
             },
             l10nConfig: site.l10n
         })

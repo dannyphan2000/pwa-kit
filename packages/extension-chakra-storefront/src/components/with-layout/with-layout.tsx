@@ -107,7 +107,6 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
             parameters: {id: CAT_MENU_DEFAULT_ROOT_CATEGORY, levels: CAT_MENU_DEFAULT_NAV_SSR_DEPTH}
         })
         const categories = flatten(categoriesTree || {}, 'categories')
-
         const appOrigin = getAppOrigin()
         const activeData = useActiveData()
         const config = useExtensionConfig()
