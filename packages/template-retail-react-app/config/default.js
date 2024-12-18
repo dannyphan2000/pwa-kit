@@ -21,9 +21,12 @@ module.exports = {
                 callbackURI: '/passwordless-login-callback'
             },
             social: {
-                enabled: true,
+                enabled: false,
                 idps: ['google', 'apple'],
                 redirectURI: '/social-callback'
+            },
+            resetPassword: {
+                callbackURI: '/reset-password-callback'
             }
         },
         defaultSite: 'RefArchGlobal',
@@ -35,7 +38,7 @@ module.exports = {
         commerceAPI: {
             proxyPath: `/mobify/proxy/api`,
             parameters: {
-                clientId: '80255e22-8504-45e3-b1a3-749fd4475bb7', // TODO: SLAS Private Client Revert before merging
+                clientId: '3a15f34e-fecd-4fcc-8235-86b70978e629',
                 organizationId: 'f_ecom_zzrf_001',
                 shortCode: '8o7m175y',
                 siteId: 'RefArchGlobal'

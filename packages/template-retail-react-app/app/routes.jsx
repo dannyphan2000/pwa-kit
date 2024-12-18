@@ -20,6 +20,9 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {Skeleton} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {configureRoutes} from '@salesforce/retail-react-app/app/utils/routes-utils'
 
+// Constants
+import {RESET_PASSWORD_LANDING_PATH} from '@salesforce/retail-react-app/app/constants'
+
 const fallback = <Skeleton height="75vh" width="100%" />
 const socialRedirectURI = getConfig()?.app?.login?.social?.redirectURI
 
@@ -72,7 +75,7 @@ export const routes = [
         exact: true
     },
     {
-        path: '/reset-password-landing',
+        path: RESET_PASSWORD_LANDING_PATH,
         component: ResetPassword,
         exact: true
     },

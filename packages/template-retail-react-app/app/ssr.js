@@ -24,6 +24,9 @@ import helmet from 'helmet'
 
 import express from 'express'
 import {emailLink} from '@salesforce/retail-react-app/app/utils/marketing-cloud/marketing-cloud-email-link'
+import {RESET_PASSWORD_LANDING_PATH} from '@salesforce/retail-react-app/app/constants'
+
+const config = getConfig()
 
 const options = {
     // The build directory (an absolute path)
@@ -33,7 +36,7 @@ const options = {
     defaultCacheTimeSeconds: 600,
 
     // The contents of the config file for the current environment
-    mobify: getConfig(),
+    mobify: config,
 
     // The port that the local dev server listens on
     port: 3000,
@@ -49,7 +52,8 @@ const options = {
     // When setting this to true, make sure to also set the PWA_KIT_SLAS_CLIENT_SECRET
     // environment variable as this endpoint will return HTTP 501 if it is not set
     useSLASPrivateClient: true,
-    applySLASPrivateClientToEndpoints: /oauth2\/(token|passwordless\/(login|token))/,
+    applySLASPrivateClientToEndpoints:
+        /oauth2\/(token|passwordless|password\/(login|token|reset|action))/,
 
     // If this is enabled, any HTTP header that has a non ASCII value will be URI encoded
     // If there any HTTP headers that have been encoded, an additional header will be
@@ -61,6 +65,9 @@ const options = {
 }
 
 const runtime = getRuntime()
+
+const resetPasswordCallback =
+    config.app.login?.resetPassword?.callbackURI || '/reset-password-callback'
 
 const {handler} = runtime.createHandler(options, (app) => {
     // Set default HTTP security headers required by PWA Kit
@@ -108,10 +115,10 @@ const {handler} = runtime.createHandler(options, (app) => {
         res.send(emailLinkResponse)
     })
 
-    app.post('/reset-password-callback', express.json(), async (req, res) => {
+    app.post(resetPasswordCallback, express.json(), async (req, res) => {
         const base = req.protocol + '://' + req.get('host')
         const {email_id, token} = req.body
-        const magicLink = `${base}/reset-password-landing?token=${token}`
+        const magicLink = `${base}${RESET_PASSWORD_LANDING_PATH}?token=${token}&email=${email_id}`
         const emailLinkResponse = await emailLink(
             email_id,
             process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE,

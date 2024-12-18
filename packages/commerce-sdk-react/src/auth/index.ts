@@ -20,7 +20,8 @@ import {
     isOriginTrusted,
     onClient,
     getDefaultCookieAttributes,
-    isAbsoluteUrl
+    isAbsoluteUrl,
+    stringToBase64
 } from '../utils'
 import {
     MOBIFY_PATH,
@@ -1106,7 +1107,7 @@ class Auth {
                 ...(callbackURI && {callbackURI: callbackURI}),
                 ...(usid && {usid}),
                 userid,
-                mode,
+                mode
             }
         )
     }
@@ -1131,6 +1132,70 @@ class Auth {
             void this.clearECOMSession()
         }
         return token
+    }
+
+    /**
+     * A wrapper method for the SLAS endpoint: getPasswordResetToken.
+     *
+     */
+    async getPasswordResetToken(parameters: ShopperLoginTypes.PasswordActionRequest) {
+        const slasClient = this.client
+        const callbackURI = parameters.callback_uri || this.callbackURI
+
+        const options = {
+            headers: {
+                Authorization: ''
+            },
+            body: {
+                user_id: parameters.user_id,
+                mode: 'callback',
+                channel_id: slasClient.clientConfig.parameters.siteId,
+                client_id: slasClient.clientConfig.parameters.clientId,
+                callback_uri: callbackURI,
+                hint: 'cross_device'
+            }
+        }
+
+        // Only set authorization header if using private client
+        if (this.clientSecret) {
+            options.headers.Authorization = `Basic ${stringToBase64(
+                `${slasClient.clientConfig.parameters.clientId}:${this.clientSecret}`
+            )}`
+        }
+
+        const res = await slasClient.getPasswordResetToken(options)
+        return res
+    }
+
+    /**
+     * A wrapper method for the SLAS endpoint: resetPassword.
+     *
+     */
+    async resetPassword(parameters: ShopperLoginTypes.PasswordActionVerifyRequest) {
+        const slasClient = this.client
+        const options = {
+            headers: {
+                Authorization: ''
+            },
+            body: {
+                pwd_action_token: parameters.pwd_action_token,
+                channel_id: slasClient.clientConfig.parameters.siteId,
+                client_id: slasClient.clientConfig.parameters.clientId,
+                new_password: parameters.new_password,
+                user_id: parameters.user_id
+            }
+        }
+
+        // Only set authorization header if using private client
+        if (this.clientSecret) {
+            options.headers.Authorization = `Basic ${stringToBase64(
+                `${slasClient.clientConfig.parameters.clientId}:${this.clientSecret}`
+            )}`
+        }
+        // TODO: no code verifier needed with the fix blair has made, delete this when the fix has been merged to production
+        // @ts-ignore
+        const res = await this.client.resetPassword(options)
+        return res
     }
 
     /**

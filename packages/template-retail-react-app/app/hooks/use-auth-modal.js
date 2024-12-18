@@ -4,19 +4,16 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {defineMessage, FormattedMessage, useIntl} from 'react-intl'
+import {defineMessage, useIntl} from 'react-intl'
 import {useForm} from 'react-hook-form'
 import {
-    Button,
     Modal,
     ModalBody,
     ModalCloseButton,
     ModalContent,
     ModalOverlay,
-    Stack,
-    Text,
     useDisclosure,
     useToast
 } from '@salesforce/retail-react-app/app/components/shared/ui'
@@ -27,11 +24,8 @@ import {
     useCustomerId,
     useCustomerType,
     useCustomerBaskets,
-    useShopperCustomersMutation,
-    useShopperBasketsMutation,
-    ShopperCustomersMutations
+    useShopperBasketsMutation
 } from '@salesforce/commerce-sdk-react'
-import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
 import ResetPasswordForm from '@salesforce/retail-react-app/app/components/reset-password'
 import RegisterForm from '@salesforce/retail-react-app/app/components/register'
@@ -40,6 +34,7 @@ import {noop} from '@salesforce/retail-react-app/app/utils/utils'
 import {API_ERROR_MESSAGE, LOGIN_TYPES} from '@salesforce/retail-react-app/app/constants'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
+import {usePasswordReset} from '@salesforce/retail-react-app/app/hooks/use-password-reset'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
@@ -78,17 +73,14 @@ export const AuthModal = ({
     const navigate = useNavigation()
     const [currentView, setCurrentView] = useState(initialView)
     const form = useForm()
-    const submittedEmail = useRef()
     const toast = useToast()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const register = useAuthHelper(AuthHelpers.Register)
-    const authorizePasswordlessLogin = useAuthHelper(AuthHelpers.AuthorizePasswordless)
-    const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
+    
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
-
-    const getResetPasswordToken = useShopperCustomersMutation(
-        ShopperCustomersMutations.GetResetPasswordToken
-    )
+    const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
+    const {getPasswordResetToken} = usePasswordReset()
+    const authorizePasswordlessLogin = useAuthHelper(AuthHelpers.AuthorizePasswordless)
 
     const {data: baskets} = useCustomerBaskets(
         {parameters: {customerId}},
@@ -175,10 +167,7 @@ export const AuthModal = ({
             },
             password: async (data) => {
                 try {
-                    const body = {
-                        login: data.email
-                    }
-                    await getResetPasswordToken.mutateAsync({body})
+                    await getPasswordResetToken(data.email)
                 } catch (e) {
                     form.setError('global', {
                         type: 'manual',
@@ -197,7 +186,6 @@ export const AuthModal = ({
         if (isOpen) {
             setLoginType(LOGIN_TYPES.PASSWORD)
             setCurrentView(initialView)
-            submittedEmail.current = undefined
             form.reset()
         }
     }, [isOpen])
@@ -266,39 +254,6 @@ export const AuthModal = ({
     const onBackToSignInClick = () =>
         initialView === PASSWORD_VIEW ? onClose() : setCurrentView(LOGIN_VIEW)
 
-    // TODO: Remove this to a separate component when fixing password reset flow
-    const PasswordResetSuccess = () => (
-        <Stack justify="center" align="center" spacing={6}>
-            <BrandLogo width="60px" height="auto" />
-            <Text align="center" fontSize="md">
-                <FormattedMessage
-                    defaultMessage={'Password Reset'}
-                    id="auth_modal.password_reset_success.title.password_reset"
-                />
-            </Text>
-            <Stack spacing={6} pt={4}>
-                <Text align="center" fontSize="sm">
-                    <FormattedMessage
-                        defaultMessage="You will receive an email at <b>{email}</b> with a link to reset your password shortly."
-                        id="auth_modal.password_reset_success.info.will_email_shortly"
-                        values={{
-                            email: submittedEmail.current,
-
-                            b: (chunks) => <b>{chunks}</b>
-                        }}
-                    />
-                </Text>
-
-                <Button onClick={onBackToSignInClick}>
-                    <FormattedMessage
-                        defaultMessage="Back to Sign In"
-                        id="auth_modal.password_reset_success.button.back_to_sign_in"
-                    />
-                </Button>
-            </Stack>
-        </Stack>
-    )
-
     return (
         <Modal
             size="sm"
@@ -340,15 +295,12 @@ export const AuthModal = ({
                             clickSignIn={onBackToSignInClick}
                         />
                     )}
-                    {!form.formState.isSubmitSuccessful && currentView === PASSWORD_VIEW && (
+                    {currentView === PASSWORD_VIEW && (
                         <ResetPasswordForm
                             form={form}
                             submitForm={submitForm}
                             clickSignIn={onBackToSignInClick}
                         />
-                    )}
-                    {form.formState.isSubmitSuccessful && currentView === PASSWORD_VIEW && (
-                        <PasswordResetSuccess />
                     )}
                     {form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
                         <PasswordlessEmailConfirmation

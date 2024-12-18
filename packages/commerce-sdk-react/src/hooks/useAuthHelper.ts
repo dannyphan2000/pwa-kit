@@ -24,11 +24,13 @@ export const AuthHelpers = {
     AuthorizePasswordless: 'authorizePasswordless',
     LoginPasswordlessUser: 'getPasswordLessAccessToken',
     AuthorizeIDP: 'authorizeIDP',
+    GetPasswordResetToken: 'getPasswordResetToken',
     LoginIDPUser: 'loginIDPUser',
     LoginGuestUser: 'loginGuestUser',
     LoginRegisteredUserB2C: 'loginRegisteredUserB2C',
     Logout: 'logout',
     Register: 'register',
+    ResetPassword: 'resetPassword',
     UpdateCustomerPassword: 'updateCustomerPassword'
 } as const
 /**
