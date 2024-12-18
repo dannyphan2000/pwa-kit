@@ -48,7 +48,7 @@ interface AuthConfig extends ApiClientConfigParams {
     silenceWarnings?: boolean
     logger: Logger
     defaultDnt?: boolean
-    callbackURI?: string
+    passwordlessLoginCallbackURI?: string
     refreshTokenRegisteredCookieTTL?: number
     refreshTokenGuestCookieTTL?: number
 }
@@ -222,7 +222,7 @@ class Auth {
     private logger: Logger
     private defaultDnt: boolean | undefined
     private isPrivate: boolean
-    private callbackURI: string
+    private passwordlessLoginCallbackURI: string
     private refreshTokenRegisteredCookieTTL: number | undefined
     private refreshTokenGuestCookieTTL: number | undefined
     private refreshTrustedAgentHandler:
@@ -233,7 +233,6 @@ class Auth {
         // Special endpoint for injecting SLAS private client secret.
         const baseUrl = config.proxy.split(MOBIFY_PATH)[0]
         const privateClientEndpoint = `${baseUrl}${SLAS_PRIVATE_PROXY_PATH}`
-        const callbackURI = config.callbackURI
 
         this.client = new ShopperLogin({
             proxy: config.enablePWAKitPrivateClient ? privateClientEndpoint : config.proxy,
@@ -314,10 +313,11 @@ class Auth {
 
         this.isPrivate = !!this.clientSecret
 
-        this.callbackURI = callbackURI
-            ? isAbsoluteUrl(callbackURI)
-                ? callbackURI
-                : `${baseUrl}${callbackURI}`
+        const passwordlessLoginCallbackURI = config.passwordlessLoginCallbackURI
+        this.passwordlessLoginCallbackURI = passwordlessLoginCallbackURI
+            ? isAbsoluteUrl(passwordlessLoginCallbackURI)
+                ? passwordlessLoginCallbackURI
+                : `${baseUrl}${passwordlessLoginCallbackURI}`
             : ''
     }
 
@@ -1093,7 +1093,7 @@ class Auth {
      */
     async authorizePasswordless(parameters: AuthorizePasswordlessParams) {
         const userid = parameters.userid
-        const callbackURI = this.callbackURI
+        const callbackURI = this.passwordlessLoginCallbackURI
         const usid = this.get('usid')
         const mode = callbackURI ? 'callback' : 'sms'
 
