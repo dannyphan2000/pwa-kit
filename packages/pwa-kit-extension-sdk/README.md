@@ -45,7 +45,7 @@ The `@salesforce/pwa-kit-create-app` package has been updated to allow you, the 
 
 #### Extension Configuration
 
-By default your extension will come with a generated configuration file containing sample properties located at `project_root/config.default.json`. This file is used to provide your extension class with the default configuration values it needs to function correctly if it is not provided a configuration at the time it's installed to a base project.
+By default your extension will come with a generated configuration file containing sample properties located at `project_root/config/default.json`. This file is used to provide your extension class with the default configuration values it needs to function correctly if it is not provided a configuration at the time it's installed to a base project.
 
 This configuration file is also used by our `@salesforce/create-app` project generator when generating a PWA-Kit Application project given you select the extension in question to be added to it.
 
