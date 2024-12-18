@@ -156,4 +156,6 @@ module.exports = {
       "worker",
     ],
   },
+  PWA_E2E_USER_EMAIL: process.env.PWA_E2E_USER_EMAIL,
+  PWA_E2E_USER_PASSWORD: process.env.PWA_E2E_USER_PASSWORD
 };

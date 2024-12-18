@@ -47,7 +47,7 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const logout = useAuthHelper(AuthHelpers.Logout)
     const updateCustomerForBasket = useShopperBasketsMutation('updateCustomerForBasket')
-    const transferBasket = useShopperBasketsMutation('transferBasket')
+    const mergeBasket = useShopperBasketsMutation('mergeBasket')
 
     const {step, STEPS, goToStep, goToNextStep} = useCheckout()
 
@@ -73,11 +73,14 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
             } else {
                 await login.mutateAsync({username: data.email, password: data.password})
 
-                // Because we lazy load the basket there is no guarantee that a basket exists for the newly registered
-                // user, for this reason we must transfer the ownership of the previous basket to the logged in user.
-                await transferBasket.mutateAsync({
-                    parameters: {overrideExisting: true}
-                })
+                const hasBasketItem = basket.productItems?.length > 0
+                if (hasBasketItem) {
+                    mergeBasket.mutate({
+                        parameters: {
+                            createDestinationBasket: true
+                        }
+                    })
+                }
             }
             goToNextStep()
         } catch (error) {

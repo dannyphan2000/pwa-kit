@@ -31,7 +31,6 @@ import {
     LOGIN_TYPES
 } from '@salesforce/retail-react-app/app/constants'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
-import {usePasswordlessLogin} from '@salesforce/retail-react-app/app/hooks/use-passwordless-login'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
@@ -53,6 +52,8 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const einstein = useEinstein()
     const {isRegistered, customerType} = useCustomerType()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
+    const loginPasswordless = useAuthHelper(AuthHelpers.LoginPasswordlessUser)
+    const authorizePasswordlessLogin = useAuthHelper(AuthHelpers.AuthorizePasswordless)
     const {passwordless = {}, social = {}} = getConfig().app.login || {}
     const isPasswordlessEnabled = !!passwordless?.enabled
     const isSocialEnabled = !!social?.enabled
@@ -68,7 +69,6 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const [currentView, setCurrentView] = useState(initialView)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
-    const {authorizePasswordlessLogin, loginWithPasswordlessAccessToken} = usePasswordlessLogin()
 
     const handleMergeBasket = () => {
         const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
@@ -101,6 +101,17 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const submitForm = async (data) => {
         form.clearErrors()
 
+        const handlePasswordlessLogin = async (email) => {
+            try {
+                await authorizePasswordlessLogin.mutateAsync({userid: email})
+            } catch (error) {
+                form.setError('global', {
+                    type: 'manual',
+                    message: formatMessage(API_ERROR_MESSAGE),
+                })
+            }
+        }       
+
         return {
             login: async (data) => {
                 if (loginType === LOGIN_TYPES.PASSWORD) {
@@ -116,27 +127,11 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                 } else if (loginType === LOGIN_TYPES.PASSWORDLESS) {
                     setCurrentView(EMAIL_VIEW)
                     setPasswordlessLoginEmail(data.email)
-                    try {
-                        authorizePasswordlessLogin(data.email)
-                    } catch (e) {
-                        form.setError('global', {
-                            type: 'manual',
-                            message: formatMessage(API_ERROR_MESSAGE)
-                        })
-                    }
-                } else if (loginType === LOGIN_TYPES.SOCIAL) {
-                    // Handle social login logic here
+                    await handlePasswordlessLogin(data.email)
                 }
             },
-            email: () => {
-                try {
-                    authorizePasswordlessLogin(passwordlessLoginEmail)
-                } catch (e) {
-                    form.setError('global', {
-                        type: 'manual',
-                        message: formatMessage(API_ERROR_MESSAGE)
-                    })
-                }
+            email: async () => {
+                await handlePasswordlessLogin(passwordlessLoginEmail)
             }
         }[currentView](data)
     }
@@ -145,7 +140,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
         if (path === '/passwordless-login-landing' && isSuccessCustomerBaskets) {
             const token = queryParams.get('token')
             try {
-                loginWithPasswordlessAccessToken(token)
+                loginPasswordless.mutate({pwdlessLoginToken: token})
             } catch (e) {
                 const message = /Unauthorized/i.test(e.message)
                     ? formatMessage(INVALID_TOKEN_ERROR_MESSAGE)
@@ -196,6 +191,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                         isPasswordlessEnabled={isPasswordlessEnabled}
                         isSocialEnabled={isSocialEnabled}
                         idps={idps}
+                        setLoginType={setLoginType}
                     />
                 )}
                 {form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (

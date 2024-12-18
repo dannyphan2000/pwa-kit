@@ -47,7 +47,7 @@ const StandardLogin = ({
                                 id="login_form.message.or_login_with"
                             />
                         </Text>
-                        <SocialLogin idps={idps} />
+                        <SocialLogin form={form} idps={idps} />
                     </>
                 )}
             </Stack>

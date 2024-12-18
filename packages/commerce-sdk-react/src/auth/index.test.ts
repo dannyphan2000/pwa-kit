@@ -78,7 +78,7 @@ const config = {
     proxy: 'proxy',
     redirectURI: 'redirectURI',
     logger: console,
-    callbackURI: 'callbackURI'
+    passwordlessLoginCallbackURI: 'passwordlessLoginCallbackURI'
 }
 
 const configSLASPrivate = {

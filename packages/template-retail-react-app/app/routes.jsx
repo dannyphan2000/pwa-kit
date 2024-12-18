@@ -24,6 +24,7 @@ import {configureRoutes} from '@salesforce/retail-react-app/app/utils/routes-uti
 import {RESET_PASSWORD_LANDING_PATH} from '@salesforce/retail-react-app/app/constants'
 
 const fallback = <Skeleton height="75vh" width="100%" />
+const socialRedirectURI = getConfig()?.app?.login?.social?.redirectURI
 
 // Pages
 const Home = loadable(() => import('./pages/home'), {fallback})
@@ -102,7 +103,7 @@ export const routes = [
         exact: true
     },
     {
-        path: '/social-callback',
+        path: socialRedirectURI || '/social-callback',
         component: SocialLoginRedirect,
         exact: true
     },

@@ -34,7 +34,6 @@ import {noop} from '@salesforce/retail-react-app/app/utils/utils'
 import {API_ERROR_MESSAGE, LOGIN_TYPES} from '@salesforce/retail-react-app/app/constants'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
-import {usePasswordlessLogin} from '@salesforce/retail-react-app/app/hooks/use-passwordless-login'
 import {usePasswordReset} from '@salesforce/retail-react-app/app/hooks/use-password-reset'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
@@ -77,10 +76,11 @@ export const AuthModal = ({
     const toast = useToast()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const register = useAuthHelper(AuthHelpers.Register)
+    
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
-    const {authorizePasswordlessLogin} = usePasswordlessLogin()
     const {getPasswordResetToken} = usePasswordReset()
+    const authorizePasswordlessLogin = useAuthHelper(AuthHelpers.AuthorizePasswordless)
 
     const {data: baskets} = useCustomerBaskets(
         {parameters: {customerId}},
@@ -94,6 +94,17 @@ export const AuthModal = ({
         const onLoginSuccess = () => {
             navigate('/account')
         }
+         
+        const handlePasswordlessLogin = async (email) => {
+            try {
+                await authorizePasswordlessLogin.mutateAsync({userid: email})
+            } catch (error) {
+                form.setError('global', {
+                    type: 'manual',
+                    message: formatMessage(API_ERROR_MESSAGE),
+                })
+            }
+        }          
 
         return {
             login: async (data) => {
@@ -130,16 +141,7 @@ export const AuthModal = ({
                 } else if (loginType === LOGIN_TYPES.PASSWORDLESS) {
                     setCurrentView(EMAIL_VIEW)
                     setPasswordlessLoginEmail(data.email)
-                    try {
-                        authorizePasswordlessLogin(data.email)
-                    } catch (e) {
-                        form.setError('global', {
-                            type: 'manual',
-                            message: formatMessage(API_ERROR_MESSAGE)
-                        })
-                    }
-                } else if (loginType === LOGIN_TYPES.SOCIAL) {
-                    // Handle social login logic here
+                    await handlePasswordlessLogin(data.email)
                 }
             },
             register: async (data) => {
@@ -174,14 +176,7 @@ export const AuthModal = ({
                 }
             },
             email: async () => {
-                try {
-                    authorizePasswordlessLogin(passwordlessLoginEmail)
-                } catch (e) {
-                    form.setError('global', {
-                        type: 'manual',
-                        message: formatMessage(API_ERROR_MESSAGE)
-                    })
-                }
+                await handlePasswordlessLogin(passwordlessLoginEmail)
             }
         }[currentView](data)
     }
@@ -290,6 +285,7 @@ export const AuthModal = ({
                             isPasswordlessEnabled={isPasswordlessEnabled}
                             isSocialEnabled={isSocialEnabled}
                             idps={idps}
+                            setLoginType={setLoginType}
                         />
                     )}
                     {!form.formState.isSubmitSuccessful && currentView === REGISTER_VIEW && (

@@ -43,7 +43,7 @@ export interface CommerceApiProviderProps extends ApiClientConfigParams {
     silenceWarnings?: boolean
     logger?: Logger
     defaultDnt?: boolean
-    callbackURI?: string
+    passwordlessLoginCallbackURI?: string
     refreshTokenRegisteredCookieTTL?: number
     refreshTokenGuestCookieTTL?: number
 }
@@ -124,7 +124,7 @@ const CommerceApiProvider = (props: CommerceApiProviderProps): ReactElement => {
         silenceWarnings,
         logger,
         defaultDnt,
-        callbackURI,
+        passwordlessLoginCallbackURI,
         refreshTokenRegisteredCookieTTL,
         refreshTokenGuestCookieTTL
     } = props
@@ -147,7 +147,7 @@ const CommerceApiProvider = (props: CommerceApiProviderProps): ReactElement => {
             silenceWarnings,
             logger: configLogger,
             defaultDnt,
-            callbackURI,
+            passwordlessLoginCallbackURI,
             refreshTokenRegisteredCookieTTL,
             refreshTokenGuestCookieTTL
         })
@@ -165,7 +165,7 @@ const CommerceApiProvider = (props: CommerceApiProviderProps): ReactElement => {
         silenceWarnings,
         configLogger,
         defaultDnt,
-        callbackURI,
+        passwordlessLoginCallbackURI,
         refreshTokenRegisteredCookieTTL,
         refreshTokenGuestCookieTTL
     ])
@@ -246,7 +246,7 @@ const CommerceApiProvider = (props: CommerceApiProviderProps): ReactElement => {
                 silenceWarnings,
                 logger: configLogger,
                 defaultDnt,
-                callbackURI,
+                passwordlessLoginCallbackURI,
                 refreshTokenRegisteredCookieTTL,
                 refreshTokenGuestCookieTTL
             }}

@@ -49,7 +49,7 @@ interface AuthConfig extends ApiClientConfigParams {
     silenceWarnings?: boolean
     logger: Logger
     defaultDnt?: boolean
-    callbackURI?: string
+    passwordlessLoginCallbackURI?: string
     refreshTokenRegisteredCookieTTL?: number
     refreshTokenGuestCookieTTL?: number
 }
@@ -93,6 +93,7 @@ type AuthDataKeys =
     | typeof DNT_COOKIE_NAME
     | typeof DWSID_COOKIE_NAME
     | 'code_verifier'
+    | 'uido'
 
 type AuthDataMap = Record<
     AuthDataKeys,
@@ -192,6 +193,10 @@ const DATA_MAP: AuthDataMap = {
     code_verifier: {
         storageType: 'local',
         key: 'code_verifier'
+    },
+    uido: {
+        storageType: 'local',
+        key: 'uido'
     }
 }
 
@@ -218,7 +223,7 @@ class Auth {
     private logger: Logger
     private defaultDnt: boolean | undefined
     private isPrivate: boolean
-    private callbackURI: string
+    private passwordlessLoginCallbackURI: string
     private refreshTokenRegisteredCookieTTL: number | undefined
     private refreshTokenGuestCookieTTL: number | undefined
     private refreshTrustedAgentHandler:
@@ -229,7 +234,6 @@ class Auth {
         // Special endpoint for injecting SLAS private client secret.
         const baseUrl = config.proxy.split(MOBIFY_PATH)[0]
         const privateClientEndpoint = `${baseUrl}${SLAS_PRIVATE_PROXY_PATH}`
-        const callbackURI = config.callbackURI
 
         this.client = new ShopperLogin({
             proxy: config.enablePWAKitPrivateClient ? privateClientEndpoint : config.proxy,
@@ -310,10 +314,11 @@ class Auth {
 
         this.isPrivate = !!this.clientSecret
 
-        this.callbackURI = callbackURI
-            ? isAbsoluteUrl(callbackURI)
-                ? callbackURI
-                : `${baseUrl}${callbackURI}`
+        const passwordlessLoginCallbackURI = config.passwordlessLoginCallbackURI
+        this.passwordlessLoginCallbackURI = passwordlessLoginCallbackURI
+            ? isAbsoluteUrl(passwordlessLoginCallbackURI)
+                ? passwordlessLoginCallbackURI
+                : `${baseUrl}${passwordlessLoginCallbackURI}`
             : ''
     }
 
@@ -575,11 +580,13 @@ class Auth {
             responseValue,
             defaultValue
         )
+        const {uido} = this.parseSlasJWT(res.access_token)
         const expiresDate = this.convertSecondsToDate(refreshTokenTTLValue)
         this.set('refresh_token_expires_in', refreshTokenTTLValue.toString())
         this.set(refreshTokenKey, res.refresh_token, {
             expires: expiresDate
         })
+        this.set('uido', uido)
     }
 
     async refreshAccessToken() {
@@ -1031,7 +1038,7 @@ class Auth {
      *
      */
     async authorizeIDP(parameters: AuthorizeIDPParams) {
-        const redirectURI = this.redirectURI
+        const redirectURI = parameters.redirectURI || this.redirectURI
         const usid = this.get('usid')
         const {url, codeVerifier} = await helpers.authorizeIDP(
             this.client,
@@ -1057,7 +1064,7 @@ class Auth {
     async loginIDPUser(parameters: LoginIDPUserParams) {
         const codeVerifier = this.get('code_verifier')
         const code = parameters.code
-        const usid = parameters.usid
+        const usid = parameters.usid || this.get('usid')
         const redirectURI = parameters.redirectURI || this.redirectURI
 
         const token = await helpers.loginIDPUser(
@@ -1087,7 +1094,7 @@ class Auth {
      */
     async authorizePasswordless(parameters: AuthorizePasswordlessParams) {
         const userid = parameters.userid
-        const callbackURI = this.callbackURI
+        const callbackURI = this.passwordlessLoginCallbackURI
         const usid = this.get('usid')
         const mode = callbackURI ? 'callback' : 'sms'
 
@@ -1206,6 +1213,7 @@ class Auth {
         // ISB format
         // 'uido:ecom::upn:Guest||xxxEmailxxx::uidn:FirstName LastName::gcid:xxxGuestCustomerIdxxx::rcid:xxxRegisteredCustomerIdxxx::chid:xxxSiteIdxxx',
         const isbParts = isb.split('::')
+        const uido = isbParts[0].split('uido:')[1]
         const isGuest = isbParts[1] === 'upn:Guest'
         const customerId = isGuest
             ? isbParts[3].replace('gcid:', '')
@@ -1226,7 +1234,8 @@ class Auth {
             dnt,
             loginId,
             isAgent,
-            agentId
+            agentId,
+            uido
         }
     }
 }

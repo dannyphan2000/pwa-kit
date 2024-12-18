@@ -10,9 +10,15 @@ import PropTypes from 'prop-types'
 import {defineMessage, useIntl} from 'react-intl'
 import {Button} from '@salesforce/retail-react-app/app/components/shared/ui'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
+import {useAuthHelper, AuthHelpers} from '@salesforce/commerce-sdk-react'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
+import {setSessionJSONItem, buildRedirectURI} from '@salesforce/retail-react-app/app/utils/utils'
 
 // Icons
 import {AppleIcon, GoogleIcon} from '@salesforce/retail-react-app/app/components/icons'
+
+import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
 
 const IDP_CONFIG = {
     apple: {
@@ -36,8 +42,14 @@ const IDP_CONFIG = {
  * @param {array} idps - array of known IDPs to show buttons for
  * @returns
  */
-const SocialLogin = ({idps}) => {
+const SocialLogin = ({form, idps}) => {
     const {formatMessage} = useIntl()
+    const authorizeIDP = useAuthHelper(AuthHelpers.AuthorizeIDP)
+
+    // Build redirectURI from config values
+    const appOrigin = useAppOrigin()
+    const redirectPath = getConfig()?.app?.login?.social?.redirectURI || ''
+    const redirectURI = buildRedirectURI(appOrigin, redirectPath)
 
     const isIdpValid = (name) => {
         return name in IDP_CONFIG && IDP_CONFIG[name.toLowerCase()]
@@ -55,6 +67,20 @@ const SocialLogin = ({idps}) => {
         })
     }, [idps])
 
+    const onSocialLoginClick = async () => {
+        try {
+            // Save the path where the user logged in
+            setSessionJSONItem('returnToPage', window.location.pathname)
+            await authorizeIDP.mutateAsync({
+                hint: name,
+                redirectURI: redirectURI
+            })
+        } catch (error) {
+            const message = formatMessage(API_ERROR_MESSAGE)
+            form.setError('global', {type: 'manual', message})
+        }
+    }
+
     return (
         idps && (
             <>
@@ -64,17 +90,13 @@ const SocialLogin = ({idps}) => {
                         const config = IDP_CONFIG[name.toLowerCase()]
                         const Icon = config?.icon
                         const message = formatMessage(config?.message)
-
                         return (
                             config && (
                                 <Button
-                                    onClick={() => {
-                                        alert(message)
-                                    }}
+                                    onClick={onSocialLoginClick}
                                     borderColor="gray.500"
                                     color="blue.600"
                                     variant="outline"
-                                    key={`${name}-button`}
                                 >
                                     <Icon sx={{marginRight: 2}} />
                                     {message}
@@ -88,6 +110,7 @@ const SocialLogin = ({idps}) => {
 }
 
 SocialLogin.propTypes = {
+    form: PropTypes.object,
     idps: PropTypes.arrayOf(PropTypes.string)
 }
 
