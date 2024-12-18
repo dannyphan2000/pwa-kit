@@ -19,7 +19,7 @@ class SampleExtension extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 
     /**
-     * Use this method to enhance or modify your ExpressJS Application by adding route handlers and middleware.  
+     * Use this method to enhance or modify your ExpressJS Application by adding route handlers and middleware.
      */
     extendApp(app: Application): Application {
         app.get('/sample', (req, res) => {
