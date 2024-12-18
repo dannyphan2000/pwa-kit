@@ -47,7 +47,7 @@ The `@salesforce/pwa-kit-create-app` package has been updated to allow you, the 
 
 By default your extension will come with a generated configuration file containing sample properties located at `project_root/config/default.json`. This file is used to provide your extension class with the default configuration values it needs to function correctly if it is not provided a configuration at the time it's installed to a base project.
 
-This configuration file is also used by our `@salesforce/create-app` project generator when generating a PWA-Kit Application project given you select the extension in question to be added to it.
+This configuration file is also used by our `@salesforce/pwa-kit-create-app` project generator when generating a PWA-Kit Application project given you select the extension in question to be added to it.
 
 The extension boiler plate is generated in TypeScript, and for that reason there is also a type definition stub file generated for you. This is located at `project_root/src/types/config.ts`. This type is already wired up in your React and ExpressJS ApplicationExtension classes referenced in `project_root/src/setup-app.ts` and `project_root/src/setup-server.ts`.
 
