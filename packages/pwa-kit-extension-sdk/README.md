@@ -82,7 +82,7 @@ __NOTE: You don't have to worry about asset name collisions as all the assets ar
 
 #### Overrides
 
-This folder will house any overrides that your extension provides. To target a file that is to be overridden you must place the file in the same folder path as the canonical definition. To illustrate this lets looks at the following example:
+This folder will house any overrides that your extension provides. To target a file that is to be overridden you must place the file in the same folder path as the canonical definition. To illustrate this let's looks at the following example:
 
 Your base project uses two extensions as defined in its `extensions` configuration below:
 
