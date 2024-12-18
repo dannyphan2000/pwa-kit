@@ -53,7 +53,7 @@ The extension boiler plate is generated in TypeScript, and for that reason there
 
 #### Hooks, Components, Pages
 
-For the most part these are simply stubbed placeholder folders that we believe you'll need when creating your extensions. These are simply convenient places to put all your React hooks, components and pages if your extension happens to add any. It is safe to remove these if you extension doesn't not add any new UI. 
+For the most part these are simply stubbed placeholder folders that we believe you'll need when creating your extensions. These are simply convenient places to put all your React hooks, components and pages if your extension happens to add any. It is safe to remove these if you extension does not add any new UI. 
 
 There is however one exception to the above statement. Provided in the `project_root/src/hooks/use-extension-config.ts` file is a React hook called `useExtensionConfig`. The primary use for this hook is to be access the extensions configuration in a React context (e.g. other hooks and components). In the following example you'll see how you can use this hook to alter the looks and behavior of components used in your extension. 
 
