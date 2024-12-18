@@ -103,6 +103,17 @@ export const AuthModal = ({
         const onLoginSuccess = () => {
             navigate('/account')
         }
+         
+        const handlePasswordlessLogin = async (email) => {
+            try {
+                await authorizePasswordlessLogin(email);
+            } catch (error) {
+                form.setError('global', {
+                    type: 'manual',
+                    message: formatMessage(API_ERROR_MESSAGE),
+                })
+            }
+        }          
 
         return {
             login: async (data) => {
@@ -139,14 +150,7 @@ export const AuthModal = ({
                 } else if (loginType === LOGIN_TYPES.PASSWORDLESS) {
                     setCurrentView(EMAIL_VIEW)
                     setPasswordlessLoginEmail(data.email)
-                    try {
-                        authorizePasswordlessLogin(data.email)
-                    } catch (e) {
-                        form.setError('global', {
-                            type: 'manual',
-                            message: formatMessage(API_ERROR_MESSAGE)
-                        })
-                    }
+                    handlePasswordlessLogin(passwordlessLoginEmail)
                 }
             },
             register: async (data) => {
@@ -184,14 +188,7 @@ export const AuthModal = ({
                 }
             },
             email: async () => {
-                try {
-                    authorizePasswordlessLogin(passwordlessLoginEmail)
-                } catch (e) {
-                    form.setError('global', {
-                        type: 'manual',
-                        message: formatMessage(API_ERROR_MESSAGE)
-                    })
-                }
+                handlePasswordlessLogin(passwordlessLoginEmail)
             }
         }[currentView](data)
     }
