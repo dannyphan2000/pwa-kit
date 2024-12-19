@@ -1140,7 +1140,7 @@ class Auth {
      */
     async getPasswordResetToken(parameters: ShopperLoginTypes.PasswordActionRequest) {
         const slasClient = this.client
-        const callbackURI = parameters.callback_uri || this.callbackURI
+        const callbackURI = parameters.callback_uri
 
         const options = {
             headers: {
