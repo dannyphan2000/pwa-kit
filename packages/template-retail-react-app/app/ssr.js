@@ -24,7 +24,7 @@ import helmet from 'helmet'
 
 import express from 'express'
 import {emailLink} from '@salesforce/retail-react-app/app/utils/marketing-cloud/marketing-cloud-email-link'
-import {RESET_PASSWORD_LANDING_PATH} from '@salesforce/retail-react-app/app/constants'
+import {PASSWORDLESS_LOGIN_LANDING_PATH, RESET_PASSWORD_LANDING_PATH} from '@salesforce/retail-react-app/app/constants'
 
 const config = getConfig()
 
@@ -68,6 +68,8 @@ const runtime = getRuntime()
 
 const resetPasswordCallback =
     config.app.login?.resetPassword?.callbackURI || '/reset-password-callback'
+const passwordlessLoginCallback =
+    config.app.login?.passwordless?.callbackURI || '/passwordless-login-callback'
 
 const {handler} = runtime.createHandler(options, (app) => {
     // Set default HTTP security headers required by PWA Kit
@@ -103,10 +105,10 @@ const {handler} = runtime.createHandler(options, (app) => {
         res.send()
     })
 
-    app.post('/passwordless-login-callback', express.json(), async (req, res) => {
+    app.post(passwordlessLoginCallback, express.json(), async (req, res) => {
         const base = req.protocol + '://' + req.get('host')
         const {email_id, token} = req.body
-        const magicLink = `${base}/passwordless-login-landing?token=${token}`
+        const magicLink = `${base}${PASSWORDLESS_LOGIN_LANDING_PATH}?token=${token}`
         const emailLinkResponse = await emailLink(
             email_id,
             process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE,

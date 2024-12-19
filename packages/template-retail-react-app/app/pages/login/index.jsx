@@ -28,7 +28,8 @@ import PasswordlessEmailConfirmation from '@salesforce/retail-react-app/app/comp
 import {
     API_ERROR_MESSAGE,
     INVALID_TOKEN_ERROR_MESSAGE,
-    LOGIN_TYPES
+    LOGIN_TYPES,
+    PASSWORDLESS_LOGIN_LANDING_PATH
 } from '@salesforce/retail-react-app/app/constants'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
@@ -136,8 +137,11 @@ const Login = ({initialView = LOGIN_VIEW}) => {
         }[currentView](data)
     }
 
+    // Handles passwordless login by retrieving the 'token' from the query parameters and
+    // executing a passwordless login attempt using the token. The process waits for the
+    // customer baskets to be loaded to guarantee proper basket merging.
     useEffect(() => {
-        if (path === '/passwordless-login-landing' && isSuccessCustomerBaskets) {
+        if (path === PASSWORDLESS_LOGIN_LANDING_PATH && isSuccessCustomerBaskets) {
             const token = queryParams.get('token')
             try {
                 loginPasswordless.mutate({pwdlessLoginToken: token})
