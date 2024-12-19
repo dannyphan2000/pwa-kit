@@ -24,7 +24,7 @@ This directory contains the PWA Kit Application Extension base files and structu
 2. `src/setup-client.ts`: The client-side setup function for the extension.
 3. `dev/`: PWA Kit App TypeScript template project used for developing the generated PWA Kit App Extension.
 
-# Peer Dependancies
+# Peer Dependencies
 
 PWA-Kit Application Extensions are NPM packages at their most simplest form, and as such you can define
 what peer dependencies are required when using it. Because this sample application extension provides
@@ -61,7 +61,7 @@ the extension as they like.
 
 # Advanced Usage
 
-In order to customize this Application Extension to your particulare needs we suggest that you refer to the section titled
+In order to customize this Application Extension to your particular needs we suggest that you refer to the section titled
 "configuration", but if there is something that you want to customize that isn't configurable and cannot wait for a feature
 request to be fulfilled, then you can use overrides. 
 
