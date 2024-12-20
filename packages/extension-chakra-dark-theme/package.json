@@ -1,5 +1,5 @@
 {
-  "name": "@salesforce/extension-dark-theme",
+  "name": "@salesforce/extension-chakra-dark-theme",
   "version": "0.1.0-extensibility-preview.3",
   "private": true,
   "scripts": {
