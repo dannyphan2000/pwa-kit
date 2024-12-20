@@ -22,7 +22,7 @@ const SRC = 'src'
  * extension configuration.
  *
  * This loader resolves a new resource path by evaluating possible overrides in other
- * extensions, transpilubg the file with the same loaders/plugins as the original file.
+ * extensions, transpiling the file with the same loaders/plugins as the original file.
  *
  * @param {LoaderContext<any>} this - The Webpack loader context, which provides information
  * about the module being processed and the current Webpack compiler.
@@ -32,6 +32,7 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     // NOTE: We intensionally exclude any path prefixes like "/" or "./" so that we can
     // use `packageIterator` in the "resolve" function used later on.
     const {resourcePath, _compiler} = this
+
     const compiler = _compiler as ExtendedCompiler
     const projectRelPath = resourcePath.split(`${SRC}${path.sep}`)[1].split('.')[0] // File path relative to the project directory without file extension
     const projectPath = resourcePath.split(SRC)[0]
@@ -61,7 +62,7 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
         projectDir: basedir,
         extensionEntries: applicationExtensions
     })
-
+    
     // Also include the base override path and the path from the extension doing the import.
     const resolvedResourcePath = resolve.sync(projectRelPath, {
         basedir,
@@ -71,19 +72,39 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     })
 
     // Tell Webpack to treat this new resource as a dependency of the original module in order to have the dependency
-    // transpiled with all the same loaders/plugins that the orginal file was.
+    // transpiled with all the same loaders/plugins that the original file was.
     this.addDependency(resolvedResourcePath)
 
     // Use Webpack's `loadModule` function to load, process, and transpile the alternative module
     const callback = this.async()
+
+    // ** Adjust the `basedir` dynamically for resolving relative imports in the new file **
+    const newBasedir = path.dirname(resolvedResourcePath)
 
     // Load the replacement module adding a `noHMR=true` query so we can prevent the HMR plugin from trying
     // to define its globals again.
     this.loadModule(`${resolvedResourcePath}?noHMR=true`, (err, newSource) => {
         if (err) return callback(err)
 
-        // Return the loaded and transpiled content of the alternative module
-        callback(null, newSource)
+        // To ensure that any imports in this file respect the new base directory of the matched file,
+        // we'll use the overridable loader to handle its import.
+        // NOTE: This is not the 100% correct way to do this because it leads to "override creep". We'll
+        // seek to fix this in the future.
+        // const adjustedSource = newSource?.toString().replace(/from '.\//g, 'from \'overridable!./')
+        console.log('source before: ', newSource)
+        const adjustedSource = newSource?.toString().replace(
+            /import\s+(?:(?:[\w*\s{},]*)\s+from\s+)?['"](\..*?)['"]/g,
+            (match, relativePath) => {
+                const absolutePath = path.resolve(newBasedir, relativePath)
+                return match.replace(relativePath, absolutePath)
+            }
+        )
+        console.log('source before: ', adjustedSource)
+        // Return the loaded and transpiled content of the alternative module.
+        // NOTE: The third argument to the `callback` function is `sourceMap`. The fact that we aren't using
+        // that argument might be a point of debugging limitations in the future. Leaving this note here to tell
+        // future dev's this might be a place that needs to be adjusted.
+        callback(null, adjustedSource)
     })
 }
 

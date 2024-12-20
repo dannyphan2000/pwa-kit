@@ -9,7 +9,7 @@ import React from 'react'
 import {ChakraProvider} from '@chakra-ui/react'
 
 // Local
-import theme from '../../theme'
+import theme from 'overridable!../../theme'
 
 // Define a type for the HOC props
 type WithChakraUIProps = React.ComponentPropsWithoutRef<any>
