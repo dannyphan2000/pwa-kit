@@ -6,7 +6,6 @@
  */
 export default {
     baseStyle: {
-        
         dialog: {
             borderRadius: 'base',
             header: {
@@ -14,7 +13,7 @@ export default {
             },
             footer: {
                 background: 'gray.800'
-            },
+            }
         }
     }
 }

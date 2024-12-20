@@ -15,6 +15,8 @@ import {buildCandidatePaths, getPackageName} from '../../shared/utils'
 import type {ExtendedCompiler} from './types'
 
 // Constants
+const IMPORT_REGEX = /import\s+(?:(?:[\w*\s{},]*)\s+from\s+)?['"](\..*?)['"]/g
+const REQUIRES_REGEX = /require\(['"](\..*?)['"]\)/g
 const SRC = 'src'
 
 /**
@@ -62,7 +64,7 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
         projectDir: basedir,
         extensionEntries: applicationExtensions
     })
-    
+
     // Also include the base override path and the path from the extension doing the import.
     const resolvedResourcePath = resolve.sync(projectRelPath, {
         basedir,
@@ -81,23 +83,26 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     // Adjust the `basedir` dynamically for resolving relative imports in the new file
     const newBasedir = path.dirname(resolvedResourcePath)
 
+    // Provided a match and group representing a relative path, replace it with an absolute path using the new base directory.
+    const convertRelativePaths = (match: string, relativePath: string) => {
+        const absolutePath = path.resolve(newBasedir, relativePath)
+        return match.replace(relativePath, absolutePath)
+    }
+
     // Load the replacement module adding a `noHMR=true` query so we can prevent the HMR plugin from trying
     // to define its globals again.
     this.loadModule(`${resolvedResourcePath}?noHMR=true`, (err, newSource) => {
         if (err) return callback(err)
 
         // NOTE: Convert all relative path imports to absolute path imports. This solves the problem of the wrong
-        // basedir being used when imports are resolved by webpack. 
+        // basedir being used when imports are resolved by webpack.
         // NOTE: This only supports "import" statements and should be adjusted to work with "require"
         // statements as well.
-        const adjustedSource = newSource?.toString().replace(
-            /import\s+(?:(?:[\w*\s{},]*)\s+from\s+)?['"](\..*?)['"]/g,
-            (match, relativePath) => {
-                const absolutePath = path.resolve(newBasedir, relativePath)
-                return match.replace(relativePath, absolutePath)
-            }
-        )
-        
+        const adjustedSource = newSource
+            ?.toString()
+            .replace(IMPORT_REGEX, convertRelativePaths) // Update relative imports
+            .replace(REQUIRES_REGEX, convertRelativePaths) // Update relative requires
+
         // Return the loaded and transpiled content of the alternative module.
         // NOTE: The third argument to the `callback` function is `sourceMap`. The fact that we aren't using
         // that argument might be a point of debugging limitations in the future. Leaving this note here to tell

@@ -17,7 +17,6 @@ export default {
         body: {
             padding: [4, 4, 6, 6],
             background: 'gray.500'
-
         },
         footer: {
             paddingTop: 6,
@@ -25,7 +24,6 @@ export default {
             paddingBottom: 11,
             paddingLeft: [4, 4, 6, 6],
             background: 'gray.800'
-
         }
     }
 }
