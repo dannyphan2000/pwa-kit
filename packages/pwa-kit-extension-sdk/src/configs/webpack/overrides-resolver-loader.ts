@@ -78,7 +78,7 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     // Use Webpack's `loadModule` function to load, process, and transpile the alternative module
     const callback = this.async()
 
-    // ** Adjust the `basedir` dynamically for resolving relative imports in the new file **
+    // Adjust the `basedir` dynamically for resolving relative imports in the new file
     const newBasedir = path.dirname(resolvedResourcePath)
 
     // Load the replacement module adding a `noHMR=true` query so we can prevent the HMR plugin from trying
@@ -86,12 +86,8 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     this.loadModule(`${resolvedResourcePath}?noHMR=true`, (err, newSource) => {
         if (err) return callback(err)
 
-        // To ensure that any imports in this file respect the new base directory of the matched file,
-        // we'll use the overridable loader to handle its import.
-        // NOTE: This is not the 100% correct way to do this because it leads to "override creep". We'll
-        // seek to fix this in the future.
-        // const adjustedSource = newSource?.toString().replace(/from '.\//g, 'from \'overridable!./')
-        console.log('source before: ', newSource)
+        // NOTE: Convert all relative paths to absolute paths. This solve the problem of the wrong
+        // basedir being used when those imports are resolved by webpack. 
         const adjustedSource = newSource?.toString().replace(
             /import\s+(?:(?:[\w*\s{},]*)\s+from\s+)?['"](\..*?)['"]/g,
             (match, relativePath) => {
@@ -99,7 +95,7 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
                 return match.replace(relativePath, absolutePath)
             }
         )
-        console.log('source before: ', adjustedSource)
+        
         // Return the loaded and transpiled content of the alternative module.
         // NOTE: The third argument to the `callback` function is `sourceMap`. The fact that we aren't using
         // that argument might be a point of debugging limitations in the future. Leaving this note here to tell
