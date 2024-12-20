@@ -86,8 +86,8 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     this.loadModule(`${resolvedResourcePath}?noHMR=true`, (err, newSource) => {
         if (err) return callback(err)
 
-        // NOTE: Convert all relative paths to absolute paths. This solve the problem of the wrong
-        // basedir being used when those imports are resolved by webpack. 
+        // NOTE: Convert all relative path imports to absolute path imports. This solves the problem of the wrong
+        // basedir being used when imports are resolved by webpack. 
         // NOTE: This only supports "import" statements and should be adjusted to work with "require"
         // statements as well.
         const adjustedSource = newSource?.toString().replace(
