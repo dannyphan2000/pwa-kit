@@ -207,6 +207,7 @@ class Auth {
     constructor(config: AuthConfig) {
         // Special endpoint for injecting SLAS private client secret.
         const baseUrl = config.proxy.split(MOBIFY_PATH)[0]
+        console.log('baseUrl 211', baseUrl)
         const privateClientEndpoint = `${baseUrl}${SLAS_PRIVATE_PROXY_PATH}`
 
         this.client = new ShopperLogin({
@@ -216,6 +217,9 @@ class Auth {
                 organizationId: config.organizationId,
                 shortCode: config.shortCode,
                 siteId: config.siteId
+            },
+            headers: {
+                'Access-Control-Allow-Origin': 'https://kv7kzm78.api.commercecloud.salesforce.com'
             },
             throwOnBadResponse: true,
             fetchOptions: config.fetchOptions
@@ -817,7 +821,10 @@ class Auth {
             this.client,
             {
                 ...credentials,
-                clientSecret: this.clientSecret
+                clientSecret: this.clientSecret,
+                // TODO: this requires an upstream change in
+                // commerce-sdk-isomorphic to support the fetchOptions
+                ...(this.fetchOptions && {fetchOptions: this.fetchOptions}),
             },
             {
                 redirectURI,

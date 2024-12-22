@@ -62,8 +62,13 @@ const AppConfig = ({children, locals = {}}) => {
             locale={locals.locale?.id}
             currency={locals.locale?.preferredCurrency}
             redirectURI={`${appOrigin}/callback`}
-            proxy={`${appOrigin}${commerceApiConfig.proxyPath}`}
+            // proxy={`${appOrigin}/mobify/proxy/api`}
+            proxy={`${commerceApiConfig.proxyPath}`}
             headers={headers}
+            fetchOptions={{
+                credentials: 'include',
+                mode: 'cors'
+            }}
             // Uncomment 'enablePWAKitPrivateClient' to use SLAS private client login flows.
             // Make sure to also enable useSLASPrivateClient in ssr.js when enabling this setting.
             // enablePWAKitPrivateClient={true}

@@ -26,7 +26,7 @@ export const defaultPwaKitSecurityHeaders = (req, res, next) => {
      * @type Object.<string, string[] | boolean>
      */
     const directives = {
-        'connect-src': ["'self'", runtimeAdmin],
+        'connect-src': ["'self'", runtimeAdmin, 'https://kv7kzm78.api.commercecloud.salesforce.com'],
         'frame-ancestors': [runtimeAdmin],
         'img-src': ["'self'", 'data:'],
         'script-src': ["'self'", "'unsafe-eval'", runtimeAdmin],
