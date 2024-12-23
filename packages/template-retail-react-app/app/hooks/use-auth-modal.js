@@ -76,7 +76,7 @@ export const AuthModal = ({
     const toast = useToast()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const register = useAuthHelper(AuthHelpers.Register)
-    
+
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
     const {getPasswordResetToken} = usePasswordReset()
@@ -94,17 +94,17 @@ export const AuthModal = ({
         const onLoginSuccess = () => {
             navigate('/account')
         }
-         
+
         const handlePasswordlessLogin = async (email) => {
             try {
                 await authorizePasswordlessLogin.mutateAsync({userid: email})
             } catch (error) {
                 form.setError('global', {
                     type: 'manual',
-                    message: formatMessage(API_ERROR_MESSAGE),
+                    message: formatMessage(API_ERROR_MESSAGE)
                 })
             }
-        }          
+        }
 
         return {
             login: async (data) => {

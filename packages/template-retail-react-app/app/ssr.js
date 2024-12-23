@@ -24,7 +24,10 @@ import helmet from 'helmet'
 
 import express from 'express'
 import {emailLink} from '@salesforce/retail-react-app/app/utils/marketing-cloud/marketing-cloud-email-link'
-import {PASSWORDLESS_LOGIN_LANDING_PATH, RESET_PASSWORD_LANDING_PATH} from '@salesforce/retail-react-app/app/constants'
+import {
+    PASSWORDLESS_LOGIN_LANDING_PATH,
+    RESET_PASSWORD_LANDING_PATH
+} from '@salesforce/retail-react-app/app/constants'
 
 const config = getConfig()
 
