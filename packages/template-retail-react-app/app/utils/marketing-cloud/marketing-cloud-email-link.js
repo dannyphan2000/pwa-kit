@@ -113,6 +113,18 @@ async function sendMarketingCloudEmail(emailId, marketingCloudConfig) {
  * @return {Promise<object>} A promise that resolves to the response object received from the Marketing Cloud API.
  */
 export async function emailLink(emailId, templateId, magicLink) {
+    if (!process.env.MARKETING_CLOUD_CLIENT_ID) {
+        console.warn('MARKETING_CLOUD_CLIENT_ID is not set in the environment variables.')
+    }
+
+    if (!process.env.MARKETING_CLOUD_CLIENT_SECRET) {
+        console.warn(' MARKETING_CLOUD_CLIENT_SECRET is not set in the environment variables.')
+    }
+
+    if (!process.env.MARKETING_CLOUD_SUBDOMAIN) {
+        console.warn('MARKETING_CLOUD_SUBDOMAIN is not set in the environment variables.')
+    }
+
     const marketingCloudConfig = {
         clientId: process.env.MARKETING_CLOUD_CLIENT_ID,
         clientSecret: process.env.MARKETING_CLOUD_CLIENT_SECRET,
