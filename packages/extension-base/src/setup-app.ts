@@ -14,10 +14,12 @@ import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 
 // Local Imports
 import {Config} from './types'
-import withRedBorder from 'overridable!./components/with-red-border'
 import SamplePage from './pages/sample'
-
 import extensionMeta from '../extension-meta.json'
+
+// By importing this SampleComponent via the overridable loader,
+// you intentionally make it available for other extensions or a user project to override the file
+import withSampleComponent from 'overridable!./components/with-something'
 
 class Sample extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
@@ -30,7 +32,8 @@ class Sample extends ApplicationExtension<Config> {
     extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
-        return withRedBorder(App)
+        // For example, you can extend the React app by wrapping your project's App with this SampleComponent
+        return withSampleComponent(App)
     }
 
     /**

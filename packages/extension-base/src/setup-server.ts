@@ -15,17 +15,17 @@ import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/express'
 import {Config} from './types'
 import extensionMeta from '../extension-meta.json'
 
-class SampleExtension extends ApplicationExtension<Config> {
+class Sample extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 
     /**
      * Use this method to enhance or modify your ExpressJS Application by adding route handlers and middleware.
      */
     extendApp(app: Application): Application {
+        // For example, you can extend the Express app by creating a new endpoint like this.
         app.get('/sample', (req, res) => {
-            console.log('SampleExtension extendApp GET /sample')
             res.send(
-                `<p>Hello from an express SampleExtension!</p>
+                `<p>Hello from a sample endpoint! Created by ${Sample.id} extension.</p>
                 <pre>extensionConfig = ${JSON.stringify(this.getConfig())}</pre>`
             )
         })
@@ -34,4 +34,4 @@ class SampleExtension extends ApplicationExtension<Config> {
     }
 }
 
-export default SampleExtension
+export default Sample
