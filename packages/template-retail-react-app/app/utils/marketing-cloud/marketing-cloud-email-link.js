@@ -10,7 +10,7 @@
  * send emails with a magic link to a specified contact using the Marketing Cloud API.
  * For this integration to work, a template email with a `%%magic-link%%` personalization string inserted
  * must exist in your Marketing Cloud org.
- * 
+ *
  * More details here: https://developer.salesforce.com/docs/marketing/marketing-cloud/guide/transactional-messaging-get-started.html
  *
  * High Level Flow:
@@ -18,12 +18,11 @@
  *    provided client ID and client secret.
  * 2. It constructs the email message URL using the generated unique ID and the
  *    provided template ID.
- * 3. It sends the email message containing the magic link to the specified contact 
+ * 3. It sends the email message containing the magic link to the specified contact
  *    using the Marketing Cloud API.
  */
 
 import crypto from 'crypto'
-import https from 'https'
 
 /**
  * Tokens are valid for 20 minutes. We store it at the top level scope to reuse
@@ -31,47 +30,6 @@ import https from 'https'
  */
 let marketingCloudToken = ''
 let marketingCloudTokenExpiration = new Date()
-
-/*
- Make a POST request using native https module, wrapped in a Promise with JSON
- encode and decode
-*/
-export function asyncJsonHttpsPost(url, postObject, headers = {}) {
-    return new Promise((resolve, reject) => {
-        const options = {
-            method: 'POST',
-            headers: {
-                ...headers,
-                'Content-Type': 'application/json'
-            }
-        }
-        const req = https.request(url, options, (response) => {
-            let data = ''
-
-            response.on('data', (chunk) => {
-                data += chunk
-            })
-
-            response.on('end', () => {
-                if (response.statusCode >= 200 && response.statusCode < 300) {
-                    resolve(JSON.parse(data))
-                } else {
-                    reject(
-                        new Error(`Request failed with status code ${response.statusCode}: ${data}`)
-                    )
-                }
-            })
-        })
-
-        req.on('error', (error) => {
-            reject(error)
-        })
-
-        req.write(JSON.stringify(postObject))
-
-        req.end()
-    })
-}
 
 /**
  * Generates a unique ID for the email message.
@@ -84,7 +42,7 @@ function generateUniqueId() {
 
 /**
  * Sends an email to a specified contact using the Marketing Cloud API. The template email must have a
- * `%%magic-link%%` personalization string inserted. 
+ * `%%magic-link%%` personalization string inserted.
  * https://help.salesforce.com/s/articleView?id=mktg.mc_es_personalization_strings.htm&type=5
  *
  * @param {string} email - The email address of the contact to whom the email will be sent.
@@ -94,41 +52,54 @@ function generateUniqueId() {
  * @return {Promise<object>} A promise that resolves to the response object received from the Marketing Cloud API.
  */
 async function sendMarketingCloudEmail(emailId, marketingCloudConfig) {
+    // Refresh token if expired
     if (new Date() > marketingCloudTokenExpiration) {
-        const tokenUrl = `https://${marketingCloudConfig.subdomain}.auth.marketingcloudapis.com/v2/token`
+        const {clientId, clientSecret, subdomain} = marketingCloudConfig
+        const tokenUrl = `https://${subdomain}.auth.marketingcloudapis.com/v2/token`
+        const tokenResponse = await fetch(tokenUrl, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                grant_type: 'client_credentials',
+                client_id: clientId,
+                client_secret: clientSecret
+            })
+        })
 
-        const tokenBody = {
-            grant_type: 'client_credentials',
-            client_id: marketingCloudConfig.clientId,
-            client_secret: marketingCloudConfig.clientSecret
-        }
+        if (!tokenResponse.ok)
+            throw new Error(
+                'Failed to fetch Marketing Cloud access token. Check your Marketing Cloud credentials and try again.'
+            )
 
-        marketingCloudToken = (await asyncJsonHttpsPost(tokenUrl, tokenBody)).access_token
-
-        marketingCloudTokenExpiration = new Date()
-        marketingCloudTokenExpiration.setTime(
-            marketingCloudTokenExpiration.getTime() + 15 * 60 * 1000
-        )
+        const {access_token} = await tokenResponse.json()
+        marketingCloudToken = access_token
+        // Set expiration to 15 mins
+        marketingCloudTokenExpiration = new Date(Date.now() + 15 * 60 * 1000)
     }
 
+    // Send the email
     const emailUrl = `https://${
         marketingCloudConfig.subdomain
     }.rest.marketingcloudapis.com/messaging/v1/email/messages/${generateUniqueId()}`
+    const emailResponse = await fetch(emailUrl, {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${marketingCloudToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            definitionKey: marketingCloudConfig.templateId,
+            recipient: {
+                contactKey: emailId,
+                to: emailId,
+                attributes: {'magic-link': marketingCloudConfig.magicLink}
+            }
+        })
+    })
 
-    const emailHeaders = {Authorization: `Bearer ${marketingCloudToken}`}
+    if (!emailResponse.ok) throw new Error('Failed to send email to Marketing Cloud')
 
-    const emailBody = {
-        definitionKey: marketingCloudConfig.templateId,
-        recipient: {
-            contactKey: emailId,
-            to: emailId,
-            attributes: {'magic-link': marketingCloudConfig.magicLink}
-        }
-    }
-
-    const emailResponse = await asyncJsonHttpsPost(emailUrl, emailBody, emailHeaders)
-
-    return emailResponse
+    return await emailResponse.json()
 }
 
 /**
