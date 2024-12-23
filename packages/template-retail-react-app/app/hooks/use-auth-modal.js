@@ -98,6 +98,7 @@ export const AuthModal = ({
         const handlePasswordlessLogin = async (email) => {
             try {
                 await authorizePasswordlessLogin.mutateAsync({userid: email})
+                setCurrentView(EMAIL_VIEW)
             } catch (error) {
                 form.setError('global', {
                     type: 'manual',
@@ -139,7 +140,6 @@ export const AuthModal = ({
                         form.setError('global', {type: 'manual', message})
                     }
                 } else if (loginType === LOGIN_TYPES.PASSWORDLESS) {
-                    setCurrentView(EMAIL_VIEW)
                     setPasswordlessLoginEmail(data.email)
                     await handlePasswordlessLogin(data.email)
                 }
@@ -302,7 +302,7 @@ export const AuthModal = ({
                             clickSignIn={onBackToSignInClick}
                         />
                     )}
-                    {form.formState.isSubmitSuccessful && currentView === EMAIL_VIEW && (
+                    {currentView === EMAIL_VIEW && (
                         <PasswordlessEmailConfirmation
                             form={form}
                             submitForm={submitForm}
