@@ -11,12 +11,14 @@ import {screen, waitFor, within} from '@testing-library/react'
 import SearchInput from '../../components/search/index'
 import Suggestions from '../../components/search/partials/suggestions'
 import {clearSessionJSONItem, getSessionJSONItem, setSessionJSONItem, noop} from '../../utils/utils'
-import {RECENT_SEARCH_KEY, RECENT_SEARCH_LIMIT} from '../../constants'
 import mockSearchResults from '../../mocks/searchResults'
 import mockConfig from '../../mock-config'
 import {rest} from 'msw'
 import {mockCustomerBaskets} from '../../mocks/mock-data'
 
+// Constants for Search Component
+export const RECENT_SEARCH_LIMIT = 5
+export const RECENT_SEARCH_KEY = 'recent-search-key'
 beforeEach(() => {
     clearSessionJSONItem(RECENT_SEARCH_KEY)
     jest.resetModules()

@@ -1,6 +1,8 @@
 {
     "enabled": true,
     "activeDataEnabled": false,
+    "maxCacheAge": 900,
+    "staleWhileRevalidate": 900,
     "commerceAPI": {
         "proxyPath": "/mobify/proxy/api",
         "parameters": {
@@ -18,6 +20,13 @@
         "siteId": "aaij-MobileFirst",
         "isProduction": false
     },
+    "search": {
+        "recentSearchLimit": 5,
+        "recentSearchKey": "recent-search-key",
+        "recentSearchMinLength": 3,
+        "defaultSearchParams": {"limit": 25, "offset": 0, "sort": "best-matches", "refine": []},
+        "defaultLimitValues": [25, 50, 100]
+    },
     "pages": {
         "Account": {
             "path": "/account"
@@ -32,7 +41,9 @@
             "path": "/checkout/confirmation/:orderNo"
         },
         "Home": {
-            "path": "/"
+            "path": "/",
+            "productLimit": 10,
+            "mainCategory": "newarrivals"
         },
         "Login": {
             "path": "/login"

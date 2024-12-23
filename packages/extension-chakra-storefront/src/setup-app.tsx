@@ -51,7 +51,6 @@ class ChakraStorefront extends ApplicationExtension<Config> {
 
     extendRoutes(routes: RouteProps[]): RouteProps[] {
         const config = this.getConfig()
-        console.log('config', config)
 
         const extensionRoutes = [
             {
