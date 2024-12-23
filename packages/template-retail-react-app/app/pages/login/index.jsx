@@ -108,10 +108,10 @@ const Login = ({initialView = LOGIN_VIEW}) => {
             } catch (error) {
                 form.setError('global', {
                     type: 'manual',
-                    message: formatMessage(API_ERROR_MESSAGE),
+                    message: formatMessage(API_ERROR_MESSAGE)
                 })
             }
-        }       
+        }
 
         return {
             login: async (data) => {

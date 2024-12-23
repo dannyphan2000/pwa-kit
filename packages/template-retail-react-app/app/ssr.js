@@ -21,10 +21,14 @@ import {getRuntime} from '@salesforce/pwa-kit-runtime/ssr/server/express'
 import {defaultPwaKitSecurityHeaders} from '@salesforce/pwa-kit-runtime/utils/middleware'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import helmet from 'helmet'
-
+import fetch from 'node-fetch'
 import express from 'express'
-import {emailLink} from '@salesforce/retail-react-app/app/utils/marketing-cloud/marketing-cloud-email-link'
-import {PASSWORDLESS_LOGIN_LANDING_PATH, RESET_PASSWORD_LANDING_PATH} from '@salesforce/retail-react-app/app/constants'
+import {emailLink} from './utils/marketing-cloud/marketing-cloud-email-link'
+import {
+    PASSWORDLESS_LOGIN_LANDING_PATH,
+    RESET_PASSWORD_LANDING_PATH
+} from './constants'
+import {verifySlasCallbackToken} from './utils/jwt-utils'
 
 const config = getConfig()
 
@@ -51,7 +55,7 @@ const options = {
     // Set this to false if using a SLAS public client
     // When setting this to true, make sure to also set the PWA_KIT_SLAS_CLIENT_SECRET
     // environment variable as this endpoint will return HTTP 501 if it is not set
-    useSLASPrivateClient: true,
+    useSLASPrivateClient: false,
     applySLASPrivateClientToEndpoints:
         /oauth2\/(token|passwordless|password\/(login|token|reset|action))/,
 
@@ -64,6 +68,45 @@ const options = {
     encodeNonAsciiHttpHeaders: true
 }
 
+const tenantIdRegExp = /^[a-zA-Z]{4}_([0-9]{3}|s[0-9]{2}|stg|dev|prd)$/
+const shortCodeRegExp = /^[a-zA-Z0-9-]+$/
+
+/**
+ *  Handles JWKS (JSON Web Key Set) caching the JWKS response for 2 weeks.
+ *
+ * @param {object} req Express request object.
+ * @param {object} res Express response object.
+ * @param {object} options Options for fetching B2C Commerce API JWKS.
+ * @param {string} options.shortCode - The Short Code assigned to the realm.
+ * @param {string} options.tenantId - The Tenant ID for the ECOM instance.
+ * @returns {Promise<*>} Promise with the JWKS data.
+ */
+async function jwksCaching(req, res, options) {
+    const {shortCode, tenantId} = options
+
+    const isValidRequest = tenantIdRegExp.test(tenantId) && shortCodeRegExp.test(shortCode)
+    if (!isValidRequest)
+        return res
+            .status(400)
+            .json({error: 'Bad request parameters: Tenant ID or short code is invalid.'})
+    try {
+        const JWKS_URI = `https://${shortCode}.api.commercecloud.salesforce.com/shopper/auth/v1/organizations/f_ecom_${tenantId}/oauth2/jwks`
+        const response = await fetch(JWKS_URI)
+
+        if (!response.ok) {
+            throw new Error('Request failed with status: ' + response.status)
+        }
+
+        // JWKS rotate every 30 days. For now, cache response for 14 days so that
+        // fetches only need to happen twice a month
+        res.set('Cache-Control', 'public, max-age=1209600')
+
+        return res.json(await response.json())
+    } catch (error) {
+        res.status(400).json({error: `Error while fetching data: ${error.message}`})
+    }
+}
+
 const runtime = getRuntime()
 
 const resetPasswordCallback =
@@ -72,6 +115,7 @@ const passwordlessLoginCallback =
     config.app.login?.passwordless?.callbackURI || '/passwordless-login-callback'
 
 const {handler} = runtime.createHandler(options, (app) => {
+    app.use(express.json())
     // Set default HTTP security headers required by PWA Kit
     app.use(defaultPwaKitSecurityHeaders)
     // Set custom HTTP security headers
@@ -105,28 +149,40 @@ const {handler} = runtime.createHandler(options, (app) => {
         res.send()
     })
 
-    app.post(passwordlessLoginCallback, express.json(), async (req, res) => {
-        const base = req.protocol + '://' + req.get('host')
-        const {email_id, token} = req.body
-        const magicLink = `${base}${PASSWORDLESS_LOGIN_LANDING_PATH}?token=${token}`
-        const emailLinkResponse = await emailLink(
-            email_id,
-            process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE,
-            magicLink
-        )
-        res.send(emailLinkResponse)
+    app.get('/:shortCode/:tenantId/oauth2/jwks', (req, res) => {
+        jwksCaching(req, res, {shortCode: req.params.shortCode, tenantId: req.params.tenantId})
     })
 
-    app.post(resetPasswordCallback, express.json(), async (req, res) => {
-        const base = req.protocol + '://' + req.get('host')
-        const {email_id, token} = req.body
-        const magicLink = `${base}${RESET_PASSWORD_LANDING_PATH}?token=${token}&email=${email_id}`
-        const emailLinkResponse = await emailLink(
-            email_id,
-            process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE,
-            magicLink
-        )
-        res.send(emailLinkResponse)
+    app.post(passwordlessLoginCallback, async (req, res) => {
+        const slasCallbackToken = req.headers.get('x-slas-callback-token')
+        verifySlasCallbackToken(slasCallbackToken)
+            .then(async() => {
+                const base = req.protocol + '://' + req.get('host')
+                const {email_id, token} = req.body
+                const magicLink = `${base}${PASSWORDLESS_LOGIN_LANDING_PATH}?token=${token}`
+                const emailLinkResponse = await emailLink(
+                    email_id,
+                    process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE,
+                    magicLink
+                )
+                res.send(emailLinkResponse)
+            })
+    })
+
+    app.post(resetPasswordCallback, async (req, res) => {
+        const slasCallbackToken = req.headers.get('x-slas-callback-token')
+        verifySlasCallbackToken(slasCallbackToken)
+            .then(async() => {
+                const base = req.protocol + '://' + req.get('host')
+                const {email_id, token} = req.body
+                const magicLink = `${base}${RESET_PASSWORD_LANDING_PATH}?token=${token}&email=${email_id}`
+                const emailLinkResponse = await emailLink(
+                    email_id,
+                    process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE,
+                    magicLink
+                )
+                res.send(emailLinkResponse)
+            })
     })
 
     app.get('/robots.txt', runtime.serveStaticFile('static/robots.txt'))

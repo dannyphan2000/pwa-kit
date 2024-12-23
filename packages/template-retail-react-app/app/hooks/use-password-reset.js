@@ -9,6 +9,7 @@ import {useToast} from '@salesforce/retail-react-app/app/hooks/use-toast'
 import {useIntl} from 'react-intl'
 import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+import {isAbsoluteURL} from '@salesforce/retail-react-app/app/page-designer/utils'
 
 /**
  * This hook provides commerce-react-sdk hooks to simplify the reset password flow.
@@ -27,7 +28,9 @@ export const usePasswordReset = () => {
     const getPasswordResetToken = async (email) => {
         await getPasswordResetTokenMutation.mutateAsync({
             user_id: email,
-            callback_uri: `${appOrigin}${resetPasswordCallback}`
+            callback_uri: isAbsoluteURL(resetPasswordCallback)
+                ? resetPasswordCallback
+                : `${appOrigin}${resetPasswordCallback}`
         })
     }
 

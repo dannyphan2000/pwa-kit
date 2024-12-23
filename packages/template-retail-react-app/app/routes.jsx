@@ -21,7 +21,10 @@ import {Skeleton} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {configureRoutes} from '@salesforce/retail-react-app/app/utils/routes-utils'
 
 // Constants
-import {PASSWORDLESS_LOGIN_LANDING_PATH, RESET_PASSWORD_LANDING_PATH} from '@salesforce/retail-react-app/app/constants'
+import {
+    PASSWORDLESS_LOGIN_LANDING_PATH,
+    RESET_PASSWORD_LANDING_PATH
+} from '@salesforce/retail-react-app/app/constants'
 
 const fallback = <Skeleton height="75vh" width="100%" />
 const socialRedirectURI = getConfig()?.app?.login?.social?.redirectURI

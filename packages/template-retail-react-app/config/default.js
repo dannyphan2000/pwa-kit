@@ -18,7 +18,7 @@ module.exports = {
         login: {
             passwordless: {
                 enabled: true,
-                callbackURI: '/passwordless-login-callback'
+                callbackURI: 'https://webhook.site/970b4840-1608-4a48-977f-ab1a6047e699'
             },
             social: {
                 enabled: false,
@@ -26,7 +26,7 @@ module.exports = {
                 redirectURI: '/social-callback'
             },
             resetPassword: {
-                callbackURI: '/reset-password-callback'
+                callbackURI: 'https://webhook.site/970b4840-1608-4a48-977f-ab1a6047e699'
             }
         },
         defaultSite: 'RefArchGlobal',
@@ -38,9 +38,9 @@ module.exports = {
         commerceAPI: {
             proxyPath: `/mobify/proxy/api`,
             parameters: {
-                clientId: '3a15f34e-fecd-4fcc-8235-86b70978e629',
-                organizationId: 'f_ecom_zzrf_001',
-                shortCode: '8o7m175y',
+                clientId: '58f1b970-50be-4ec4-8124-25a1ed943b8b',
+                organizationId: 'f_ecom_bgvn_stg',
+                shortCode: 'sandbox-001',
                 siteId: 'RefArchGlobal'
             }
         },
@@ -67,7 +67,7 @@ module.exports = {
         ssrFunctionNodeVersion: '20.x',
         proxyConfigs: [
             {
-                host: 'kv7kzm78.api.commercecloud.salesforce.com',
+                host: 'sandbox-001.api.commercecloud.salesforce.com',
                 path: 'api'
             },
             {
