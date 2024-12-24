@@ -6,10 +6,11 @@
  */
 import React, {Fragment} from 'react'
 import {getStaticAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
+import extensionMeta from '../../extension-meta.json'
 
 const Sample = () => {
     const logoUrl = getStaticAssetUrl('salesforce-logo.svg', {
-        extensionPackageName: '@salesforce/extension-sample'
+        appExtensionPackageName: extensionMeta.id
     })
     return (
         <Fragment>

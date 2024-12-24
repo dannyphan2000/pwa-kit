@@ -1008,7 +1008,7 @@ const runGenerator = async (
         processAppExtensions(selectedAppExtensions, extractAppExtensions, appExtensionsDir)
     }
 
-    // Add selected Application Extensions to devDependencies and mobify object
+    // Add selected Application Extensions to devDependencies
     const appExtensionDeps = selectedAppExtensions.reduce((acc, appExtensionName) => {
         // Find the corresponding Application Extension details
         const appExtensionDetails = context?.availableAppExtensions?.find(
@@ -1025,14 +1025,7 @@ const runGenerator = async (
     updatePackageJson(p.resolve(outputDir, 'package.json'), {
         name: getSlugifiedProjectName(context.answers.project.name || context.preset.id),
         version: GENERATED_PROJECT_VERSION,
-        devDependencies: appExtensionDeps,
-        ...(selectedAppExtensions.length > 0 && {
-            mobify: {
-                app: {
-                    extensions: selectedAppExtensions
-                }
-            }
-        })
+        devDependencies: appExtensionDeps
     })
 
     // Clean up the temporary directory
@@ -1042,6 +1035,36 @@ const runGenerator = async (
         // Install dependencies for the newly minted project.
         npmInstall(outputDir, {verbose, projectName: context.answers.project.name})
     }
+
+    const extensionsWithDefaultConfig = selectedAppExtensions.map((extension) => {
+        // Since we've just installed the dependencies, we can read the default config of each extension
+        const pathToDefaultConfig = p.join(
+            outputDir,
+            'node_modules',
+            extension,
+            'config',
+            'default.json'
+        )
+        if (!fs.existsSync(pathToDefaultConfig)) {
+            console.warn(
+                `The extension ${extension} does not have a default config. Will generate a minimal default config for it.`
+            )
+            // Return a minimal default config. It should match what's defined in: https://github.com/SalesforceCommerceCloud/pwa-kit/blob/310e946bed12fd4cbb42a209ee6982e9b1bb9b99/packages/pwa-kit-extension-sdk/src/shared/utils/helpers.ts#L13-L15
+            return [extension, {enabled: true}]
+        }
+
+        const defaultConfig = readJson(pathToDefaultConfig)
+        return [extension, defaultConfig]
+    })
+    updatePackageJson(p.resolve(outputDir, 'package.json'), {
+        ...(selectedAppExtensions.length > 0 && {
+            mobify: {
+                app: {
+                    extensions: extensionsWithDefaultConfig
+                }
+            }
+        })
+    })
 }
 
 const foundNode = process.versions.node
