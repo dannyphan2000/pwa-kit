@@ -79,6 +79,8 @@ export interface UserConfig extends ApplicationExtensionConfig {
     }
     siteAliases?: Record<Site['id'], string>
     sites: Site[]
+    defaultLocale: Localization['defaultLocale']
+    defaultSiteTitle: string
     url?: {
         site: UrlPlacement
         locale: UrlPlacement

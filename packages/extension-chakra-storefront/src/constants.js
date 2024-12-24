@@ -8,11 +8,6 @@
 import {defineMessage} from 'react-intl'
 import {noop} from './utils/utils'
 
-// Global app defaults
-// TODO: find a good place for these values in config
-export const DEFAULT_LOCALE = 'en-US'
-export const DEFAULT_SITE_TITLE = 'Retail React App'
-
 //Constants for customer orders searching.
 export const DEFAULT_ORDERS_SEARCH_PARAMS = {limit: 10, offset: 0, sort: 'best-matches', refine: []}
 
@@ -64,17 +59,12 @@ export const cssColorGroups = {
     miscellaneous: 'linear-gradient(to right, orange , yellow, green, cyan, blue, violet)'
 }
 
-// Color to use for the UI surrounding the page in browsers.
-export const THEME_COLOR = '#0176D3'
-
 export const FILTER_ACCORDION_SATE = 'filters-expanded-index'
 
 export const API_ERROR_MESSAGE = defineMessage({
     id: 'global.error.something_went_wrong',
     defaultMessage: 'Something went wrong. Try again!'
 })
-
-export const HOME_HREF = '/'
 
 export const urlPartPositions = {
     PATH: 'path',
