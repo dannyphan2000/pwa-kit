@@ -20,6 +20,7 @@ import SamplePage from './pages/sample'
 import extensionMeta from '../extension-meta.json'
 
 // TODO: do we still need extension-sample directory? can we safely remove it?
+// I see related presets in the generator that use the extension-sample. In this case, can we swap it with extension-base?
 class Sample extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 

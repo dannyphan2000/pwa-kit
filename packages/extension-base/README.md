@@ -57,6 +57,7 @@ the extension as they like.
 ```
 
 # Installation
+TODO: update this
 
 ```
 > npm install @salesforce/extension-sample<br/>
