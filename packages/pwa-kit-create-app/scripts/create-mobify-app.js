@@ -119,7 +119,7 @@ const TEMPLATE_SOURCE_NPM = 'npm'
 const TEMPLATE_SOURCE_BUNDLE = 'bundle'
 const DEFAULT_TEMPLATE_VERSION = 'latest'
 
-const LOCAL_DEV_PROJECT_DIR = 'dev'
+const LOCAL_DEV_PROJECT_DIR = 'sample-app'
 
 const INITIAL_QUESTION = [
     {
@@ -964,7 +964,7 @@ const runGenerator = async (
                 templateSource: {type: TEMPLATE_SOURCE_BUNDLE, id: 'typescript-minimal'},
                 private: true
             },
-            answers: {project: {type: 'PWAKitAppProject', name: 'local-dev-project'}}
+            answers: {project: {type: 'PWAKitAppProject', name: 'sample-app'}}
         }
 
         await runGenerator(localDevProjectContext, {

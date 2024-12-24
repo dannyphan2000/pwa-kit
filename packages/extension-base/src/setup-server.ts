@@ -25,7 +25,7 @@ class Sample extends ApplicationExtension<Config> {
         // For example, you can extend the Express app by creating a new endpoint like this.
         app.get('/sample', (req, res) => {
             res.send(
-                `<p>Hello from a sample endpoint! Created by ${Sample.id} extension.</p>
+                `<p>Hello from a sample endpoint! Created by ${Sample.id}.</p>
                 <pre>extensionConfig = ${JSON.stringify(this.getConfig())}</pre>`
             )
         })
