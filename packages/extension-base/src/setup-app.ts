@@ -19,7 +19,10 @@ import extensionMeta from '../extension-meta.json'
 
 // By importing this SampleComponent via the overridable loader,
 // you intentionally make it available for other extensions or a user project to override the file
-import withSampleComponent from 'overridable!./components/with-something'
+import withSampleComponent from 'overridable!./components/with-sample-component'
+// Then others can override it by creating a file in this overrides directory:
+// - for another extension: src/overrides/<name of your extension>/components/with-sample-component.tsx
+// - for a user project: app/overrides/<name of your extension>/components/with-sample-component.tsx
 
 class Sample extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
