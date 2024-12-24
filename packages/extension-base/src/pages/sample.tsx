@@ -22,30 +22,6 @@ const Sample = () => {
                 If you are reading this, it means that this page was successfully added to your base
                 project. 🎉
             </p>
-            <p>
-                This <i>Application Extension</i> was installed by running the below command in your
-                PWA-Kit project. Its dependancies were automatically installed and the extension
-                configured into your projects extensions array.
-            </p>
-            <div
-                style={{
-                    border: '1px solid darkGray',
-                    backgroundColor: 'lightgray',
-                    width: 'calc(100% - 10px)',
-                    padding: '5px'
-                }}
-            >
-                <code>
-                    &gt; npm install @salesforce/extension-sample
-                    <br />
-                    &gt; Downloading npm package... <br />
-                    &gt; Installing extention... <br />
-                    &gt; Finished. <br />
-                    &gt; Congratulations! The Sample extension was successfully installed! Please
-                    visit https://www.npmjs.com/package/@salesforce/extension-sample for more
-                    information on how to use this extension.
-                </code>
-            </div>
         </Fragment>
     )
 }
