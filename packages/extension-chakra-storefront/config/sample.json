@@ -3,6 +3,7 @@
     "activeDataEnabled": false,
     "maxCacheAge": 900,
     "staleWhileRevalidate": 900,
+    "defaultSiteTitle": "Retail React App",
     "commerceAPI": {
         "proxyPath": "/mobify/proxy/api",
         "parameters": {

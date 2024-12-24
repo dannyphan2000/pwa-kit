@@ -110,11 +110,11 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         const appOrigin = getAppOrigin()
         const activeData = useActiveData()
         const config = useExtensionConfig()
+        console.log('config', config)
         const history = useHistory()
         const location = useLocation()
         const authModal = useAuthModal()
         const {site, locale, buildUrl} = useMultiSite()
-
         const [isOnline, setIsOnline] = useState(true)
         const styles = useStyleConfig('App')
 
@@ -229,7 +229,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
                 <Seo>
                     <meta name="theme-color" content={THEME_COLOR} />
-                    <meta name="apple-mobile-web-app-title" content={DEFAULT_SITE_TITLE} />
+                    <meta name="apple-mobile-web-app-title" content={config.defaultSiteTitle} />
 
                     {/* Urls for all localized versions of this page (including current page)
                     For more details on hrefLang, see https://developers.google.com/search/docs/advanced/crawling/localized-versions */}

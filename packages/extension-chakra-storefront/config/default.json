@@ -14,6 +14,7 @@
     },
     "defaultSite": "RefArchGlobal",
     "defaultLocale": "en-US",
+    "defaultSiteTitle": "Retail React App",
     "einsteinAPI": {
         "host": "https://api.cquotient.com",
         "einsteinId": "1ea06c6e-c936-4324-bcf0-fada93f83bb1",
