@@ -24,6 +24,7 @@ module.exports = {
         'site-2': 'us'
     },
     defaultSite: 'site-1',
+    defaultAppLocale: 'en-GB',
     sites: [
         {
             id: 'site-1',
@@ -86,5 +87,12 @@ module.exports = {
         // This is temporary and is meant as a placeholder until there is a mechanism for reading
         // the is_production property from an MRT target
         isProduction: false
+    },
+    search: {
+        recentSearchLimit: 5,
+        recentSearchKey: 'recent-search-key',
+        recentSearchMinLength: 3,
+        defaultSearchParams: {limit: 25, offset: 0, sort: 'best-matches', refine: []},
+        defaultLimitValues: [25, 50, 100]
     }
 }

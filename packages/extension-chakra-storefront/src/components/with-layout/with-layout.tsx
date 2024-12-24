@@ -46,9 +46,6 @@ import useActiveData from '../../hooks/use-active-data'
 import useMultiSite from '../../hooks/use-multi-site'
 import {useTheme} from '@chakra-ui/react'
 
-// CONSTANTS
-import {CAT_MENU_DEFAULT_NAV_SSR_DEPTH, CAT_MENU_DEFAULT_ROOT_CATEGORY} from '../../constants'
-
 // Define a type for the HOC props
 type WithAppLayoutProps = React.ComponentPropsWithoutRef<any>
 
@@ -96,13 +93,19 @@ const ListMenuContentWithData = withCommerceSdkReactHookData(
 // Define the HOC function
 const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const WithLayout: React.FC<P> = (props: WithAppLayoutProps) => {
+        const config = useExtensionConfig()
+
+        const CAT_MENU_DEFAULT_ROOT_CATEGORY = config?.categoryNav?.defaultRootCategory
+        const CAT_MENU_DEFAULT_NAV_SSR_DEPTH = config?.categoryNav?.defaultNavSsrDepth
         const {data: categoriesTree} = useCategory({
-            parameters: {id: CAT_MENU_DEFAULT_ROOT_CATEGORY, levels: CAT_MENU_DEFAULT_NAV_SSR_DEPTH}
+            parameters: {
+                id: CAT_MENU_DEFAULT_ROOT_CATEGORY,
+                levels: CAT_MENU_DEFAULT_NAV_SSR_DEPTH
+            }
         })
         const categories = flatten(categoriesTree || {}, 'categories')
         const appOrigin = getAppOrigin()
         const activeData = useActiveData()
-        const config = useExtensionConfig()
         const history = useHistory()
         const location = useLocation()
         const authModal = useAuthModal()

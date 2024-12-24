@@ -23,7 +23,7 @@ import RadioRefinements from '../../../pages/product-list/partials/radio-refinem
 import CheckboxRefinements from '../../../pages/product-list/partials/checkbox-refinements'
 import LinkRefinements from '../../../pages/product-list/partials/link-refinements'
 import {isServer} from '../../../utils/utils'
-import {FILTER_ACCORDION_SATE} from '../../../constants'
+import {useExtensionConfig} from '../../../hooks'
 
 /** Map of refinement attribute IDs to the components used to display values as filter options. */
 export const componentMap = {
@@ -41,6 +41,10 @@ const Refinements = ({
     selectedFilters,
     isLoading
 }) => {
+    const {
+        pages: {ProductList: productListConfig}
+    } = useExtensionConfig()
+    const FILTER_ACCORDION_SATE = productListConfig?.filterAccordionSate
     // Exclude filters in the exclude list.
     if (excludedFilters) {
         filters = filters.filter(({attributeId}) => !excludedFilters.includes(attributeId))

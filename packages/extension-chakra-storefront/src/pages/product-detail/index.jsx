@@ -24,8 +24,7 @@ import {
 } from '@salesforce/commerce-sdk-react'
 
 // Hooks
-import {useCurrentBasket} from '../../hooks/use-current-basket'
-import {useExtensionConfig, useVariant} from '../../hooks'
+import {useCurrentBasket, useExtensionConfig, useVariant} from '../../hooks'
 import useNavigation from '../../hooks/use-navigation'
 import useEinstein from '../../hooks/use-einstein'
 import useActiveData from '../../hooks/use-active-data'

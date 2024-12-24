@@ -39,7 +39,7 @@ const withReactIntl = <P extends object>(WrappedComponent: React.ComponentType<P
                 // then the app would use the default locale as the fallback.
 
                 // NOTE: Your implementation may differ, this is just what we did.
-                return [locale?.id || config.defautLocale]
+                return [locale?.id || config.defaultAppLocale]
             },
             l10nConfig: site.l10n
         })
@@ -90,7 +90,7 @@ const withReactIntl = <P extends object>(WrappedComponent: React.ComponentType<P
                 // NOTE: if you update this value, please also update the following npm scripts in `template-retail-react-app/package.json`:
                 // - "extract-default-translations"
                 // - "compile-translations:pseudo"
-                defaultLocale={config.defaultLocale}
+                defaultLocale={config.defaultAppLocale}
             >
                 <WrappedComponent {...(props as P)} />
             </IntlProvider>

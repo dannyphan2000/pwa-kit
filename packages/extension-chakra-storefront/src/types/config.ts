@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import type {ApplicationExtensionConfig} from '@salesforce/pwa-kit-extension-sdk/types'
+type Pages = typeof import('../pages')
 
 // Represents a locale with its ID and preferred currency.
 type Locale = {
@@ -48,7 +49,6 @@ type EinsteinAPI = {
 // Indicates where a value should be placed in the URL.
 type UrlPlacement = 'path' | 'query_string' | 'none'
 
-type Pages = typeof import('../pages')
 // Default configuration type
 // should we keep string | string[] type here??
 type DefaultPageConfig = {
@@ -72,15 +72,33 @@ type PageConfigs = {
 export interface UserConfig extends ApplicationExtensionConfig {
     activeDataEnabled?: boolean // default = false
     commerceAPI: CommerceAPIConfig
+    categoryNav: {
+        defaultNavSsrDepth: number
+        defaultRootCategory: string | number
+    }
     defaultSite: Site['id']
+    defaultAppLocale: string
+    defaultSiteTitle: string
     einsteinAPI: EinsteinAPI
+    maxCacheAge: number
     pages?: {
         [K in keyof PageConfigs]: false | PageConfigs[K]
     }
+    search: {
+        defaultLimitValues: number[]
+        defaultSearchParams: {
+            limit?: number
+            offset?: number
+            sort?: string
+            refine?: []
+        }
+        recentSearchKey: string
+        recentSearchLimit: number
+        recentSearchMinLength: number
+    }
     siteAliases?: Record<Site['id'], string>
     sites: Site[]
-    defaultLocale: Localization['defaultLocale']
-    defaultSiteTitle: string
+    staleWhileRevalidate: number
     url?: {
         site: UrlPlacement
         locale: UrlPlacement

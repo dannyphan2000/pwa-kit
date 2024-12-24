@@ -1,8 +1,10 @@
 {
     "enabled": true,
     "activeDataEnabled": false,
-    "maxCacheAge": 900,
-    "staleWhileRevalidate": 900,
+    "categoryNav": {
+        "defaultNavSsrDepth": 1,
+        "defaultRootCategory": "root"
+    },
     "commerceAPI": {
         "proxyPath": "/mobify/proxy/api",
         "parameters": {
@@ -13,7 +15,7 @@
         }
     },
     "defaultSite": "RefArchGlobal",
-    "defaultLocale": "en-US",
+    "defaultAppLocale": "en-US",
     "defaultSiteTitle": "Retail React App",
     "einsteinAPI": {
         "host": "https://api.cquotient.com",
@@ -21,22 +23,21 @@
         "siteId": "aaij-MobileFirst",
         "isProduction": false
     },
-    "search": {
-        "recentSearchLimit": 5,
-        "recentSearchKey": "recent-search-key",
-        "recentSearchMinLength": 3,
-        "defaultSearchParams": {"limit": 25, "offset": 0, "sort": "best-matches", "refine": []},
-        "defaultLimitValues": [25, 50, 100]
-    },
+    "maxCacheAge": 900,
     "pages": {
         "Account": {
-            "path": "/account"
+            "path": "/account",
+            "orderSearchParam": {"limit": 10, "offset": 0, "sort": "best-matches", "refine": []}
         },
         "Cart": {
             "path": "/cart"
         },
         "Checkout": {
-            "path": "/checkout"
+            "path": "/checkout",
+            "shippingCountryCode": [
+                {"value": "CA", "label": "Canada"},
+                {"value": "US", "label": "United States"}
+            ]
         },
         "CheckoutConfirmation": {
             "path": "/checkout/confirmation/:orderNo"
@@ -64,8 +65,16 @@
         "ProductList": {
             "path": ["/search", "/category/:categoryId"],
             "imageViewType": "large",
-            "selectedAttributedId": "color"
+            "selectedAttributedId": "color",
+            "filterAccordionSate": "filters-expanded-index"
         }
+    },
+    "search": {
+        "defaultLimitValues": [25, 50, 100],
+        "defaultSearchParams": {"limit": 25, "offset": 0, "sort": "best-matches", "refine": []},
+        "recentSearchKey": "recent-search-key",
+        "recentSearchLimit": 5,
+        "recentSearchMinLength": 3
     },
     "siteAliases": {
         "RefArch": "us",
@@ -141,6 +150,7 @@
             }
         }
     ],
+    "staleWhileRevalidate": 900,
     "url": {
         "site": "path",
         "locale": "path",

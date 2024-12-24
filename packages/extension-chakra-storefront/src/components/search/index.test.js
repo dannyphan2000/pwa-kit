@@ -17,8 +17,8 @@ import {rest} from 'msw'
 import {mockCustomerBaskets} from '../../mocks/mock-data'
 
 // Constants for Search Component
-export const RECENT_SEARCH_LIMIT = 5
-export const RECENT_SEARCH_KEY = 'recent-search-key'
+export const RECENT_SEARCH_LIMIT = mockConfig.search.recentSearchLimit
+export const RECENT_SEARCH_KEY = mockConfig.search.recentSearchKey
 beforeEach(() => {
     clearSessionJSONItem(RECENT_SEARCH_KEY)
     jest.resetModules()

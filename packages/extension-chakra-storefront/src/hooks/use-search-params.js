@@ -25,7 +25,6 @@ export const useSearchParams = (searchParams, parseRefine = true) => {
     if (!searchParams) {
         searchParams = searchConfig?.defaultSearchParams
     }
-    console.log('searchConfig.defaultSearchParams', searchConfig.defaultSearchParams)
     // Encode the search query, including preset values.
     const searchParamsObject = {
         ...searchParams,
