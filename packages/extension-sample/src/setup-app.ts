@@ -19,6 +19,7 @@ import {Config} from './types'
 import SamplePage from './pages/sample'
 import extensionMeta from '../extension-meta.json'
 
+// TODO: do we still need extension-sample directory? can we safely remove it?
 class Sample extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 

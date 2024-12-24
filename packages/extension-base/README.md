@@ -5,6 +5,13 @@ _\ \ (_| | | | | | | |_) | |  __/ //__  >  <| ||  __/ | | \__ \ | (_) | | | |
 \__/\__,_|_| |_| |_| .__/|_|\___| \__/ /_/\_\\__\___|_| |_|___/_|\___/|_| |_|
                    |_|                                                       
 
+TODO
+- assets
+- types
+- default, sample configs, plus useExtensionConfig
+- overrides and overridable
+- review recent feedback from offsite?
+
 # Description
 
 This is a sample PWA-Kit Application Extension. The purpose of this application extensions is to show how
