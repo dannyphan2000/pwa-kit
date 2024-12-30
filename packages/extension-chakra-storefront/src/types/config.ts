@@ -46,6 +46,11 @@ type EinsteinAPI = {
     isProduction: boolean
 }
 
+type ShippingCountry = {
+    value: string
+    label: string
+}
+
 // Indicates where a value should be placed in the URL.
 type UrlPlacement = 'path' | 'query_string' | 'none'
 
@@ -56,9 +61,25 @@ type DefaultPageConfig = {
 }
 
 type CustomPageConfigs = {
+    Account: DefaultPageConfig & {
+        orderSearchParam: {
+            limit: number
+            offset: number
+            sort: string
+            refine: []
+        }
+    }
+    Checkout: DefaultPageConfig & {
+        shippingCountryCode: ShippingCountry[]
+    }
+    Home: DefaultPageConfig & {
+        productLimit?: number
+        mainCategory?: string
+    }
     ProductList: DefaultPageConfig & {
         imageViewType: 'large'
         selectedAttributedId: 'color'
+        filterAccordionSate: string
     }
 }
 
@@ -87,10 +108,10 @@ export interface UserConfig extends ApplicationExtensionConfig {
     search: {
         defaultLimitValues: number[]
         defaultSearchParams: {
-            limit?: number
-            offset?: number
-            sort?: string
-            refine?: []
+            limit: number
+            offset: number
+            sort: string
+            refine: []
         }
         recentSearchKey: string
         recentSearchLimit: number
