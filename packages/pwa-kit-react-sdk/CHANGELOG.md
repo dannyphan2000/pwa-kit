@@ -1,3 +1,4 @@
+## v3.9.0-nightly-20241231080154 (Dec 31, 2024)
 ## v3.9.0-dev (Oct 29, 2024)
 - Add RedirectWithStatus component, allowing finer grained control of rediriects and their status code [#2173](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2173)
 
