@@ -78,7 +78,7 @@ type CustomPageConfigs = {
     }
     ProductList: DefaultPageConfig & {
         imageViewType: 'large'
-        selectedAttributedId: 'color'
+        selectableAttributeId: 'color'
         filterAccordionSate: string
     }
 }

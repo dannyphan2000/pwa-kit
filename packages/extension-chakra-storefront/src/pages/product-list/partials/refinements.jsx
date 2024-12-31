@@ -44,7 +44,7 @@ const Refinements = ({
     const {
         pages: {ProductList: productListConfig}
     } = useExtensionConfig()
-    const FILTER_ACCORDION_SATE = productListConfig.filterAccordionSate
+    const FILTER_ACCORDION_STATE = productListConfig.filterAccordionSTate
     // Exclude filters in the exclude list.
     if (excludedFilters) {
         filters = filters.filter(({attributeId}) => !excludedFilters.includes(attributeId))
@@ -56,7 +56,7 @@ const Refinements = ({
     // Use saved state for accordions
     if (!isServer) {
         // TODO: Change this to `useLocalStorage` hook when localStorage detection is more robust
-        const filterAccordionState = window.localStorage.getItem(FILTER_ACCORDION_SATE)
+        const filterAccordionState = window.localStorage.getItem(FILTER_ACCORDION_STATE)
         const savedExpandedAccordionIndexes =
             filterAccordionState && JSON.parse(filterAccordionState)
 
@@ -78,7 +78,7 @@ const Refinements = ({
             .map((filter) => filter.attributeId)
 
         // TODO: Update when localStorage detection is more robust? useLocalStorage is only a getter
-        window.localStorage.setItem(FILTER_ACCORDION_SATE, JSON.stringify(filterState))
+        window.localStorage.setItem(FILTER_ACCORDION_STATE, JSON.stringify(filterState))
     }
 
     return (

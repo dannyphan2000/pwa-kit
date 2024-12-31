@@ -86,7 +86,7 @@ module.exports = {
         ProductList: {
             path: ['/search', '/category/:categoryId'],
             imageViewType: 'large',
-            selectedAttributedId: 'color',
+            selectableAttributeId: 'color',
             filterAccordionSate: 'filters-expanded-index'
         }
     },
