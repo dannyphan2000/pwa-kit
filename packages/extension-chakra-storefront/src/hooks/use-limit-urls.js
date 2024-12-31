@@ -24,7 +24,7 @@ export const useLimitUrls = () => {
             buildUrlSet(
                 `${location.pathname}${location.search}`,
                 'limit',
-                searchConfig?.defaultLimitValues,
+                searchConfig.defaultLimitValues,
                 {
                     offset: 0
                 }

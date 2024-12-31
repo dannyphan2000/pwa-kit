@@ -95,8 +95,8 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
     const WithLayout: React.FC<P> = (props: WithAppLayoutProps) => {
         const config = useExtensionConfig()
 
-        const CAT_MENU_DEFAULT_ROOT_CATEGORY = config?.categoryNav?.defaultRootCategory
-        const CAT_MENU_DEFAULT_NAV_SSR_DEPTH = config?.categoryNav?.defaultNavSsrDepth
+        const CAT_MENU_DEFAULT_ROOT_CATEGORY = config.categoryNav.defaultRootCategory
+        const CAT_MENU_DEFAULT_NAV_SSR_DEPTH = config.categoryNav.defaultNavSsrDepth
         const {data: categoriesTree} = useCategory({
             parameters: {
                 id: CAT_MENU_DEFAULT_ROOT_CATEGORY,
@@ -172,7 +172,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
         const onLogoClick = () => {
             // Goto the home page.
-            const path = buildUrl(config?.pages.Home.path)
+            const path = buildUrl(config.pages.Home.path)
 
             history.push(path)
 

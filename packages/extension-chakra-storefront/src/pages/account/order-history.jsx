@@ -86,7 +86,7 @@ const AccountOrderHistory = () => {
     const {data: customer} = useCurrentCustomer()
     const {customerId} = customer
 
-    const searchParams = useSearchParams(accountConfig?.orderSearchParam)
+    const searchParams = useSearchParams(accountConfig.orderSearchParam)
     const {limit, offset} = searchParams[0]
 
     const {data: {data: orders, ...paging} = {}, isLoading} = useCustomerOrders(

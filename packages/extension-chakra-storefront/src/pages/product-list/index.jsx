@@ -557,9 +557,9 @@ const ProductList = (props) => {
                                                   product={productSearchItem}
                                                   enableFavourite={true}
                                                   isFavourite={isInWishlist}
-                                                  imageViewType={productListConfig?.imageViewType}
+                                                  imageViewType={productListConfig.imageViewType}
                                                   selectableAttributeId={
-                                                      productListConfig?.selectableAttributeId
+                                                      productListConfig.selectableAttributeId
                                                   }
                                                   onClick={() => {
                                                       if (searchQuery) {
@@ -613,7 +613,7 @@ const ProductList = (props) => {
                                 >
                                     {limitUrls.map((href, index) => (
                                         <option key={href} value={href}>
-                                            {searchConfig?.defaultLimitValues?.[index]}
+                                            {searchConfig.defaultLimitValues[index]}
                                         </option>
                                     ))}
                                 </Select>

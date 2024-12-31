@@ -23,7 +23,7 @@ export const useSearchParams = (searchParams, parseRefine = true) => {
     const {search} = useLocation()
     const {search: searchConfig} = useExtensionConfig()
     if (!searchParams) {
-        searchParams = searchConfig?.defaultSearchParams
+        searchParams = searchConfig.defaultSearchParams
     }
     // Encode the search query, including preset values.
     const searchParamsObject = {
