@@ -18,7 +18,7 @@ const RecentSearches = ({recentSearches, closeAndNavigate}) => {
     const {search: searchConfig} = useExtensionConfig()
 
     const clearSearches = () => {
-        clearSessionJSONItem(searchConfig?.recentSearchKey)
+        clearSessionJSONItem(searchConfig.recentSearchKey)
         closeAndNavigate(false)
     }
     return (
