@@ -1,0 +1,20 @@
+Checking peerDependencies for the following packages:
+@aws-sdk/client-cloudwatch-logs, @aws-sdk/client-lambda, @aws-sdk/client-s3, @loadable/component, @salesforce/pwa-kit-dev, @salesforce/pwa-kit-runtime, @smithy/smithy-client, aws-sdk-client-mock, cross-fetch, express-basic-auth, supertest
+
+
+@@@ @loadable/component:
+{ react: '^16.3.0 || ^17.0.0 || ^18.0.0' }
+Failed to parse peerDependencies for aws-sdk-client-mock: 
+Failed to parse peerDependencies for cross-fetch: 
+Failed to parse peerDependencies for @smithy/smithy-client: 
+
+@@@ @salesforce/pwa-kit-runtime:
+{ '@salesforce/pwa-kit-dev': '3.8.0' }
+Failed to parse peerDependencies for supertest: 
+Failed to parse peerDependencies for @aws-sdk/client-cloudwatch-logs: 
+
+@@@ @salesforce/pwa-kit-dev:
+{ typescript: '4.9.5', '@loadable/component': '^5.15.3' }
+Failed to parse peerDependencies for @aws-sdk/client-lambda: 
+Failed to parse peerDependencies for @aws-sdk/client-s3: 
+Failed to parse peerDependencies for express-basic-auth: 

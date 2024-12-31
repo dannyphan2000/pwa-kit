@@ -1,0 +1,211 @@
+Checking peerDependencies for the following packages:
+@babel/cli, @babel/core, @babel/eslint-parser, @babel/node, @babel/parser, @babel/plugin-proposal-object-rest-spread, @babel/plugin-proposal-optional-chaining, @babel/plugin-transform-async-generator-functions, @babel/plugin-transform-async-to-generator, @babel/plugin-transform-object-assign, @babel/plugin-transform-runtime, @babel/preset-env, @babel/preset-react, @babel/preset-typescript, @babel/register, @babel/runtime, @babel/runtime-corejs2, @babel/traverse, @loadable/babel-plugin, @loadable/server, @loadable/webpack-plugin, @pmmmwh/react-refresh-webpack-plugin, @salesforce/pwa-kit-runtime, @typescript-eslint/eslint-plugin, @typescript-eslint/parser, archiver, babel-jest, babel-loader, babel-plugin-dynamic-import-node-babel-7, babel-plugin-formatjs, chalk, commander, compression, copy-webpack-plugin, cross-env, eslint, eslint-config-prettier, eslint-plugin-jest, eslint-plugin-jsx-a11y, eslint-plugin-prettier, eslint-plugin-react, eslint-plugin-react-hooks, eslint-plugin-use-effect-no-deps, express, fs-extra, git-rev-sync, glob, ignore-loader, jest, jest-cli, jest-environment-jsdom, jest-environment-jsdom-global, jest-expect-message, jest-fetch-mock, mime-types, minimatch, node-fetch, open, prettier, react-refresh, replace-in-file, require-from-string, rimraf, semver, source-map-loader, speed-measure-webpack-plugin, svg-sprite-loader, validator, webpack, webpack-bundle-analyzer, webpack-cli, webpack-dev-middleware, webpack-hot-middleware, webpack-hot-server-middleware, webpack-notifier, ws, @loadable/component, @types/archiver, @types/fs-extra, @types/git-rev-sync, @types/node, @types/node-fetch, @types/validator, internal-lib-build, nock, nodemon, superagent, supertest, typescript
+
+
+@@@ @babel/cli:
+{ '@babel/core': '^7.0.0-0' }
+
+@@@ @babel/eslint-parser:
+{ eslint: '^7.5.0 || ^8.0.0 || ^9.0.0', '@babel/core': '^7.11.0' }
+
+@@@ @babel/plugin-proposal-object-rest-spread:
+{ '@babel/core': '^7.0.0-0' }
+
+@@@ @babel/node:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for @babel/core: 
+Failed to parse peerDependencies for @babel/traverse: 
+Failed to parse peerDependencies for archiver: 
+Failed to parse peerDependencies for @types/validator: 
+
+@@@ eslint:
+{ jiti: '*' }
+Failed to parse peerDependencies for glob: 
+
+@@@ @salesforce/pwa-kit-runtime:
+{ '@salesforce/pwa-kit-dev': '3.8.0' }
+Failed to parse peerDependencies for @babel/parser: 
+Failed to parse peerDependencies for nock: 
+
+@@@ @loadable/babel-plugin:
+{ '@babel/core': '^7.0.0-0' }
+
+@@@ @loadable/component:
+{ react: '^16.3.0 || ^17.0.0 || ^18.0.0' }
+
+@@@ babel-loader:
+{ '@babel/core': '^7.12.0', webpack: '>=5' }
+
+@@@ @babel/register:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for svg-sprite-loader: 
+Failed to parse peerDependencies for commander: 
+
+@@@ @babel/plugin-transform-runtime:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for eslint-plugin-use-effect-no-deps: 
+Failed to parse peerDependencies for react-refresh: 
+Failed to parse peerDependencies for nodemon: 
+
+@@@ eslint-plugin-jsx-a11y:
+{ eslint: '^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9' }
+
+@@@ @babel/plugin-transform-object-assign:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for ignore-loader: 
+Failed to parse peerDependencies for express: 
+Failed to parse peerDependencies for webpack-bundle-analyzer: 
+Failed to parse peerDependencies for rimraf: 
+Failed to parse peerDependencies for require-from-string: 
+
+@@@ @babel/plugin-transform-async-to-generator:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for semver: 
+Failed to parse peerDependencies for babel-plugin-dynamic-import-node-babel-7: 
+
+@@@ eslint-plugin-prettier:
+{
+  '@types/eslint': '>=8.0.0',
+  eslint: '>=8.0.0',
+  'eslint-config-prettier': '*',
+  prettier: '>=3.0.0'
+}
+
+@@@ @loadable/server:
+{
+  '@loadable/component': '^5.0.1',
+  react: '^16.3.0 || ^17.0.0 || ^18.0.0'
+}
+
+@@@ jest-environment-jsdom-global:
+{
+  'jest-environment-jsdom': '22.x || 23.x || 24.x || 25.x || 26.x || 27.x || 28.x || 29.x'
+}
+Failed to parse peerDependencies for webpack-hot-middleware: 
+Failed to parse peerDependencies for replace-in-file: 
+Failed to parse peerDependencies for minimatch: 
+
+@@@ eslint-plugin-react-hooks:
+{
+  eslint: '^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0'
+}
+Failed to parse peerDependencies for fs-extra: 
+Failed to parse peerDependencies for compression: 
+
+@@@ @babel/preset-react:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for cross-env: 
+Failed to parse peerDependencies for git-rev-sync: 
+
+@@@ babel-jest:
+{ '@babel/core': '^7.8.0' }
+
+@@@ @typescript-eslint/eslint-plugin:
+{
+  eslint: '^8.57.0 || ^9.0.0',
+  typescript: '>=4.8.4 <5.8.0',
+  '@typescript-eslint/parser': '^8.0.0 || ^8.0.0-alpha.0'
+}
+
+@@@ @types/node-fetch:
+{}
+Failed to parse peerDependencies for babel-plugin-formatjs: 
+Failed to parse peerDependencies for mime-types: 
+Failed to parse peerDependencies for chalk: 
+Failed to parse peerDependencies for internal-lib-build: 
+Failed to parse peerDependencies for validator: 
+
+@@@ @babel/preset-typescript:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for superagent: 
+Failed to parse peerDependencies for @types/git-rev-sync: 
+Failed to parse peerDependencies for @babel/runtime-corejs2: 
+Failed to parse peerDependencies for node-fetch: 
+Failed to parse peerDependencies for @types/fs-extra: 
+
+@@@ jest-environment-jsdom:
+{ canvas: '^2.5.0' }
+
+@@@ @babel/preset-env:
+{ '@babel/core': '^7.0.0-0' }
+
+@@@ @pmmmwh/react-refresh-webpack-plugin:
+{
+  webpack: '>=4.43.0 <6.0.0',
+  'type-fest': '>=0.17.0 <5.0.0',
+  'react-refresh': '>=0.10.0 <1.0.0',
+  'sockjs-client': '^1.4.0',
+  '@types/webpack': '4.x || 5.x',
+  'webpack-dev-server': '3.x || 4.x || 5.x',
+  'webpack-plugin-serve': '0.x || 1.x',
+  'webpack-hot-middleware': '2.x'
+}
+
+@@@ webpack-notifier:
+{ '@types/webpack': '>4.41.31' }
+Failed to parse peerDependencies for jest-expect-message: 
+
+@@@ webpack-cli:
+{ webpack: '^5.82.0' }
+Failed to parse peerDependencies for @babel/runtime: 
+
+@@@ speed-measure-webpack-plugin:
+{ webpack: '^1 || ^2 || ^3 || ^4 || ^5' }
+
+@@@ @babel/plugin-transform-async-generator-functions:
+{ '@babel/core': '^7.0.0-0' }
+
+@@@ eslint-config-prettier:
+{ eslint: '>=7.0.0' }
+
+@@@ @loadable/webpack-plugin:
+{ webpack: '>=4.6.0' }
+
+@@@ copy-webpack-plugin:
+{ webpack: '^5.1.0' }
+Failed to parse peerDependencies for open: 
+
+@@@ ws:
+{ bufferutil: '^4.0.1', 'utf-8-validate': '>=5.0.2' }
+
+@@@ webpack-dev-middleware:
+{ webpack: '^5.0.0' }
+
+@@@ @types/archiver:
+{}
+Failed to parse peerDependencies for supertest: 
+
+@@@ @babel/plugin-proposal-optional-chaining:
+{ '@babel/core': '^7.0.0-0' }
+
+@@@ jest-cli:
+{ 'node-notifier': '^8.0.1 || ^9.0.0 || ^10.0.0' }
+
+@@@ source-map-loader:
+{ webpack: '^5.72.1' }
+
+@@@ @typescript-eslint/parser:
+{ eslint: '^8.57.0 || ^9.0.0', typescript: '>=4.8.4 <5.8.0' }
+
+@@@ webpack-hot-server-middleware:
+{ webpack: '*' }
+Failed to parse peerDependencies for prettier: 
+
+@@@ eslint-plugin-jest:
+{
+  '@typescript-eslint/eslint-plugin': '^6.0.0 || ^7.0.0 || ^8.0.0',
+  eslint: '^7.0.0 || ^8.0.0 || ^9.0.0',
+  jest: '*'
+}
+Failed to parse peerDependencies for jest-fetch-mock: 
+
+@@@ jest:
+{ 'node-notifier': '^8.0.1 || ^9.0.0 || ^10.0.0' }
+
+@@@ eslint-plugin-react:
+{ eslint: '^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9.7' }
+Failed to parse peerDependencies for webpack: 
+
+@@@ @types/node:
+{}
+Failed to parse peerDependencies for typescript: 

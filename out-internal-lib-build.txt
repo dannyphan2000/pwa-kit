@@ -1,0 +1,76 @@
+Checking peerDependencies for the following packages:
+@babel/cli, @babel/core, @babel/parser, @babel/plugin-proposal-object-rest-spread, @babel/plugin-proposal-optional-chaining, @babel/plugin-syntax-dynamic-import, @babel/plugin-transform-async-to-generator, @babel/plugin-transform-modules-commonjs, @babel/plugin-transform-object-assign, @babel/plugin-transform-runtime, @babel/preset-env, @babel/preset-react, @babel/preset-typescript, @babel/register, @babel/runtime, @babel/runtime-corejs2, @babel/traverse, babel-jest, babel-loader, babel-plugin-dynamic-import-node-babel-7, babel-plugin-formatjs, commander, jest, jest-environment-jsdom, jest-environment-jsdom-global, jest-fetch-mock, prettier, raf, regenerator-runtime, replace-in-file, rimraf, shelljs, @salesforce/pwa-kit-dev, npm-packlist, typescript
+
+
+@@@ @babel/cli:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for @babel/core: 
+Failed to parse peerDependencies for @babel/parser: 
+
+@@@ @babel/plugin-proposal-object-rest-spread:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for @babel/traverse: 
+
+@@@ jest-environment-jsdom:
+{ canvas: '^2.5.0' }
+
+@@@ @babel/plugin-transform-async-to-generator:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for regenerator-runtime: 
+
+@@@ @babel/plugin-transform-object-assign:
+{ '@babel/core': '^7.0.0-0' }
+
+@@@ @babel/plugin-syntax-dynamic-import:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for npm-packlist: 
+Failed to parse peerDependencies for @babel/runtime: 
+
+@@@ @babel/preset-react:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for raf: 
+
+@@@ @babel/plugin-proposal-optional-chaining:
+{ '@babel/core': '^7.0.0-0' }
+
+@@@ babel-loader:
+{ '@babel/core': '^7.12.0', webpack: '>=5' }
+
+@@@ @babel/register:
+{ '@babel/core': '^7.0.0-0' }
+
+@@@ jest:
+{ 'node-notifier': '^8.0.1 || ^9.0.0 || ^10.0.0' }
+Failed to parse peerDependencies for prettier: 
+Failed to parse peerDependencies for babel-plugin-dynamic-import-node-babel-7: 
+Failed to parse peerDependencies for @babel/runtime-corejs2: 
+Failed to parse peerDependencies for babel-plugin-formatjs: 
+
+@@@ @babel/preset-typescript:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for rimraf: 
+Failed to parse peerDependencies for shelljs: 
+Failed to parse peerDependencies for jest-fetch-mock: 
+
+@@@ @babel/plugin-transform-runtime:
+{ '@babel/core': '^7.0.0-0' }
+
+@@@ @babel/plugin-transform-modules-commonjs:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for replace-in-file: 
+Failed to parse peerDependencies for commander: 
+
+@@@ @babel/preset-env:
+{ '@babel/core': '^7.0.0-0' }
+
+@@@ babel-jest:
+{ '@babel/core': '^7.8.0' }
+Failed to parse peerDependencies for typescript: 
+
+@@@ jest-environment-jsdom-global:
+{
+  'jest-environment-jsdom': '22.x || 23.x || 24.x || 25.x || 26.x || 27.x || 28.x || 29.x'
+}
+
+@@@ @salesforce/pwa-kit-dev:
+{ typescript: '4.9.5', '@loadable/component': '^5.15.3' }

@@ -1,0 +1,18 @@
+Checking peerDependencies for the following packages:
+commander, deepmerge, handlebars, inquirer, semver, shelljs, slugify, tar, @salesforce/pwa-kit-dev, internal-lib-build, verdaccio
+
+Failed to parse peerDependencies for handlebars: 
+
+@@@ inquirer:
+{ '@types/node': '>=18' }
+Failed to parse peerDependencies for deepmerge: 
+Failed to parse peerDependencies for commander: 
+Failed to parse peerDependencies for shelljs: 
+Failed to parse peerDependencies for semver: 
+Failed to parse peerDependencies for tar: 
+Failed to parse peerDependencies for slugify: 
+Failed to parse peerDependencies for verdaccio: 
+
+@@@ @salesforce/pwa-kit-dev:
+{ typescript: '4.9.5', '@loadable/component': '^5.15.3' }
+Failed to parse peerDependencies for internal-lib-build: 

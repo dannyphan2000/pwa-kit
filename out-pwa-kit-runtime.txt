@@ -1,0 +1,35 @@
+Checking peerDependencies for the following packages:
+@loadable/babel-plugin, aws-sdk, aws-serverless-express, cosmiconfig, cross-env, express, header-case, http-proxy-middleware, merge-descriptors, morgan, semver, set-cookie-parser, whatwg-encoding, @loadable/component, @salesforce/pwa-kit-dev, @serverless/event-mocks, aws-lambda-mock-context, fs-extra, internal-lib-build, nock, nodemon, sinon, superagent, supertest
+
+Failed to parse peerDependencies for aws-lambda-mock-context: 
+
+@@@ @loadable/babel-plugin:
+{ '@babel/core': '^7.0.0-0' }
+Failed to parse peerDependencies for morgan: 
+
+@@@ cosmiconfig:
+{ typescript: '>=4.9.5' }
+Failed to parse peerDependencies for header-case: 
+Failed to parse peerDependencies for cross-env: 
+Failed to parse peerDependencies for fs-extra: 
+Failed to parse peerDependencies for internal-lib-build: 
+Failed to parse peerDependencies for supertest: 
+Failed to parse peerDependencies for nodemon: 
+Failed to parse peerDependencies for aws-sdk: 
+Failed to parse peerDependencies for merge-descriptors: 
+Failed to parse peerDependencies for sinon: 
+Failed to parse peerDependencies for semver: 
+Failed to parse peerDependencies for whatwg-encoding: 
+Failed to parse peerDependencies for aws-serverless-express: 
+Failed to parse peerDependencies for set-cookie-parser: 
+Failed to parse peerDependencies for @serverless/event-mocks: 
+Failed to parse peerDependencies for superagent: 
+Failed to parse peerDependencies for express: 
+Failed to parse peerDependencies for http-proxy-middleware: 
+
+@@@ @loadable/component:
+{ react: '^16.3.0 || ^17.0.0 || ^18.0.0' }
+Failed to parse peerDependencies for nock: 
+
+@@@ @salesforce/pwa-kit-dev:
+{ typescript: '4.9.5', '@loadable/component': '^5.15.3' }

@@ -1,0 +1,71 @@
+Checking peerDependencies for the following packages:
+@loadable/babel-plugin, @loadable/server, @loadable/webpack-plugin, @salesforce/pwa-kit-runtime, @tanstack/react-query, cross-env, event-emitter, hoist-non-react-statics, prop-types, react-ssr-prepass, react-uid, serialize-javascript, svg-sprite-loader, @loadable/component, @salesforce/pwa-kit-dev, @testing-library/jest-dom, @testing-library/react, @testing-library/user-event, internal-lib-build, node-html-parser, nodemon, react, react-dom, react-helmet, react-router-dom, regenerator-runtime, sinon, supertest
+
+Failed to parse peerDependencies for internal-lib-build: 
+
+@@@ react-uid:
+{
+  react: '^16.8.0 || ^17.0.0 || ^18.0.0',
+  '@types/react': '^16.8.0 || ^17.0.0 || ^18.0.0'
+}
+Failed to parse peerDependencies for regenerator-runtime: 
+Failed to parse peerDependencies for prop-types: 
+Failed to parse peerDependencies for event-emitter: 
+Failed to parse peerDependencies for serialize-javascript: 
+Failed to parse peerDependencies for supertest: 
+Failed to parse peerDependencies for hoist-non-react-statics: 
+Failed to parse peerDependencies for cross-env: 
+Failed to parse peerDependencies for svg-sprite-loader: 
+Failed to parse peerDependencies for node-html-parser: 
+Failed to parse peerDependencies for nodemon: 
+Failed to parse peerDependencies for @testing-library/jest-dom: 
+Failed to parse peerDependencies for sinon: 
+
+@@@ @testing-library/react:
+{
+  '@testing-library/dom': '^10.0.0',
+  '@types/react': '^18.0.0 || ^19.0.0',
+  '@types/react-dom': '^18.0.0 || ^19.0.0',
+  react: '^18.0.0 || ^19.0.0',
+  'react-dom': '^18.0.0 || ^19.0.0'
+}
+
+@@@ react-helmet:
+{ react: '>=16.3.0' }
+
+@@@ @tanstack/react-query:
+{ react: '^18 || ^19' }
+
+@@@ react-ssr-prepass:
+{ react: '^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc' }
+
+@@@ @loadable/webpack-plugin:
+{ webpack: '>=4.6.0' }
+
+@@@ react-router-dom:
+{ react: '>=18', 'react-dom': '>=18' }
+
+@@@ @loadable/babel-plugin:
+{ '@babel/core': '^7.0.0-0' }
+
+@@@ @testing-library/user-event:
+{ '@testing-library/dom': '>=7.21.4' }
+
+@@@ @loadable/server:
+{
+  '@loadable/component': '^5.0.1',
+  react: '^16.3.0 || ^17.0.0 || ^18.0.0'
+}
+Failed to parse peerDependencies for react: 
+
+@@@ react-dom:
+{ react: '^19.0.0' }
+
+@@@ @loadable/component:
+{ react: '^16.3.0 || ^17.0.0 || ^18.0.0' }
+
+@@@ @salesforce/pwa-kit-runtime:
+{ '@salesforce/pwa-kit-dev': '3.8.0' }
+
+@@@ @salesforce/pwa-kit-dev:
+{ typescript: '4.9.5', '@loadable/component': '^5.15.3' }

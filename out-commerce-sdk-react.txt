@@ -1,0 +1,70 @@
+Checking peerDependencies for the following packages:
+commerce-sdk-isomorphic, js-cookie, jwt-decode, @salesforce/pwa-kit-dev, @tanstack/react-query, @testing-library/jest-dom, @testing-library/react, @testing-library/user-event, @types/js-cookie, @types/jsdom, @types/jsonwebtoken, @types/node, @types/prop-types, @types/react, @types/react-dom, @types/react-helmet, @types/react-router-dom, cross-env, internal-lib-build, jsonwebtoken, nock, nodemon, react, react-dom, react-helmet, react-router-dom, semver, shelljs, typedoc, typedoc-plugin-missing-exports, typescript
+
+Failed to parse peerDependencies for jwt-decode: 
+
+@@@ commerce-sdk-isomorphic:
+{ react: '>=16.8.0', 'react-dom': '>=16.8.0' }
+Failed to parse peerDependencies for js-cookie: 
+Failed to parse peerDependencies for @testing-library/jest-dom: 
+Failed to parse peerDependencies for @types/jsdom: 
+
+@@@ @salesforce/pwa-kit-dev:
+{ typescript: '4.9.5', '@loadable/component': '^5.15.3' }
+
+@@@ react-helmet:
+{ react: '>=16.3.0' }
+Failed to parse peerDependencies for semver: 
+Failed to parse peerDependencies for internal-lib-build: 
+
+@@@ @tanstack/react-query:
+{ react: '^18 || ^19' }
+Failed to parse peerDependencies for shelljs: 
+Failed to parse peerDependencies for @types/react-helmet: 
+
+@@@ @types/prop-types:
+{}
+Failed to parse peerDependencies for react: 
+
+@@@ react-router-dom:
+{ react: '>=18', 'react-dom': '>=18' }
+Failed to parse peerDependencies for cross-env: 
+Failed to parse peerDependencies for nodemon: 
+
+@@@ @types/node:
+{}
+Failed to parse peerDependencies for @types/react-router-dom: 
+
+@@@ @testing-library/react:
+{
+  '@testing-library/dom': '^10.0.0',
+  '@types/react': '^18.0.0 || ^19.0.0',
+  '@types/react-dom': '^18.0.0 || ^19.0.0',
+  react: '^18.0.0 || ^19.0.0',
+  'react-dom': '^18.0.0 || ^19.0.0'
+}
+
+@@@ typedoc:
+{
+  typescript: '5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x || 5.5.x || 5.6.x || 5.7.x'
+}
+
+@@@ @types/react-dom:
+{ '@types/react': '^19.0.0' }
+
+@@@ typedoc-plugin-missing-exports:
+{ typedoc: '0.26.x || 0.27.x' }
+Failed to parse peerDependencies for @types/js-cookie: 
+Failed to parse peerDependencies for @types/jsonwebtoken: 
+
+@@@ @types/react:
+{}
+Failed to parse peerDependencies for jsonwebtoken: 
+Failed to parse peerDependencies for nock: 
+
+@@@ @testing-library/user-event:
+{ '@testing-library/dom': '>=7.21.4' }
+Failed to parse peerDependencies for typescript: 
+
+@@@ react-dom:
+{ react: '^19.0.0' }

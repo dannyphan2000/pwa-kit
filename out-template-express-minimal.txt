@@ -1,0 +1,10 @@
+Checking peerDependencies for the following packages:
+@salesforce/pwa-kit-dev, @salesforce/pwa-kit-runtime, supertest
+
+Failed to parse peerDependencies for supertest: 
+
+@@@ @salesforce/pwa-kit-runtime:
+{ '@salesforce/pwa-kit-dev': '3.8.0' }
+
+@@@ @salesforce/pwa-kit-dev:
+{ typescript: '4.9.5', '@loadable/component': '^5.15.3' }

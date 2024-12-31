@@ -1,0 +1,128 @@
+Checking peerDependencies for the following packages:
+@chakra-ui/icons, @chakra-ui/react, @chakra-ui/skip-nav, @chakra-ui/system, @emotion/react, @emotion/styled, @formatjs/cli, @lhci/cli, @loadable/component, @peculiar/webcrypto, @salesforce/commerce-sdk-react, @salesforce/pwa-kit-dev, @salesforce/pwa-kit-react-sdk, @salesforce/pwa-kit-runtime, @tanstack/react-query, @tanstack/react-query-devtools, @testing-library/dom, @testing-library/jest-dom, @testing-library/react, @testing-library/user-event, base64-arraybuffer, bundlesize2, card-validator, cross-env, cross-fetch, focus-visible, framer-motion, full-icu, helmet, jest-fetch-mock, js-cookie, jsonwebtoken, jwt-decode, lodash, msw, nanoid, prop-types, query-string, raf, randomstring, react, react-dom, react-helmet, react-hook-form, react-intl, react-router-dom
+
+
+@@@ @chakra-ui/icons:
+{ react: '>=18', '@chakra-ui/react': '>=2.0.0' }
+
+@@@ @emotion/styled:
+{ '@emotion/react': '^11.0.0-rc.0', react: '>=16.8.0' }
+
+@@@ @loadable/component:
+{ react: '^16.3.0 || ^17.0.0 || ^18.0.0' }
+Failed to parse peerDependencies for cross-env: 
+
+@@@ @chakra-ui/skip-nav:
+{ '@chakra-ui/system': '>=2.0.0', react: '>=18' }
+
+@@@ @chakra-ui/react:
+{ '@emotion/react': '>=11', react: '>=18', 'react-dom': '>=18' }
+Failed to parse peerDependencies for @peculiar/webcrypto: 
+
+@@@ @tanstack/react-query:
+{ react: '^18 || ^19' }
+Failed to parse peerDependencies for focus-visible: 
+Failed to parse peerDependencies for raf: 
+Failed to parse peerDependencies for helmet: 
+Failed to parse peerDependencies for nanoid: 
+
+@@@ @tanstack/react-query-devtools:
+{ react: '^18 || ^19', '@tanstack/react-query': '^5.62.11' }
+Failed to parse peerDependencies for randomstring: 
+Failed to parse peerDependencies for @testing-library/dom: 
+Failed to parse peerDependencies for card-validator: 
+
+@@@ @emotion/react:
+{ react: '>=16.8.0' }
+
+@@@ react-hook-form:
+{ react: '^16.8.0 || ^17 || ^18 || ^19' }
+
+@@@ react-helmet:
+{ react: '>=16.3.0' }
+
+@@@ msw:
+{ typescript: '>= 4.8.x' }
+
+@@@ @chakra-ui/system:
+{
+  '@emotion/react': '^11.0.0',
+  '@emotion/styled': '^11.0.0',
+  react: '>=18'
+}
+
+@@@ @salesforce/pwa-kit-dev:
+{ typescript: '4.9.5', '@loadable/component': '^5.15.3' }
+Failed to parse peerDependencies for jest-fetch-mock: 
+
+@@@ react-intl:
+{ react: '^16.6.0 || 17 || 18 || 19', typescript: '5' }
+
+@@@ @salesforce/commerce-sdk-react:
+{
+  react: '^18.2.0',
+  'react-helmet': '^6.1.0',
+  '@tanstack/react-query': '^4.28.0'
+}
+Failed to parse peerDependencies for bundlesize2: 
+Failed to parse peerDependencies for jsonwebtoken: 
+Failed to parse peerDependencies for react: 
+
+@@@ @formatjs/cli:
+{
+  '@glimmer/env': '^0.1.7',
+  '@glimmer/reference': '^0.91.1 || ^0.92.0 || ^0.93.0',
+  '@glimmer/syntax': '^0.92.0 || ^0.93.0',
+  '@glimmer/validator': '^0.92.0 || ^0.93.0',
+  '@vue/compiler-core': '^3.4.0',
+  'content-tag': '^2.0.1 || ^3.0.0',
+  'ember-template-recast': '^6.1.4',
+  vue: '^3.4.0'
+}
+
+@@@ @salesforce/pwa-kit-runtime:
+{ '@salesforce/pwa-kit-dev': '3.8.0' }
+Failed to parse peerDependencies for query-string: 
+Failed to parse peerDependencies for js-cookie: 
+Failed to parse peerDependencies for @lhci/cli: 
+
+@@@ framer-motion:
+{
+  react: '^18.0.0 || ^19.0.0',
+  'react-dom': '^18.0.0 || ^19.0.0',
+  '@emotion/is-prop-valid': '*'
+}
+Failed to parse peerDependencies for full-icu: 
+Failed to parse peerDependencies for lodash: 
+Failed to parse peerDependencies for @testing-library/jest-dom: 
+Failed to parse peerDependencies for cross-fetch: 
+Failed to parse peerDependencies for base64-arraybuffer: 
+Failed to parse peerDependencies for jwt-decode: 
+
+@@@ react-router-dom:
+{ react: '>=18', 'react-dom': '>=18' }
+Failed to parse peerDependencies for prop-types: 
+
+@@@ @testing-library/react:
+{
+  '@testing-library/dom': '^10.0.0',
+  '@types/react': '^18.0.0 || ^19.0.0',
+  '@types/react-dom': '^18.0.0 || ^19.0.0',
+  react: '^18.0.0 || ^19.0.0',
+  'react-dom': '^18.0.0 || ^19.0.0'
+}
+
+@@@ react-dom:
+{ react: '^19.0.0' }
+
+@@@ @testing-library/user-event:
+{ '@testing-library/dom': '>=7.21.4' }
+
+@@@ @salesforce/pwa-kit-react-sdk:
+{
+  react: '^18.2.0',
+  'react-dom': '^18.2.0',
+  'react-helmet': '^6.1.0',
+  'react-router-dom': '^5.3.4',
+  '@loadable/component': '^5.15.3'
+}
