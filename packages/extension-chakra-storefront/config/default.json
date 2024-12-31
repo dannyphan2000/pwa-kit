@@ -76,10 +76,7 @@
         "recentSearchLimit": 5,
         "recentSearchMinLength": 3
     },
-    "siteAliases": {
-        "RefArch": "us",
-        "RefArchGlobal": "global"
-    },
+    "siteAliases": {},
     "sites": [
         {
             "id": "<SITE_ID>",
