@@ -44,7 +44,7 @@ const Refinements = ({
     const {
         pages: {ProductList: productListConfig}
     } = useExtensionConfig()
-    const FILTER_ACCORDION_STATE = productListConfig.filterAccordionSTate
+    const FILTER_ACCORDION_STATE = productListConfig.filterAccordionState
     // Exclude filters in the exclude list.
     if (excludedFilters) {
         filters = filters.filter(({attributeId}) => !excludedFilters.includes(attributeId))
