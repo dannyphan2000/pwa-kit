@@ -8,7 +8,7 @@ import loadable, {LoadableComponent} from '@loadable/component'
 
 const Home = loadable(() => import('./pages/home'))
 
-const routes: any = [
+const routes = [
     {
         path: '/',
         exact: true,
