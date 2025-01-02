@@ -67,6 +67,45 @@ const options = {
     encodeNonAsciiHttpHeaders: true
 }
 
+const tenantIdRegExp = /^[a-zA-Z]{4}_([0-9]{3}|s[0-9]{2}|stg|dev|prd)$/
+const shortCodeRegExp = /^[a-zA-Z0-9-]+$/
+
+/**
+ *  Handles JWKS (JSON Web Key Set) caching the JWKS response for 2 weeks.
+ *
+ * @param {object} req Express request object.
+ * @param {object} res Express response object.
+ * @param {object} options Options for fetching B2C Commerce API JWKS.
+ * @param {string} options.shortCode - The Short Code assigned to the realm.
+ * @param {string} options.tenantId - The Tenant ID for the ECOM instance.
+ * @returns {Promise<*>} Promise with the JWKS data.
+ */
+async function jwksCaching(req, res, options) {
+    const {shortCode, tenantId} = options
+
+    const isValidRequest = tenantIdRegExp.test(tenantId) && shortCodeRegExp.test(shortCode)
+    if (!isValidRequest)
+        return res
+            .status(400)
+            .json({error: 'Bad request parameters: Tenant ID or short code is invalid.'})
+    try {
+        const JWKS_URI = `https://${shortCode}.api.commercecloud.salesforce.com/shopper/auth/v1/organizations/f_ecom_${tenantId}/oauth2/jwks`
+        const response = await fetch(JWKS_URI)
+
+        if (!response.ok) {
+            throw new Error('Request failed with status: ' + response.status)
+        }
+
+        // JWKS rotate every 30 days. For now, cache response for 14 days so that
+        // fetches only need to happen twice a month
+        res.set('Cache-Control', 'public, max-age=1209600')
+
+        return res.json(await response.json())
+    } catch (error) {
+        res.status(400).json({error: `Error while fetching data: ${error.message}`})
+    }
+}
+
 const runtime = getRuntime()
 
 const resetPasswordCallback =
@@ -129,6 +168,10 @@ const {handler} = runtime.createHandler(options, (app) => {
         // Thus we cache it for a year to maximize performance
         res.set('Cache-Control', `max-age=31536000`)
         res.send()
+    })
+
+    app.get('/:shortCode/:tenantId/oauth2/jwks', (req, res) => {
+        jwksCaching(req, res, {shortCode: req.params.shortCode, tenantId: req.params.tenantId})
     })
 
     // Handles the passwordless login callback route. SLAS makes a POST request to this
