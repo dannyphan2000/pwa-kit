@@ -21,6 +21,7 @@ import {getRuntime} from '@salesforce/pwa-kit-runtime/ssr/server/express'
 import {defaultPwaKitSecurityHeaders} from '@salesforce/pwa-kit-runtime/utils/middleware'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import helmet from 'helmet'
+import express from 'express'
 
 const options = {
     // The build directory (an absolute path)
@@ -59,6 +60,9 @@ const options = {
 const runtime = getRuntime()
 
 const {handler} = runtime.createHandler(options, (app) => {
+    // Add this line to parse JSON request bodies
+    app.use(express.json())
+
     // Set default HTTP security headers required by PWA Kit
     app.use(defaultPwaKitSecurityHeaders)
     // Set custom HTTP security headers
@@ -86,10 +90,15 @@ const {handler} = runtime.createHandler(options, (app) => {
 
     // Handle the redirect from SLAS as to avoid error
     app.get('/callback?*', (req, res) => {
-        // This endpoint does nothing and is not expected to change
-        // Thus we cache it for a year to maximize performance
+        console.log('GET /callback called')
         res.set('Cache-Control', `max-age=31536000`)
         res.send()
+    })
+
+    // Add a sample POST route with logging
+    app.post('/example', (req, res) => {
+        console.log('POST /example called with body:', req.body)
+        res.send('Received POST request')
     })
 
     app.get('/robots.txt', runtime.serveStaticFile('static/robots.txt'))
