@@ -23,12 +23,13 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import helmet from 'helmet'
 
 import express from 'express'
-import {emailLink} from '@salesforce/retail-react-app/app/utils/marketing-cloud/marketing-cloud-email-link'
+//TODO: Revert to absolute path before merge
+import {emailLink} from './utils/marketing-cloud/marketing-cloud-email-link'
 import {
     PASSWORDLESS_LOGIN_LANDING_PATH,
     RESET_PASSWORD_LANDING_PATH
-} from '@salesforce/retail-react-app/app/constants'
-import {verifySlasCallbackToken} from '@salesforce/retail-react-app/app/utils/jwt-utils'
+} from './constants'
+import {validateSlasCallbackToken} from './utils/jwt-utils'
 
 const config = getConfig()
 
@@ -55,7 +56,7 @@ const options = {
     // Set this to false if using a SLAS public client
     // When setting this to true, make sure to also set the PWA_KIT_SLAS_CLIENT_SECRET
     // environment variable as this endpoint will return HTTP 501 if it is not set
-    useSLASPrivateClient: true,
+    useSLASPrivateClient: false,
     applySLASPrivateClientToEndpoints:
         /oauth2\/(token|passwordless|password\/(login|token|reset|action))/,
 
@@ -138,6 +139,8 @@ async function sendMagicLinkEmail(req, res, landingPath, emailTemplate) {
 }
 
 const {handler} = runtime.createHandler(options, (app) => {
+    app.use(express.json()) // To parse JSON payloads
+    app.use(express.urlencoded({ extended: true }))
     // Set default HTTP security headers required by PWA Kit
     app.use(defaultPwaKitSecurityHeaders)
     // Set custom HTTP security headers
@@ -180,8 +183,8 @@ const {handler} = runtime.createHandler(options, (app) => {
     // the sendMagicLinkEmail function to send an email with the passwordless login magic link.
     // https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-passwordless-login.html#receive-the-callback
     app.post(passwordlessLoginCallback, express.json(), (req, res) => {
-        const slasCallbackToken = req.headers.get('x-slas-callback-token')
-        verifySlasCallbackToken(slasCallbackToken)
+        const slasCallbackToken = req.headers['x-slas-callback-token']
+        validateSlasCallbackToken(slasCallbackToken)
             .then(() => {
                 sendMagicLinkEmail(
                     req,
@@ -196,9 +199,10 @@ const {handler} = runtime.createHandler(options, (app) => {
     // endpoint sending the email address and reset password token. Then this endpoint calls
     // the sendMagicLinkEmail function to send an email with the reset password magic link.
     // https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-password-reset.html#slas-password-reset-flow
-    app.post(resetPasswordCallback, express.json(), (req, res) => {
-        const slasCallbackToken = req.headers.get('x-slas-callback-token')
-        verifySlasCallbackToken(slasCallbackToken)
+    app.post(resetPasswordCallback, (req, res) => {
+        console.log('hellooooooooo')
+        const slasCallbackToken = req.headers['x-slas-callback-token']
+        validateSlasCallbackToken(slasCallbackToken)
             .then(() => {
                 sendMagicLinkEmail(
                     req,

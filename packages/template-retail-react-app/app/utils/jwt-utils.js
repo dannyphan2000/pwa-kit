@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import jose from 'jose'
+import {createRemoteJWKSet as joseCreateRemoteJWKSet, jwtVerify} from 'jose'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
@@ -16,16 +16,18 @@ const throwSlasTokenValidationError = (message, code) => {
 const createRemoteJWKSet = () => {
     const appOrigin = getAppOrigin()
     const {app: appConfig} = getConfig()
-    const shortCode = appConfig.commerceApi.parameters.shortCode
-    const tenantId = appConfig.commerceApi.parameters.organizationId
+    const shortCode = appConfig.commerceAPI.parameters.shortCode
+    const tenantId = appConfig.commerceAPI.parameters.organizationId
     const JWKS_URI = `${appOrigin}/${shortCode}/${tenantId}/oauth2/jwks`
-    return jose.createRemoteJWKSet(new URL(JWKS_URI))
+    console.log('THIS IS THE JWKS_URI: ' + JWKS_URI)
+    return joseCreateRemoteJWKSet(new URL(JWKS_URI))
 }
 
-export const verifySlasCallbackToken = async (token) => {
+export const validateSlasCallbackToken = async (token) => {
     try {
-        const jwks = createRemoteJWKSet(new URL(jwksUri))
-        const {payload} = await jose.jwtVerify(token, jwks, {})
+        const jwks = createRemoteJWKSet()
+        const {payload} = await jwtVerify(token, jwks, {})
+        console.log('THIS IS THE PAYLOAD: ', payload)
         return payload
     } catch (error) {
         throwSlasTokenValidationError(error.message, 401)
