@@ -28,6 +28,7 @@ import {
     PASSWORDLESS_LOGIN_LANDING_PATH,
     RESET_PASSWORD_LANDING_PATH
 } from '@salesforce/retail-react-app/app/constants'
+import {verifySlasCallbackToken} from '@salesforce/retail-react-app/app/utils/jwt-utils'
 
 const config = getConfig()
 
@@ -179,12 +180,16 @@ const {handler} = runtime.createHandler(options, (app) => {
     // the sendMagicLinkEmail function to send an email with the passwordless login magic link.
     // https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-passwordless-login.html#receive-the-callback
     app.post(passwordlessLoginCallback, express.json(), (req, res) => {
-        sendMagicLinkEmail(
-            req,
-            res,
-            PASSWORDLESS_LOGIN_LANDING_PATH,
-            process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE
-        )
+        const slasCallbackToken = req.headers.get('x-slas-callback-token')
+        verifySlasCallbackToken(slasCallbackToken)
+            .then(() => {
+                sendMagicLinkEmail(
+                    req,
+                    res,
+                    PASSWORDLESS_LOGIN_LANDING_PATH,
+                    process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE
+                )
+            })
     })
 
     // Handles the reset password callback route. SLAS makes a POST request to this
@@ -192,12 +197,16 @@ const {handler} = runtime.createHandler(options, (app) => {
     // the sendMagicLinkEmail function to send an email with the reset password magic link.
     // https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-password-reset.html#slas-password-reset-flow
     app.post(resetPasswordCallback, express.json(), (req, res) => {
-        sendMagicLinkEmail(
-            req,
-            res,
-            RESET_PASSWORD_LANDING_PATH,
-            process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE
-        )
+        const slasCallbackToken = req.headers.get('x-slas-callback-token')
+        verifySlasCallbackToken(slasCallbackToken)
+            .then(() => {
+                sendMagicLinkEmail(
+                    req,
+                    res,
+                    RESET_PASSWORD_LANDING_PATH,
+                    process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE
+                )
+            })
     })
 
     app.get('/robots.txt', runtime.serveStaticFile('static/robots.txt'))
