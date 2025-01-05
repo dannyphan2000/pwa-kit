@@ -1,15 +1,18 @@
-## v3.8.0-dev (Aug 08, 2024)
+## v3.9.0-dev (Oct 29, 2024)
+
+## v3.8.0 (Oct 28, 2024)
+
 ## v3.7.0 (Aug 07, 2024)
 
 ## v3.6.0 (Jun 25, 2024)
 
 ## v3.5.1 (Apr 17, 2024)
+
 - Update SLAS private proxy path [#1752](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1752)
 
 ## v3.5.0 (Apr 15, 2024)
 
 - Add Support for SLAS private flow [#1722](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1722)
-
 
 ## v3.4.0 (Jan 19, 2024)
 
