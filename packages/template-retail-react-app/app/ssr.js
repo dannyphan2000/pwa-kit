@@ -56,6 +56,8 @@ const options = {
     // Set this to false if using a SLAS public client
     // When setting this to true, make sure to also set the PWA_KIT_SLAS_CLIENT_SECRET
     // environment variable as this endpoint will return HTTP 501 if it is not set
+
+    //TODO: Revert before merge
     useSLASPrivateClient: false,
     applySLASPrivateClientToEndpoints:
         /oauth2\/(token|passwordless|password\/(login|token|reset|action))/,
@@ -200,7 +202,6 @@ const {handler} = runtime.createHandler(options, (app) => {
     // the sendMagicLinkEmail function to send an email with the reset password magic link.
     // https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-password-reset.html#slas-password-reset-flow
     app.post(resetPasswordCallback, (req, res) => {
-        console.log('hellooooooooo')
         const slasCallbackToken = req.headers['x-slas-callback-token']
         validateSlasCallbackToken(slasCallbackToken)
             .then(() => {
