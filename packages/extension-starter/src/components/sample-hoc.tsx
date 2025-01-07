@@ -10,7 +10,7 @@ import React from 'react'
 // Define a type for the HOC props
 type SampleHOCProps = React.ComponentPropsWithoutRef<any>
 
-// Define the HOC function 
+// Define the HOC function
 const sampleHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const SampleHOC: React.FC<P> = (props: SampleHOCProps) => {
         return (
