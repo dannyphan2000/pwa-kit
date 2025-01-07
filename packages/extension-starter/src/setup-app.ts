@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, salesforce.com, inc.
+ * Copyright (c) 2025, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -14,9 +14,15 @@ import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 
 // Local Imports
 import {Config} from './types'
-import withRedBorder from 'overridable!./components/with-red-border'
 import SamplePage from './pages/sample'
 
+// Overridable Imports
+// Using the `overridable` loader means that you are opting in to the override module resolution flow. As a result this module
+// will be resolved by first looking in the base projects `overrides` folder then the overrides folders of any extensions configured
+// after this one. Only if no module is found will the referenced module in this project be used.
+import sampleHOC from 'overridable!./components/sample-hoc'
+
+// Others
 import extensionMeta from '../extension-meta.json'
 
 class Sample extends ApplicationExtension<Config> {
@@ -30,7 +36,7 @@ class Sample extends ApplicationExtension<Config> {
     extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
-        return withRedBorder(App)
+        return sampleHOC(App)
     }
 
     /**
