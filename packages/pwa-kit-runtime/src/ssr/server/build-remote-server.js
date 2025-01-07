@@ -911,8 +911,24 @@ export const RemoteServerFactory = {
 
         const content = fs.readFileSync(workerFilePath, {encoding: 'utf8'})
 
+        // If the service worker is not updated when content security policy headers inside
+        // ssr.js are changed, then service worker initiated requests will continue to use
+        // the old CSP headers.
+        // 
+        // This is problematic in stacked CDN setups where an old service worker with
+        // old CSPs can remain cached if the content of the service worker itself is not changed.
+        //
+        // To ensure the service worker is refetched when CSPs are changed, we factor in
+        // the CSP headers when generating the Etag.
+        //
+        // See https://gus.lightning.force.com/lightning/r/ADM_Work__c/a07EE000025yeu9YAA/view
+        // and https://salesforce-internal.slack.com/archives/C01GLHLBPT5/p1730739370922629
+        // for more details.
+
+        const contentSecurityPolicyHeader = res.getHeaders()['content-security-policy']
+
         // Serve the file, with a strong ETag
-        res.set('etag', getHashForString(content))
+        res.set('etag', getHashForString(content+contentSecurityPolicyHeader))
         res.set(CONTENT_TYPE, 'application/javascript')
         res.send(content)
     },
