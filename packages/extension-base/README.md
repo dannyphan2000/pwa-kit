@@ -52,11 +52,11 @@ the extension as they like.
 # Installation
 
 ```
-> npm install @salesforce/extension-sample<br/>
+> npm install @salesforce/extension-base<br/>
 > Downloading npm package... <br/>
-> Installing extention... <br/>
+> Installing extension... <br/>
 > Finished. <br/>
-> Congratulations! The Sample extension was successfully installed! Please visit https://www.npmjs.com/package/@salesforce/extension-sample for more information on how to use this extension.
+> Congratulations! The Sample extension was successfully installed! Please visit https://www.npmjs.com/package/@salesforce/extension-base for more information on how to use this extension.
 ```
 
 # Advanced Usage

@@ -36,13 +36,13 @@ const Sample = () => {
                 }}
             >
                 <code>
-                    &gt; npm install @salesforce/extension-sample
+                    &gt; npm install @salesforce/extension-base
                     <br />
                     &gt; Downloading npm package... <br />
-                    &gt; Installing extention... <br />
+                    &gt; Installing extension... <br />
                     &gt; Finished. <br />
                     &gt; Congratulations! The Sample extension was successfully installed! Please
-                    visit https://www.npmjs.com/package/@salesforce/extension-sample for more
+                    visit https://www.npmjs.com/package/@salesforce/extension-base for more
                     information on how to use this extension.
                 </code>
             </div>

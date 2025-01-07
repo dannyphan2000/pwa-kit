@@ -26,7 +26,6 @@ const INDEPENDENT_PACKAGES = [
     '@salesforce/commerce-sdk-react',
     '@salesforce/extension-base',
     '@salesforce/extension-chakra-storefront',
-    '@salesforce/extension-sample',
     '@salesforce/extension-chakra-store-locator'
 ]
 const independentPackages = INDEPENDENT_PACKAGES.map((pkgName) =>
