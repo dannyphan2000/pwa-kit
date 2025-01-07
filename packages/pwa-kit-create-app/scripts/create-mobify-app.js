@@ -491,12 +491,12 @@ const PRESETS = [
         private: true
     },
     {
-        id: 'extension-base',
-        name: 'Template base Application Extension',
+        id: 'extension-starter',
+        name: 'Template starter Application Extension',
         description: '',
         templateSource: {
             type: TEMPLATE_SOURCE_BUNDLE,
-            id: 'extension-base'
+            id: 'extension-starter'
         },
         private: true
     },
@@ -956,12 +956,12 @@ const runGenerator = async (
         // TODO: The generator is growing, we should refactor this to be more maintainable.
         const processGeneratedExtension = () => {
             // do a file content replacement for extension-meta.json in the outputDir
-            // find all instances of "@salesforce/extension-base" and replace with answers.project.name
+            // find all instances of "@salesforce/extension-starter" and replace with answers.project.name
             const extensionMetaJsonPath = p.join(outputDir, 'extension-meta.json')
             if (fs.existsSync(extensionMetaJsonPath)) {
                 let extensionMetaJsonContent = fs.readFileSync(extensionMetaJsonPath, 'utf8')
                 extensionMetaJsonContent = extensionMetaJsonContent.replace(
-                    /@salesforce\/extension-base/g,
+                    /@salesforce\/extension-starter/g,
                     answers.project.name
                 )
                 fs.writeFileSync(extensionMetaJsonPath, extensionMetaJsonContent)
@@ -1086,7 +1086,7 @@ const main = async (opts) => {
             // Ask for extension name if Application Extension is selected
             const extensionNameAnswers = await inquirer.prompt(APPLICATION_EXTENSION_QUESTIONS)
             context.answers.project.name = extensionNameAnswers.project.extensionName
-            context.preset = PRESETS.find(({id}) => id === 'extension-base')
+            context.preset = PRESETS.find(({id}) => id === 'extension-starter')
         } else {
             const availableAppExtensions = fetchAvailableAppExtensions()
 
