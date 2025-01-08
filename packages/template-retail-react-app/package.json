@@ -1,6 +1,6 @@
 {
     "name": "retail-react-app",
-    "version": "2.7.4",
+    "version": "2.8.4",
     "license": "See license in LICENSE",
     "private": true,
     "engines": {
@@ -26,7 +26,7 @@
         "base64-arraybuffer": "^0.2.0",
         "bundlesize2": "^0.0.31",
         "card-validator": "^8.1.1",
-        "commerce-sdk-isomorphic": "^1.9.0",
+        "commerce-sdk-isomorphic": "^1.12.0",
         "cross-env": "^5.2.1",
         "cross-fetch": "^3.1.5",
         "focus-visible": "^5.2.0",
@@ -41,9 +41,9 @@
         "nanoid": "^3.3.4",
         "njwt": "^1.2.0",
         "prop-types": "^15.8.1",
-        "pwa-kit-dev": "^2.7.4",
-        "pwa-kit-react-sdk": "^2.7.4",
-        "pwa-kit-runtime": "^2.7.4",
+        "pwa-kit-dev": "^2.8.4",
+        "pwa-kit-react-sdk": "^2.8.4",
+        "pwa-kit-runtime": "^2.8.4",
         "query-string": "^7.1.3",
         "raf": "^3.4.1",
         "randomstring": "^1.2.3",
@@ -52,7 +52,8 @@
         "react-helmet": "^6.1.0",
         "react-hook-form": "^6.15.8",
         "react-intl": "^5.25.1",
-        "react-router-dom": "^5.3.4"
+        "react-router-dom": "^5.3.4",
+        "seedrandom": "^3.0.5"
     },
     "peerDependencies": {
         "@chakra-ui/system": "^1.12.1"
@@ -80,11 +81,11 @@
     "bundlesize": [
         {
             "path": "build/main.js",
-            "maxSize": "55 kB"
+            "maxSize": "56 kB"
         },
         {
             "path": "build/vendor.js",
-            "maxSize": "275 kB"
+            "maxSize": "280 kB"
         }
     ],
     "browserslist": [

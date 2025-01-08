@@ -1,3 +1,12 @@
+## v2.8.4 (Jul 12, 2024)
+## v2.8.3 (Apr 09, 2024)
+- Upgrade vulnerable dependency [#1737](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1737)
+
+## v2.8.2 (Dec 01, 2023)
+- Upgrade vulnerable dependency [#1562](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1562)
+
+## v2.8.1 (Nov 08, 2023)
+## v2.8.0 (Nov 03, 2023)
 ## v2.7.4 (Aug 28, 2023)
 - Fix performance issue caused by potentially large amounts of stats data from webpack [#1391](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1391/files)
 
