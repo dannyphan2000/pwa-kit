@@ -63,7 +63,6 @@ jobs:
       - name: Update NPM version
         if: env.IS_DEFAULT_NPM == 'false'
         run: |-
-          # TODO: remove later
           npm cache clean --force
           npm install -g npm@${{ matrix.npm }}
 
