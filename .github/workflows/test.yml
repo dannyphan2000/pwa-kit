@@ -40,6 +40,10 @@ jobs:
             npm: 6
           - node: 14
             npm: 9
+          - node: 14
+            npm: 10
+          - node: 16
+            npm: 10
     runs-on: ubuntu-latest
     env:
       # The "default" npm is the one that ships with a given version of node.
