@@ -745,7 +745,7 @@ describe('Auth service sends credentials fetch option to the ShopperLogin API', 
         expect(shopperLogin.clientConfig.fetchOptions).toBeDefined()
 
         // Ensure fetch options include the expected credentials
-        expect(shopperLogin.clientConfig.fetchOptions.credentials).toBe('same-origin')
+        expect(shopperLogin.clientConfig.fetchOptions.credentials).toBe('include')
     })
 
     test('Does not override the credentials in fetch options if already exists', async () => {
@@ -801,6 +801,6 @@ describe('Auth service sends credentials fetch option to the ShopperLogin API', 
         expect(shopperLogin.clientConfig.fetchOptions).toBeDefined()
 
         // Ensure fetch options include the expected credentials
-        expect(shopperLogin.clientConfig.fetchOptions.credentials).toBe('same-origin')
+        expect(shopperLogin.clientConfig.fetchOptions.credentials).toBe('include')
     })
 })

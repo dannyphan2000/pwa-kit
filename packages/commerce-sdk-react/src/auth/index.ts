@@ -218,9 +218,9 @@ class Auth {
                 siteId: config.siteId
             },
             throwOnBadResponse: true,
-            // We need to set credentials to 'same-origin' to allow cookies to be set. This is required as SLAS calls return a dwsid cookie for hybrid sites.
+            // We need to set credentials to 'include' to allow cookies to be set. This is required as SLAS calls return a dwsid cookie for hybrid sites.
             fetchOptions: {
-                credentials: 'same-origin',
+                credentials: 'include',
                 ...config.fetchOptions
             }
         })
