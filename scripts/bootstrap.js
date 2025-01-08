@@ -9,7 +9,8 @@
 const childProc = require('child_process')
 
 // Is this a CI environment?
-const ciEnvironment = Boolean(process.env.CI)
+// const ciEnvironment = Boolean(process.env.CI)
+const ciEnvironment = false
 
 // Did the user explicitly invoke `npm ci`?
 const npmCmd = process.env.npm_config_argv ? JSON.parse(process.env.npm_config_argv).original[0] : process.env.npm_command
