@@ -35,5 +35,5 @@ runs:
         # sudo npm install -g snyk
 
         # Install Lighthouse CI CLI
-        sudo npm install -g @lhci/cli
+        sudo npm install -g @lhci/cli@0.11.0
       shell: bash
