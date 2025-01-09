@@ -1,5 +1,6 @@
 ## v3.3.0-dev
 - Updated useDNT and auth to expose more DNT features [#2109](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2109)
+- Allow cookies for ShopperLogin API [#2190](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2190
 
 ## v3.2.0-dev (Oct 14, 2024)
 
