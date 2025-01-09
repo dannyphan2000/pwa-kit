@@ -220,7 +220,7 @@ class Auth {
             throwOnBadResponse: true,
             // We need to set credentials to 'include' to allow cookies to be set. This is required as SLAS calls return a dwsid cookie for hybrid sites.
             fetchOptions: {
-                credentials: 'include',
+                credentials: 'same-origin',
                 ...config.fetchOptions
             }
         })
