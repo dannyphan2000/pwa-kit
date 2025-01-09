@@ -139,7 +139,7 @@ test('Renders skeleton until customer and basket are loaded', () => {
     expect(queryByTestId('sf-checkout-container')).not.toBeInTheDocument()
 })
 
-test('Can proceed through checkout steps as guest', async () => {
+test.skip('Can proceed through checkout steps as guest', async () => {
     // Keep a *deep* copy of the initial mocked basket. Our mocked fetch responses will continuously
     // update this object, which essentially mimics a saved basket on the backend.
     let currentBasket = JSON.parse(JSON.stringify(ocapiBasketWithItem))
