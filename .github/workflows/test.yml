@@ -56,8 +56,8 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
 
-      - name: Clear cache
-        run: sudo npm cache clear --force
+      # - name: Clear cache
+      #   run: sudo npm cache clear --force
 
       - name: Update NPM version
         if: env.IS_DEFAULT_NPM == 'false'
@@ -147,8 +147,8 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
 
-      - name: Clear cache
-        run: sudo npm cache clear --force
+      # - name: Clear cache
+      #   run: sudo npm cache clear --force
 
       - name: Update NPM version
         if: env.IS_DEFAULT_NPM == 'false'
