@@ -10,6 +10,7 @@ runs:
     - name: Install Dependencies
       run: |-
         # Install system dependencies
+        # TODO: move these steps to data dog, see https://github.com/SalesforceCommerceCloud/pwa-kit/commit/6581461edc48b9d43a24d3a754385e871065d2db
         # sudo apt-get update -yq
         # sudo apt-get install python2 python3-pip time -yq
         # sudo pip install -U pip setuptools
