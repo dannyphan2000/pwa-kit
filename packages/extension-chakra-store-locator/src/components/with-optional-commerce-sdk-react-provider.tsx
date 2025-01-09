@@ -13,11 +13,11 @@ import {UserConfig} from '../types/config'
 type WithOptionalCommerceSdkReactProvider = React.ComponentPropsWithoutRef<any>
 
 /**
- * Higher-order component that conditionally wraps a given component with ChakraProvider.
+ * Higher-order component that conditionally installs the CommerceApiProvider if the config is provided.
  *
- * @param WrappedComponent - The component to be optionally wrapped with ChakraProvider.
- * @param theme - Optional Chakra UI theme to be used
- * @returns A component that wraps the given component with ChakraProvider if it is not already present in the component tree.
+ * @param WrappedComponent - The component to be optionally wrapped with CommerceApiProvider.
+ * @param config - The configuration object for the CommerceApiProvider.
+ * @returns A component that wraps the given component with CommerceApiProvider if it is not already present in the component tree.
  */
 export const withOptionalCommerceSdkReactProvider = <P extends object>(
     WrappedComponent: React.ComponentType<P>,
