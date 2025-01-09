@@ -140,6 +140,7 @@ test('Renders skeleton until customer and basket are loaded', () => {
 })
 
 // TODO: remove skip
+// TESTING
 test.skip('Can proceed through checkout steps as guest', async () => {
     // Keep a *deep* copy of the initial mocked basket. Our mocked fetch responses will continuously
     // update this object, which essentially mimics a saved basket on the backend.
