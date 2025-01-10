@@ -31,8 +31,8 @@ jobs:
   pwa-kit:
     strategy:
       matrix:
-        node: [14, 16, 18]
-        npm: [6, 7, 8, 9]
+        node: [14, 16, 18, 20]
+        npm: [6, 7, 8, 9, 10]
         exclude:
           - node: 16
             npm: 6
@@ -44,8 +44,8 @@ jobs:
     env:
       # The "default" npm is the one that ships with a given version of node.
       # For more: https://nodejs.org/en/download/releases/
-      IS_DEFAULT_NPM: ${{ matrix.node == 14 && matrix.npm == 6 || matrix.node == 16 && matrix.npm == 8 || matrix.node == 18 && matrix.npm == 9 }}
-      IS_LATEST_NPM: ${{ matrix.node == 16 && matrix.npm == 8 }}
+      IS_DEFAULT_NPM: ${{ matrix.node == 14 && matrix.npm == 6 || matrix.node == 16 && matrix.npm == 8 || matrix.node == 18 && matrix.npm == 9 || matrix.node == 20 && matrix.npm == 10 }}
+      IS_LATEST_NPM: ${{ matrix.node == 20 && matrix.npm == 10 }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -123,8 +123,8 @@ jobs:
   pwa-kit-windows:
     strategy:
       matrix:
-        node: [14, 16, 18]
-        npm: [6, 7, 8, 9]
+        node: [14, 16, 18, 20]
+        npm: [6, 7, 8, 9, 10]
         exclude:
           - node: 16
             npm: 6
@@ -135,7 +135,7 @@ jobs:
     env:
       # The "default" npm is the one that ships with a given version of node.
       # For more: https://nodejs.org/en/download/releases/
-      IS_DEFAULT_NPM: ${{ matrix.node == 14 && matrix.npm == 6 || matrix.node == 16 && matrix.npm == 8 || matrix.node == 18 && matrix.npm == 9 }}
+      IS_DEFAULT_NPM: ${{ matrix.node == 14 && matrix.npm == 6 || matrix.node == 16 && matrix.npm == 8 || matrix.node == 18 && matrix.npm == 9 || matrix.node == 20 && matrix.npm == 10 }}
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -184,7 +184,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Setup Ubuntu Machine
         uses: "./.github/actions/setup_ubuntu"
@@ -280,7 +280,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Setup Windows Machine
         uses: "./.github/actions/setup_windows"
