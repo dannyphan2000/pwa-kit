@@ -7,8 +7,30 @@
 
 import React from 'react'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
-import {CommerceApiProvider} from '@salesforce/commerce-sdk-react'
+import {CommerceApiProvider, useCommerceApi} from '@salesforce/commerce-sdk-react'
 import {UserConfig} from '../types/config'
+
+/**
+ * Checks if the CommerceApiProvider is already installed in the component tree.
+ * @returns boolean, true if the CommerceApiProvider is installed, false otherwise.
+ */
+const useHasCommerceApiProvider = () => {
+    let hasProvider = false
+
+    try {
+        const api = useCommerceApi()
+
+        // the api object is an object with a bunch of api clients like ShopperProduct, ShopperOrder, etc.
+        // if the object is empty, then the CommerceApiProvider is not installed
+        if (Object.keys(api).length > 0) {
+            hasProvider = true
+        }
+    } catch (_) {
+        hasProvider = false
+    }
+
+    return hasProvider
+} 
 
 type WithOptionalCommerceSdkReactProvider = React.ComponentPropsWithoutRef<any>
 
@@ -24,6 +46,9 @@ export const withOptionalCommerceSdkReactProvider = <P extends object>(
     config: UserConfig
 ) => {
     const HOC: React.FC<P> = (props: WithOptionalCommerceSdkReactProvider) => {
+        if (useHasCommerceApiProvider()) {
+            return <WrappedComponent {...(props as P)} />
+        }
         if (!config.commerceApi || !config.commerceApi?.parameters) {
             return <WrappedComponent {...(props as P)} />
         }
