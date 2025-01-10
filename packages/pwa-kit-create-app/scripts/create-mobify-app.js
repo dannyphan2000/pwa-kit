@@ -500,8 +500,8 @@ const PRESETS = [
         },
         questions: APPLICATION_EXTENSION_QUESTIONS,
         answers: {
-            ['project.name']: 'extension-starter',
-            ['project.type']: 'PWAKitAppExtensionProject'
+            ['project.type']: 'PWAKitAppExtensionProject',
+            ['project.extensionName']: '@salesforce/extension-starter'
         },
         private: true
     },
