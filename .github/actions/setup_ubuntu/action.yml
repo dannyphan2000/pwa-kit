@@ -9,13 +9,6 @@ runs:
   steps:
     - name: Install Dependencies
       run: |-
-        # Install system dependencies
-        # TODO: move these steps to data dog, see https://github.com/SalesforceCommerceCloud/pwa-kit/commit/6581461edc48b9d43a24d3a754385e871065d2db
-        # sudo apt-get update -yq
-        # sudo apt-get install python2 python3-pip time -yq
-        # sudo pip install -U pip setuptools
-        # sudo pip install awscli==1.18.85 datadog==0.40.1
-
         # Install node dependencies
         node ./scripts/gtime.js monorepo_install npm ci
 
@@ -26,7 +19,7 @@ runs:
         node ./scripts/report-bundle-size.js
 
         # Check that packages are all using the same versions of compilers, etc.
-        # TODO: replace with check-dep package
+        # TODO: check if we need to replace with check-dep package
         # node ./scripts/check-dependencies.js
 
         # Install Snyk CLI
@@ -35,5 +28,5 @@ runs:
         # sudo npm install -g snyk
 
         # Install Lighthouse CI CLI
-        sudo npm install -g @lhci/cli@0.11.0
+        sudo npm install -g @lhci/cli
       shell: bash
