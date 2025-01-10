@@ -922,7 +922,6 @@ const runGenerator = async (
     }
 
     // Check project type and handle appropriately
-    console.log('answers.project.type: ', answers.project.type)
     if (answers.project.type === 'PWAKitAppExtensionProject') {
         const devOutputDir = p.join(outputDir, LOCAL_DEV_PROJECT_DIR)
 
