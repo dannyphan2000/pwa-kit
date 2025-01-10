@@ -152,9 +152,6 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
 
-      # - name: Clear cache
-      #   run: sudo npm cache clear --force
-
       - name: Update NPM version
         if: env.IS_DEFAULT_NPM == 'false'
         run: |-
@@ -317,4 +314,3 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           path: packages/pwa-kit-create-app/local-npm-repo/verdaccio.log
-
