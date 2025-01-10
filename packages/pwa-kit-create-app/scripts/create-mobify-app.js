@@ -492,7 +492,7 @@ const PRESETS = [
     },
     {
         id: 'extension-starter',
-        name: 'Template starter Application Extension',
+        name: 'Starter Application Extension',
         description: '',
         templateSource: {
             type: TEMPLATE_SOURCE_BUNDLE,
@@ -508,9 +508,9 @@ const PRESETS = [
     },
     {
         id: 'app-extension-starter-extract',
-        name: 'Application Extension starter project (Extract Application Extensions code)',
+        name: 'Typescript Minimal With Extracted Extension',
         description:
-            'Generate an Application Extension using typescript-minimal template with the Application Extensions code extracted.',
+            'Generate an typescript-minimal project with a starter extension. The extension code will be included in the project.',
         templateSource: {
             type: TEMPLATE_SOURCE_BUNDLE,
             id: 'typescript-minimal'
@@ -518,7 +518,6 @@ const PRESETS = [
         questions: TYPESCRIPT_MINIMAL_QUESTIONS,
         answers: {
             ['project.name']: 'app-extension-starter-extract',
-            ['project.type']: 'PWAKitAppExtensionProject',
             ['project.selectedAppExtensions']: ['extension-starter'],
             ['project.extractAppExtensions']: true
         },
@@ -526,9 +525,9 @@ const PRESETS = [
     },
     {
         id: 'app-extension-starter-no-extract',
-        name: 'Application Extension starter project (Without extracting Application Extensions code)',
+        name: 'Typescript Minimal With Extension',
         description:
-            'Generate an Application Extension using typescript-minimal template without the Applications Extensions code extracted.',
+            'Generate an typescript-minimal project with a starter extension. The extension code will not included in the project.',
         templateSource: {
             type: TEMPLATE_SOURCE_BUNDLE,
             id: 'typescript-minimal'
@@ -536,7 +535,6 @@ const PRESETS = [
         questions: TYPESCRIPT_MINIMAL_QUESTIONS,
         answers: {
             ['project.name']: 'app-extension-starter-no-extract',
-            ['project.type']: 'PWAKitAppExtensionProject',
             ['project.selectedAppExtensions']: ['extension-starter'],
             ['project.extractAppExtensions']: false
         },
@@ -555,8 +553,6 @@ const PRESET_QUESTIONS = [
         }))
     }
 ]
-
-const BOOTSTRAP_DIR = p.join(__dirname, '..', 'assets', 'bootstrap', 'js')
 
 const ASSETS_TEMPLATES_DIR = p.join(__dirname, '..', 'assets', 'templates')
 
