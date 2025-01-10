@@ -139,9 +139,7 @@ test('Renders skeleton until customer and basket are loaded', () => {
     expect(queryByTestId('sf-checkout-container')).not.toBeInTheDocument()
 })
 
-// TODO: remove skip
-// TESTING
-test.skip('Can proceed through checkout steps as guest', async () => {
+test('Can proceed through checkout steps as guest', async () => {
     // Keep a *deep* copy of the initial mocked basket. Our mocked fetch responses will continuously
     // update this object, which essentially mimics a saved basket on the backend.
     let currentBasket = JSON.parse(JSON.stringify(ocapiBasketWithItem))
@@ -308,7 +306,7 @@ test.skip('Can proceed through checkout steps as guest', async () => {
     // Fill out credit card payment form
     user.type(screen.getByLabelText(/card number/i), '4111111111111111')
     user.type(screen.getByLabelText(/name on card/i), 'Testy McTester')
-    user.type(screen.getByLabelText(/expiration date/i), '1224')
+    user.type(screen.getByLabelText(/expiration date/i), '1240')
     user.type(screen.getByLabelText(/security code/i), '123')
 
     // Same as shipping checkbox selected by default
