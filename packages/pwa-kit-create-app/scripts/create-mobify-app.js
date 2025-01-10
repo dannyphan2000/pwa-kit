@@ -498,6 +498,11 @@ const PRESETS = [
             type: TEMPLATE_SOURCE_BUNDLE,
             id: 'extension-starter'
         },
+        questions: APPLICATION_EXTENSION_QUESTIONS,
+        answers: {
+            ['project.name']: 'extension-starter',
+            ['project.type']: 'PWAKitAppExtensionProject'
+        },
         private: true
     },
     {
