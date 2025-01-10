@@ -1,4 +1,5 @@
-## v2.8.5-alpha.0 (Jan 09, 2025)
+## v2.9.0 (Jan 10, 2025)
+- Support Node 20 and NPM 10 in PWA Kit v2 [#2189](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2189)
 ## v2.8.4 (Jul 12, 2024)
 -   Updated StorefrontPreview component to make siteId available [#1876](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1876)
 

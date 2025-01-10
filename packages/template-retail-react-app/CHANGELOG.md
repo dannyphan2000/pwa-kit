@@ -1,3 +1,7 @@
+## v2.9.0 (Jan 10, 2025)
+- Support Node 20 and NPM 10 in PWA Kit v2 [#2189](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2189)
+- Update Auth class to pass required `channel_id` to SLAS [#2189](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2189)
+
 ## v2.8.4 (May 2, 2024)
 
 - Fixed createCodeVerifier adding entropy to be successfully indexed by Google Search Console. [#1765](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1765)
