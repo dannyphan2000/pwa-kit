@@ -19,7 +19,6 @@ runs:
         node ./scripts/report-bundle-size.js
 
         # Check that packages are all using the same versions of compilers, etc.
-        # TODO: check if we need to replace with check-dep package
         node ./scripts/check-dependencies.js
 
         # Install Snyk CLI
