@@ -19,6 +19,7 @@ import {withStoreLocator} from './components/with-store-locator'
 import {Config} from './types'
 
 import StoreLocatorPage from './pages/store-locator'
+import {logger} from './logger'
 import extensionMeta from '../extension-meta.json'
 
 class StoreLocatorExtension extends ApplicationExtension<Config> {
@@ -30,8 +31,7 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
         const config = this.getConfig()
 
         if (!config.supportedCountries || config.supportedCountries.length === 0) {
-            // TODO: use our logger
-            console.warn(
+            logger.error(
                 '[extension-chakra-store-locator] Missing supportedCountries, this extension will not work.'
             )
         }

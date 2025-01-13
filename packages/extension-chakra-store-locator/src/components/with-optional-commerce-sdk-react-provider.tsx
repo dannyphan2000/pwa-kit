@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024, salesforce.com, inc.
+ * Copyright (c) 2025, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -9,6 +9,7 @@ import React from 'react'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
 import {CommerceApiProvider, useCommerceApi} from '@salesforce/commerce-sdk-react'
 import {UserConfig} from '../types/config'
+import {logger} from '../logger'
 
 /**
  * Checks if the CommerceApiProvider is already installed in the component tree.
@@ -50,6 +51,7 @@ export const withOptionalCommerceSdkReactProvider = <P extends object>(
             return <WrappedComponent {...(props as P)} />
         }
         if (!config.commerceApi || !config.commerceApi?.parameters) {
+            logger.error('CommerceApiProvider is not installed and no commerceApi config is provided, this extension may not work as expected.')
             return <WrappedComponent {...(props as P)} />
         }
         const appOrigin = getAppOrigin()
