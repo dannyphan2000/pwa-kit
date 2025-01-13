@@ -928,7 +928,7 @@ export const RemoteServerFactory = {
         const contentSecurityPolicyHeader = res.getHeaders()['content-security-policy']
 
         // Serve the file, with a strong ETag
-        res.set('etag', getHashForString(content+contentSecurityPolicyHeader))
+        res.set('etag', `"${getHashForString(content+contentSecurityPolicyHeader)}"`)
         res.set(CONTENT_TYPE, 'application/javascript')
         res.send(content)
     },
