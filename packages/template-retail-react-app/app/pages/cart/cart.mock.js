@@ -48,8 +48,8 @@ export const baskets = {
                     paymentCard: {
                         cardType: 'Visa',
                         creditCardExpired: false,
-                        expirationMonth: 4,
-                        expirationYear: 2029,
+                        expirationMonth: 1,
+                        expirationYear: 2040,
                         holder: 'TEst ',
                         maskedNumber: '************4242',
                         numberLastDigits: '4242'

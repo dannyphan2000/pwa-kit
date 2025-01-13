@@ -173,12 +173,12 @@ function UseCustomer() {
                 paymentCard: {
                     number: '4454852652415965',
                     validFromMonth: 12,
-                    expirationYear: 2030,
-                    expirationMonth: 12,
+                    expirationYear: 2040,
+                    expirationMonth: 1,
                     cardType: 'Visa',
                     holder: 'John Smith',
                     issueNumber: '92743928',
-                    validFromYear: 22
+                    validFromYear: 2020
                 },
                 paymentMethodId: 'Credit Card'
             },
