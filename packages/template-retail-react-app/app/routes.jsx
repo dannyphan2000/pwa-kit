@@ -27,7 +27,7 @@ import {
 } from '@salesforce/retail-react-app/app/constants'
 
 const fallback = <Skeleton height="75vh" width="100%" />
-const socialRedirectURI = getConfig()?.app?.login?.social?.redirectURI
+const socialRedirectURI = process.env.SOCIAL_LOGIN_REDIRECT_URI || getConfig()?.app?.login?.social?.redirectURI
 
 // Pages
 const Home = loadable(() => import('./pages/home'), {fallback})

@@ -71,7 +71,7 @@ const runtime = getRuntime()
 
 const resetPasswordCallback =
     config.app.login?.resetPassword?.callbackURI || '/reset-password-callback'
-const passwordlessLoginCallback =
+const passwordlessLoginCallback = process.env.PASSWORDLESS_LOGIN_CALLBACK_URI ||
     config.app.login?.passwordless?.callbackURI || '/passwordless-login-callback'
 
 // Reusable function to handle sending a magic link email.
