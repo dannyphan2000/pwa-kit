@@ -68,7 +68,7 @@ export default class PerformanceTimer {
      */
     log() {
         this.metrics.forEach((metric) => {
-            logger.info(`${metric.name} - ${metric.duration}ms ${metric.detail || ''}`, {
+            logger.info(`${metric.name} - ${metric.duration.toFixed(4)}ms ${metric.detail || ''}`, {
                 namespace: 'performance'
             })
         })
