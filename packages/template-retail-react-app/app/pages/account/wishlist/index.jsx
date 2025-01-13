@@ -12,7 +12,7 @@ import {
     Skeleton,
     Stack,
     Heading
-} from '@salesforce/retail-react-app/app/components/shared/ui'
+} from '@chakra-ui/react'
 import {useProducts, useShopperCustomersMutation} from '@salesforce/commerce-sdk-react'
 
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
