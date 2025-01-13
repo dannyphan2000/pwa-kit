@@ -21,7 +21,7 @@ module.exports = {
                 callbackURI: process.env.PASSWORDLESS_LOGIN_CALLBACK_URI || '/passwordless-login-callback'
             },
             social: {
-                enabled: true,
+                enabled: false,
                 idps: ['google', 'apple'],
                 redirectURI: process.env.SOCIAL_LOGIN_REDIRECT_URI || '/social-callback'
             },
