@@ -54,7 +54,7 @@ const AppConfig = ({children, locals = {}}) => {
 
     const appOrigin = useAppOrigin()
 
-    const passwordlessCallback = process.env.PASSWORDLESS_LOGIN_CALLBACK_URI || locals.appConfig.login?.passwordless?.callbackURI
+    const passwordlessCallback = locals.appConfig.login?.passwordless?.callbackURI
 
     return (
         <CommerceApiProvider
