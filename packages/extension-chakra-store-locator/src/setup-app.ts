@@ -11,6 +11,7 @@ import {RouteProps} from 'react-router-dom'
 
 // Platform Imports
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
+import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 
 // Local Imports
 import {withOptionalChakra} from './components/with-optional-chakra-provider'
@@ -36,7 +37,13 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
             )
         }
 
-        return withStoreLocator(withOptionalCommerceSdkReactProvider(withOptionalChakra(App), config), config)
+        const HOCs = [
+            (component: React.ComponentType<any>) => withStoreLocator(component, config),
+            (component: React.ComponentType<any>) => withOptionalCommerceSdkReactProvider(component, config),
+            (component: React.ComponentType<any>) => withOptionalChakra(component)
+        ]
+
+        return applyHOCs(App, HOCs)
     }
 
     extendRoutes(routes: RouteProps[]): RouteProps[] {
