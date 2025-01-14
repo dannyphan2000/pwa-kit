@@ -1,7 +1,7 @@
-const jose = require('jose')
-const assert = require('assert')
-const JwtMinter = require('./jwt-minter')
-const SlasTokenValidator = require('./slas-token-validator')
+import {createRemoteJWKSet as joseCreateRemoteJWKSet, jwtVerify} from 'jose'
+import {createRemoteJWKSet, validateSlasCallbackToken} from './jwt-utils'
+import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const AUTH_ERROR_NAME = 'AuthError'
 
@@ -25,117 +25,116 @@ const JWT_SAMPLE_PAYLOAD = {
     iat: issueTimestamp,
     jti: 'C2C8694720750-1008298052332081994449379'
 }
-const SLAS_JWT_HEADER_JKU = 'slas/dev/bcgl_stg'
 
-const assertAuthError = (error, expectedCode, expectedMessage) => {
-    assert.strictEqual(error.name, AUTH_ERROR_NAME)
-    assert.strictEqual(error.code, expectedCode)
-    assert.strictEqual(error.message, expectedMessage)
-    return true
+const MOCK_JWKS = {
+    "keys": [
+        {
+            "kty": "EC",
+            "crv": "P-256",
+            "use": "sig",
+            "kid": "8edb82b1-f6d5-49c1-bab2-c0d152ee3d0b",
+            "x": "i8e53csluQiqwP6Af8KsKgnUceXUE8_goFcvLuSzG3I",
+            "y": "yIH500tLKJtPhIl7MlMBOGvxQ_3U-VcrrXusr8bVr_0"
+        },
+        {
+            "kty": "EC",
+            "crv": "P-256",
+            "use": "sig",
+            "kid": "da9effc5-58cb-4a9c-9c9c-2919fb7d5e5e",
+            "x": "_tAU1QSvcEkslcrbNBwx5V20-sN87z0zR7gcSdBETDQ",
+            "y": "ZJ7bgy7WrwJUGUtzcqm3MNyIfawI8F7fVawu5UwsN8E"
+        },
+        {
+            "kty": "EC",
+            "crv": "P-256",
+            "use": "sig",
+            "kid": "5ccbbc6e-b234-4508-90f3-3b9b17efec16",
+            "x": "9ULO2Atj5XToeWWAT6e6OhSHQftta4A3-djgOzcg4-Q",
+            "y": "JNuQSLMhakhLWN-c6Qi99tA5w-D7IFKf_apxVbVsK-g"
+        }
+    ]
 }
 
+jest.mock('@salesforce/pwa-kit-react-sdk/utils/url', () => ({
+    getAppOrigin: jest.fn()
+}))
+
+jest.mock('@salesforce/pwa-kit-runtime/utils/ssr-config', () => ({
+    getConfig: jest.fn()
+}))
+
+jest.mock('jose', () => ({
+    createRemoteJWKSet: jest.fn(),
+    jwtVerify: jest.fn()
+}))
+
 describe('createRemoteJWKSet', () => {
+
+    afterEach(() => {
+        jest.restoreAllMocks()
+    })
+
+    it('constructs the correct JWKS URI and call joseCreateRemoteJWKSet', () => {
+        const mockAppOrigin = 'https://test-storefront.com'
+        getAppOrigin.mockReturnValue(mockAppOrigin)
+        getConfig.mockReturnValue({
+            app: {
+                commerceAPI: {
+                    parameters: {
+                        shortCode: 'abc123',
+                        organizationId: 'f_ecom_aaaa_001'
+                    }
+                }
+            }
+        })
+        joseCreateRemoteJWKSet.mockReturnValue('mockJWKSet')
+
+        const expectedJWKS_URI = new URL(`${mockAppOrigin}/abc123/aaaa_001/oauth2/jwks`)
+
+        const res = createRemoteJWKSet()
+
+        expect(getAppOrigin).toHaveBeenCalled()
+        expect(getConfig).toHaveBeenCalled()
+        expect(joseCreateRemoteJWKSet).toHaveBeenCalledWith(expectedJWKS_URI)
+        expect(res).toBe('mockJWKSet')
+    })
+
 })
 
-describe('SLAS Token Validator', () => {
-    const jwtMinter = new JwtMinter()
+describe('validateSlasCallbackToken', () => {
 
-    beforeAll(async() => {
-        const JWKS = (await jwtMinter.getKeyPair()).cert
-
-        // For testing, we mock the remote JWKS with the local mocks
-        // to avoid making network calls during testing.
-        jest.spyOn(SlasTokenValidator.prototype, 'createRemoteJWKSet').mockImplementation(
-            (protectedHeader, token) => {
-                return jose.createLocalJWKSet(JWKS)(protectedHeader, token)
+    beforeEach(() => {
+        jest.resetAllMocks()
+        const mockAppOrigin = 'https://test-storefront.com'
+        getAppOrigin.mockReturnValue(mockAppOrigin)
+        getConfig.mockReturnValue({
+            app: {
+                commerceAPI: {
+                    parameters: {
+                        shortCode: 'abc123',
+                        organizationId: 'f_ecom_aaaa_001'
+                    }
+                }
             }
-        )
+        })
+        joseCreateRemoteJWKSet.mockReturnValue(MOCK_JWKS)
     })
 
-    it('verify() Verify JWT - Verification passes for test JWT.', async() => {
-        // Arrange.
-        const jwt = await jwtMinter.mint(JWT_SAMPLE_PAYLOAD, SLAS_JWT_HEADER_JKU)
-        const slasTokenValidator = new SlasTokenValidator(jwt)
+    it('returns payload when callback token is valid', async() => {
+        const mockPayload = { sub: '123', role: 'admin' }
+        jwtVerify.mockResolvedValue({payload: mockPayload})
 
-        // Act.
-        const tokenValidationResult = await slasTokenValidator.verify()
+        const res = await validateSlasCallbackToken('mock.slas.token')
 
-        // Assert
-        assert.strictEqual(tokenValidationResult.expiration, issueTimestamp + 60 * 30)
+        expect(jwtVerify).toHaveBeenCalledWith('mock.slas.token', MOCK_JWKS, {})
+        expect(res).toEqual(mockPayload)
     })
 
+    it('throws validation error when the token is invalid', async() => {
+        const mockError = new Error('Invalid token')
+        jwtVerify.mockRejectedValue(mockError)
 
-    it('verify() Verify JWT - Verification fails if JWT has no issuer claim.', async() => {
-        // Arrange
-        const invalidPayload = {...JWT_SAMPLE_PAYLOAD}
-        delete invalidPayload.iss
-        const jwt = await jwtMinter.mint(invalidPayload, SLAS_JWT_HEADER_JKU)
-        const slasTokenValidator = new SlasTokenValidator(jwt)
-        // Act
-        await assert.rejects(
-            () => slasTokenValidator.verify(),
-            // Assert
-            (error) =>
-                assertAuthError(
-                    error,
-                    403,
-                    'SLAS Token Validation Error: Invalid SLAS \'iss\' claim.'
-                )
-        )
-    })
-
-    it('verify() Verify JWT - Verification fails if JWT header JKU fields does not contain a SLAS issuer.', async() => {
-        // Arrange
-        const jwt = await jwtMinter.mint(JWT_SAMPLE_PAYLOAD, 'fooo/dev/bcgl_stg')
-        const slasTokenValidator = new SlasTokenValidator(jwt)
-        // Act
-        await assert.rejects(
-            () => slasTokenValidator.verify(),
-            // Assert
-            (error) =>
-                assertAuthError(
-                    error,
-                    401,
-                    'SLAS Token Validation Error: Invalid jku header. Expected a SLAS tenant.'
-                )
-        )
-    })
-
-    it('verify() Verify JWT - Verification fails if JWT has not a SLAS issuer claim.', async() => {
-        // Arrange
-        const invalidPayload = {...JWT_SAMPLE_PAYLOAD, iss: 'fooo/dev/bcgl_stg'}
-        const jwt = await jwtMinter.mint(invalidPayload, SLAS_JWT_HEADER_JKU)
-        const slasTokenValidator = new SlasTokenValidator(jwt)
-        // Act
-        await assert.rejects(
-            () => slasTokenValidator.verify(),
-            // Assert
-            (error) =>
-                assertAuthError(
-                    error,
-                    403,
-                    'SLAS Token Validation Error: Invalid SLAS \'iss\' claim. Expected a SLAS tenant.'
-                )
-        )
-    })
-
-    it('verify() Verify JWT - Verification fails if JWT was signed with a different key.', async() => {
-        // Arrange
-        const foreignMinter = new JwtMinter()
-        const jwt = await foreignMinter.mint(JWT_SAMPLE_PAYLOAD, SLAS_JWT_HEADER_JKU)
-        const slasTokenValidator = new SlasTokenValidator(jwt)
-        // Act
-        await assert.rejects(
-            () => {
-                return slasTokenValidator.verify()
-            },
-            // Assert
-            (error) =>
-                assertAuthError(
-                    error,
-                    401,
-                    'SLAS Token Validation Error: signature verification failed'
-                )
-        )
+        await expect(validateSlasCallbackToken('mock.slas.token')).rejects.toThrow(mockError.message)
+        expect(jwtVerify).toHaveBeenCalledWith('mock.slas.token', MOCK_JWKS, {})
     })
 })

@@ -13,7 +13,7 @@ const throwSlasTokenValidationError = (message, code) => {
     throw new Error(`SLAS Token Validation Error: ${message}`, code)
 }
 
-const createRemoteJWKSet = () => {
+export const createRemoteJWKSet = () => {
     const appOrigin = getAppOrigin()
     const {app: appConfig} = getConfig()
     const shortCode = appConfig.commerceAPI.parameters.shortCode
