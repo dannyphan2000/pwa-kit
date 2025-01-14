@@ -12,7 +12,8 @@ import {
     SET_COOKIE,
     CACHE_CONTROL,
     NO_CACHE,
-    X_ENCODED_HEADERS
+    X_ENCODED_HEADERS,
+    CONTENT_SECURITY_POLICY
 } from './constants'
 import {
     catchAndLog,
@@ -925,9 +926,12 @@ export const RemoteServerFactory = {
         // and https://salesforce-internal.slack.com/archives/C01GLHLBPT5/p1730739370922629
         // for more details.
 
-        const contentSecurityPolicyHeader = res.getHeaders()['content-security-policy']
+        const contentSecurityPolicyHeader = res.getHeaders()[CONTENT_SECURITY_POLICY] || ''
 
         // Serve the file, with a strong ETag
+        // For this to be a valid ETag, the string must be placed between  ""
+        // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag#etag_value for
+        // more details
         res.set('etag', `"${getHashForString(content + contentSecurityPolicyHeader)}"`)
         res.set(CONTENT_TYPE, 'application/javascript')
         res.send(content)
