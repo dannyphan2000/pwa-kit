@@ -24,7 +24,8 @@ import {
     SLAS_SECRET_OVERRIDE_MSG,
     DNT_COOKIE_NAME,
     DWSID_COOKIE_NAME,
-    SLAS_REFRESH_TOKEN_COOKIE_TTL_OVERRIDE_MSG
+    SLAS_REFRESH_TOKEN_COOKIE_TTL_OVERRIDE_MSG,
+    SERVER_AFFINITY_HEADER_KEY
 } from '../constant'
 
 import {Logger} from '../types'
@@ -212,8 +213,28 @@ class Auth {
         const baseUrl = config.proxy.split(MOBIFY_PATH)[0]
         const privateClientEndpoint = `${baseUrl}${SLAS_PRIVATE_PROXY_PATH}`
 
+        const options = {
+            keySuffix: config.siteId,
+            // Setting this to true on the server allows us to reuse guest auth tokens across lambda runs
+            sharedContext: !onClient()
+        }
+
+        this.stores = {
+            cookie: onClient() ? new CookieStorage(options) : new MemoryStorage(options),
+            local: onClient() ? new LocalStorage(options) : new MemoryStorage(options),
+            memory: new MemoryStorage(options)
+        }
+
+        const {key, storageType} = DATA_MAP[DWSID_COOKIE_NAME]
+        const dwsid = this.stores[storageType].get(key)
+        const serverAffinityHeader: Record<string, string> = {}
+        if (dwsid) {
+            serverAffinityHeader[SERVER_AFFINITY_HEADER_KEY] = dwsid
+        }
+
         this.client = new ShopperLogin({
             proxy: config.enablePWAKitPrivateClient ? privateClientEndpoint : config.proxy,
+            headers: serverAffinityHeader,
             parameters: {
                 clientId: config.clientId,
                 organizationId: config.organizationId,
@@ -231,6 +252,7 @@ class Auth {
         })
         this.shopperCustomersClient = new ShopperCustomers({
             proxy: config.proxy,
+            headers: serverAffinityHeader,
             parameters: {
                 clientId: config.clientId,
                 organizationId: config.organizationId,
@@ -240,18 +262,6 @@ class Auth {
             throwOnBadResponse: true,
             fetchOptions: config.fetchOptions
         })
-
-        const options = {
-            keySuffix: config.siteId,
-            // Setting this to true on the server allows us to reuse guest auth tokens across lambda runs
-            sharedContext: !onClient()
-        }
-
-        this.stores = {
-            cookie: onClient() ? new CookieStorage(options) : new MemoryStorage(options),
-            local: onClient() ? new LocalStorage(options) : new MemoryStorage(options),
-            memory: new MemoryStorage(options)
-        }
 
         this.redirectURI = config.redirectURI
 
