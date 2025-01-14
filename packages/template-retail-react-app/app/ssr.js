@@ -23,13 +23,12 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import helmet from 'helmet'
 
 import express from 'express'
-//TODO: Revert to absolute path before merge
-import {emailLink} from './utils/marketing-cloud/marketing-cloud-email-link'
+import {emailLink} from '@salesforce/retail-react-app/app/utils/marketing-cloud/marketing-cloud-email-link'
 import {
     PASSWORDLESS_LOGIN_LANDING_PATH,
     RESET_PASSWORD_LANDING_PATH
 } from './constants'
-import {validateSlasCallbackToken} from './utils/jwt-utils'
+import {validateSlasCallbackToken} from '@salesforce/retail-react-app/app/utils/jwt-utils'
 
 const config = getConfig()
 
@@ -57,7 +56,6 @@ const options = {
     // When setting this to true, make sure to also set the PWA_KIT_SLAS_CLIENT_SECRET
     // environment variable as this endpoint will return HTTP 501 if it is not set
 
-    //TODO: Revert before merge
     useSLASPrivateClient: false,
     applySLASPrivateClientToEndpoints:
         /oauth2\/(token|passwordless|password\/(login|token|reset|action))/,
@@ -94,7 +92,11 @@ async function jwksCaching(req, res, options) {
             .json({error: 'Bad request parameters: Tenant ID or short code is invalid.'})
     try {
         const JWKS_URI = `https://${shortCode}.api.commercecloud.salesforce.com/shopper/auth/v1/organizations/f_ecom_${tenantId}/oauth2/jwks`
-        const response = await fetch(JWKS_URI)
+        const response = await fetch(JWKS_URI, {
+            headers: {
+                'User-Agent': 'OctoperfMercuryPerfTest'
+            }
+        })
 
         if (!response.ok) {
             throw new Error('Request failed with status: ' + response.status)
@@ -184,7 +186,7 @@ const {handler} = runtime.createHandler(options, (app) => {
     // endpoint sending the email address and passwordless token. Then this endpoint calls
     // the sendMagicLinkEmail function to send an email with the passwordless login magic link.
     // https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-passwordless-login.html#receive-the-callback
-    app.post(passwordlessLoginCallback, express.json(), (req, res) => {
+    app.post(passwordlessLoginCallback, (req, res) => {
         const slasCallbackToken = req.headers['x-slas-callback-token']
         validateSlasCallbackToken(slasCallbackToken)
             .then(() => {
