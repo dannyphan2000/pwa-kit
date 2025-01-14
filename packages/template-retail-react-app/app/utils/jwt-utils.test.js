@@ -3,29 +3,6 @@ import {createRemoteJWKSet, validateSlasCallbackToken} from './jwt-utils'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
-const AUTH_ERROR_NAME = 'AuthError'
-
-const issueTimestamp = Math.round(Date.now() / 1000) - 60
-const JWT_SAMPLE_PAYLOAD = {
-    aut: 'GUID',
-    scp:
-    // eslint-disable-next-line
-        'sfcc.shopper-myaccount.baskets sfcc.shopper-myaccount.addresses sfcc.ts_int_on_behalf_of, sfcc.shopper-myaccount.rw openid sfcc.shopper-customers.login sfcc.shopper-customers.register sfcc.shopper-myaccount.addresses.rw offline offline_access sfcc.ts_ext_on_behalf_of email sfcc.shopper-categories sfcc.shopper-myaccount sfcc.pwdless_login',
-    sub:
-        'cc-slas::bcgl_stg::scid:726bde86-7b99-415d-98ec-9290bad18904::usid:b92318ea-8b0b-40e1-9ad1-2b673b61bf03',
-    ctx: 'slas',
-    iss: 'slas/dev/bcgl_stg',
-    ist: 1,
-    aud: 'commercecloud/dev/bcgl_stg',
-    nbf: issueTimestamp,
-    sty: 'User',
-    isb:
-        'uido:ecom::upn:mikew::uidn:Mike Wazowski::gcid:abwHIWkXc2xucRmegUwGYYkesV::rcid:bcTMaLNWamdrJu03XHk51s8kcO::chid:TestChid',
-    exp: issueTimestamp + 60 * 30,
-    iat: issueTimestamp,
-    jti: 'C2C8694720750-1008298052332081994449379'
-}
-
 const MOCK_JWKS = {
     "keys": [
         {
