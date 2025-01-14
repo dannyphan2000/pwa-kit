@@ -27,7 +27,7 @@ import {emailLink} from '@salesforce/retail-react-app/app/utils/marketing-cloud/
 import {
     PASSWORDLESS_LOGIN_LANDING_PATH,
     RESET_PASSWORD_LANDING_PATH
-} from './constants'
+} from '@salesforce/retail-react-app/app/constants'
 import {validateSlasCallbackToken} from '@salesforce/retail-react-app/app/utils/jwt-utils'
 
 const config = getConfig()
@@ -56,7 +56,7 @@ const options = {
     // When setting this to true, make sure to also set the PWA_KIT_SLAS_CLIENT_SECRET
     // environment variable as this endpoint will return HTTP 501 if it is not set
 
-    useSLASPrivateClient: false,
+    useSLASPrivateClient: true,
     applySLASPrivateClientToEndpoints:
         /oauth2\/(token|passwordless|password\/(login|token|reset|action))/,
 

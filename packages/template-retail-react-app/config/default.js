@@ -17,11 +17,11 @@ module.exports = {
         },
         login: {
             passwordless: {
-                enabled: true,
+                enabled: false,
                 callbackURI: '/passwordless-login-callback'
             },
             social: {
-                enabled: true,
+                enabled: false,
                 idps: ['google', 'apple'],
                 redirectURI: '/social-callback'
             },
