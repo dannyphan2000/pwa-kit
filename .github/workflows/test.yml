@@ -184,10 +184,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        template: [retail-react-app-test-project, retail-react-app-demo, express-minimal-test-project, typescript-minimal-test-project]
+        template: [retail-react-app-test-project, retail-react-app-test-project, express-minimal-test-project, typescript-minimal-test-project]
     runs-on: ubuntu-latest
     env:
-      IS_TEMPLATE_FROM_RETAIL_REACT_APP: ${{ matrix.template == 'retail-react-app-test-project' || matrix.template == 'retail-react-app-demo' }}
+      IS_TEMPLATE_FROM_RETAIL_REACT_APP: ${{ matrix.template == 'retail-react-app-test-project' }}
       PROJECT_DIR: generated-${{ matrix.template }}
     steps:
       - name: Checkout
@@ -282,10 +282,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        template: [retail-react-app-test-project, retail-react-app-demo, express-minimal-test-project, typescript-minimal-test-project]
+        template: [retail-react-app-test-project, retail-react-app-test-project, express-minimal-test-project, typescript-minimal-test-project]
     runs-on: windows-latest
     env:
-      IS_TEMPLATE_FROM_RETAIL_REACT_APP: ${{ matrix.template == 'retail-react-app-test-project' || matrix.template == 'retail-react-app-demo' }}
+      IS_TEMPLATE_FROM_RETAIL_REACT_APP: ${{ matrix.template == 'retail-react-app-test-project' }}
       PROJECT_DIR: generated-${{ matrix.template }}
     steps:
       - name: Checkout
