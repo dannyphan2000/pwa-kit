@@ -219,19 +219,13 @@ const headerTest = async (req, res) => {
  * Logging middleware; logs request and response headers (and response status).
  */
 const loggingMiddleware = (req, res, next) => {
-    // Log request headers
-    console.log(`Request: ${req.method} ${req.originalUrl}`)
-    console.log(`Request headers: ${JSON.stringify(req.headers, null, 2)}`)
-    // Arrange to log response status and headers
-    res.on('finish', () => {
-        const statusCode = res._header ? String(res.statusCode) : String(-1)
-        console.log(`Response status: ${statusCode}`)
-        if (res.headersSent) {
-            const headers = JSON.stringify(res.getHeaders(), null, 2)
-            console.log(`Response headers: ${headers}`)
-        }
-    })
-
+    console.debug(`log using console.warn should be DEBUG`)
+    console.trace(`log using console.trace should be TRACE`)
+    console.log(`log using console.log should be INFO`)
+    console.warn(`log using console.warn should be WARN`)
+    console.error(`log using console.error should be ERROR`)
+    process.stdout.write(`{"level":"FATAL","message":"[process.stdout.write] this log has FATAL severity"}\n`)
+    process.stdout.write(`{"level":"50","msg":"[process.stdout.write] this log has an invalid severity"}\n`)
     return next()
 }
 
