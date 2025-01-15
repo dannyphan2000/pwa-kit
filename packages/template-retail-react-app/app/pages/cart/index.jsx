@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import React, {useState, useMemo} from 'react'
+import React, {useState, useMemo, useEffect} from 'react'
 import {FormattedMessage, useIntl} from 'react-intl'
+import {useLocation} from 'react-router-dom'
 
 // Chakra Components
 import {
@@ -54,7 +55,7 @@ import {
     useShopperBasketsMutation,
     useShippingMethodsForShipment,
     useProducts,
-    useShopperCustomersMutation
+    useShopperCustomersMutation, useShopperBasketsMutationHelper
 } from '@salesforce/commerce-sdk-react'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 import UnavailableProductConfirmationModal from '@salesforce/retail-react-app/app/components/unavailable-product-confirmation-modal'
@@ -63,7 +64,15 @@ import {getUpdateBundleChildArray} from '@salesforce/retail-react-app/app/utils/
 const DEBOUNCE_WAIT = 750
 const Cart = () => {
     const {data: basket, isLoading} = useCurrentBasket()
-    const productIds = basket?.productItems?.map(({productId}) => productId).join(',') ?? ''
+    const {addItemToNewOrExistingBasket} = useShopperBasketsMutationHelper()
+    const location = useLocation()
+    const navigate = useNavigation()
+    const {search} = useLocation()
+    const allParams = new URLSearchParams(search)
+
+    const itemIds = allParams.get('items')?.split(',') || []
+    const productIds = [...(basket?.productItems?.map(({productId}) => productId) || []), ...itemIds].join(',') ?? ''
+    const showToast = useToast()
     const {data: products, isLoading: isProductsLoading} = useProducts(
         {
             parameters: {
@@ -86,6 +95,45 @@ const Cart = () => {
 
     const {data: customer} = useCurrentCustomer()
     const {customerId, isRegistered} = customer
+
+    /****************Add To Cart query string action******/
+
+    useEffect(() => {
+        const addToCart = async () => {
+            const basketItemsIds = basket?.productItems?.map((item) => item.productId) || []
+            try {
+                if (itemIds.length > 0 && basket && products) {
+                    // ensure the product is not a master and addable into basket
+                    const newItemsIds = itemIds.filter((id) => !basketItemsIds.includes(id) && !products?.[id]?.type.master)
+                    const productItems = newItemsIds.map((productId) => ({
+                        productId,
+                        quantity: 1
+                    }))
+
+                    if (newItemsIds.length > 0 && basket) {
+                        await addItemToNewOrExistingBasket(productItems)
+                        showToast({
+                            title: formatMessage(
+                                {
+                                    defaultMessage:
+                                        '{quantity} {quantity, plural, one {item} other {items}} added to cart',
+                                    id: 'cart.info.added_to_cart'
+                                },
+                                {quantity: 1}
+                            ),
+                            status: 'success'
+                        })
+                        allParams.delete('items')
+                        navigate(`/cart${Array.from(allParams.toString()).length > 0 ? `?${allParams}` : ''}`, 'replace')
+                    }
+
+                }
+            } catch (error) {
+                showError()
+            }
+        }
+        addToCart()
+    }, [location, basket, products])
 
     /***************** Product Bundles ************************/
     const bundleChildVariantIds = []
@@ -173,7 +221,6 @@ const Cart = () => {
     const {isOpen, onOpen, onClose} = useDisclosure()
     const {formatMessage} = useIntl()
     const toast = useToast()
-    const navigate = useNavigation()
     const modalProps = useDisclosure()
 
     /******************* Shipping Methods for basket shipment *******************/

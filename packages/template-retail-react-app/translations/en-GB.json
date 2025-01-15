@@ -171,6 +171,9 @@
   "carousel.button.scroll_right.assistive_msg": {
     "defaultMessage": "Scroll carousel right"
   },
+  "cart.info.added_to_cart": {
+    "defaultMessage": "{quantity} {quantity, plural, one {item} other {items}} added to cart"
+  },
   "cart.info.removed_from_cart": {
     "defaultMessage": "Item removed from cart"
   },
