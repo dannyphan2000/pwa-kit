@@ -1,0 +1,1086 @@
+{
+  "name": "client",
+  "hash": "2c5e8b33e06fa8fba656",
+  "publicPath": "",
+  "outputPath": "/Users/bchypak/Projects/pwa-kit/generated-retail-react-app-test-project/build",
+  "assetsByChunkName": {
+    "main": [
+      "main.js"
+    ],
+    "salesforce-extension-chakra-storefront-setup-app": [
+      "salesforce-extension-chakra-storefront-setup-app.js"
+    ],
+    "salesforce-extension-chakra-store-locator-setup-app": [
+      "salesforce-extension-chakra-store-locator-setup-app.js"
+    ],
+    "pages-home": [
+      "pages-home.js"
+    ],
+    "overridable!-account": [
+      "overridable!-account.js"
+    ],
+    "overridable!-cart": [
+      "overridable!-cart.js"
+    ],
+    "overridable!-checkout": [
+      "overridable!-checkout.js"
+    ],
+    "overridable!-checkout-confirmation": [
+      "overridable!-checkout-confirmation.js"
+    ],
+    "overridable!-home": [
+      "overridable!-home.js"
+    ],
+    "overridable!-login": [
+      "overridable!-login.js"
+    ],
+    "overridable!-registration": [
+      "overridable!-registration.js"
+    ],
+    "overridable!-reset-password": [
+      "overridable!-reset-password.js"
+    ],
+    "overridable!-login-redirect": [
+      "overridable!-login-redirect.js"
+    ],
+    "overridable!-product-detail": [
+      "overridable!-product-detail.js"
+    ],
+    "overridable!-product-list": [
+      "overridable!-product-list.js"
+    ],
+    "vendor": [
+      "vendor.js"
+    ]
+  },
+  "assets": [
+    {
+      "type": "asset",
+      "name": "vendor.js",
+      "size": 5635606,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "vendor.js.map"
+        }
+      },
+      "chunkNames": [
+        "vendor"
+      ],
+      "chunkIdHints": [
+        "vendor"
+      ],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "vendor"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "salesforce-extension-chakra-storefront-setup-app.js",
+      "size": 1077091,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "salesforce-extension-chakra-storefront-setup-app.js.map"
+        }
+      },
+      "chunkNames": [
+        "salesforce-extension-chakra-storefront-setup-app"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "salesforce-extension-chakra-storefront-setup-app"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "overridable!-account.js",
+      "size": 231994,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "overridable!-account.js.map"
+        }
+      },
+      "chunkNames": [
+        "overridable!-account"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "overridable!-account"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "overridable!-checkout.js",
+      "size": 190804,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "overridable!-checkout.js.map"
+        }
+      },
+      "chunkNames": [
+        "overridable!-checkout"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "overridable!-checkout"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "overridable!-product-list.js",
+      "size": 165207,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "overridable!-product-list.js.map"
+        }
+      },
+      "chunkNames": [
+        "overridable!-product-list"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "overridable!-product-list"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "overridable!-cart.js",
+      "size": 109992,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "overridable!-cart.js.map"
+        }
+      },
+      "chunkNames": [
+        "overridable!-cart"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "overridable!-cart"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_order-summar-cc8d2e.js",
+      "size": 72900,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_order-summar-cc8d2e.js.map"
+        }
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_order-summar-cc8d2e"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-view-cf6e25.js",
+      "size": 69374,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-view-cf6e25.js.map"
+        }
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-view-cf6e25"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "overridable!-checkout-confirmation.js",
+      "size": 67019,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "overridable!-checkout-confirmation.js.map"
+        }
+      },
+      "chunkNames": [
+        "overridable!-checkout-confirmation"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "overridable!-checkout-confirmation"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_action-card_-66eb21.js",
+      "size": 63862,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_action-card_-66eb21.js.map"
+        }
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_action-card_-66eb21"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "main.js",
+      "size": 62829,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "main.js.map"
+        }
+      },
+      "chunkNames": [
+        "main"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "main"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "salesforce-extension-chakra-store-locator-setup-app.js",
+      "size": 62621,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "salesforce-extension-chakra-store-locator-setup-app.js.map"
+        }
+      },
+      "chunkNames": [
+        "salesforce-extension-chakra-store-locator-setup-app"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "salesforce-extension-chakra-store-locator-setup-app"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "overridable!-product-detail.js",
+      "size": 55471,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "overridable!-product-detail.js.map"
+        }
+      },
+      "chunkNames": [
+        "overridable!-product-detail"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "overridable!-product-detail"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6.js",
+      "size": 55392,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6.js.map"
+        }
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "overridable!-home.js",
+      "size": 45781,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "overridable!-home.js.map"
+        }
+      },
+      "chunkNames": [
+        "overridable!-home"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "overridable!-home"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-item-059445.js",
+      "size": 31486,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-item-059445.js.map"
+        }
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-item-059445"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "overridable!-login.js",
+      "size": 15777,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "overridable!-login.js.map"
+        }
+      },
+      "chunkNames": [
+        "overridable!-login"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "overridable!-login"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "pages-home.js",
+      "size": 14842,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "pages-home.js.map"
+        }
+      },
+      "chunkNames": [
+        "pages-home"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "pages-home"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "overridable!-reset-password.js",
+      "size": 14143,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "overridable!-reset-password.js.map"
+        }
+      },
+      "chunkNames": [
+        "overridable!-reset-password"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "overridable!-reset-password"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "overridable!-registration.js",
+      "size": 11567,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "overridable!-registration.js.map"
+        }
+      },
+      "chunkNames": [
+        "overridable!-registration"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "overridable!-registration"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "overridable!-login-redirect.js",
+      "size": 3674,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "overridable!-login-redirect.js.map"
+        }
+      },
+      "chunkNames": [
+        "overridable!-login-redirect"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "overridable!-login-redirect"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "_1242.js",
+      "size": 284,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "_1242.js.map"
+        }
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "_1242"
+      ],
+      "auxiliaryChunks": []
+    }
+  ],
+  "namedChunkGroups": {
+    "main": {
+      "name": "main",
+      "chunks": [
+        "vendor",
+        "main"
+      ],
+      "assets": [
+        {
+          "name": "vendor.js"
+        },
+        {
+          "name": "main.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 2,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "salesforce-extension-chakra-storefront-setup-app": {
+      "name": "salesforce-extension-chakra-storefront-setup-app",
+      "chunks": [
+        "vendor",
+        "salesforce-extension-chakra-storefront-setup-app"
+      ],
+      "assets": [
+        {
+          "name": "vendor.js"
+        },
+        {
+          "name": "salesforce-extension-chakra-storefront-setup-app.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 2,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "salesforce-extension-chakra-store-locator-setup-app": {
+      "name": "salesforce-extension-chakra-store-locator-setup-app",
+      "chunks": [
+        "vendor",
+        "salesforce-extension-chakra-store-locator-setup-app"
+      ],
+      "assets": [
+        {
+          "name": "vendor.js"
+        },
+        {
+          "name": "salesforce-extension-chakra-store-locator-setup-app.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 2,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "pages-home": {
+      "name": "pages-home",
+      "chunks": [
+        "pages-home"
+      ],
+      "assets": [
+        {
+          "name": "pages-home.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 1,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "overridable!-account": {
+      "name": "overridable!-account",
+      "chunks": [
+        "vendor",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-view-cf6e25",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_order-summar-cc8d2e",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_action-card_-66eb21",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-item-059445",
+        "overridable!-account"
+      ],
+      "assets": [
+        {
+          "name": "vendor.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-view-cf6e25.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_order-summar-cc8d2e.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_action-card_-66eb21.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-item-059445.js"
+        },
+        {
+          "name": "overridable!-account.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 7,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "overridable!-cart": {
+      "name": "overridable!-cart",
+      "chunks": [
+        "vendor",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-view-cf6e25",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_order-summar-cc8d2e",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-item-059445",
+        "overridable!-cart"
+      ],
+      "assets": [
+        {
+          "name": "vendor.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-view-cf6e25.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_order-summar-cc8d2e.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-item-059445.js"
+        },
+        {
+          "name": "overridable!-cart.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 6,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "overridable!-checkout": {
+      "name": "overridable!-checkout",
+      "chunks": [
+        "vendor",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_order-summar-cc8d2e",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_action-card_-66eb21",
+        "overridable!-checkout"
+      ],
+      "assets": [
+        {
+          "name": "vendor.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_order-summar-cc8d2e.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_action-card_-66eb21.js"
+        },
+        {
+          "name": "overridable!-checkout.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 5,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "overridable!-checkout-confirmation": {
+      "name": "overridable!-checkout-confirmation",
+      "chunks": [
+        "vendor",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6",
+        "overridable!-checkout-confirmation"
+      ],
+      "assets": [
+        {
+          "name": "vendor.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6.js"
+        },
+        {
+          "name": "overridable!-checkout-confirmation.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 3,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "overridable!-home": {
+      "name": "overridable!-home",
+      "chunks": [
+        "vendor",
+        "overridable!-home"
+      ],
+      "assets": [
+        {
+          "name": "vendor.js"
+        },
+        {
+          "name": "overridable!-home.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 2,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "overridable!-login": {
+      "name": "overridable!-login",
+      "chunks": [
+        "overridable!-login"
+      ],
+      "assets": [
+        {
+          "name": "overridable!-login.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 1,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "overridable!-registration": {
+      "name": "overridable!-registration",
+      "chunks": [
+        "overridable!-registration"
+      ],
+      "assets": [
+        {
+          "name": "overridable!-registration.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 1,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "overridable!-reset-password": {
+      "name": "overridable!-reset-password",
+      "chunks": [
+        "overridable!-reset-password"
+      ],
+      "assets": [
+        {
+          "name": "overridable!-reset-password.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 1,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "overridable!-login-redirect": {
+      "name": "overridable!-login-redirect",
+      "chunks": [
+        "overridable!-login-redirect"
+      ],
+      "assets": [
+        {
+          "name": "overridable!-login-redirect.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 1,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "overridable!-product-detail": {
+      "name": "overridable!-product-detail",
+      "chunks": [
+        "vendor",
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-view-cf6e25",
+        "overridable!-product-detail"
+      ],
+      "assets": [
+        {
+          "name": "vendor.js"
+        },
+        {
+          "name": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-view-cf6e25.js"
+        },
+        {
+          "name": "overridable!-product-detail.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 3,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "overridable!-product-list": {
+      "name": "overridable!-product-list",
+      "chunks": [
+        "vendor",
+        "overridable!-product-list"
+      ],
+      "assets": [
+        {
+          "name": "vendor.js"
+        },
+        {
+          "name": "overridable!-product-list.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 2,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    }
+  },
+  "generator": "loadable-components",
+  "chunks": [
+    {
+      "id": "main",
+      "files": [
+        "main.js"
+      ]
+    },
+    {
+      "id": "salesforce-extension-chakra-storefront-setup-app",
+      "files": [
+        "salesforce-extension-chakra-storefront-setup-app.js"
+      ]
+    },
+    {
+      "id": "salesforce-extension-chakra-store-locator-setup-app",
+      "files": [
+        "salesforce-extension-chakra-store-locator-setup-app.js"
+      ]
+    },
+    {
+      "id": "pages-home",
+      "files": [
+        "pages-home.js"
+      ]
+    },
+    {
+      "id": "_1242",
+      "files": [
+        "_1242.js"
+      ]
+    },
+    {
+      "id": "overridable!-account",
+      "files": [
+        "overridable!-account.js"
+      ]
+    },
+    {
+      "id": "overridable!-cart",
+      "files": [
+        "overridable!-cart.js"
+      ]
+    },
+    {
+      "id": "overridable!-checkout",
+      "files": [
+        "overridable!-checkout.js"
+      ]
+    },
+    {
+      "id": "overridable!-checkout-confirmation",
+      "files": [
+        "overridable!-checkout-confirmation.js"
+      ]
+    },
+    {
+      "id": "overridable!-home",
+      "files": [
+        "overridable!-home.js"
+      ]
+    },
+    {
+      "id": "overridable!-login",
+      "files": [
+        "overridable!-login.js"
+      ]
+    },
+    {
+      "id": "overridable!-registration",
+      "files": [
+        "overridable!-registration.js"
+      ]
+    },
+    {
+      "id": "overridable!-reset-password",
+      "files": [
+        "overridable!-reset-password.js"
+      ]
+    },
+    {
+      "id": "overridable!-login-redirect",
+      "files": [
+        "overridable!-login-redirect.js"
+      ]
+    },
+    {
+      "id": "overridable!-product-detail",
+      "files": [
+        "overridable!-product-detail.js"
+      ]
+    },
+    {
+      "id": "overridable!-product-list",
+      "files": [
+        "overridable!-product-list.js"
+      ]
+    },
+    {
+      "id": "vendor",
+      "files": [
+        "vendor.js"
+      ]
+    },
+    {
+      "id": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6",
+      "files": [
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_item-variant-1225f6.js"
+      ]
+    },
+    {
+      "id": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-view-cf6e25",
+      "files": [
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-view-cf6e25.js"
+      ]
+    },
+    {
+      "id": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_order-summar-cc8d2e",
+      "files": [
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_order-summar-cc8d2e.js"
+      ]
+    },
+    {
+      "id": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_action-card_-66eb21",
+      "files": [
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_action-card_-66eb21.js"
+      ]
+    },
+    {
+      "id": "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-item-059445",
+      "files": [
+        "app_application-extensions_salesforce_extension-chakra-storefront_src_components_product-item-059445.js"
+      ]
+    }
+  ]
+}
