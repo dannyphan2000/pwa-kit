@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {LoaderContext} from 'webpack'
+import os from 'os'
 import path from 'path'
 import resolve from 'resolve'
 
@@ -83,21 +84,10 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     // Adjust the `basedir` dynamically for resolving relative imports in the new file
     const newBasedir = path.dirname(resolvedResourcePath)
 
-    // Provided a match and group representing a relative path, replace it with an absolute path using the new base directory.
-    // const convertRelativePaths = (match: string, relativePath: string) => {
-    //     const absolutePath = path.resolve(newBasedir, relativePath)
-        
-    //     return match.replace(relativePath, absolutePath)
-    // }
-    const os = require('os')
-
     const convertRelativePaths = (match: string, relativePath: string) => {
-        // Resolve the absolute path
-        let absolutePath = path.resolve(newBasedir, relativePath);
+        let absolutePath = path.resolve(newBasedir, relativePath)
 
-        // Check if the OS is Windows
         if (os.platform() === 'win32') {
-            // Escape backslashes by replacing \ with \\
             absolutePath = absolutePath.replace(/\\/g, '\\\\')
         }
 
