@@ -141,6 +141,39 @@ const findDepInStack = (pkg) => {
     return candidate
 }
 
+/**
+ * 
+ * @param {*} source 
+ * @returns 
+ */
+const isSourceInDotFile = (source) => {
+    const isMonoRepo = true
+    const isExtensionFile = source.includes('packages/extension-')
+
+    if (!isExtensionFile) {
+        return false
+    }
+
+    let overridables = []
+    try {
+        overridables = fse.readFileSync(`${projectDir}/.overridable`, 'utf8').split('\n')
+    }
+    catch (e) {
+        // console.error('No .overridable file found')
+    }
+
+    // /Users/bchypak/Projects/pwa-kit/packages/extension-chakra-store-locator/src/components/list.tsx
+    if (isMonoRepo) {
+        source = `@salesforce/${source.replace('/Users/bchypak/Projects/pwa-kit/packages/', '')}`
+    }
+
+    if (overridables.includes(source)) {
+        console.log('Manual Override for: ', source)
+    }
+
+    return overridables.includes(source)
+}
+
 const baseConfig = (target) => {
     if (!['web', 'node'].includes(target)) {
         throw Error(`The value "${target}" is not a supported webpack target`)
@@ -270,7 +303,15 @@ const baseConfig = (target) => {
                                 configured: getConfiguredExtensions(getConfig()),
                                 target: 'node'
                             }
-                        })
+                        }),
+                        {
+                            test: (source) => { 
+                              return isSourceInDotFile(source)
+                            },
+                            use: {
+                              loader: '@salesforce/pwa-kit-extension-sdk/configs/webpack/overrides-resolver-loader'
+                            }
+                        }
                     ].filter(Boolean)
                 }
             }
