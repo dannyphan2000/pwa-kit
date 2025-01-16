@@ -219,12 +219,14 @@ const headerTest = async (req, res) => {
  * Logging middleware; logs request and response headers (and response status).
  */
 const loggingMiddleware = (req, res, next) => {
-    console.debug(`log using console.warn should be DEBUG`)
+    console.debug(`log using console.debug should be DEBUG`)
     console.trace(`log using console.trace should be TRACE`)
     console.log(`log using console.log should be INFO`)
     console.warn(`log using console.warn should be WARN`)
     console.error(`log using console.error should be ERROR`)
     process.stdout.write(`{"level":"FATAL","message":"[process.stdout.write] this log has FATAL severity"}\n`)
+    process.stdout.write(`{"level":"TRACE","message":"[process.stdout.write] this log has TRACE severity"}\n`)
+    process.stdout.write(`{"level":"DEBUG","message":"[process.stdout.write] this log has DEBUG severity"}\n`)
     process.stdout.write(`{"level":"50","msg":"[process.stdout.write] this log has an invalid severity"}\n`)
     return next()
 }
