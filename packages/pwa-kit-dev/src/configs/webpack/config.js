@@ -141,14 +141,24 @@ const findDepInStack = (pkg) => {
     return candidate
 }
 
+const dontProcessAgainWeb = []
+
+const dontProcessAgainNode = []
 /**
  * 
  * @param {*} source 
  * @returns 
  */
-const isSourceInDotFile = (source) => {
+const isSourceInDotFile = (source, target) => {
+    const sourceOriginal = source
     const isMonoRepo = true
     const isExtensionFile = source.includes('packages/extension-')
+
+    let dontProcessAgain = target === 'web' ? dontProcessAgainWeb : dontProcessAgainNode
+    
+    if (dontProcessAgain.includes(sourceOriginal)) {
+        return false
+    }
 
     if (!isExtensionFile) {
         return false
@@ -162,13 +172,13 @@ const isSourceInDotFile = (source) => {
         // console.error('No .overridable file found')
     }
 
-    // /Users/bchypak/Projects/pwa-kit/packages/extension-chakra-store-locator/src/components/list.tsx
     if (isMonoRepo) {
         source = `@salesforce/${source.replace('/Users/bchypak/Projects/pwa-kit/packages/', '')}`
     }
 
     if (overridables.includes(source)) {
         console.log('Manual Override for: ', source)
+        dontProcessAgain.push(sourceOriginal)
     }
 
     return overridables.includes(source)
@@ -306,10 +316,10 @@ const baseConfig = (target) => {
                         }),
                         {
                             test: (source) => { 
-                              return isSourceInDotFile(source)
+                              return isSourceInDotFile(source, target)
                             },
                             use: {
-                              loader: '@salesforce/pwa-kit-extension-sdk/configs/webpack/overrides-resolver-loader'
+                                loader: '@salesforce/pwa-kit-extension-sdk/configs/webpack/overrides-resolver-loader'
                             }
                         }
                     ].filter(Boolean)

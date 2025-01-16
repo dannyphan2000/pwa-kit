@@ -66,6 +66,7 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
         extensionEntries: applicationExtensions
     })
 
+    console.log('Candidate Paths:', paths)
     // Also include the base override path and the path from the extension doing the import.
     const resolvedResourcePath = resolve.sync(projectRelPath, {
         basedir,
@@ -73,7 +74,7 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
         packageIterator: () => paths,
         ...options?.resolveOptions
     })
-
+    console.log('Resolved Path:', resolvedResourcePath)
     // Tell Webpack to treat this new resource as a dependency of the original module in order to have the dependency
     // transpiled with all the same loaders/plugins that the original file was.
     this.addDependency(resolvedResourcePath)
