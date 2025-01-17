@@ -66,8 +66,8 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     }
 
     // Lets use the compiler configuration to ensure we are resolving the correct file extensions.
-    const compilerOptions = this._compiler!.options
-    const extensions = compilerOptions.resolve?.extensions || []
+    const compilerOptions = this._compiler?.options
+    const extensions = compilerOptions?.resolve?.extensions || []
     const basedir = options?.baseDir || process.cwd()
     const applicationExtensions = compiler?.custom?.extensions || []
 
