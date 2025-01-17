@@ -177,7 +177,7 @@ export const validateOverrideSource = (source: string, options: any = {}) => {
     // NOTE:
     // For now we are going to make the assumption that all the extension projects in our mono repo
     // are part of the `@salesforce` namespace, this is pretty safe. So we are going to add the namespace.
-    normalizedSource = `${
+    normalizedSource = `./${NODE_MODULES_FOLDER}/${
         isMonoRepo ? EXTENSION_PACKAGE_NAMESPACE + path.posix.sep : ''
     }${normalizedSource}`
 
