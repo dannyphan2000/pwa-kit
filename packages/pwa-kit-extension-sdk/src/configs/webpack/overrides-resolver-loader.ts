@@ -158,14 +158,22 @@ export const validateOverrideSource = (source: string, options: any = {}) => {
     // Because our webpack configuration is setup to resolve symlinks, we need to normalize the source path because
     // the source path passed to the loaded is not representative of what you would see in a generated project (e.g.
     // it doesn't resolve to being in the node_modules folder).
+    let normalizedSource = ''
+
+    // We are only concerned with the source path relative to the extension package namespace.
+    normalizedSource = `${
+        source.split(isMonoRepo ? MONO_REPO_WORKSPACE_FOLDER : NODE_MODULES_FOLDER).pop() ?? ''
+    }`
+
+    // At this point the path is either POSIX or windows, we need to normalize it to POSIX.
+    normalizedSource = normalizedSource.replace(/\\/g, '/')
+
     // NOTE:
-    // For now we are going to make the assumption that all our extension projects in our mono repo
-    // are part of the `@salesforce` namespace, this is pretty safe.
-    const normalizedSource = isMonoRepo
-        ? `${EXTENSION_PACKAGE_NAMESPACE}${path.sep}${
-              source.split(MONO_REPO_WORKSPACE_FOLDER).pop() ?? ''
-          }`
-        : source.split(NODE_MODULES_FOLDER).pop()
+    // For now we are going to make the assumption that all the extension projects in our mono repo
+    // are part of the `@salesforce` namespace, this is pretty safe. So we are going to add the namespace.
+    normalizedSource = `${
+        isMonoRepo ? EXTENSION_PACKAGE_NAMESPACE + path.posix.sep : ''
+    }${normalizedSource}`
 
     // Check if the normalized source is in the list of overridables.
     const hasOverride = overridables.includes(normalizedSource)
