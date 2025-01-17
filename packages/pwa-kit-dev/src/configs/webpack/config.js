@@ -30,7 +30,10 @@ import {sdkReplacementPlugin} from './plugins'
 import {CLIENT, SERVER, CLIENT_OPTIONAL, SSR, REQUEST_PROCESSOR} from './config-names'
 
 // Utilities
-import {ruleForApplicationExtensibility, ruleForOverrideResolver} from '@salesforce/pwa-kit-extension-sdk/configs/webpack'
+import {
+    ruleForApplicationExtensibility,
+    ruleForOverrideResolver
+} from '@salesforce/pwa-kit-extension-sdk/configs/webpack'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {
     buildAliases,

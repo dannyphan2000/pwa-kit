@@ -433,7 +433,13 @@ describe('validateOverrideSource', () => {
             'home.js'
         )
         const overridables = [
-            `./node_modules/${path.posix.join('@salesforce', 'extension-sample', 'src', 'pages', 'home.js')}`
+            `./node_modules/${path.posix.join(
+                '@salesforce',
+                'extension-sample',
+                'src',
+                'pages',
+                'home.js'
+            )}`
         ]
 
         const result = validateOverrideSource(source, {
@@ -481,7 +487,13 @@ describe('validateOverrideSource', () => {
             'home.js'
         )
         const overridables = [
-            `./node_modules/${path.posix.join('@salesforce', 'extension-sample', 'src', 'pages', 'home.js')}`
+            `./node_modules/${path.posix.join(
+                '@salesforce',
+                'extension-sample',
+                'src',
+                'pages',
+                'home.js'
+            )}`
         ]
 
         const resultWeb = validateOverrideSource(source, {
