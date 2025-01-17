@@ -433,7 +433,7 @@ describe('validateOverrideSource', () => {
             'home.js'
         )
         const overridables = [
-            path.join('@salesforce', 'extension-sample', 'src', 'pages', 'home.js')
+            path.posix.join('@salesforce', 'extension-sample', 'src', 'pages', 'home.js')
         ]
 
         const result = validateOverrideSource(source, {
@@ -456,7 +456,7 @@ describe('validateOverrideSource', () => {
             'pages',
             'home.js'
         )
-        const overridables = [path.join('extension-sample', 'src', 'pages', 'home.js')]
+        const overridables = [path.posix.join('extension-sample', 'src', 'pages', 'home.js')]
 
         const result = validateOverrideSource(source, {
             isMonoRepo: false,
@@ -479,7 +479,7 @@ describe('validateOverrideSource', () => {
             'home.js'
         )
         const overridables = [
-            path.join('@salesforce', 'extension-sample', 'src', 'pages', 'home.js')
+            path.posix.join('@salesforce', 'extension-sample', 'src', 'pages', 'home.js')
         ]
 
         const resultWeb = validateOverrideSource(source, {
