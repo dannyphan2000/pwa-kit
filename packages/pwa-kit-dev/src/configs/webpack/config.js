@@ -37,7 +37,6 @@ import {
     nameRegex,
     getConfiguredExtensions
 } from '@salesforce/pwa-kit-extension-sdk/shared/utils'
-import { symlink } from 'fs'
 
 const projectDir = process.cwd()
 const pkg = fse.readJsonSync(resolve(projectDir, 'package.json'))
