@@ -23,7 +23,10 @@ import {expand} from './index'
 export const REACT_SETUP_FILE = 'setup-app'
 export const EXPRESS_SETUP_FILE = 'setup-server'
 export const SUPPORTED_FILE_TYPES = ['ts', 'js', 'tsx', 'jsx']
-export const SETUP_FILE_REGEX = new RegExp(`(${REACT_SETUP_FILE}|${EXPRESS_SETUP_FILE})\.(${SUPPORTED_FILE_TYPES.join('|')})$`, 'i')
+export const SETUP_FILE_REGEX = new RegExp(
+    `(${REACT_SETUP_FILE}|${EXPRESS_SETUP_FILE}).(${SUPPORTED_FILE_TYPES.join('|')})$`,
+    'i'
+)
 
 // TODO: Update this block comment.
 /**

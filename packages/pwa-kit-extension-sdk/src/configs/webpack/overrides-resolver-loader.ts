@@ -85,7 +85,7 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
         packageIterator: () => paths,
         ...options?.resolveOptions
     })
-    console.log('Resolved Path:', resolvedResourcePath)
+
     // Tell Webpack to treat this new resource as a dependency of the original module in order to have the dependency
     // transpiled with all the same loaders/plugins that the original file was.
     this.addDependency(resolvedResourcePath)
@@ -127,12 +127,11 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
 }
 
 /**
- * 
- * @param {*} source 
- * @returns 
+ *
+ * @param {*} source
+ * @returns
  */
 const validateOverrideSource = (source: string, options: any = {}) => {
-    let normalizedSource
     const {isMonoRepo = false, target = 'node', overridables = []} = options
     const isExtensionFile = source.includes(`${path.sep}${EXTENSION_PACKAGE_PREFIX}`)
     const isSetupFile = SETUP_FILE_REGEX.test(source)
@@ -149,21 +148,20 @@ const validateOverrideSource = (source: string, options: any = {}) => {
     // Because our webpack configuration is setup to resolve symlinks, we need to normalize the source path because
     // the source path passed to the loaded is not representative of what you would see in a generated project (e.g.
     // it doesn't resolve to being in the node_modules folder).
-    if (isMonoRepo) {
-        // For now we are going to make the assumption that all our extension projects in our mono repo
-        // are part of the `@salesforce` namespace, this is pretty safe.
-        normalizedSource = `${EXTENSION_PACKAGE_WORKSPACE}${path.sep}${source.split(MONO_REPO_WORKSPACE_FOLDER).pop()}`
-    } else {
-        // we are going to do something else here?
-        normalizedSource = source.split(NODE_MODULES_FOLDER).pop()
-    }
-    console.log('Normalized Source: ', normalizedSource)
+    // NOTE:
+    // For now we are going to make the assumption that all our extension projects in our mono repo
+    // are part of the `@salesforce` namespace, this is pretty safe.
+    const normalizedSource = isMonoRepo
+        ? `${EXTENSION_PACKAGE_WORKSPACE}${path.sep}${
+              source.split(MONO_REPO_WORKSPACE_FOLDER).pop() ?? ''
+          }`
+        : source.split(NODE_MODULES_FOLDER).pop()
+
     // Check if the normalized source is in the list of overridables.
     const hasOverride = overridables.includes(normalizedSource)
 
     // If we have an override, add it to the cache so we don't process it again.
     if (hasOverride) {
-        console.log('Manual Override for: ', source)
         targetCache.push(source)
     }
 
@@ -187,24 +185,22 @@ export const ruleForOverrideResolver = (options: any = {}) => {
     let overridables: string[] = []
 
     try {
-        overridables = 
-            fse
+        overridables = fse
             .readFileSync(path.join(projectDir, OVERRIDABLE_FILE_NAME), 'utf8')
             .split(/\r?\n/)
             .filter((line) => !line.startsWith('//'))
-    }
-    catch (e) {
+    } catch (e) {
         // If where is no .force_overrides file, we can safely return null.
         return null
     }
 
     return {
-        test: (source: string) => { 
-          return validateOverrideSource(source, {
-            isMonoRepo,
-            target, 
-            overridables
-          })
+        test: (source: string) => {
+            return validateOverrideSource(source, {
+                isMonoRepo,
+                target,
+                overridables
+            })
         },
         use: {
             loader: '@salesforce/pwa-kit-extension-sdk/configs/webpack/overrides-resolver-loader'
