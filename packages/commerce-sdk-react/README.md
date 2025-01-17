@@ -134,11 +134,9 @@ export default App
 
 _💡 This section assumes you have read and completed the [Authorization for Shopper APIs](https://developer.salesforce.com/docs/commerce/commerce-api/guide/authorization-for-shopper-apis.html) guide._
 
-To help reduce boilerplate code for managing shopper authentication, by default, this library automatically initializes shopper session and manages the tokens for developers. Commerce-react-sdk supports both the [SLAS Public Client login flow](https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-public-client.html) and [SLAS Private Client login flow](https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-private-client.html). Authorization using a private client is supported in PWA Kit 3.5 and later, and is the recommended authorization workflow.
+To help reduce boilerplate code for managing shopper authentication, by default, this library automatically initializes shopper session and manages the tokens for developers. Commerce-sdk-react supports both the [SLAS Public Client login flow](https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-public-client.html) and [SLAS Private Client login flow](https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-private-client.html). Authorization using a private client is supported in PWA Kit 3.5 and later, and is the recommended authorization workflow.
 
-#### How private SLAS works
-This section assumes you read and understand how [private SLAS](https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-private-client.html) flow works.
-
+#### Using a private SLAS client
 To enable a private client, see [Use a SLAS Private Client](https://developer.salesforce.com/docs/commerce/pwa-kit-managed-runtime/guide/use-a-slas-private-client.html).
 
 ### Shopper Session Initialization
