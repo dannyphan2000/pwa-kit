@@ -91,7 +91,6 @@ type DntOptions = {
     includeDefaults: boolean
 }
 
-
 const isParentTrusted = isOriginTrusted(getParentOrigin())
 
 /**
@@ -316,7 +315,7 @@ class Auth {
         storage.delete(key)
     }
 
-     /**
+    /**
      * Return the value of the DNT cookie or undefined if it is not set.
      * The DNT cookie being undefined means that there is a necessity to
      * get the user's input for consent tracking, but not that there is no
