@@ -4,6 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+
+/**
+ * @module @salesforce/pwa-kit-react-sdk/ssr/universal/hooks
+ */
+
 /* istanbul ignore file */
 
 import React, {useContext} from 'react'
@@ -13,6 +18,13 @@ import {CorrelationIdContext, ServerContext} from '../contexts'
  * Use this hook to get the correlation id value of the closest CorrelationIdProvider component.
  *
  * @returns {object} The correlation id
+ *
+ * @example
+ * import {useCorrelationId} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
+ * 
+ * // Get correlation id
+ * const correlationId = useCorrelationId()
+ * console.log(correlationId)
  */
 export const useCorrelationId = () => {
     const context = React.useContext(CorrelationIdContext)
@@ -34,6 +46,9 @@ export const useCorrelationId = () => {
  * @returns {ServerContext} ServerContext object
  *
  * @example
+ * import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
+ * 
+ * // Get server context
  * const {res} = useServerContext()
  * if (res && query.error) { res.status(404) }
  */
@@ -54,6 +69,13 @@ export const useServerContext = () => {
  * NOTE: this is a React hook, so it has to be used in a React rendering pipeline.
  * @returns {string} origin string
  *
+ * @example
+ * import {useOrigin} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
+ * 
+ * // Get origin
+ * const origin = useOrigin()
+ * console.log(origin)
+ * // https://example.com
  */
 export const useOrigin = ({fromXForwardedHeader = false}) => {
     const {res} = useServerContext()

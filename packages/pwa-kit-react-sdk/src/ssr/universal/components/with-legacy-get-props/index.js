@@ -4,11 +4,28 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+
+/**
+ * @module @salesforce/pwa-kit-react-sdk/ssr/universal/components/with-legacy-get-props
+ */
+
 import React from 'react'
 import hoistNonReactStatic from 'hoist-non-react-statics'
 import {FetchStrategy} from '../fetch-strategy'
 import {PERFORMANCE_MARKS} from '../../../../utils/performance'
 
+/**
+ * A HoC for adding legacy getProps support to your application. Wrap your AppConfig component with this HOC to enable legacy getProps support.
+ *
+ * @param {React.ReactElement} Wrapped The component to be wrapped
+ * @returns {React.ReactElement}
+ *
+ * @example
+ * import {withLegacyGetProps} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/with-legacy-get-props'
+ * 
+ * // Wrap a component with legacy getProps
+ * const WrappedComponent = withLegacyGetProps(AppConfig)
+ */
 export const withLegacyGetProps = (Wrapped) => {
     /* istanbul ignore next */
     const wrappedComponentName = Wrapped.displayName || Wrapped.name

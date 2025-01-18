@@ -4,6 +4,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+/**
+ * @module @salesforce/pwa-kit-runtime/utils/ssr-server
+ */
 
 // To avoid an unwieldy file size, this file should be for utils that are less than ~20 lines.
 // Larger utils should be placed in separate files.
@@ -18,6 +21,19 @@ import logger from '../logger-instance'
 // TODO: Clean this up or provide a way to toggle
 export const verboseProxyLogging = false
 
+/**
+ * Determines if the current environment is running in AWS Lambda
+ * @function
+ * @returns {boolean} True if running in AWS Lambda, false otherwise
+ * @example
+ * import {isRemote} from '@salesforce/pwa-kit-runtime/utils/ssr-server'
+ * 
+ * if (isRemote()) {
+ *   console.log('Running in AWS Lambda')
+ * } else {
+ *   console.log('Running in development environment') 
+ * }
+ */
 export const isRemote = () =>
     Object.prototype.hasOwnProperty.call(process.env, 'AWS_LAMBDA_FUNCTION_NAME')
 

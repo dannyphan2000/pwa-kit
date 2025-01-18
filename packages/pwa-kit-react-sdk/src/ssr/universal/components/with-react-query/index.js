@@ -4,6 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+
+/**
+ * @module @salesforce/pwa-kit-react-sdk/ssr/universal/components/with-react-query
+ */
+
 import React from 'react'
 import hoistNonReactStatic from 'hoist-non-react-statics'
 import ssrPrepass from 'react-ssr-prepass'
@@ -16,13 +21,20 @@ const STATE_KEY = '__reactQuery'
 const passthrough = (input) => input
 
 /**
- * A HoC for adding React Query support to your application.
+ * A HoC for adding React Query support to your application. Wrap your AppConfig component with this HOC to enable React Query support.
  *
  * @param {React.ReactElement} Wrapped The component to be wrapped
  * @param {Object} options
  * @param {Object} options.queryClientConfig The react query client configuration object to be used.
+ * @param {Function} options.beforeHydrate A function that will be called before the component is hydrated. It will receive the preloaded state and return the state to be hydrated.
  *
  * @returns {React.ReactElement}
+ *
+ * @example
+ * import {withReactQuery} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/with-react-query'
+ * 
+ * // Wrap a component with React Query
+ * const WrappedComponent = withReactQuery(AppConfig)
  */
 export const withReactQuery = (Wrapped, options = {}) => {
     const isServerSide = typeof window === 'undefined'

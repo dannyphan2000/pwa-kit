@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /**
- * @module progressive-web-sdk/utils/ssr-server
+ * @module @salesforce/pwa-kit-runtime/utils/ssr-server
  */
 
 // These were all originally in this file, but that made the file large and debugging tedious.

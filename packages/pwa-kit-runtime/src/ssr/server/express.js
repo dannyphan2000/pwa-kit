@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /**
- * @module progressive-web-sdk/ssr/server/express
+ * @module @salesforce/pwa-kit-runtime/ssr/server/express
  */
 
 import URL from 'url'
@@ -438,7 +438,12 @@ export const respondFromBundle = ({req, res, path, redirect = 301}) => {
 
 /**
  * Get the appropriate runtime object for the current environment (remote or development)
- * @returns Shallow of the runtime object with bound methods
+ * @returns {Object} A shallow copy of the runtime object with bound methods
+ * @returns {Function} runtime.render - Express middleware that handles rendering the application.
+ * Takes standard Express middleware parameters (req, res, next)
+ * @returns {Object} runtime.render.req - Express request object
+ * @returns {Object} runtime.render.res - Express response object  
+ * @returns {Function} runtime.render.next - Express next function to pass control to next middleware
  */
 export const getRuntime = () => {
     const runtime = isRemote()

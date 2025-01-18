@@ -6,7 +6,7 @@
  */
 
 /**
- * @module progressive-web-sdk/ssr/server/react-rendering
+ * @module @salesforce/pwa-kit-react-sdk/ssr/server/react-rendering
  */
 
 import path from 'path'
@@ -109,14 +109,30 @@ export const getLocationSearch = (req, opts = {}) => {
 }
 
 /**
- * This is the main react-rendering function for SSR. It is an Express handler.
+ * This is the main react-rendering function for SSR. It is an Express handler that performs
+ * server-side rendering of the React application.
  *
- * @param req - Request
- * @param res - Response
+ * The function follows these main steps:
+ * 1. Matches the requested URL to a route
+ * 2. Loads the React component for that route
+ * 3. Initializes the application state
+ * 4. Renders the React application to HTML
+ * 5. Sends the response with appropriate status code and headers
  *
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ *
+ * @example
+ * // Use as a catch-all route handler in Express
+ * app.get('*', render)
+ *
+ * @public
  * @function
+ * @async
+ * @return {Promise<void>} Resolves when rendering is complete
  *
- * @return {Promise}
+ * @throws {Error} Unrecoverable errors are passed to Express error handling
  */
 export const render = async (req, res, next) => {
     const includeServerTimingHeader = '__server_timing' in req.query

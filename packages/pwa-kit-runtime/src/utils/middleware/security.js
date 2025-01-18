@@ -4,6 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+
+/**
+ * @module @salesforce/pwa-kit-runtime/utils/middleware
+ */
+
 import {CONTENT_SECURITY_POLICY, STRICT_TRANSPORT_SECURITY} from '../../ssr/server/constants'
 import {isRemote} from '../ssr-server'
 
@@ -15,6 +20,11 @@ import {isRemote} from '../ssr-server'
  * @param {express.Request} req Express request object
  * @param {express.Response} res Express response object
  * @param {express.NextFunction} next Express next callback
+ * @example
+ * import {defaultPwaKitSecurityHeaders} from '@salesforce/pwa-kit-runtime/utils/middleware'
+ * 
+ * // Add security headers middleware to Express app
+ * app.use(defaultPwaKitSecurityHeaders)
  */
 export const defaultPwaKitSecurityHeaders = (req, res, next) => {
     /** CSP-compatible origin for Runtime Admin. */

@@ -5,6 +5,10 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+/**
+ * @module @salesforce/pwa-kit-runtime/utils/ssr-config
+ */
+
 // NOTE: This conditional export by default exports the named export `getConfig`
 // for use in node environments. If specified by the `WEBPACK_TARGET` global
 // this module will export a browser safe version.

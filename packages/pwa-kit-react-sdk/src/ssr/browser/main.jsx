@@ -4,6 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+
+/**
+ * @module @salesforce/pwa-kit-react-sdk/ssr/browser/main
+ */
+
 /* global __webpack_require__ */
 import React, {useRef} from 'react'
 import {hydrateRoot} from 'react-dom/client'
@@ -19,6 +24,20 @@ import PropTypes from 'prop-types'
 import logger from '../../utils/logger-instance'
 
 /* istanbul ignore next */
+/**
+ * Register a service worker for the application. This function will wait for the page to load
+ * before attempting to register the service worker.
+ * 
+ * @param {string} url - The URL of the service worker script to register
+ * @returns {Promise} A promise that resolves when registration is complete
+ * @example
+ * import {registerServiceWorker} from '@salesforce/pwa-kit-react-sdk/ssr/browser/main'
+ * 
+ * // Register service worker
+ * registerServiceWorker('/worker.js')
+ *   .then(() => console.log('Service worker registered'))
+ *   .catch(err => console.error('Service worker registration failed:', err))
+ */
 export const registerServiceWorker = (url) => {
     return Promise.resolve().then(() => {
         if ('serviceWorker' in navigator) {
@@ -79,7 +98,23 @@ OuterApp.propTypes = {
     locals: PropTypes.object,
     onHydrate: PropTypes.func
 }
+
 /* istanbul ignore next */
+/**
+ * Starts the PWA Kit application in the browser by hydrating the server-rendered content.
+ * This function handles setting up the application state, and performing
+ * the hydration process.
+ * 
+ * @returns {Promise} A promise that resolves when the application has been hydrated
+ * 
+ * @example
+ * import {start} from '@salesforce/pwa-kit-react-sdk/ssr/browser/main'
+ * 
+ * // Start the application
+ * start().then(() => {
+ *   console.log('Application started successfully')
+ * })
+ */
 export const start = () => {
     const AppConfig = getAppConfig()
     const rootEl = document.getElementsByClassName('react-target')[0]

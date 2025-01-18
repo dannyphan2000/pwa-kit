@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /**
- * @module progressive-web-sdk/ssr/universal/utils
+ * @module @salesforce/pwa-kit-react-sdk/ssr/universal/utils
  */
 import {proxyConfigs} from '@salesforce/pwa-kit-runtime/utils/ssr-shared'
 import {bundleBasePath} from '@salesforce/pwa-kit-runtime/utils/ssr-namespace-paths'
@@ -18,6 +18,11 @@ const onClient = typeof window !== 'undefined'
  * @param {string} path - relative path from the build directory to the asset
  * @function
  * @returns {string}
+ * @example
+ * import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
+ * 
+ * // Get URL for an image asset
+ * const imageUrl = getAssetUrl('images/logo.png')
  */
 export const getAssetUrl = (path) => {
     /* istanbul ignore next */
@@ -44,6 +49,16 @@ export const getAssetUrl = (path) => {
  *
  * @function
  * @returns {Array<ProxyConfig>}
+ * @example
+ * import {getProxyConfigs} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
+ * 
+ * // Get configured proxies
+ * const proxies = getProxyConfigs()
+ * // Example output:
+ * // [
+ * //   {protocol: 'https', host: 'example.com', path: 'base'},
+ * //   {protocol: 'https', host: 'api.example.com', path: 'base2'}
+ * // ]
  */
 export const getProxyConfigs = () => {
     const configs = onClient

@@ -6,6 +6,10 @@
  */
 
 /**
+ * @module @salesforce/pwa-kit-runtime/utils/logger-factory
+ */
+
+/**
  * The PWAKitLogger provides structured logging with different log levels.
  * @private
  */
@@ -124,6 +128,18 @@ export class PWAKitLogger {
  * @param {Object} config - Configuration object for the logger.
  * @param {string} config.packageName - The name of the package where the logger is used.
  * @returns {PWAKitLogger} - An instance of PWAKitLogger configured for the specified package.
+ * 
+ * @example
+ * ```js
+ * import createLogger from '@salesforce/pwa-kit-runtime/utils/logger-factory'
+ * 
+ * const logger = createLogger({
+ *   packageName: '@salesforce/pwa-kit-runtime'
+ * })
+ * 
+ * logger.info('Server started')
+ * logger.error('Failed to connect', {error: err})
+ * ```
  */
 const createLogger = (config = {}) => {
     return new PWAKitLogger(config)
