@@ -5,7 +5,6 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {create} from 'zustand'
-import {StateCreator} from 'zustand'
 import {devtools} from 'zustand/middleware'
 
 export type SliceInitializer<T> = (set: (partial: any) => void, get: () => BaseStore) => T
@@ -25,7 +24,19 @@ export const useStore = create<BaseStore>()(
             set((state) => ({
                 state: {
                     ...state.state,
-                    [sliceName]: sliceInitializer(set, get)
+                    // [sliceName]: sliceInitializer(set, get)
+                    // Here we have a modified version of the "set" that sets only the slice.
+                    [sliceName]: sliceInitializer((action: any) => {
+                        set((state: any) => ({
+                            state: {
+                                ...state.state,
+                                [sliceName]: {
+                                    ...state.state[sliceName],
+                                    ...action(state.state[sliceName])
+                                }
+                            }
+                        }))
+                    }, get)
                 }
             }))
         },

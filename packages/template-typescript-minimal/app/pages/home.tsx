@@ -14,11 +14,6 @@ import HelloJS from '../components/hello-javascript'
 
 import {useStore as useExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
 import {Link} from 'react-router-dom'
-export const useExtensionStore = () =>
-    useExtensionsStore(
-        (state: Record<string, any>) =>
-            state.state['@salesforce/extension-chakra-store-locator'] || {}
-    )
 
 interface Props {
     value: number
@@ -93,7 +88,10 @@ h1 {
 const Home = ({value}: Props) => {
     const [counter, setCounter] = useState(0)
     const applicationExtensions = useApplicationExtensions()
-    const {setCounter: setMyCounter} = useExtensionStore()
+    const {counter: myCounter, incrementCounter, decrementCounter} = useExtensionsStore(
+        (state: Record<string, any>) =>
+            state.state['@salesforce/extension-chakra-store-locator'] || {}
+    )
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -123,10 +121,14 @@ const Home = ({value}: Props) => {
                         <br />
                         Support!
                     </h1>
-                    <button onClick={() => setMyCounter()}>
-                        Increment Counter from within base application
+                    <span>Counter: {myCounter}</span>
+                    <button onClick={() => incrementCounter()}>
+                        [+]
                     </button>
-                    <Link to="/store-locator">Store Locator</Link>
+                    <button onClick={() => decrementCounter()}>
+                        [-]
+                    </button>
+                    <Link to="/store-locator">/store-locator</Link>
                 </div>
                 <div className="panel">
                     <div className="divider"></div>

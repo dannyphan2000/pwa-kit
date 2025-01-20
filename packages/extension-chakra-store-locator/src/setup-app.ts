@@ -41,7 +41,13 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
             (component: React.ComponentType<any>) => withStoreLocator(component, config),
             (component: React.ComponentType<any>) =>
                 withOptionalCommerceSdkReactProvider(component, config),
-            (component: React.ComponentType<any>) => withOptionalChakra(component)
+            (component: React.ComponentType<any>) => withOptionalChakra(component),
+
+            // Do we really want to do this, of should it automatically be done behind the scenes?
+            // The positives of doing this here is that we have some flexibility on having or not having state management for a given extension.
+            // Also we as lumping all the react cook into one place.
+            // The negatives is that it's a little more verbose.
+            // (component: React.ComponentType<any>) => withExtensionStore(component, {initialState: {}})
         ]
 
         return applyHOCs(App, HOCs)
@@ -59,28 +65,18 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
     }
 
     getSliceInitializer(): any {
-        return (set: any) => ({
+        // set: will set the state of the store for this extension slice.
+        // get: will get the state of the store for this extension slice.
+        return (set: any, get: any) => ({
             counter: 0,
-            setCounter: () => 
-                set((state: any) => {
-                    console.log('state: ', state)
-                    console.log('state: ', {})
-                    return {
-                        state: {
-                          ...state.state,
-                          ['@salesforce/extension-chakra-store-locator']: {
-                              ...state.state['@salesforce/extension-chakra-store-locator'],
-                              counter: state.state['@salesforce/extension-chakra-store-locator'].counter + 1
-                          }
-                          
-                        },
-                      }
-                })
-            // setCounter: (state: any) => {
-            //     return {
-            //         counter: state.counter + 1
-            //     }
-            // }
+            incrementCounter: () =>
+                set((state: any) => ({
+                    counter: state.counter + 1
+                })),
+            decrementCounter: () =>
+                set((state: any) => ({
+                    counter: state.counter - 1
+                }))
         })
     }
 }

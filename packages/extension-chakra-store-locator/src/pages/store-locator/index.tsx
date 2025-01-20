@@ -12,14 +12,17 @@ import {StoreLocatorContent} from '../../components/content'
 import {useExtensionStore} from '../../hooks/use-extension-store'
 
 const StoreLocatorPage = () => {
-    const {setCounter, counter} = useExtensionStore()
+    const {incrementCounter, decrementCounter, counter} = useExtensionStore()
     
     return (
         <Box data-testid="store-locator-page" bg="gray.50" py={[8, 16]}>
-            <code>Count: {counter}</code><br/>
-            <button onClick={() => {
-                setCounter()
-            }}>Increment Counter from within extensions</button>
+            <span>Count: {counter}</span><br/>
+            <button onClick={() => incrementCounter()}>
+                [+]
+            </button>
+            <button onClick={() => decrementCounter()}>
+                [-]
+            </button>
             <Container
                 overflowY="scroll"
                 paddingTop={8}
