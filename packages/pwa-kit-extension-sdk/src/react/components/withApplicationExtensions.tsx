@@ -11,6 +11,7 @@ import hoistNonReactStatics from 'hoist-non-react-statics'
 
 // Local
 import {applyHOCs} from '../utils'
+import {useStore} from '../hooks/useApplicationExtensionsStore'
 
 // Types
 import {ApplicationExtension} from '../classes/ApplicationExtension'
@@ -45,12 +46,24 @@ const withApplicationExtensions = <C,>(
     WrappedComponent: React.ComponentType<C>,
     options: withApplicationExtensionsOptions
 ) => {
-    const hocs: GenericHocType<C>[] = options.applicationExtensions
+    const {applicationExtensions} = options
+
+    // Get all application extension higher-order components (HOCs)
+    const hocs: GenericHocType<C>[] = applicationExtensions
         .filter((applicationExtension) => applicationExtension.isEnabled())
         // It's counterintuitive: reversing the list is necessary, as we build the React tree from innermost
         .reverse()
         .map((extension) => extension.extendApp.bind(extension) as GenericHocType<C>)
         .filter(Boolean)
+
+    // Inject store slices into the global store.
+    applicationExtensions.forEach((extension) => {
+        const {sliceName, sliceInitializer} = extension.getStoreSlice()
+
+        // Because there extensions have unique slice names, we can safely add them to the global store.
+        useStore.getState().addSlice(sliceName, sliceInitializer)
+    })
+
     const withApplicationExtensionsProvider: GenericHocType<any> = (WrappedComponent) => {
         const WithApplicationExtensionsProvider = (props: any) => (
             <ApplicationExtensionsProvider extensions={options.applicationExtensions}>

@@ -65,4 +65,15 @@ export class ApplicationExtension<
     public beforeRouteMatch(routes: RouteProps[]): RouteProps[] {
         return routes
     }
+
+    /**
+     * Default implementation of getStoreSlice. This method should be overridden by the extension.
+     * @returns The slice name and initializer for the extension's store slice.
+     */
+    public getStoreSlice(): {sliceName: string; sliceInitializer: any} {
+        return {
+            sliceName: this.constructor.name,
+            sliceInitializer: () => ({})
+        }
+    }
 }
