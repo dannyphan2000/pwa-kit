@@ -190,6 +190,7 @@ class Auth {
         data.append('code_verifier', codeVerifier)
         data.append('client_id', this._config.parameters.clientId)
         data.append('redirect_uri', redirectUri)
+        data.append('channel_id', this._config.parameters.siteId)
 
         const options = {
             headers: {
@@ -401,6 +402,7 @@ class Auth {
             parameters: {
                 redirect_uri: `${getAppOrigin()}${slasCallbackEndpoint}`,
                 client_id: this._config.parameters.clientId,
+                channel_id: this._config.parameters.siteId,
                 code_challenge: codeChallenge,
                 response_type: 'code',
                 hint: 'guest'
