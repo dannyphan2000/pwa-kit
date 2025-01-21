@@ -9,7 +9,7 @@
 import React from 'react'
 
 // Local
-import {useStore} from '../hooks/useApplicationExtensionsStore'
+import {useApplicationExtensionsStore} from '../hooks/useApplicationExtensionsStore'
 
 // Local Types
 type withStoreOptions = {
@@ -21,7 +21,7 @@ const withStore = <C,>(WrappedComponent: React.ComponentType<C>, options: withSt
     const {id = '@salesforce/extension-chakra-store-locator', sliceInitializer} = options
 
     // Because there extensions have unique slice names, we can safely add them to the global store.
-    useStore
+    useApplicationExtensionsStore
         .getState()
         .addSlice(id, sliceInitializer)
 

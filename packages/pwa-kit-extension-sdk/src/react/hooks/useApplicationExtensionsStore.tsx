@@ -15,7 +15,7 @@ interface BaseStore {
     getSlice: <T>(sliceName: string) => T | undefined
 }
 
-export const useStore = create<BaseStore>()(
+export const useApplicationExtensionsStore = create<BaseStore>()(
     devtools((set, get) => ({
         state: {},
 

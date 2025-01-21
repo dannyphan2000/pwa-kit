@@ -11,7 +11,7 @@ import {unstable_batchedUpdates} from 'react-dom'
 import {RouteProps} from 'react-router-dom'
 
 // Platform Imports
-import {ApplicationExtension, withStore, useStore} from '@salesforce/pwa-kit-extension-sdk/react'
+import {ApplicationExtension, withApplicationExtensionStore} from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 
 // Local Imports
@@ -44,16 +44,11 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
             (component: React.ComponentType<any>) =>
                 withOptionalCommerceSdkReactProvider(component, config),
             (component: React.ComponentType<any>) => withOptionalChakra(component),
-
-            // Do we really want to do this, of should it automatically be done behind the scenes?
-            // The positives of doing this here is that we have some flexibility on having or not having state management for a given extension.
-            // Also we as lumping all the react cook into one place.
-            // The negatives is that it's a little more verbose.
-            // Right now we aren't injecting the store into the props of the components which is what you would normally do with an HOC. So we 
-            // might want to do that. Instead we are just using the HOC to inject the store slice into the global store.
-            (component: React.ComponentType<any>) => withStore(
+            // TODO: Remove after cleaning up the API
+            (component: React.ComponentType<any>) => withApplicationExtensionStore(
                 component, 
                 {
+                    id: '@salesforce/extension-chakra-store-locator',
                     sliceInitializer: (set: any, get: any) => ({
                         counter: 0,
                         incrementCounter: () =>
@@ -67,32 +62,6 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
                     })
                 }
             )
-            // NOTE: We can also simplify the signature of this HOC by making the options more readable. But the caveat is that we don't have 
-            // direct access to the "global store" and only the current slice. 
-            // To get around this, we can pass in set/setAll/get/getAll functions to the action function. But that might look ugly and it doesn't
-            // align with the return value being the new state.
-            // Alternatively we can rely on telling our developers to use the store of a given extension by accessing the global store via the use store
-            // hook exported via the SDK. This is a little more verbose but it's more explicit.
-            // ,
-            // (component: React.ComponentType<any>) => withStore(
-            //     component, 
-            //     {
-            //         initialState: {
-            //             counter: 0,
-            //             incrementCounter: (state: any) => ({
-            //                 counter: state.counter + 1
-            //             }),
-            //             decrementCounter: (state: any) => ({
-            //                 counter: state.counter - 1
-            //             })
-                            
-            //         }
-            //     }
-            // )
-
-            // Lets also talk about doing something like this:
-            // const extension = useApplicationExtension(extensionMeta.id)
-            // extension.openModal()
         ]
 
         return applyHOCs(App, HOCs)
@@ -107,16 +76,6 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
             },
             ...routes
         ]
-    }
-
-    incrementCounter() {
-        const nonReactCallback = () => {
-            unstable_batchedUpdates(() => {
-                useStore.getState().getSlice(extensionMeta.id).incrementCounter()
-            })
-        }
-
-        nonReactCallback()
     }
 }
 

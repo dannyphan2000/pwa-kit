@@ -11,7 +11,6 @@ import hoistNonReactStatics from 'hoist-non-react-statics'
 
 // Local
 import {applyHOCs} from '../utils'
-import {useStore} from '../hooks/useApplicationExtensionsStore'
 
 // Types
 import {ApplicationExtension} from '../classes/ApplicationExtension'

@@ -7,24 +7,16 @@
 
 import React from 'react'
 import {Box, Container} from '@chakra-ui/react'
+
 import {StoreLocatorContent} from '../../components/content'
-
 import {useExtensionStore} from '../../hooks/use-extension-store'
-import {useApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
-
-import StoreLocatorExtension from '../../setup-app'
 
 const StoreLocatorPage = () => {
     const {incrementCounter, decrementCounter, counter} = useExtensionStore()
     
-    const extension = useApplicationExtension('@salesforce/extension-chakra-store-locator')
-    
     return (
         <Box data-testid="store-locator-page" bg="gray.50" py={[8, 16]}>
             <span>Count: {counter}</span><br/>
-            <button onClick={() => (extension as unknown as StoreLocatorExtension).incrementCounter()}>
-                [+] 
-            </button>
             <button onClick={() => incrementCounter()}>
                 [+]
             </button>

@@ -5,15 +5,13 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React, {useEffect, useState} from 'react'
+import {Link} from 'react-router-dom'
 import {useQuery} from '@tanstack/react-query'
 
-import {useApplicationExtensions} from '@salesforce/pwa-kit-extension-sdk/react'
+import {useApplicationExtensions, useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
 
 import HelloTS from '../components/hello-typescript'
 import HelloJS from '../components/hello-javascript'
-
-import {useStore as useExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
-import {Link} from 'react-router-dom'
 
 interface Props {
     value: number
@@ -88,7 +86,7 @@ h1 {
 const Home = ({value}: Props) => {
     const [counter, setCounter] = useState(0)
     const applicationExtensions = useApplicationExtensions()
-    const {counter: myCounter, incrementCounter, decrementCounter} = useExtensionsStore(
+    const {counter: myCounter, incrementCounter, decrementCounter} = useApplicationExtensionsStore(
         (state: Record<string, any>) =>
             state.state['@salesforce/extension-chakra-store-locator'] || {}
     )
