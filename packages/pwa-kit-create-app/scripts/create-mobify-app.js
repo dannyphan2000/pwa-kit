@@ -564,8 +564,12 @@ const ALL_PRESET_NAMES = PRIVATE_PRESET_NAMES.concat(PUBLIC_PRESET_NAMES)
 
 const PROJECT_ID_MAX_LENGTH = 20
 
-// Utilities
+// Constant for the base application directory
+const APP_DIR = 'app'
+// Constant for the directory containing extracted application extensions
+const APP_EXTENSIONS_DIR = 'application-extensions'
 
+// Utilities
 const readJson = (path) => JSON.parse(sh.cat(path))
 
 const writeJson = (path, data) => new sh.ShellString(JSON.stringify(data, null, 2)).to(path)
@@ -775,11 +779,11 @@ const processTemplate = (relFile, inputDir, outputDir, context) => {
 }
 
 /**
- * Process the Application Extensions into the application-extensions directory.
+ * Process the Application Extensions into the extracted application extensions directory.
  *
- * @param appExtensions - An array of the Application Extension names.
- * @param extractAppExtensions - A boolean indicating whether to extract the Application Extensions code from the npm package
- * @param appExtensionsDir - The path to the application-extensions directory.
+ * @param {Array} appExtensions - An array of the Application Extension names.
+ * @param {boolean} extractAppExtensions - A boolean indicating whether to extract the Application Extensions code from the npm package.
+ * @param {string} appExtensionsDir - The path to the extracted application extensions directory.
  */
 const processAppExtensions = (
     appExtensions = [],
@@ -806,11 +810,14 @@ const processAppExtensions = (
                 sync: true
             })
 
-            // Copy the Application Extension into the appropriate folder inside application-extensions
+            // Copy the extracted Application Extension into the appropriate folder
             const appExtensionTmpPath = p.join(appExtensionTmp, 'package')
-            const appExtensionDestDir = p.join(appExtensionsDir, appExtensionName)
+            const appExtensionDestDir = p.join(appExtensionsDir, appExtensionName.replace('/', '_'))
             sh.mkdir('-p', appExtensionDestDir)
 
+            // Copy hidden files
+            sh.cp('-rf', p.join(appExtensionTmpPath, '.*'), appExtensionDestDir)
+            // Copy regular files
             sh.cp('-rf', p.join(appExtensionTmpPath, '*'), appExtensionDestDir)
 
             // Clean up the temporary Application Extension directory
@@ -874,7 +881,7 @@ const runGenerator = async (
     // downloading from NPM or copying from the template bundle folder.
     const tmp = fs.mkdtempSync(p.resolve(os.tmpdir(), 'extract-template'))
     const packagePath = p.join(tmp, 'package')
-    const appExtensionsDir = p.join(outputDir, 'app', 'application-extensions')
+    const appExtensionsDir = p.join(outputDir, APP_DIR, APP_EXTENSIONS_DIR)
     const {id, type} = templateSource
     let tarPath
 
@@ -985,25 +992,36 @@ const runGenerator = async (
         processAppExtensions(selectedAppExtensions, extractAppExtensions, appExtensionsDir)
     }
 
-    // Add selected Application Extensions to devDependencies
-    const appExtensionDeps = selectedAppExtensions.reduce((acc, appExtensionName) => {
-        // Find the corresponding Application Extension details
-        const appExtensionDetails = context?.availableAppExtensions?.find(
-            (ext) => ext.value === `${appExtensionName}@latest`
-        )
-        const version = appExtensionDetails ? appExtensionDetails.version : 'latest'
-
-        acc[appExtensionName] = extractAppExtensions
-            ? `file:./app/application-extensions/${appExtensionName}`
-            : version
-        return acc
-    }, {})
-
-    updatePackageJson(p.resolve(outputDir, 'package.json'), {
+    // Prepare updates for package.json
+    const pkgUpdates = {
         name: getSlugifiedProjectName(context.answers.project.name || context.preset.id),
         version: GENERATED_PROJECT_VERSION,
-        devDependencies: appExtensionDeps
-    })
+        // Conditionally add workspaces for extractAppExtensions
+        ...(extractAppExtensions && {
+            workspaces: [`${p.join(APP_DIR, APP_EXTENSIONS_DIR)}/*`]
+        }),
+        // Add selected Application Extensions to devDependencies
+        devDependencies: selectedAppExtensions.reduce((acc, appExtensionName) => {
+            // Find the corresponding Application Extension details
+            const appExtensionDetails = context?.availableAppExtensions?.find(
+                (ext) => ext.value === `${appExtensionName}@latest`
+            )
+            const version = appExtensionDetails ? appExtensionDetails.version : 'latest'
+
+            acc[appExtensionName] = extractAppExtensions
+                ? `file:${p.join(
+                      '.',
+                      APP_DIR,
+                      APP_EXTENSIONS_DIR,
+                      appExtensionName.replace('/', '_')
+                  )}`
+                : version
+            return acc
+        }, {})
+    }
+
+    // Update the root package.json
+    updatePackageJson(p.resolve(outputDir, 'package.json'), pkgUpdates)
 
     // Clean up the temporary directory
     sh.rm('-rf', tmp)
