@@ -6,3 +6,4 @@
  */
 
 export {default as withApplicationExtensions} from './withApplicationExtensions'
+export {default as withStore} from './withStore'
