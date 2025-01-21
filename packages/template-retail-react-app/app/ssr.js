@@ -28,7 +28,7 @@ import {
     PASSWORDLESS_LOGIN_LANDING_PATH,
     RESET_PASSWORD_LANDING_PATH
 } from '@salesforce/retail-react-app/app/constants'
-import {validateSlasCallbackToken} from '@salesforce/retail-react-app/app/utils/jwt-utils'
+import {validateSlasCallbackToken, jwksCaching} from '@salesforce/retail-react-app/app/utils/jwt-utils'
 
 const config = getConfig()
 
@@ -69,49 +69,6 @@ const options = {
     encodeNonAsciiHttpHeaders: true
 }
 
-const tenantIdRegExp = /^[a-zA-Z]{4}_([0-9]{3}|s[0-9]{2}|stg|dev|prd)$/
-const shortCodeRegExp = /^[a-zA-Z0-9-]+$/
-
-/**
- *  Handles JWKS (JSON Web Key Set) caching the JWKS response for 2 weeks.
- *
- * @param {object} req Express request object.
- * @param {object} res Express response object.
- * @param {object} options Options for fetching B2C Commerce API JWKS.
- * @param {string} options.shortCode - The Short Code assigned to the realm.
- * @param {string} options.tenantId - The Tenant ID for the ECOM instance.
- * @returns {Promise<*>} Promise with the JWKS data.
- */
-async function jwksCaching(req, res, options) {
-    const {shortCode, tenantId} = options
-
-    const isValidRequest = tenantIdRegExp.test(tenantId) && shortCodeRegExp.test(shortCode)
-    if (!isValidRequest)
-        return res
-            .status(400)
-            .json({error: 'Bad request parameters: Tenant ID or short code is invalid.'})
-    try {
-        const JWKS_URI = `https://${shortCode}.api.commercecloud.salesforce.com/shopper/auth/v1/organizations/f_ecom_${tenantId}/oauth2/jwks`
-        const response = await fetch(JWKS_URI, {
-            headers: {
-                'User-Agent': 'OctoperfMercuryPerfTest'
-            }
-        })
-
-        if (!response.ok) {
-            throw new Error('Request failed with status: ' + response.status)
-        }
-
-        // JWKS rotate every 30 days. For now, cache response for 14 days so that
-        // fetches only need to happen twice a month
-        res.set('Cache-Control', 'public, max-age=1209600')
-
-        return res.json(await response.json())
-    } catch (error) {
-        res.status(400).json({error: `Error while fetching data: ${error.message}`})
-    }
-}
-
 const runtime = getRuntime()
 
 const resetPasswordCallback =
@@ -144,7 +101,7 @@ async function sendMagicLinkEmail(req, res, landingPath, emailTemplate) {
 
 const {handler} = runtime.createHandler(options, (app) => {
     app.use(express.json()) // To parse JSON payloads
-    app.use(express.urlencoded({ extended: true }))
+    app.use(express.urlencoded({extended: true}))
     // Set default HTTP security headers required by PWA Kit
     app.use(defaultPwaKitSecurityHeaders)
     // Set custom HTTP security headers
@@ -188,15 +145,14 @@ const {handler} = runtime.createHandler(options, (app) => {
     // https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-passwordless-login.html#receive-the-callback
     app.post(passwordlessLoginCallback, (req, res) => {
         const slasCallbackToken = req.headers['x-slas-callback-token']
-        validateSlasCallbackToken(slasCallbackToken)
-            .then(() => {
-                sendMagicLinkEmail(
-                    req,
-                    res,
-                    PASSWORDLESS_LOGIN_LANDING_PATH,
-                    process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE
-                )
-            })
+        validateSlasCallbackToken(slasCallbackToken).then(() => {
+            sendMagicLinkEmail(
+                req,
+                res,
+                PASSWORDLESS_LOGIN_LANDING_PATH,
+                process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE
+            )
+        })
     })
 
     // Handles the reset password callback route. SLAS makes a POST request to this
@@ -205,15 +161,14 @@ const {handler} = runtime.createHandler(options, (app) => {
     // https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-password-reset.html#slas-password-reset-flow
     app.post(resetPasswordCallback, (req, res) => {
         const slasCallbackToken = req.headers['x-slas-callback-token']
-        validateSlasCallbackToken(slasCallbackToken)
-            .then(() => {
-                sendMagicLinkEmail(
-                    req,
-                    res,
-                    RESET_PASSWORD_LANDING_PATH,
-                    process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE
-                )
-            })
+        validateSlasCallbackToken(slasCallbackToken).then(() => {
+            sendMagicLinkEmail(
+                req,
+                res,
+                RESET_PASSWORD_LANDING_PATH,
+                process.env.MARKETING_CLOUD_RESET_PASSWORD_TEMPLATE
+            )
+        })
     })
 
     app.get('/robots.txt', runtime.serveStaticFile('static/robots.txt'))
