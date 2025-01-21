@@ -11,8 +11,8 @@ import extensionMeta from '../../extension-meta.json'
 /**
  * This hook returns the store for the current application extension.
  */
-export const useExtensionStore = (defaultValue: any = {}) => {
-    const state = useApplicationExtensionsStore((state: Record<string, any>) => state.state[extensionMeta.id] || defaultValue)
+export const useExtensionStore = () => {
+    const state = useApplicationExtensionsStore((state: Record<string, any>) => state.state[extensionMeta.id])
     
     if (state === undefined) {
         throw new Error(

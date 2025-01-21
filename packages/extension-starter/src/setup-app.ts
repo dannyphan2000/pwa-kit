@@ -10,7 +10,8 @@ import React from 'react'
 import {RouteProps} from 'react-router-dom'
 
 // Platform Imports
-import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
+import {ApplicationExtension, withApplicationExtensionStore} from '@salesforce/pwa-kit-extension-sdk/react'
+import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 
 // Local Imports
 import {Config} from './types'
@@ -36,7 +37,31 @@ class Sample extends ApplicationExtension<Config> {
     extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
-        return sampleHOC(App)
+
+        const HOCs = [
+            sampleHOC,
+            // NOTE: Add state management to the application extension. If your extension does not use state management, you can remove 
+            // the use of `withApplicationExtensionStore`.
+            // Please refer to the "state management" section of the readme for more information on how to use this feature.
+            (component: React.ComponentType<any>) => 
+                withApplicationExtensionStore(
+                    component, 
+                    {
+                        id: extensionMeta.id,
+                        sliceInitializer: (set: any, get: any) => ({
+                            sampleStateValue: 0,
+                            sampleAction: () =>
+                                {
+                                    set((state: any) => ({
+                                        counter: state.sampleStateValue + 1
+                                    }))
+                                }
+                        })
+                    }
+                )
+        ]
+
+        return applyHOCs(App, HOCs)
     }
 
     /**

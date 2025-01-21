@@ -7,7 +7,6 @@
 
 // Third-Party
 import React from 'react'
-import {unstable_batchedUpdates} from 'react-dom'
 import {RouteProps} from 'react-router-dom'
 
 // Platform Imports
@@ -45,12 +44,9 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
                 // TODO: Kevin, this is where you are going to place your initial state and actions. E.g. "modalOpen: false" etc.
                 counter: 0,
                 incrementCounter: () =>
-                    {
-                        console.log('incrementCounter', get())
-                        set((state: any) => ({
-                            counter: state.counter + 1
-                        }))
-                    },
+                    set((state: any) => ({
+                        counter: state.counter + 1
+                    })),
                 decrementCounter: () =>
                     set((state: any) => ({
                         counter: state.counter - 1

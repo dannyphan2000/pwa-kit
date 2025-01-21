@@ -8,7 +8,10 @@ import React, {useEffect, useState} from 'react'
 import {Link} from 'react-router-dom'
 import {useQuery} from '@tanstack/react-query'
 
-import {useApplicationExtensions, useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
+import {
+    useApplicationExtensions,
+    useApplicationExtensionsStore
+} from '@salesforce/pwa-kit-extension-sdk/react'
 
 import HelloTS from '../components/hello-typescript'
 import HelloJS from '../components/hello-javascript'
@@ -86,7 +89,11 @@ h1 {
 const Home = ({value}: Props) => {
     const [counter, setCounter] = useState(0)
     const applicationExtensions = useApplicationExtensions()
-    const {counter: myCounter, incrementCounter, decrementCounter} = useApplicationExtensionsStore(
+    const {
+        counter: myCounter,
+        incrementCounter,
+        decrementCounter
+    } = useApplicationExtensionsStore(
         (state: Record<string, any>) =>
             state.state['@salesforce/extension-chakra-store-locator'] || {}
     )
@@ -120,12 +127,8 @@ const Home = ({value}: Props) => {
                         Support!
                     </h1>
                     <span>Counter: {myCounter}</span>
-                    <button onClick={() => incrementCounter()}>
-                        [+]
-                    </button>
-                    <button onClick={() => decrementCounter()}>
-                        [-]
-                    </button>
+                    <button onClick={() => incrementCounter()}>[+]</button>
+                    <button onClick={() => decrementCounter()}>[-]</button>
                     <Link to="/store-locator">/store-locator</Link>
                 </div>
                 <div className="panel">

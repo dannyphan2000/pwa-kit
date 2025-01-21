@@ -62,6 +62,39 @@ the extension as they like.
 > Congratulations! The Sample extension was successfully installed! Please visit https://www.npmjs.com/package/@salesforce/extension-starter for more information on how to use this extension.
 ```
 
+# State Management
+
+By default all extensions are enhanced with state management using the `withApplicationExtensionStore` higher-order component. Under the hood
+the state is provided using [Zustand](https://www.npmjs.com/package/zustand) as a global store for the entire PWA-Kit application. 
+Each Application Extension inserts a "slice" into this global store following the 
+[slicing pattern](https://github.com/pmndrs/zustand/blob/37e1e3f193a5e5dec6fbd0f07514aec59a187e01/docs/guides/slices-pattern.md). 
+This allows you to have data separation from one extension to the other when it's important, but also allows you to access state its 
+associated actions of other extensions when needed. 
+
+An examples of why you might want to access state and action from another extension would be opening a store-locator map modal provided via 
+the store-locator extension from other pages like the storefronts toolbar or the base project.
+
+This is how you would do something like this.
+
+```
+// /base-project/app/components/my-component.jsx
+import {useExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
+
+export MyComponent = () => {
+    // Grab the slice of the extension state for "extension-a"
+    const {toggleMapsModal} = useExtensionsStore(
+        (state) =>
+            state.state['@salesforce/extension-store-locator'] || {}
+    )
+
+    return (
+        <div>
+            <button onClick={() => toggleMapsModal()}/>
+        </div>
+    )
+}
+```
+
 # Advanced Usage
 
 In order to customize this Application Extension to your particular needs we suggest that you refer to the section titled

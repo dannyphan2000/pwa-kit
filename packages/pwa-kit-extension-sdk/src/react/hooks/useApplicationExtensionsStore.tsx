@@ -36,7 +36,7 @@ export const useApplicationExtensionsStore = create<BaseStore>()(
                                     }
                                 }
                             }))
-                        }, 
+                        },
                         // Narrowed version of get. Which returns state of the current slice.
                         () => get().state[sliceName]
                     )
