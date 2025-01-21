@@ -1,4 +1,4 @@
-## v2.9.0-preview.0 (Jan 10, 2025)
+## v2.9.0 (Jan 21, 2025)
 - Support Node 20 and NPM 10 in PWA Kit v2 [#2189](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2189)
 ## v2.8.4 (Jul 12, 2024)
 ## v2.8.3 (Apr 09, 2024)
