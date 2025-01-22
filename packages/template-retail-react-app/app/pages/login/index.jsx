@@ -22,6 +22,7 @@ import Seo from '@salesforce/retail-react-app/app/components/seo'
 import {useForm} from 'react-hook-form'
 import {useLocation} from 'react-router-dom'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
+import useDatacloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
 import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
@@ -36,6 +37,7 @@ const Login = () => {
     const form = useForm()
     const location = useLocation()
     const einstein = useEinstein()
+    const datacloud = useDatacloud()
     const {isRegistered, customerType} = useCustomerType()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
 
@@ -90,6 +92,7 @@ const Login = () => {
     /**************** Einstein ****************/
     useEffect(() => {
         einstein.sendViewPage(location.pathname)
+        datacloud.sendViewPage(location.pathname)
     }, [])
     return (
         <Box data-testid="login-page" bg="gray.50" py={[8, 16]}>
