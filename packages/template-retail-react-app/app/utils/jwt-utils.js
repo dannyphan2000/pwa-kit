@@ -4,26 +4,41 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {createRemoteJWKSet as joseCreateRemoteJWKSet, jwtVerify} from 'jose'
+import {createRemoteJWKSet as joseCreateRemoteJWKSet, jwtVerify, decodeJwt} from 'jose'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+
+const CLAIM = {
+    ISSUER: 'iss'
+}
+
+const DELIMITER = {
+    ISSUER: '/'
+}
 
 const throwSlasTokenValidationError = (message, code) => {
     throw new Error(`SLAS Token Validation Error: ${message}`, code)
 }
 
-export const createRemoteJWKSet = () => {
+export const createRemoteJWKSet = (tenantId) => {
     const appOrigin = getAppOrigin()
     const {app: appConfig} = getConfig()
     const shortCode = appConfig.commerceAPI.parameters.shortCode
-    const tenantId = appConfig.commerceAPI.parameters.organizationId.replace(/^f_ecom_/, '')
+    const configTenantId = appConfig.commerceAPI.parameters.organizationId.replace(/^f_ecom_/, '')
+    if (tenantId !== configTenantId) {
+        throw new Error(`The tenant ID in your PWA Kit configuration ("${configTenantId}") does not match the tenant ID in the SLAS callback token ("${tenantId}").`)
+    }
     const JWKS_URI = `${appOrigin}/${shortCode}/${tenantId}/oauth2/jwks`
     return joseCreateRemoteJWKSet(new URL(JWKS_URI))
 }
 
 export const validateSlasCallbackToken = async (token) => {
+    const payload = decodeJwt(token)
+    const subClaim = payload[CLAIM.ISSUER]
+    const tokens = subClaim.split(DELIMITER.ISSUER)
+    const tenantId = tokens[2]
     try {
-        const jwks = createRemoteJWKSet()
+        const jwks = createRemoteJWKSet(tenantId)
         const {payload} = await jwtVerify(token, jwks, {})
         return payload
     } catch (error) {
@@ -54,7 +69,11 @@ export async function jwksCaching(req, res, options) {
             .json({error: 'Bad request parameters: Tenant ID or short code is invalid.'})
     try {
         const JWKS_URI = `https://${shortCode}.api.commercecloud.salesforce.com/shopper/auth/v1/organizations/f_ecom_${tenantId}/oauth2/jwks`
-        const response = await fetch(JWKS_URI)
+        const response = await fetch(JWKS_URI, {
+            headers: {
+                'User-Agent': 'OctoperfMercuryPerfTest'
+            }
+        })
 
         if (!response.ok) {
             throw new Error('Request failed with status: ' + response.status)
