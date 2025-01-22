@@ -65,8 +65,4 @@ export class ApplicationExtension<
     public beforeRouteMatch(routes: RouteProps[]): RouteProps[] {
         return routes
     }
-
-    public getSliceInitializer(): any {
-        return () => ({})
-    }
 }
