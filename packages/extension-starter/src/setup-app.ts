@@ -36,7 +36,7 @@ interface StoreSlice {
     decrement: () => void
 }
 
-// This is is safe to delete if your extension does not use state. If you aren't using this, ensure you remove the 
+// This is is safe to delete if your extension does not use state. If you aren't using this, ensure you remove the
 // `withApplicationExtensionStore` usage below as well.
 const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
     count: 0,
