@@ -25,6 +25,7 @@ import {usePasswordReset} from '@salesforce/retail-react-app/app/hooks/use-passw
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import {
     API_ERROR_MESSAGE,
+    INVALID_TOKEN_ERROR,
     INVALID_TOKEN_ERROR_MESSAGE
 } from '@salesforce/retail-react-app/app/constants'
 
@@ -46,7 +47,8 @@ const ResetPasswordLanding = () => {
             await resetPassword({email, token, newPassword: values.password})
             navigate('/login')
         } catch (error) {
-            const message = /Unauthorized/i.test(error.message)
+            const errorData = await error.response?.json()
+            const message = INVALID_TOKEN_ERROR.test(errorData.message)
                 ? formatMessage(INVALID_TOKEN_ERROR_MESSAGE)
                 : formatMessage(API_ERROR_MESSAGE)
             form.setError('global', {type: 'manual', message})

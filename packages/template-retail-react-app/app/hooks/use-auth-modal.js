@@ -31,17 +31,24 @@ import ResetPasswordForm from '@salesforce/retail-react-app/app/components/reset
 import RegisterForm from '@salesforce/retail-react-app/app/components/register'
 import PasswordlessEmailConfirmation from '@salesforce/retail-react-app/app/components/email-confirmation/index'
 import {noop} from '@salesforce/retail-react-app/app/utils/utils'
-import {API_ERROR_MESSAGE, LOGIN_TYPES} from '@salesforce/retail-react-app/app/constants'
+import {
+    API_ERROR_MESSAGE,
+    CREATE_ACCOUNT_FIRST_ERROR_MESSAGE,
+    FEATURE_UNAVAILABLE_ERROR_MESSAGE,
+    LOGIN_TYPES,
+    PASSWORDLESS_ERROR_MESSAGES,
+    USER_NOT_FOUND_ERROR
+} from '@salesforce/retail-react-app/app/constants'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
 import {usePasswordReset} from '@salesforce/retail-react-app/app/hooks/use-password-reset'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
-const LOGIN_VIEW = 'login'
-const REGISTER_VIEW = 'register'
-const PASSWORD_VIEW = 'password'
-const EMAIL_VIEW = 'email'
+export const LOGIN_VIEW = 'login'
+export const REGISTER_VIEW = 'register'
+export const PASSWORD_VIEW = 'password'
+export const EMAIL_VIEW = 'email'
 
 const LOGIN_ERROR = defineMessage({
     defaultMessage: "Something's not right with your email or password. Try again.",
@@ -50,6 +57,7 @@ const LOGIN_ERROR = defineMessage({
 
 export const AuthModal = ({
     initialView = LOGIN_VIEW,
+    initialEmail = '',
     onLoginSuccess = noop,
     onRegistrationSuccess = noop,
     isOpen,
@@ -78,7 +86,7 @@ export const AuthModal = ({
     const register = useAuthHelper(AuthHelpers.Register)
 
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
-    const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
+    const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState(initialEmail)
     const {getPasswordResetToken} = usePasswordReset()
     const authorizePasswordlessLogin = useAuthHelper(AuthHelpers.AuthorizePasswordless)
 
@@ -100,10 +108,12 @@ export const AuthModal = ({
                 await authorizePasswordlessLogin.mutateAsync({userid: email})
                 setCurrentView(EMAIL_VIEW)
             } catch (error) {
-                form.setError('global', {
-                    type: 'manual',
-                    message: formatMessage(API_ERROR_MESSAGE)
-                })
+                const message = USER_NOT_FOUND_ERROR.test(error.message)
+                    ? formatMessage(CREATE_ACCOUNT_FIRST_ERROR_MESSAGE)
+                    : PASSWORDLESS_ERROR_MESSAGES.some((msg) => msg.test(error.message))
+                    ? formatMessage(FEATURE_UNAVAILABLE_ERROR_MESSAGE)
+                    : formatMessage(API_ERROR_MESSAGE)
+                form.setError('global', {type: 'manual', message})
             }
         }
 
@@ -169,10 +179,11 @@ export const AuthModal = ({
                 try {
                     await getPasswordResetToken(data.email)
                 } catch (e) {
-                    form.setError('global', {
-                        type: 'manual',
-                        message: formatMessage(API_ERROR_MESSAGE)
-                    })
+                    const message =
+                        e.response?.status === 400
+                            ? formatMessage(FEATURE_UNAVAILABLE_ERROR_MESSAGE)
+                            : formatMessage(API_ERROR_MESSAGE)
+                    form.setError('global', {type: 'manual', message})
                 }
             },
             email: async () => {
@@ -205,6 +216,10 @@ export const AuthModal = ({
     useEffect(() => {
         form.reset()
     }, [currentView])
+
+    useEffect(() => {
+        setPasswordlessLoginEmail(initialEmail)
+    }, [initialEmail])
 
     useEffect(() => {
         // Lets determine if the user has either logged in, or registed.
@@ -317,6 +332,7 @@ export const AuthModal = ({
 
 AuthModal.propTypes = {
     initialView: PropTypes.oneOf([LOGIN_VIEW, REGISTER_VIEW, PASSWORD_VIEW, EMAIL_VIEW]),
+    initialEmail: PropTypes.string,
     isOpen: PropTypes.bool.isRequired,
     onOpen: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,

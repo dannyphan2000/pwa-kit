@@ -1055,6 +1055,12 @@
       "value": "Already have an account? Log in"
     }
   ],
+  "contact_info.button.back_to_sign_in_options": [
+    {
+      "type": 0,
+      "value": "Back to Sign In Options"
+    }
+  ],
   "contact_info.button.checkout_as_guest": [
     {
       "type": 0,
@@ -1519,6 +1525,18 @@
     {
       "type": 0,
       "value": "Wishlist"
+    }
+  ],
+  "global.error.create_account": [
+    {
+      "type": 0,
+      "value": "This feature is not currently available. You must create an account to access this feature."
+    }
+  ],
+  "global.error.feature_unavailable": [
+    {
+      "type": 0,
+      "value": "This feature is not currently available."
     }
   ],
   "global.error.invalid_token": [
