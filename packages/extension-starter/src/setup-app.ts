@@ -12,6 +12,7 @@ import {RouteProps} from 'react-router-dom'
 // Platform Imports
 import {
     ApplicationExtension,
+    SliceInitializer,
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
@@ -29,6 +30,20 @@ import sampleHOC from 'overridable!./components/sample-hoc'
 // Others
 import extensionMeta from '../extension-meta.json'
 
+interface StoreSlice {
+    count: number
+    increment: () => void
+    decrement: () => void
+}
+
+// This is is safe to delete if your extension does not use state. If you aren't using this, ensure you remove the 
+// `withApplicationExtensionStore` usage below as well.
+const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
+    count: 0,
+    increment: () => set((state) => ({count: state.count + 1})),
+    decrement: () => set((state) => ({count: state.count - 1}))
+})
+
 class Sample extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 
@@ -40,23 +55,15 @@ class Sample extends ApplicationExtension<Config> {
     extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
-        const {id} = extensionMeta
-        const sliceInitializer = (set: any) => ({
-            counter: 0,
-            incrementCounter: () => {
-                set((state: any) => ({
-                    // TODO: Fix this typing, the slicer users generics so we can leverage that here so that count is a known number
-                    counter: (state.counter as number) + 1
-                }))
-            }
-        })
-
         const HOCs = [
             // Example higher-order component, this can be safely removed.
             sampleHOC,
             // Optionally include state for this extension using `withApplicationExtensionStore`
             (component: React.ComponentType<any>) =>
-                withApplicationExtensionStore(component, {id, sliceInitializer})
+                withApplicationExtensionStore(component, {
+                    id: extensionMeta.id,
+                    initializer: sliceInitializer
+                })
         ]
 
         return applyHOCs(App, HOCs)

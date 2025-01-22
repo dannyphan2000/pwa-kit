@@ -44,7 +44,7 @@ describe('withApplicationExtensionStore HOC', () => {
     const mockSliceInitializer = jest.fn()
     const mockOptions = {
         id: 'testSlice',
-        sliceInitializer: mockSliceInitializer
+        initializer: mockSliceInitializer
     }
 
     afterEach(() => {

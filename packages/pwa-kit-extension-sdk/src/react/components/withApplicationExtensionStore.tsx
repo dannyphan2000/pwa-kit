@@ -17,7 +17,7 @@ import {SliceInitializer} from '../hooks/useApplicationExtensionsStore'
 // Local Types
 type withStoreOptions = {
     id: string
-    sliceInitializer: SliceInitializer<any>
+    initializer: SliceInitializer<any>
 }
 
 /**
@@ -31,10 +31,10 @@ const withApplicationExtensionStore = <C,>(
     WrappedComponent: React.ComponentType<C>,
     options: withStoreOptions
 ) => {
-    const {id, sliceInitializer} = options
+    const {id, initializer} = options
 
     // Because there extensions have unique slice names, we can safely add them to the global store.
-    useApplicationExtensionsStore.getState().addSlice(id, sliceInitializer)
+    useApplicationExtensionsStore.getState().addSlice(id, initializer)
 
     // Return the original component as we aren't modifying it in any way... yet.
     return WrappedComponent

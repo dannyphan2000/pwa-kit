@@ -7,12 +7,16 @@
 import {create} from 'zustand'
 import {devtools} from 'zustand/middleware'
 
-export type SliceInitializer<T> = (set: (partial: any) => void, get: () => BaseStore) => T
+// export type SliceInitializer<T> = (set: (partial: any) => void, get: () => BaseStore) => T
+export type SliceInitializer<T> = (
+    set: (partial: (state: T) => Partial<T>) => void,
+    get: () => T
+) => T
 
 interface BaseStore {
     state: Record<string, any>
-    addSlice: <T>(sliceName: string, sliceInitializer: SliceInitializer<T>) => void
-    getSlice: <T>(sliceName: string) => T | undefined
+    addSlice: <T>(name: string, initializer: SliceInitializer<T>) => void
+    getSlice: <T>(name: string) => T | undefined
 }
 
 /**
@@ -30,25 +34,25 @@ export const useApplicationExtensionsStore = create<BaseStore>()(
         /**
          * Dynamically adds a slice to the store.
          */
-        addSlice: <T,>(sliceName: string, sliceInitializer: SliceInitializer<T>) => {
-            set((state) => ({
+        addSlice: <T,>(name: string, initializer: SliceInitializer<T>) => {
+            set((state: {state: Record<string, any>}) => ({
                 state: {
                     ...state.state,
-                    [sliceName]: sliceInitializer(
+                    [name]: initializer(
                         // Narrowed version of set. Which allows setting state of the current slice only.
-                        (action: any) => {
-                            set((state: any) => ({
+                        (action: (state: T) => Partial<T>) => {
+                            set((state: {state: Record<string, any>}) => ({
                                 state: {
                                     ...state.state,
-                                    [sliceName]: {
-                                        ...state.state[sliceName],
-                                        ...action(state.state[sliceName])
+                                    [name]: {
+                                        ...state.state[name],
+                                        ...action(state.state[name])
                                     }
                                 }
                             }))
                         },
                         // Narrowed version of get. Which returns state of the current slice.
-                        () => get().state[sliceName]
+                        () => get().state[name]
                     )
                 }
             }))
@@ -57,8 +61,8 @@ export const useApplicationExtensionsStore = create<BaseStore>()(
         /**
          * Retrieves a slice of state from the store by its name.
          */
-        getSlice: <T,>(sliceName: string): T | undefined => {
-            return get().state[sliceName]
+        getSlice: <T,>(name: string): T | undefined => {
+            return get().state[name]
         }
     }))
 )
