@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {createRemoteJWKSet as joseCreateRemoteJWKSet, jwtVerify} from 'jose'
+import {createRemoteJWKSet as joseCreateRemoteJWKSet, jwtVerify, decodeJwt} from 'jose'
 import {
     createRemoteJWKSet,
     validateSlasCallbackToken
-} from '@salesforce/retail-react-app/../../app/utils/jwt-utils'
+} from '@salesforce/retail-react-app/app/utils/jwt-utils'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
@@ -51,7 +51,8 @@ jest.mock('@salesforce/pwa-kit-runtime/utils/ssr-config', () => ({
 
 jest.mock('jose', () => ({
     createRemoteJWKSet: jest.fn(),
-    jwtVerify: jest.fn()
+    jwtVerify: jest.fn(),
+    decodeJwt: jest.fn()
 }))
 
 describe('createRemoteJWKSet', () => {
@@ -60,6 +61,7 @@ describe('createRemoteJWKSet', () => {
     })
 
     it('constructs the correct JWKS URI and call joseCreateRemoteJWKSet', () => {
+        const mockTenantId = 'aaaa_001'
         const mockAppOrigin = 'https://test-storefront.com'
         getAppOrigin.mockReturnValue(mockAppOrigin)
         getConfig.mockReturnValue({
@@ -76,7 +78,7 @@ describe('createRemoteJWKSet', () => {
 
         const expectedJWKS_URI = new URL(`${mockAppOrigin}/abc123/aaaa_001/oauth2/jwks`)
 
-        const res = createRemoteJWKSet()
+        const res = createRemoteJWKSet(mockTenantId)
 
         expect(getAppOrigin).toHaveBeenCalled()
         expect(getConfig).toHaveBeenCalled()
@@ -104,6 +106,7 @@ describe('validateSlasCallbackToken', () => {
     })
 
     it('returns payload when callback token is valid', async () => {
+        decodeJwt.mockReturnValue({iss: 'slas/dev/aaaa_001'})
         const mockPayload = {sub: '123', role: 'admin'}
         jwtVerify.mockResolvedValue({payload: mockPayload})
 
@@ -114,6 +117,7 @@ describe('validateSlasCallbackToken', () => {
     })
 
     it('throws validation error when the token is invalid', async () => {
+        decodeJwt.mockReturnValue({iss: 'slas/dev/aaaa_001'})
         const mockError = new Error('Invalid token')
         jwtVerify.mockRejectedValue(mockError)
 
@@ -121,5 +125,10 @@ describe('validateSlasCallbackToken', () => {
             mockError.message
         )
         expect(jwtVerify).toHaveBeenCalledWith('mock.slas.token', MOCK_JWKS, {})
+    })
+
+    it('throws mismatch error when the config tenantId does not match the jwt tenantId', async () => {
+        decodeJwt.mockReturnValue({iss: 'slas/dev/zzrf_001'})
+        await expect(validateSlasCallbackToken('mock.slas.token')).rejects.toThrow()
     })
 })
