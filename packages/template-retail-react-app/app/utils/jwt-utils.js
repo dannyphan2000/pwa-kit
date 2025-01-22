@@ -69,11 +69,7 @@ export async function jwksCaching(req, res, options) {
             .json({error: 'Bad request parameters: Tenant ID or short code is invalid.'})
     try {
         const JWKS_URI = `https://${shortCode}.api.commercecloud.salesforce.com/shopper/auth/v1/organizations/f_ecom_${tenantId}/oauth2/jwks`
-        const response = await fetch(JWKS_URI, {
-            headers: {
-                'User-Agent': 'OctoperfMercuryPerfTest'
-            }
-        })
+        const response = await fetch(JWKS_URI)
 
         if (!response.ok) {
             throw new Error('Request failed with status: ' + response.status)
