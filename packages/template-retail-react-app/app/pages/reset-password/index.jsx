@@ -25,6 +25,7 @@ import ResetPasswordForm from '@salesforce/retail-react-app/app/components/reset
 import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
+import useDatacloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
 import {useLocation} from 'react-router-dom'
 
 const ResetPassword = () => {
@@ -33,6 +34,7 @@ const ResetPassword = () => {
     const [submittedEmail, setSubmittedEmail] = useState('')
     const [showSubmittedSuccess, setShowSubmittedSuccess] = useState(false)
     const einstein = useEinstein()
+    const datacloud = useDatacloud()
     const {pathname} = useLocation()
     const getResetPasswordToken = useShopperCustomersMutation(
         ShopperCustomersMutations.GetResetPasswordToken
@@ -54,6 +56,7 @@ const ResetPassword = () => {
     /**************** Einstein ****************/
     useEffect(() => {
         einstein.sendViewPage(pathname)
+        datacloud.sendViewPage(pathname)
     }, [])
 
     return (
