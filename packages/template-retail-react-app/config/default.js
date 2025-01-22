@@ -18,7 +18,8 @@ module.exports = {
         login: {
             passwordless: {
                 enabled: false,
-                callbackURI: process.env.PASSWORDLESS_LOGIN_CALLBACK_URI || '/passwordless-login-callback'
+                callbackURI:
+                    process.env.PASSWORDLESS_LOGIN_CALLBACK_URI || '/passwordless-login-callback'
             },
             social: {
                 enabled: false,

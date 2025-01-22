@@ -28,7 +28,10 @@ import {
     PASSWORDLESS_LOGIN_LANDING_PATH,
     RESET_PASSWORD_LANDING_PATH
 } from '@salesforce/retail-react-app/app/constants'
-import {validateSlasCallbackToken, jwksCaching} from '@salesforce/retail-react-app/app/utils/jwt-utils'
+import {
+    validateSlasCallbackToken,
+    jwksCaching
+} from '@salesforce/retail-react-app/app/utils/jwt-utils'
 
 const config = getConfig()
 

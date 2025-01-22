@@ -190,10 +190,7 @@ describe('updating password', function () {
                         id_token: 'testIdToken'
                     })
                 )
-            ),
-            rest.post('*/baskets/actions/merge', (req, res, ctx) => {
-                return res(ctx.delay(0), ctx.json(mockMergedBasket))
-            })
+            )
         )
     })
     test('Password update form is rendered correctly', async () => {
