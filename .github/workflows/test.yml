@@ -231,7 +231,7 @@ jobs:
         uses: "./.github/actions/count_deps"
 
       - name: Store Verdaccio logfile artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: packages/pwa-kit-create-app/local-npm-repo/verdaccio.log
 
@@ -328,7 +328,7 @@ jobs:
         uses: "./.github/actions/count_deps"
 
       - name: Store Verdaccio logfile artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: packages/pwa-kit-create-app/local-npm-repo/verdaccio.log
   lighthouse:
