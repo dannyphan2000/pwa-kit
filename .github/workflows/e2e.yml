@@ -13,9 +13,9 @@ jobs:
         # Run all matrix env at once because we will not deploy demo app to MRT.
         node: [18, 20, 22]
         npm: [8, 9, 10, 11]
-        # exclude: # node 16 is not compatible with npm 10
-        #   - node: 16
-        #     npm: 10
+        exclude: # node 18 is not compatible with npm 11
+          - node: 18
+            npm: 11
     runs-on: ubuntu-latest
     env:
       # The "default" npm is the one that ships with a given version of node.
@@ -60,9 +60,9 @@ jobs:
       matrix:
         node: [18, 20, 22]
         npm: [8, 9, 10, 11]
-        # exclude: # node 16 is not compatible with npm 10
-        #   - node: 16
-        #     npm: 10
+        exclude: # node 18 is not compatible with npm 11
+          - node: 18
+            npm: 11
     runs-on: ubuntu-latest
     env:
       # The "default" npm is the one that ships with a given version of node.
@@ -157,9 +157,9 @@ jobs:
       matrix:
         node: [18, 20, 22]
         npm: [8, 9, 10, 11]
-        # exclude: # node 16 is not compatible with npm 10
-        #   - node: 16
-        #     npm: 10
+        exclude: # node 18 is not compatible with npm 11
+          - node: 18
+            npm: 11
     runs-on: ubuntu-latest
     env:
       # The "default" npm is the one that ships with a given version of node.
@@ -253,9 +253,9 @@ jobs:
         # Run all matrix env at once because we will not deploy demo app to MRT.
         node: [18, 20, 22]
         npm: [8, 9, 10, 11]
-        # exclude: # node 16 is not compatible with npm 10
-        #   - node: 16
-        #     npm: 10
+        exclude: # node 18 is not compatible with npm 11
+          - node: 18
+            npm: 11
     runs-on: ubuntu-latest
     env:
       # The "default" npm is the one that ships with a given version of node.
