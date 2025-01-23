@@ -50,6 +50,7 @@ import ProductTile from './components/project/product-tile'
 import SocialIcons from './components/project/social-icons'
 import SwatchGroup from './components/project/swatch-group'
 import ImageGallery from './components/project/image-gallery'
+import StoreHeading from './components/project/store-heading'
 
 // Please refer to the Chakra-Ui theme customization docs found
 // here https://chakra-ui.com/docs/theming/customize-theme to learn
@@ -97,7 +98,8 @@ export const overrides = {
         Pagination,
         ProductTile,
         SwatchGroup,
-        ImageGallery
+        ImageGallery,
+        StoreHeading
     }
 }
 

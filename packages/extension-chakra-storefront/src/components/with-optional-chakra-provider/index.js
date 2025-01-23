@@ -5,4 +5,4 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-export {default as withChakraUI} from './with-chakra-ui'
+export {default as withOptionalChakra} from './with-optional-chakra-provider'

@@ -7,7 +7,7 @@
 
 import React from 'react'
 import {Heading, Badge, useMultiStyleConfig, SystemStyleObject} from '@chakra-ui/react'
-import metaData from '../../extension-meta.json'
+import metaData from '../../../extension-meta.json'
 import {useApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 
 export const StoreLocatorHeading = (): JSX.Element => {

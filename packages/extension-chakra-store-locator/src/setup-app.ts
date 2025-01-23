@@ -8,7 +8,7 @@
 // Third-Party
 import React from 'react'
 import {RouteProps} from 'react-router-dom'
-
+import {ThemeOverride} from '@chakra-ui/react'
 // Platform Imports
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
@@ -22,6 +22,7 @@ import {Config} from './types'
 import StoreLocatorPage from './pages/store-locator'
 import {logger} from './logger'
 import extensionMeta from '../extension-meta.json'
+import theme from './theme'
 
 class StoreLocatorExtension extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
@@ -56,6 +57,10 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
             },
             ...routes
         ]
+    }
+
+    public getTheme(): ThemeOverride {
+        return theme
     }
 }
 

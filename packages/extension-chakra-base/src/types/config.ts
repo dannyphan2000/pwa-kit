@@ -5,34 +5,15 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import type {ApplicationExtensionConfig} from '@salesforce/pwa-kit-extension-sdk/types'
+import {ThemeOverride} from '@chakra-ui/react'
 
 /**
  * This defines how your extension can be configured in the user's project. Please update it to your specific needs!
  */
 export interface UserConfig extends ApplicationExtensionConfig {
+    // react-router-style path to the new sample page
     path?: string
-    applyTheme?: boolean
-    radius?: number
-    radiusUnit?: string
-    defaultPageSize?: number
-    defaultCountry: string
-    defaultCountryCode: string
-    defaultPostalCode: string
-    supportedCountries: Array<{
-        countryCode: string
-        countryName: string
-    }>
-    commerceApi?: {
-        proxyPath: string
-        parameters: {
-            shortCode: string
-            clientId: string
-            organizationId: string
-            siteId: string
-            locale: string
-            currency: string
-        }
-    }
+    theme?: ThemeOverride
 }
 
 /**

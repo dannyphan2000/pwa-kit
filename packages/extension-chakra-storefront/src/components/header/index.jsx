@@ -25,7 +25,8 @@ import {
     Text,
     Divider,
     useDisclosure,
-    useMediaQuery
+    useMediaQuery,
+    useStyleConfig
 } from '@chakra-ui/react'
 import {AuthHelpers, useAuthHelper, useCustomerType} from '@salesforce/commerce-sdk-react'
 
@@ -129,7 +130,7 @@ const Header = ({
     // so we can decide whether to close the menu when users leave account icons
     const hasEnterPopoverContent = useRef()
 
-    const styles = useMultiStyleConfig('Header')
+    const styles = useStyleConfig('Header')
 
     const onSignoutClick = async () => {
         setShowLoading(true)

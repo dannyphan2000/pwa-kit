@@ -16,14 +16,14 @@ import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 // Local Imports
 import {Config} from './types'
 import {configureRoutes} from './utils/routes-utils'
-import {withChakraUI} from './components/with-chakra-ui'
+import {withOptionalChakra} from './components/with-optional-chakra-provider'
 import {withCommerceSdkReact} from './components/with-commerce-sdk-react'
 import {withCurrency} from './components/with-currency'
 import {withLayout} from './components/with-layout'
 import {withMultiSite} from './components/with-multi-site'
 import {withReactIntl} from './components/with-react-intl'
 import {withStorefrontPreview} from './components/with-storefront-preview'
-
+import theme from './theme'
 // Pages
 import * as Pages from './pages'
 
@@ -38,7 +38,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         // NOTE: The order of these HOCs is important!
         const requiredHOCs = [
             withLayout,
-            withChakraUI,
+            withOptionalChakra,
             withCurrency,
             withReactIntl,
             withMultiSite,
@@ -115,6 +115,10 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         return configureRoutes(allRoutes, config, {
             ignoredRoutes: ['/callback']
         })
+    }
+
+    public getTheme() {
+        return theme
     }
 }
 

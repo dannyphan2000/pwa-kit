@@ -92,6 +92,7 @@ type PageConfigs = {
  */
 export interface UserConfig extends ApplicationExtensionConfig {
     activeDataEnabled?: boolean // default = false
+    applyTheme?: boolean
     commerceAPI: CommerceAPIConfig
     categoryNav: {
         defaultNavSsrDepth: number
