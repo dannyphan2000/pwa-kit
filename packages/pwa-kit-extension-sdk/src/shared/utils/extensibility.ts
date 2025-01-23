@@ -20,9 +20,13 @@ import {
 import {expand} from './index'
 
 // CONSTANTS
-// const REACT_EXTENSIBILITY_FILE = 'setup-app'
-// const EXPRESS_EXTENSIBILITY_FILE = 'setup-server'
-// const SUPPORTED_FILE_TYPES = ['.ts', '.js']
+export const REACT_SETUP_FILE = 'setup-app'
+export const EXPRESS_SETUP_FILE = 'setup-server'
+export const SUPPORTED_FILE_TYPES = ['ts', 'js', 'tsx', 'jsx']
+export const SETUP_FILE_REGEX = new RegExp(
+    `(${REACT_SETUP_FILE}|${EXPRESS_SETUP_FILE}).(${SUPPORTED_FILE_TYPES.join('|')})$`,
+    'i'
+)
 
 // TODO: Update this block comment.
 /**

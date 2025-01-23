@@ -30,7 +30,10 @@ import {sdkReplacementPlugin} from './plugins'
 import {CLIENT, SERVER, CLIENT_OPTIONAL, SSR, REQUEST_PROCESSOR} from './config-names'
 
 // Utilities
-import {ruleForApplicationExtensibility} from '@salesforce/pwa-kit-extension-sdk/configs/webpack'
+import {
+    ruleForApplicationExtensibility,
+    ruleForOverrideResolver
+} from '@salesforce/pwa-kit-extension-sdk/configs/webpack'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {
     buildAliases,
@@ -43,7 +46,7 @@ const pkg = fse.readJsonSync(resolve(projectDir, 'package.json'))
 const buildDir = process.env.PWA_KIT_BUILD_DIR
     ? resolve(process.env.PWA_KIT_BUILD_DIR)
     : resolve(projectDir, 'build')
-
+const isMonoRepo = fse.existsSync(resolve(projectDir, '..', '..', 'lerna.json'))
 const production = 'production'
 const development = 'development'
 const analyzeBundle = process.env.MOBIFY_ANALYZE === 'true'
@@ -270,7 +273,8 @@ const baseConfig = (target) => {
                                 configured: getConfiguredExtensions(getConfig()),
                                 target: 'node'
                             }
-                        })
+                        }),
+                        ruleForOverrideResolver({target, projectDir, isMonoRepo})
                     ].filter(Boolean)
                 }
             }

@@ -5,8 +5,9 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import {runWebpackCompiler} from './test-utils'
 import path from 'path'
+import {runWebpackCompiler} from './test-utils'
+import {validateOverrideSource, __OVERRIDABLE_CACHE__} from './overrides-resolver-loader'
 
 // DEVELOPER NOTE:
 // This loader is intended to be used as an "inline" loader, meaning that you don't typically see it configured
@@ -214,7 +215,7 @@ describe('Overrides Resolver Loader', () => {
                         `,
                     '/node_modules/@salesforce/extension-that/src/overrides/@salesforce/extension-this/pages/sample-page-dependency.js': `
                             // Should Be Referenced
-                            export default {} 
+                            export default {}
                         `,
 
                     // Extension using overridable import
@@ -224,7 +225,7 @@ describe('Overrides Resolver Loader', () => {
                         `,
                     '/node_modules/@salesforce/extension-this/src/pages/sample-page-dependency.js': `
                             // Should Not Be Referenced
-                            export default {} 
+                            export default {}
                         `,
                     '/node_modules/@salesforce/extension-this/package.json':
                         '{"name": "@salesforce/extension-this"}',
@@ -338,5 +339,175 @@ describe('Overrides Resolver Loader', () => {
                 expects(output, error)
             })
         })
+    })
+})
+
+describe('validateOverrideSource', () => {
+    beforeEach(() => {
+        // Clear the target cache before each test
+        __OVERRIDABLE_CACHE__.node = []
+        __OVERRIDABLE_CACHE__.web = []
+    })
+
+    it('should return false if the file has already been processed', () => {
+        const source = path.join(
+            path.sep,
+            'projects',
+            'pwa-kit-app',
+            'node_modules',
+            '@salesforce',
+            'extension-sample',
+            'src',
+            'pages',
+            'home.js'
+        )
+
+        // Mock the file being processed bup adding it to the cache
+        __OVERRIDABLE_CACHE__.node.push(source)
+
+        const result = validateOverrideSource(source, {
+            target: 'node',
+            overridables: [path.join('@salesforce', 'extension-sample', 'src', 'pages', 'home.js')]
+        })
+        expect(result).toBe(false)
+    })
+
+    it('should return false if the file is not an extension file', () => {
+        const source = path.join(
+            path.sep,
+            'projects',
+            'pwa',
+            'node_modules',
+            'not-extension-sample',
+            'src',
+            'setup-app.js'
+        )
+
+        const result = validateOverrideSource(source, {target: 'node'})
+        expect(result).toBe(false)
+    })
+
+    it('should return false if the file is a setup file', () => {
+        const source = path.join(
+            path.sep,
+            'projects',
+            'pwa',
+            'node_modules',
+            'extension-sample',
+            'src',
+            'setup-app.js'
+        )
+
+        const result = validateOverrideSource(source, {target: 'node'})
+        expect(result).toBe(false)
+    })
+
+    it('should return false if the normalized source is not in the list of overridables', () => {
+        const source = path.join(
+            path.sep,
+            'projects',
+            'pwa',
+            'node_modules',
+            'extension-sample',
+            'src',
+            'pages',
+            'home.js'
+        )
+
+        const result = validateOverrideSource(source, {
+            target: 'node',
+            overridables: []
+        })
+        expect(result).toBe(false)
+    })
+
+    it('should return true and add the source to the cache if it is an overridable file', () => {
+        const source = path.join(
+            path.sep,
+            'projects',
+            'pwa-kit',
+            'packages',
+            'extension-sample',
+            'src',
+            'pages',
+            'home.js'
+        )
+        const overridables = [
+            `./node_modules/${path.posix.join(
+                '@salesforce',
+                'extension-sample',
+                'src',
+                'pages',
+                'home.js'
+            )}`
+        ]
+
+        const result = validateOverrideSource(source, {
+            isMonoRepo: true,
+            target: 'node',
+            overridables
+        })
+
+        expect(result).toBe(true)
+    })
+
+    it('should handle non-mono-repo sources correctly', () => {
+        const source = path.join(
+            path.sep,
+            'projects',
+            'pwa',
+            'node_modules',
+            'extension-sample',
+            'src',
+            'pages',
+            'home.js'
+        )
+        const overridables = [
+            `./node_modules/${path.posix.join('extension-sample', 'src', 'pages', 'home.js')}`
+        ]
+
+        const result = validateOverrideSource(source, {
+            isMonoRepo: false,
+            target: 'node',
+            overridables
+        })
+
+        expect(result).toBe(true)
+    })
+
+    it('source cache is per target', () => {
+        const source = path.join(
+            path.sep,
+            'projects',
+            'pwa-kit',
+            'packages',
+            'extension-sample',
+            'src',
+            'pages',
+            'home.js'
+        )
+        const overridables = [
+            `./node_modules/${path.posix.join(
+                '@salesforce',
+                'extension-sample',
+                'src',
+                'pages',
+                'home.js'
+            )}`
+        ]
+
+        const resultWeb = validateOverrideSource(source, {
+            isMonoRepo: true,
+            target: 'web',
+            overridables
+        })
+        const resultNode = validateOverrideSource(source, {
+            isMonoRepo: true,
+            target: 'node',
+            overridables
+        })
+
+        expect(resultWeb).toBe(true)
+        expect(resultNode).toBe(true)
     })
 })
