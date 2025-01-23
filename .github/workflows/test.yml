@@ -233,7 +233,7 @@ jobs:
       - name: Store Verdaccio logfile artifact
         uses: actions/upload-artifact@v4
         with:
-          name: 1-verdaccio-log
+          name: verdaccio-log-{{ matrix.template }}
           path: packages/pwa-kit-create-app/local-npm-repo/verdaccio.log
 
       # TODO: Ticket W-12425059. Revisit Snyk CLI integration to monitor manifest files on generated projects.
@@ -331,7 +331,7 @@ jobs:
       - name: Store Verdaccio logfile artifact
         uses: actions/upload-artifact@v4
         with:
-          name: 2-verdaccio-log # TODO: change name later
+          name: verdaccio-log-{{ matrix.template }}
           path: packages/pwa-kit-create-app/local-npm-repo/verdaccio.log
   lighthouse:
     needs: changelog-check
