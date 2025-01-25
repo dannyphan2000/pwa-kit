@@ -1,3 +1,4 @@
 {
-    "id": "@salesforce/extension-chakra-store-locator"
+    "id": "@salesforce/extension-chakra-store-locator",
+    "name": "ChakraStoreLocator"
 }

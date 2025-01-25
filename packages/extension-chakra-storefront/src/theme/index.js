@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {extendTheme} from '@chakra-ui/react'
-
+import metaData from '../../extension-meta.json'
 // Foundational style overrides
 import styles from './foundations/styles'
 import colors from './foundations/colors'
@@ -82,7 +82,7 @@ export const overrides = {
         Skeleton,
         Tooltip,
 
-        // project components
+        // all project components should be name spaced with extension name as prefix
         App,
         Breadcrumb,
         Header,
@@ -99,7 +99,7 @@ export const overrides = {
         ProductTile,
         SwatchGroup,
         ImageGallery,
-        StoreHeading
+        [`${metaData.name}/StoreHeading`]: StoreHeading
     }
 }
 

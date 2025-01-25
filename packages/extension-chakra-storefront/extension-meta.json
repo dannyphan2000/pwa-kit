@@ -1,3 +1,4 @@
 {
-    "id": "@salesforce/extension-chakra-storefront"
+    "id": "@salesforce/extension-chakra-storefront",
+    "name": "ChakraStorefront"
 }

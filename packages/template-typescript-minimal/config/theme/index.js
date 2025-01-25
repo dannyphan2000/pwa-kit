@@ -9,8 +9,18 @@ const theme = {
         red: {
             400: 'green'
         }
+    },
+    components: {
+        'ChakraStorefront/StoreHeading': {
+            baseStyle: {
+                heading: {
+                    backgroundColor: 'pink'
+                }
+            }
+        }
     }
 }
+
 module.exports = {
     theme
 }

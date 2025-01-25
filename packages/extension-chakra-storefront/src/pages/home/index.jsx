@@ -40,6 +40,7 @@ import useEinstein from '../../hooks/use-einstein'
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useProductSearch} from '@salesforce/commerce-sdk-react'
 import {useExtensionConfig} from '../../hooks'
+import StoreHeading from '../../components/store-heading'
 
 /**
  * This is the home page for Retail React App.
@@ -87,6 +88,8 @@ const Home = () => {
                 description="Commerce Cloud Retail React App"
                 keywords="Commerce Cloud, Retail React App, React Storefront"
             />
+            <StoreHeading />
+            <Button bg={'red.400'}>Button</Button>
 
             <Hero
                 title={intl.formatMessage({

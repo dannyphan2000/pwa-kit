@@ -12,14 +12,6 @@ import {RouteProps} from 'react-router-dom'
 // Platform Imports
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 
-// Local Imports
-import SamplePage from './pages/sample'
-
-// Overridable Imports
-// Using the `overridable` loader means that you are opting in to the override module resolution flow. As a result this module
-// will be resolved by first looking in the base projects `overrides` folder then the overrides folders of any extensions configured
-// after this one. Only if no module is found will the referenced module in this project be used.
-// import sampleHOC from 'overridable!./components/sample-hoc'
 import {withChakraProvider} from './components/with-chakra-provider'
 // Others
 import extensionMeta from '../extension-meta.json'
@@ -47,14 +39,7 @@ class ChakraBaseExtension extends ApplicationExtension<Config> {
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
     extendRoutes(routes: RouteProps[]): RouteProps[] {
-        return [
-            {
-                exact: true,
-                path: this.getConfig().path,
-                component: SamplePage
-            },
-            ...routes
-        ]
+        return routes
     }
 
     /**

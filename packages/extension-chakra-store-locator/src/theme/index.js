@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import StoreHeading from '../theme/components/project/store-heading'
+import metaData from '../../extension-meta.json'
 
 const colors = {
     transparent: 'transparent',
@@ -31,7 +32,7 @@ const colors = {
     }
 }
 const components = {
-    StoreHeading
+    [`${metaData.name}/StoreHeading`]: StoreHeading
 }
 
 export default {

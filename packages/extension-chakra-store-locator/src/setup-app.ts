@@ -59,6 +59,7 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
         ]
     }
 
+    // TODO: find a better place for this method
     public getTheme(): ThemeOverride {
         return theme
     }
