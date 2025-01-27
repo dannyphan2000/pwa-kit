@@ -171,6 +171,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
         if (isRegistered) {
             handleMergeBasket()
             const locatedFrom = window.localStorage.getItem('returnToPage')
+            window.localStorage.removeItem('returnToPage')
             if (locatedFrom) {
                 navigate(locatedFrom)
             } else {
