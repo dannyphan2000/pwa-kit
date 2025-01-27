@@ -37,7 +37,12 @@ import {
     USER_NOT_FOUND_ERROR
 } from '@salesforce/retail-react-app/app/constants'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
-import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
+import {
+    isServer,
+    getSessionJSONItem,
+    setSessionJSONItem,
+    clearSessionJSONItem
+} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const LOGIN_ERROR_MESSAGE = defineMessage({

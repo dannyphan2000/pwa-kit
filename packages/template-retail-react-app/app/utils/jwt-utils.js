@@ -26,7 +26,9 @@ export const createRemoteJWKSet = (tenantId) => {
     const shortCode = appConfig.commerceAPI.parameters.shortCode
     const configTenantId = appConfig.commerceAPI.parameters.organizationId.replace(/^f_ecom_/, '')
     if (tenantId !== configTenantId) {
-        throw new Error(`The tenant ID in your PWA Kit configuration ("${configTenantId}") does not match the tenant ID in the SLAS callback token ("${tenantId}").`)
+        throw new Error(
+            `The tenant ID in your PWA Kit configuration ("${configTenantId}") does not match the tenant ID in the SLAS callback token ("${tenantId}").`
+        )
     }
     const JWKS_URI = `${appOrigin}/${shortCode}/${tenantId}/oauth2/jwks`
     return joseCreateRemoteJWKSet(new URL(JWKS_URI))
