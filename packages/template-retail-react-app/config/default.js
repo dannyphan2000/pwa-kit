@@ -17,7 +17,7 @@ module.exports = {
         },
         login: {
             passwordless: {
-                enabled: true,
+                enabled: false,
                 callbackURI:
                     process.env.PASSWORDLESS_LOGIN_CALLBACK_URI || '/passwordless-login-callback'
             },
@@ -39,7 +39,7 @@ module.exports = {
         commerceAPI: {
             proxyPath: `/mobify/proxy/api`,
             parameters: {
-                clientId: '80255e22-8504-45e3-b1a3-749fd4475bb7',
+                clientId: 'c9c45bfd-0ed3-4aa2-9971-40f88962b836',
                 organizationId: 'f_ecom_zzrf_001',
                 shortCode: '8o7m175y',
                 siteId: 'RefArchGlobal'
