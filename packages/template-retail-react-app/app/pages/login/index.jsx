@@ -75,7 +75,6 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const [currentView, setCurrentView] = useState(initialView)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
-    let locatedFrom
 
     const handleMergeBasket = () => {
         const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
@@ -110,8 +109,6 @@ const Login = ({initialView = LOGIN_VIEW}) => {
 
         const handlePasswordlessLogin = async (email) => {
             try {
-                // Save the path where the user logged in
-                window.localStorage.setItem('returnToPage', window.location.pathname)
                 await authorizePasswordlessLogin.mutateAsync({userid: email})
                 setCurrentView(EMAIL_VIEW)
             } catch (error) {
@@ -173,7 +170,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     useEffect(() => {
         if (isRegistered) {
             handleMergeBasket()
-            locatedFrom = window.localStorage.getItem('returnToPage')
+            const locatedFrom = window.localStorage.getItem('returnToPage')
             if (locatedFrom) {
                 navigate(locatedFrom)
             } else {
