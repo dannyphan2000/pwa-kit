@@ -37,12 +37,7 @@ import {
     USER_NOT_FOUND_ERROR
 } from '@salesforce/retail-react-app/app/constants'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
-import {
-    isServer,
-    getSessionJSONItem,
-    setSessionJSONItem,
-    clearSessionJSONItem
-} from '@salesforce/retail-react-app/app/utils/utils'
+import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const LOGIN_ERROR_MESSAGE = defineMessage({
@@ -158,8 +153,6 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     useEffect(() => {
         if (path === PASSWORDLESS_LOGIN_LANDING_PATH && isSuccessCustomerBaskets) {
             const token = queryParams.get('token')
-            locatedFrom = window.localStorage.getItem('returnToPage')
-            window.localStorage.removeItem('returnToPage')
 
             const passwordlessLogin = async () => {
                 try {
@@ -180,6 +173,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     useEffect(() => {
         if (isRegistered) {
             handleMergeBasket()
+            locatedFrom = window.localStorage.getItem('returnToPage')
             if (locatedFrom) {
                 navigate(locatedFrom)
             } else {

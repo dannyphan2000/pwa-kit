@@ -49,7 +49,6 @@ import {
     PASSWORDLESS_ERROR_MESSAGES,
     USER_NOT_FOUND_ERROR
 } from '@salesforce/retail-react-app/app/constants'
-import {setSessionJSONItem} from '@salesforce/retail-react-app/app/utils/utils'
 
 const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, idps = []}) => {
     const {formatMessage} = useIntl()
