@@ -9,13 +9,6 @@ module.exports = {
     app: {
         extensions: [
             [
-                '@salesforce/extension-chakra-base',
-                {
-                    enabled: true,
-                    theme: theme
-                }
-            ],
-            [
                 '@salesforce/extension-chakra-storefront',
                 {
                     enabled: true,

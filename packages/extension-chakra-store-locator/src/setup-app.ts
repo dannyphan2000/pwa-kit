@@ -22,7 +22,7 @@ import {Config} from './types'
 import StoreLocatorPage from './pages/store-locator'
 import {logger} from './logger'
 import extensionMeta from '../extension-meta.json'
-import theme from './theme'
+import theme from 'overridable!./theme'
 
 class StoreLocatorExtension extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id

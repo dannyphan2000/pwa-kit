@@ -8,7 +8,7 @@ import {extendTheme} from '@chakra-ui/react'
 import metaData from '../../extension-meta.json'
 // Foundational style overrides
 import styles from './foundations/styles'
-import colors from './foundations/colors'
+import colors from 'overridable!./foundations/colors'
 import gradients from './foundations/gradients'
 import sizes from './foundations/sizes'
 import space from './foundations/space'

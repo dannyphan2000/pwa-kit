@@ -7,8 +7,6 @@
 
 import React from 'react'
 import {useTheme, Theme, ChakraProvider} from '@chakra-ui/react'
-import withMultiSite from '../with-multi-site/with-multi-site'
-
 type WithOptionalChakra = React.ComponentPropsWithoutRef<any>
 
 /**
@@ -24,7 +22,7 @@ export const withOptionalChakra = <P extends object>(
 ) => {
     const WithOptionalChakra: React.FC<P> = (props: WithOptionalChakra) => {
         const chakraTheme = useTheme()
-
+        console.log('theme', theme)
         // @TODO: Is there a better way to determine if ChakraProvider is already in the tree?
         const hasChakraProvider = chakraTheme && Object.keys(chakraTheme || {}).length > 0
 

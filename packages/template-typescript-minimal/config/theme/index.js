@@ -17,6 +17,11 @@ const theme = {
                     backgroundColor: 'pink'
                 }
             }
+        },
+        Header: {
+            baseStyle: {
+                backgroundColor: 'red'
+            }
         }
     }
 }

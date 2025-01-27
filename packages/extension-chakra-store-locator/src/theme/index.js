@@ -6,6 +6,7 @@
  */
 import StoreHeading from '../theme/components/project/store-heading'
 import metaData from '../../extension-meta.json'
+import {extendTheme} from '@chakra-ui/react'
 
 const colors = {
     transparent: 'transparent',
@@ -35,7 +36,7 @@ const components = {
     [`${metaData.name}/StoreHeading`]: StoreHeading
 }
 
-export default {
+export default extendTheme({
     colors,
     components
-}
+})

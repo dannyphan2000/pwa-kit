@@ -23,7 +23,7 @@ import {withLayout} from './components/with-layout'
 import {withMultiSite} from './components/with-multi-site'
 import {withReactIntl} from './components/with-react-intl'
 import {withStorefrontPreview} from './components/with-storefront-preview'
-import theme from './theme'
+import theme from 'overridable!./theme'
 // Pages
 import * as Pages from './pages'
 
@@ -38,7 +38,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         // NOTE: The order of these HOCs is important!
         const requiredHOCs = [
             withLayout,
-            withOptionalChakra,
+            (component: React.ComponentType<any>) => withOptionalChakra(component, theme),
             withCurrency,
             withReactIntl,
             withMultiSite,

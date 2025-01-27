@@ -90,6 +90,12 @@ const Home = () => {
             />
             <StoreHeading />
             <Button bg={'red.400'}>Button</Button>
+            <Button ml={4} bg={'red.600'}>
+                Button
+            </Button>
+            <Button ml={4} bg={'teal.300'}>
+                Button
+            </Button>
 
             <Hero
                 title={intl.formatMessage({
