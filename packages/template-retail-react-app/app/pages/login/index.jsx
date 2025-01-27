@@ -80,7 +80,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const [currentView, setCurrentView] = useState(initialView)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
-    const locatedFrom = getSessionJSONItem('returnToPage')
+    let locatedFrom
 
     const handleMergeBasket = () => {
         const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
@@ -116,7 +116,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
         const handlePasswordlessLogin = async (email) => {
             try {
                 // Save the path where the user logged in
-                setSessionJSONItem('returnToPage', window.location.pathname)
+                window.localStorage.setItem('returnToPage', window.location.pathname)
                 await authorizePasswordlessLogin.mutateAsync({userid: email})
                 setCurrentView(EMAIL_VIEW)
             } catch (error) {
@@ -158,6 +158,8 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     useEffect(() => {
         if (path === PASSWORDLESS_LOGIN_LANDING_PATH && isSuccessCustomerBaskets) {
             const token = queryParams.get('token')
+            locatedFrom = window.localStorage.getItem('returnToPage')
+            window.localStorage.removeItem('returnToPage')
 
             const passwordlessLogin = async () => {
                 try {
@@ -177,7 +179,6 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     // If customer is registered push to account page and merge the basket
     useEffect(() => {
         if (isRegistered) {
-            clearSessionJSONItem('returnToPage')
             handleMergeBasket()
             if (locatedFrom) {
                 navigate(locatedFrom)

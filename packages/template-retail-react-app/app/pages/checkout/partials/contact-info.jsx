@@ -82,7 +82,7 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
     const handlePasswordlessLogin = async (email) => {
         try {
             // Save the path where the user logged in
-            setSessionJSONItem('returnToPage', window.location.pathname)
+            window.localStorage.setItem('returnToPage', window.location.pathname)
             await authorizePasswordlessLogin.mutateAsync({userid: email})
             setAuthModalView(EMAIL_VIEW)
             authModal.onOpen()

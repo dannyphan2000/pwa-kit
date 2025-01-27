@@ -105,6 +105,8 @@ export const AuthModal = ({
 
         const handlePasswordlessLogin = async (email) => {
             try {
+                // Save the path where the user logged in
+                window.localStorage.setItem('returnToPage', window.location.pathname)
                 await authorizePasswordlessLogin.mutateAsync({userid: email})
                 setCurrentView(EMAIL_VIEW)
             } catch (error) {
