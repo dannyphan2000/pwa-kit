@@ -38,6 +38,9 @@ export const getResponsiveImageAttributes = ({src, widths, breakpoints = default
     themeBreakpoints = breakpoints
     breakpointLabels = getBreakpointLabels(themeBreakpoints)
 
+    // Order of these attributes matter! If src is not last, Safari will refetch images
+    // multiple times (once when it processes src and again when it processes sizes / srcSet)
+    // See https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2223
     return {
         sizes: mapWidthsToSizes(widths),
         srcSet: mapWidthsToSrcSet(widths, src),
