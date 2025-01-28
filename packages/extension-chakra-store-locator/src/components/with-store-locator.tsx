@@ -20,7 +20,7 @@ export const withStoreLocator = <P extends object>(
     config: StoreLocatorConfig
 ): React.ComponentType<P> => {
     const WithConfig = (props: P) => {
-        const {isModalOpen = false, closeModal} = useExtensionStore()
+        const {isModalOpen, closeModal} = useExtensionStore()
 
         return (
             <StoreLocatorProvider config={config}>
