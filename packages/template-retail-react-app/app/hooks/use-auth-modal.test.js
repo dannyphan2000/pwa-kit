@@ -19,6 +19,7 @@ import Account from '@salesforce/retail-react-app/app/pages/account'
 import {rest} from 'msw'
 import {mockedRegisteredCustomer} from '@salesforce/retail-react-app/app/mocks/mock-data'
 import * as ReactHookForm from 'react-hook-form'
+import {AuthHelpers} from '@salesforce/commerce-sdk-react'
 
 jest.setTimeout(60000)
 
@@ -46,6 +47,21 @@ const mockRegisteredCustomer = {
     lastName: 'Testing',
     login: 'customer@test.com'
 }
+
+const mockAuthHelperFunctions = {
+    [AuthHelpers.AuthorizePasswordless]: {mutateAsync: jest.fn()},
+    [AuthHelpers.Register]: {mutateAsync: jest.fn()}
+}
+
+jest.mock('@salesforce/commerce-sdk-react', () => {
+    const originalModule = jest.requireActual('@salesforce/commerce-sdk-react')
+    return {
+        ...originalModule,
+        useAuthHelper: jest
+            .fn()
+            .mockImplementation((helperType) => mockAuthHelperFunctions[helperType])
+    }
+})
 
 let authModal = undefined
 const MockedComponent = (props) => {
@@ -155,17 +171,71 @@ test('Renders check email modal on email mode', async () => {
     mockUseForm.mockRestore()
 })
 
-test('Renders passwordless login when enabled', async () => {
-    const user = userEvent.setup()
+describe('Passwordless enabled', () => {
+    beforeAll(() => {
+        jest.spyOn(window.localStorage, 'setItem')
+    })
 
-    renderWithProviders(<MockedComponent isPasswordlessEnabled={true} />)
+    beforeEach(() => {
+        jest.resetModules()
+        window.localStorage.setItem.mockClear()
+    })
 
-    // open the modal
-    const trigger = screen.getByText(/open modal/i)
-    await user.click(trigger)
+    afterAll(() => {
+        window.localStorage.setItem.mockRestore()
+    })
 
-    await waitFor(() => {
-        expect(screen.getByText(/continue securely/i)).toBeInTheDocument()
+    test('Renders passwordless login when enabled', async () => {
+        const user = userEvent.setup()
+
+        renderWithProviders(<MockedComponent isPasswordlessEnabled={true} />)
+
+        // open the modal
+        const trigger = screen.getByText(/open modal/i)
+        await user.click(trigger)
+
+        await waitFor(() => {
+            expect(screen.getByText(/continue securely/i)).toBeInTheDocument()
+        })
+    })
+
+    test('Allows passwordless login', async () => {
+        const {user} = renderWithProviders(<MockedComponent isPasswordlessEnabled={true} />)
+        const validEmail = 'test@salesforce.com'
+
+        // open the modal
+        const trigger = screen.getByText(/open modal/i)
+        await user.click(trigger)
+
+        await waitFor(() => {
+            expect(screen.getByText(/continue securely/i)).toBeInTheDocument()
+        })
+
+        // enter a valid email address
+        await user.type(screen.getByLabelText('Email'), validEmail)
+
+        // initiate passwordless login
+        const passwordlessLoginButton = screen.getByText(/continue securely/i)
+        // Click the button twice as the isPasswordlessLoginClicked state doesn't change after the first click
+        await user.click(passwordlessLoginButton)
+        await user.click(passwordlessLoginButton)
+        expect(
+            mockAuthHelperFunctions[AuthHelpers.AuthorizePasswordless].mutateAsync
+        ).toHaveBeenCalledWith({userid: validEmail})
+
+        // check that check email modal is open
+        await waitFor(() => {
+            const withinForm = within(screen.getByTestId('sf-form-resend-passwordless-email'))
+            expect(withinForm.getByText(/Check Your Email/i)).toBeInTheDocument()
+            expect(withinForm.getByText(validEmail)).toBeInTheDocument()
+            expect(window.localStorage.setItem).toHaveBeenCalled()
+        })
+
+        // resend the email
+        user.click(screen.getByText(/Resend Link/i))
+        expect(
+            mockAuthHelperFunctions[AuthHelpers.AuthorizePasswordless].mutateAsync
+        ).toHaveBeenCalledWith({userid: validEmail})
     })
 })
 
