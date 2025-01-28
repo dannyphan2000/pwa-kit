@@ -21,14 +21,14 @@ jest.mock('../hooks/use-extension-store', () => ({
 
 // Mock the StoreLocatorModal component
 jest.mock('./modal', () => ({
-    StoreLocatorModal: ({isOpen, onClose}) => (
+    // eslint-disable-next-line react/prop-types
+    StoreLocatorModal: ({isOpen, onClose}) =>
         isOpen ? (
             <div data-testid="store-locator-modal">
                 Modal Content
                 <button onClick={onClose}>Close</button>
             </div>
         ) : null
-    )
 }))
 
 describe('withStoreLocator', () => {
