@@ -25,7 +25,7 @@ export const withStoreLocator = <P extends object>(
         return (
             <StoreLocatorProvider config={config}>
                 <WrappedComponent {...props} />
-                <StoreLocatorModal isOpen={isModalOpen} onClose={store.closeModal}/>
+                <StoreLocatorModal isOpen={isModalOpen} onClose={store.closeModal} />
             </StoreLocatorProvider>
         )
     }
