@@ -49,16 +49,6 @@
   "mobify": {
     "app": {
       "extensions": [
-        ["@salesforce/extension-chakra-base", {
-          "enabled": true,
-          "theme": {
-            "colors": {
-              "red": {
-                "400": "green"
-              }
-            }
-          }
-        }],
         [
           "@salesforce/extension-chakra-storefront",
           {
