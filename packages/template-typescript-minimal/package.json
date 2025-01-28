@@ -64,7 +64,6 @@
           {
             "enabled": true,
             "activeDataEnabled": false,
-            "applyTheme": true,
             "categoryNav": {
               "defaultNavSsrDepth": 1,
               "defaultRootCategory": "root"
@@ -227,7 +226,6 @@
           "@salesforce/extension-chakra-store-locator",
           {
             "enabled": true,
-            "applyTheme": true,
             "path": "/store-locator",
             "radius": 100,
             "radiusUnit": "km",
