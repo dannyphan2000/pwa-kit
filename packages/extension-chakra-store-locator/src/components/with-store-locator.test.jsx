@@ -115,4 +115,21 @@ describe('withStoreLocator', () => {
         render(<WrappedComponent />)
         expect(screen.queryByTestId('store-locator-modal')).toBeNull()
     })
+
+    it('calls closeModal when modal is closed', () => {
+        const TestComponent = () => <div>Test Component</div>
+        const WrappedComponent = withStoreLocator(TestComponent, mockConfig)
+        const mockCloseModal = jest.fn()
+
+        useExtensionStore.mockReturnValue({
+            isModalOpen: true,
+            closeModal: mockCloseModal
+        })
+
+        render(<WrappedComponent />)
+        const closeButton = screen.getByText('Close')
+        closeButton.click()
+
+        expect(mockCloseModal).toHaveBeenCalled()
+    })
 })
