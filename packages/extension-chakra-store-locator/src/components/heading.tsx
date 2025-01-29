@@ -19,7 +19,7 @@ export const StoreLocatorHeading = (): JSX.Element => {
     return (
         <Heading sx={styles.heading}>
             <>
-                Find a Store
+                I am a store heading component in store-locator extension.
                 <Badge sx={styles.badge}>New</Badge>
             </>
         </Heading>

@@ -37,6 +37,5 @@ export const useMergedTheme = () => {
         })
         .filter((ex) => Object.keys(ex).length !== 0)
     const theme: ThemeOverride = extendTheme(...extensionThemes, baseExtensionTheme)
-    // console.log('theme', theme)
     return theme
 }

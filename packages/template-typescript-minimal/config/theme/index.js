@@ -11,7 +11,7 @@ const theme = {
         }
     },
     components: {
-        'ChakraStorefront/StoreHeading': {
+        'ChakraStoreLocator/StoreHeading': {
             baseStyle: {
                 heading: {
                     backgroundColor: 'pink'
