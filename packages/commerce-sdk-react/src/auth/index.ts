@@ -1112,7 +1112,7 @@ class Auth {
      */
     async authorizePasswordless(parameters: AuthorizePasswordlessParams) {
         const userid = parameters.userid
-        const callbackURI = this.passwordlessLoginCallbackURI
+        const callbackURI = parameters.callbackURI || this.passwordlessLoginCallbackURI
         const usid = this.get('usid')
         const mode = callbackURI ? 'callback' : 'sms'
 

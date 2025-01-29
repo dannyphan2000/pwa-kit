@@ -44,6 +44,8 @@ import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
 import {usePasswordReset} from '@salesforce/retail-react-app/app/hooks/use-password-reset'
 import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+import {isAbsoluteURL} from '@salesforce/retail-react-app/app/page-designer/utils'
+import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
 
 export const LOGIN_VIEW = 'login'
 export const REGISTER_VIEW = 'register'
@@ -84,11 +86,13 @@ export const AuthModal = ({
     const toast = useToast()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const register = useAuthHelper(AuthHelpers.Register)
+    const appOrigin = useAppOrigin()
 
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState(initialEmail)
     const {getPasswordResetToken} = usePasswordReset()
     const authorizePasswordlessLogin = useAuthHelper(AuthHelpers.AuthorizePasswordless)
+    const passwordlessConfigCallback = getConfig().app.login?.passwordless?.callbackURI
 
     const {data: baskets} = useCustomerBaskets(
         {parameters: {customerId}},
@@ -105,9 +109,14 @@ export const AuthModal = ({
 
         const handlePasswordlessLogin = async (email) => {
             try {
-                // Save the path where the user logged in
-                window.localStorage.setItem('returnToPage', window.location.pathname)
-                await authorizePasswordlessLogin.mutateAsync({userid: email})
+                const callbackURL = isAbsoluteURL(passwordlessConfigCallback)
+                    ? passwordlessConfigCallback
+                    : `${appOrigin}${passwordlessConfigCallback}`
+                const redirectPath = window.location.pathname
+                await authorizePasswordlessLogin.mutateAsync({
+                    userid: email,
+                    callbackURI: `${callbackURL}?redirectUrl=${redirectPath}`
+                })
                 setCurrentView(EMAIL_VIEW)
             } catch (error) {
                 const message = USER_NOT_FOUND_ERROR.test(error.message)

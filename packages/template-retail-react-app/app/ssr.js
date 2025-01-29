@@ -80,7 +80,7 @@ const passwordlessLoginCallback =
 
 // Reusable function to handle sending a magic link email.
 // By default, this implementation uses Marketing Cloud.
-async function sendMagicLinkEmail(req, res, landingPath, emailTemplate) {
+async function sendMagicLinkEmail(req, res, landingPath, emailTemplate, redirectUrl) {
     // Extract the base URL from the request
     const base = req.protocol + '://' + req.get('host')
 
@@ -92,6 +92,9 @@ async function sendMagicLinkEmail(req, res, landingPath, emailTemplate) {
     if (landingPath === RESET_PASSWORD_LANDING_PATH) {
         // Add email query parameter for reset password flow
         magicLink += `&email=${email_id}`
+    }
+    if (landingPath === PASSWORDLESS_LOGIN_LANDING_PATH) {
+        magicLink += `&redirect_url=${redirectUrl}`
     }
 
     // Call the emailLink function to send an email with the magic link using Marketing Cloud
@@ -147,12 +150,14 @@ const {handler} = runtime.createHandler(options, (app) => {
     // https://developer.salesforce.com/docs/commerce/commerce-api/guide/slas-passwordless-login.html#receive-the-callback
     app.post(passwordlessLoginCallback, (req, res) => {
         const slasCallbackToken = req.headers['x-slas-callback-token']
+        const redirectUrl = req.query.redirectUrl
         validateSlasCallbackToken(slasCallbackToken).then(() => {
             sendMagicLinkEmail(
                 req,
                 res,
                 PASSWORDLESS_LOGIN_LANDING_PATH,
-                process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE
+                process.env.MARKETING_CLOUD_PASSWORDLESS_LOGIN_TEMPLATE,
+                redirectUrl
             )
         })
     })

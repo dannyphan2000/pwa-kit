@@ -106,23 +106,13 @@ describe('passwordless and social disabled', () => {
 describe('passwordless enabled', () => {
     let currentBasket = JSON.parse(JSON.stringify(scapiBasketWithItem))
 
-    beforeAll(() => {
-        jest.spyOn(window.localStorage, 'setItem')
-    })
-
     beforeEach(() => {
-        window.localStorage.setItem.mockClear()
-
         global.server.use(
             rest.put('*/baskets/:basketId/customer', (req, res, ctx) => {
                 currentBasket.customerInfo.email = validEmail
                 return res(ctx.json(currentBasket))
             })
         )
-    })
-
-    afterAll(() => {
-        window.localStorage.setItem.mockRestore()
     })
 
     test('renders component', async () => {
@@ -158,6 +148,9 @@ describe('passwordless enabled', () => {
     })
 
     test('allows passwordless login', async () => {
+        jest.spyOn(window, 'location', 'get').mockReturnValue({
+            pathname: '/checkout'
+        })
         const {user} = renderWithProviders(<ContactInfo isPasswordlessEnabled={true} />)
 
         // enter a valid email address
@@ -170,21 +163,28 @@ describe('passwordless enabled', () => {
         await user.click(passwordlessLoginButton)
         expect(
             mockAuthHelperFunctions[AuthHelpers.AuthorizePasswordless].mutateAsync
-        ).toHaveBeenCalledWith({userid: validEmail})
+        ).toHaveBeenCalledWith({
+            userid: validEmail,
+            callbackURI:
+                'https://webhook.site/27761b71-50c1-4097-a600-21a3b89a546c?redirectUrl=/checkout'
+        })
 
         // check that check email modal is open
         await waitFor(() => {
             const withinForm = within(screen.getByTestId('sf-form-resend-passwordless-email'))
             expect(withinForm.getByText(/Check Your Email/i)).toBeInTheDocument()
             expect(withinForm.getByText(validEmail)).toBeInTheDocument()
-            expect(window.localStorage.setItem).toHaveBeenCalled()
         })
 
         // resend the email
         user.click(screen.getByText(/Resend Link/i))
         expect(
             mockAuthHelperFunctions[AuthHelpers.AuthorizePasswordless].mutateAsync
-        ).toHaveBeenCalledWith({userid: validEmail})
+        ).toHaveBeenCalledWith({
+            userid: validEmail,
+            callbackURI:
+                'https://webhook.site/27761b71-50c1-4097-a600-21a3b89a546c?redirectUrl=/checkout'
+        })
     })
 
     test('allows login using password', async () => {

@@ -79,7 +79,7 @@ export async function jwksCaching(req, res, options) {
 
         // JWKS rotate every 30 days. For now, cache response for 14 days so that
         // fetches only need to happen twice a month
-        res.set('Cache-Control', 'public, max-age=1209600')
+        res.set('Cache-Control', 'public, max-age=1209600, stale-while-revalidate=86400')
 
         return res.json(await response.json())
     } catch (error) {

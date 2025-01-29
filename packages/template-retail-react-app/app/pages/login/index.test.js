@@ -19,7 +19,6 @@ import Registration from '@salesforce/retail-react-app/app/pages/registration'
 import ResetPassword from '@salesforce/retail-react-app/app/pages/reset-password'
 import mockConfig from '@salesforce/retail-react-app/config/mocks/default'
 import {mockedRegisteredCustomer} from '@salesforce/retail-react-app/app/mocks/mock-data'
-import * as sdk from '@salesforce/commerce-sdk-react'
 
 const mockMergedBasket = {
     basketId: 'a10ff320829cb0eef93ca5310a',
@@ -75,15 +74,9 @@ beforeEach(() => {
 })
 afterEach(() => {
     jest.resetModules()
-    localStorage.clear()
 })
 
 describe('Logging in tests', function () {
-    beforeAll(() => {
-        jest.spyOn(window.localStorage, 'getItem')
-        jest.spyOn(window.localStorage, 'removeItem')
-    })
-
     beforeEach(() => {
         global.server.use(
             rest.post('*/oauth2/token', (req, res, ctx) =>
@@ -103,11 +96,6 @@ describe('Logging in tests', function () {
                 return res(ctx.delay(0), ctx.json(mockMergedBasket))
             })
         )
-    })
-
-    afterAll(() => {
-        window.localStorage.getItem.mockRestore()
-        window.localStorage.removeItem.mockRestore()
     })
 
     test('Allows customer to sign in to their account', async () => {
@@ -145,28 +133,6 @@ describe('Logging in tests', function () {
         await waitFor(() => {
             expect(window.location.pathname).toBe('/uk/en-GB/account')
             expect(screen.getByText(/My Profile/i)).toBeInTheDocument()
-        })
-    })
-
-    test('If customer is registered, check the returnToPage local storage item', async () => {
-        jest.doMock('@salesforce/commerce-sdk-react', () => ({
-            ...jest.requireActual('@salesforce/commerce-sdk-react'),
-            useCustomerType: jest.fn(() => {
-                return {isRegistered: true}
-            })
-        }))
-
-        renderWithProviders(<MockedComponent />, {
-            wrapperProps: {
-                siteAlias: 'uk',
-                locale: {id: 'en-GB'},
-                appConfig: mockConfig.app,
-                bypassAuth: false
-            }
-        })
-        await waitFor(() => {
-            expect(window.localStorage.getItem).toHaveBeenCalled()
-            expect(window.localStorage.removeItem).toHaveBeenCalled()
         })
     })
 })

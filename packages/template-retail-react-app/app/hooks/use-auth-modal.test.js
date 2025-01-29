@@ -172,19 +172,6 @@ test('Renders check email modal on email mode', async () => {
 })
 
 describe('Passwordless enabled', () => {
-    beforeAll(() => {
-        jest.spyOn(window.localStorage, 'setItem')
-    })
-
-    beforeEach(() => {
-        jest.resetModules()
-        window.localStorage.setItem.mockClear()
-    })
-
-    afterAll(() => {
-        window.localStorage.setItem.mockRestore()
-    })
-
     test('Renders passwordless login when enabled', async () => {
         const user = userEvent.setup()
 
@@ -221,21 +208,26 @@ describe('Passwordless enabled', () => {
         await user.click(passwordlessLoginButton)
         expect(
             mockAuthHelperFunctions[AuthHelpers.AuthorizePasswordless].mutateAsync
-        ).toHaveBeenCalledWith({userid: validEmail})
+        ).toHaveBeenCalledWith({
+            userid: validEmail,
+            callbackURI: 'https://webhook.site/27761b71-50c1-4097-a600-21a3b89a546c?redirectUrl=/'
+        })
 
         // check that check email modal is open
         await waitFor(() => {
             const withinForm = within(screen.getByTestId('sf-form-resend-passwordless-email'))
             expect(withinForm.getByText(/Check Your Email/i)).toBeInTheDocument()
             expect(withinForm.getByText(validEmail)).toBeInTheDocument()
-            expect(window.localStorage.setItem).toHaveBeenCalled()
         })
 
         // resend the email
         user.click(screen.getByText(/Resend Link/i))
         expect(
             mockAuthHelperFunctions[AuthHelpers.AuthorizePasswordless].mutateAsync
-        ).toHaveBeenCalledWith({userid: validEmail})
+        ).toHaveBeenCalledWith({
+            userid: validEmail,
+            callbackURI: 'https://webhook.site/27761b71-50c1-4097-a600-21a3b89a546c?redirectUrl=/'
+        })
     })
 })
 
