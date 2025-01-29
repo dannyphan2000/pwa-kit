@@ -24,7 +24,7 @@ module.exports = {
         commerceAPI: {
             proxyPath: `/mobify/proxy/api`,
             parameters: {
-                clientId: 'c9c45bfd-0ed3-4aa2-9971-40f88962b836',
+                clientId: 'c9c45bfd-0ed3-4aa2-9971-40f88962b836', // SLAS Private Client
                 organizationId: 'f_ecom_zzrf_001',
                 shortCode: '8o7m175y',
                 siteId: 'RefArchGlobal'
@@ -38,8 +38,8 @@ module.exports = {
             isProduction: false
         },
         dataCloudAPI: {
-            appSourceId: '21a304b2-b642-409d-bee9-fb08d9b721a5',
-            tenantId: 'gyytqzjsmy2wknlggjsgg9d0g1'
+            appSourceId: '6ebc532a-2247-48e9-8300-d8c2b84eb463',
+            tenantId: 'mvst0mlfmrsd8zbwg8zgmytbg1'
         }
     },
     externals: [],
