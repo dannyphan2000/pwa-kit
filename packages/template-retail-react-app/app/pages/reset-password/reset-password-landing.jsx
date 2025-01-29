@@ -34,7 +34,7 @@ const ResetPasswordLanding = () => {
     const {formatMessage} = useIntl()
     const {search} = useLocation()
     const navigate = useNavigation()
-    const queryParams = new URLSearchParams(search)
+    const queryParams = decodeURIComponent(new URLSearchParams(search))
     const email = queryParams.get('email')
     const token = queryParams.get('token')
     const fields = useUpdatePasswordFields({form})

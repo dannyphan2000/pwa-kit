@@ -53,7 +53,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const navigate = useNavigation()
     const form = useForm()
     const location = useLocation()
-    const queryParams = new URLSearchParams(location.search)
+    const queryParams = decodeURIComponent(new URLSearchParams(location.search))
     const {path} = useRouteMatch()
     const einstein = useEinstein()
     const {isRegistered, customerType} = useCustomerType()

@@ -98,7 +98,7 @@ async function sendMagicLinkEmail(req, res, landingPath, emailTemplate, redirect
     }
 
     // Call the emailLink function to send an email with the magic link using Marketing Cloud
-    const emailLinkResponse = await emailLink(email_id, emailTemplate, magicLink)
+    const emailLinkResponse = await emailLink(email_id, emailTemplate, encodeURI(magicLink))
 
     // Send the response
     res.send(emailLinkResponse)
