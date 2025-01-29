@@ -53,7 +53,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const navigate = useNavigation()
     const form = useForm()
     const location = useLocation()
-    const queryParams = decodeURIComponent(new URLSearchParams(location.search))
+    const queryParams = new URLSearchParams(location.search)
     const {path} = useRouteMatch()
     const einstein = useEinstein()
     const {isRegistered, customerType} = useCustomerType()
@@ -150,8 +150,8 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     // customer baskets to be loaded to guarantee proper basket merging.
     useEffect(() => {
         if (path === PASSWORDLESS_LOGIN_LANDING_PATH && isSuccessCustomerBaskets) {
-            const token = queryParams.get('token')
-            const redirect_url = queryParams.get('redirect_url')
+            const token = decodeURIComponent(queryParams.get('token'))
+            const redirect_url = decodeURIComponent(queryParams.get('redirect_url'))
             setRedirectPath(redirect_url)
 
             const passwordlessLogin = async () => {
