@@ -74,6 +74,7 @@ beforeEach(() => {
 })
 afterEach(() => {
     jest.resetModules()
+    localStorage.clear()
 })
 
 describe('Logging in tests', function () {
