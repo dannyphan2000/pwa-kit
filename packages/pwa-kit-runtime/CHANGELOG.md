@@ -1,3 +1,4 @@
+## v3.9.0-nightly-20250129080215 (Jan 29, 2025)
 ## v3.9.0-dev (Oct 29, 2024)
 - Fix stale service worker file that could cause requests to still use old Content-Security-Policy [#2191](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2191)
 
