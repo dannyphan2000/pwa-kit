@@ -17,21 +17,19 @@ import {
 } from '@salesforce/commerce-sdk-react'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 
-const concatenateEvents = (...events) => ({ ...events.reduce((acc, obj) => ({ ...acc, ...obj }), {}) });
-
 export class DataCloudApi {
-    constructor({siteId, sdk}) {
-        this.siteId = siteId
+    constructor({site, sdk}) {
+        this.site = site
         this.sdk = sdk
     }
     _constructBaseEvent(args) {
         return {
             guestId: args.usid,
-            customerId: args.customerId,
-            siteId: this.siteId,
+            siteId: this.site,
             sessionId: args.usid, //get dwsid from cookie?
             deviceId: args.usid, //get BrowserID from cookie?
             dateTime: new Date().toISOString(),
+            ...(args.customerId && { customerId: args.customerId })
         }
     }
     
@@ -77,21 +75,22 @@ export class DataCloudApi {
 
     _constructBaseSearchResult(searchParams) {
         return {
-            searchResultId: crypto.randomUUID(), // TODO: check if this should be the same for all searches
             searchResultTitle: searchParams.q,
             searchResultPosition: searchParams.offset,
             searchResultPageNumber: searchParams.limit != 0 ? (searchParams.offset / searchParams.limit) + 1 : 1,
         }
     }
 
+    _concatenateEvents = (...events) => ({ ...events.reduce((acc, obj) => ({ ...acc, ...obj }), {}) })
+
     async sendViewPage(path, args) {
         const baseEvent = this._constructBaseEvent(args)
 
-        const identityProfile = concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
+        const identityProfile = this._concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
             isAnonymous: args.isGuest,
             sourceUrl: path,
         })
-        const userEngagement = concatenateEvents(baseEvent, this._generateEventDetails("userEngagement", "Engagement"), {
+        const userEngagement = this._concatenateEvents(baseEvent, this._generateEventDetails("userEngagement", "Engagement"), {
             interactionName: "page-view",
             sourceUrl: path,
         })
@@ -110,10 +109,10 @@ export class DataCloudApi {
         const baseEvent = this._constructBaseEvent(args)
         const baseProduct = this._constructDatacloudProduct(product)
 
-        const identityProfile = concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
+        const identityProfile = this._concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
             isAnonymous: args.isGuest,
         })
-        const catalog = concatenateEvents(baseEvent, this._generateEventDetails("productViewStart", "Engagement"), baseProduct, {
+        const catalog = this._concatenateEvents(baseEvent, this._generateEventDetails("productViewStart", "Engagement"), baseProduct, {
             type: "Product",
             webStoreId: "pwa",
             interactionName: "catalog-object-view-start"
@@ -129,7 +128,7 @@ export class DataCloudApi {
         this.sdk.webEventsAppSourceIdPost(interaction)
     }
 
-    async sendViewCategory(category, searchResults, args) {
+    async sendViewCategory(searchParams, category, searchResults, args) {
         const baseEvent = this._constructBaseEvent(args)
   
         const products = searchResults?.hits?.map((product) =>
@@ -137,7 +136,7 @@ export class DataCloudApi {
         )
 
         const catalogObjects = products.map(product => {
-            return concatenateEvents(baseEvent, this._generateEventDetails("viewProductImpressions", "Engagement"), {
+            return this._concatenateEvents(baseEvent, this._generateEventDetails("viewProductImpressions", "Engagement"), this._constructBaseSearchResult(searchParams), {
                 id: product.id,
                 type: "Product",
                 webStoreId: "pwa",
@@ -146,7 +145,7 @@ export class DataCloudApi {
             })
         })
 
-        const identityProfile = concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
+        const identityProfile = this._concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
             isAnonymous: args.isGuest,
         })
 
@@ -169,7 +168,8 @@ export class DataCloudApi {
         )
 
         const catalogObjects = products.map(product => {
-            return concatenateEvents(baseEvent, this._generateEventDetails("viewProductImpressions", "Engagement"), this._constructBaseSearchResult(searchParams), {
+            return this._concatenateEvents(baseEvent, this._generateEventDetails("viewProductImpressions", "Engagement"), this._constructBaseSearchResult(searchParams), {
+                searchResultId: crypto.randomUUID(),
                 id: product.id,
                 type: "Product",
                 webStoreId: "pwa",
@@ -177,7 +177,7 @@ export class DataCloudApi {
             })
         })
 
-        const identityProfile = concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
+        const identityProfile = this._concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
             isAnonymous: args.isGuest,
         })
 
@@ -196,7 +196,7 @@ export class DataCloudApi {
         const baseEvent = this._constructBaseEvent(args)
 
         const catalogObjects = products.map(product => {
-            return concatenateEvents(baseEvent, this._generateEventDetails("viewProductImpressions", "Engagement"), {
+            return this._concatenateEvents(baseEvent, this._generateEventDetails("viewProductImpressions", "Engagement"), {
                 id: product.id,
                 type: "Product",
                 webStoreId: "pwa",
@@ -206,7 +206,7 @@ export class DataCloudApi {
             })
         })
 
-        const identityProfile = concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
+        const identityProfile = this._concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
             isAnonymous: args.isGuest,
         })
 

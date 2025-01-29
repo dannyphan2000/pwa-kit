@@ -397,7 +397,7 @@ const ProductList = (props) => {
                         additionalProperties: {error: err, category}
                     })
                 }
-                datacloud.sendViewCategory(category, productSearchResult)
+                datacloud.sendViewCategory(searchParams, category, productSearchResult)
                 activeData.sendViewCategory(searchParams, category, productSearchResult)
             }
         }
