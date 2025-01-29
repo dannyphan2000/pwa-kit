@@ -93,7 +93,7 @@ const Home = () => {
             <Button ml={4} bg={'red.600'}>
                 Button
             </Button>
-            <Button ml={4} bg={'teal.300'}>
+            <Button ml={4} bg={'teal.200'}>
                 Button
             </Button>
 
