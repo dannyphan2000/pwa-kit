@@ -1,129 +1,292 @@
 /*
- * Copyright (c) 2023, Salesforce, Inc.
+ * Copyright (c) 2025, Salesforce, Inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /*global dw*/
-import {ACTIVE_DATA_ENABLED} from '@salesforce/retail-react-app/app/constants'
-import {proxyBasePath} from '@salesforce/pwa-kit-runtime/utils/ssr-namespace-paths'
+import {useMemo} from 'react'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 import {initDataCloudSdk} from '@salesforce/cc-datacloud-typescript'
-import {DataCloudApi} from '@salesforce/cc-datacloud-typescript/lib'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
-import {AddToCartBuilder, Cart, CartItem, Identity, PartyIdentification} from '@salesforce/cc-datacloud-typescript/models'
 import {    
-    useCommerceApi,
-    useAccessToken,
     useUsid,
     useCustomerId,
-    useCustomerType
+    useCustomerType,
+    useDNT
 } from '@salesforce/commerce-sdk-react'
+import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 
-const {
-    app: {dataCloudAPI: config, defaultSite: siteId}
-} = getConfig()
-
-const {appSourceId, tenantId} = config
-const sdk = initDataCloudSdk(tenantId, appSourceId)
+const concatenateEvents = (...events) => ({ ...events.reduce((acc, obj) => ({ ...acc, ...obj }), {}) });
 
 export class DataCloudApi {
-    
-    /**
-     * Tells the Einstein engine when a user views a page.
-     * Use this only for pages where another activity does not fit. (ie. on the PDP, use viewProduct rather than this)
-     **/
-    async sendViewPage(path, args) {
-        const identity = {
-            isAnonymous: args.isAnonymous,
+    constructor({siteId, sdk}) {
+        this.siteId = siteId
+        this.sdk = sdk
+    }
+    _constructBaseEvent(args) {
+        return {
             guestId: args.usid,
-            customerId: args.customerId,// OR encoded user id?
-            eventId: crypto.randomUUID(),
+            customerId: args.customerId,
+            siteId: this.siteId,
+            sessionId: args.usid, //get dwsid from cookie?
+            deviceId: args.usid, //get BrowserID from cookie?
             dateTime: new Date().toISOString(),
-            eventType: "identity",
-            category: "Profile",
-            siteId: siteId, //is there a better way to get siteId
         }
-
-        const userEngagement = {
-            sourcePageUrl: path,
+    }
+    
+    _generateEventDetails(eventType, category) {
+        return {
+            eventId: crypto.randomUUID(),
+            eventType: eventType,
+            category: category,
         }
+    }
 
-        const interaction = new ViewPageBuilder()
-            .withIdentity(identity)
-            .withUserEngagement(userEngagement)
-            .build()
+    _constructDatacloudProduct(product) {
+        if (product.type && (product.type.master || product.type.variant)) {
+            // handle variants for PDP / viewProduct
+            // Assumes product is a Product object from SCAPI Shopper-Products:
+            // https://developer.salesforce.com/docs/commerce/commerce-api/references/shopper-products?meta=type%3AProduct
+
+            return {
+                id: product.master.masterId,
+            }
+        } else if (
+            product.productType &&
+            (product.productType.master ||
+                product.productType.variant ||
+                product.productType.set ||
+                product.productType.bundle ||
+                product.productType.variationGroup ||
+                product.productType.item)
+        ) {
+            // handle variants & sets for PLP / viewCategory & viewSearch
+            // Assumes product is a ProductSearchHit from SCAPI Shopper-Search:
+            // https://developer.salesforce.com/docs/commerce/commerce-api/references/shopper-search?meta=type%3AProductSearchHit
+            return {
+                id: product.productId,
+            }
+        } else {
+            // handles non-variants
+            return {
+                id: product.id,
+            }
+        }
+    }
+
+    _constructBaseSearchResult(searchParams) {
+        return {
+            searchResultId: crypto.randomUUID(), // TODO: check if this should be the same for all searches
+            searchResultTitle: searchParams.q,
+            searchResultPosition: searchParams.offset,
+            searchResultPageNumber: searchParams.limit != 0 ? (searchParams.offset / searchParams.limit) + 1 : 1,
+        }
+    }
+
+    async sendViewPage(path, args) {
+        const baseEvent = this._constructBaseEvent(args)
+
+        const identityProfile = concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
+            isAnonymous: args.isGuest,
+            sourceUrl: path,
+        })
+        const userEngagement = concatenateEvents(baseEvent, this._generateEventDetails("userEngagement", "Engagement"), {
+            interactionName: "page-view",
+            sourceUrl: path,
+        })
+        const interaction = {
+            events: [identityProfile, userEngagement]
+        }
 
         logger.info(
-            `Datacloud Event : ${interaction}`,
+            `Datacloud sendViewPage Event : ${JSON.stringify(interaction)}`,
             {namespace: 'datacloudEvents'}
         )
+        this.sdk.webEventsAppSourceIdPost(interaction)
+    }
 
-        sdk.webEventsAppSourceIdPost(interaction)
+    async sendViewProduct(product, args) {
+        const baseEvent = this._constructBaseEvent(args)
+        const baseProduct = this._constructDatacloudProduct(product)
+
+        const identityProfile = concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
+            isAnonymous: args.isGuest,
+        })
+        const catalog = concatenateEvents(baseEvent, this._generateEventDetails("productViewStart", "Engagement"), baseProduct, {
+            type: "Product",
+            webStoreId: "pwa",
+            interactionName: "catalog-object-view-start"
+        })
+        const interaction = {
+            events: [identityProfile, catalog]
+        }
+
+        logger.info(
+            `Datacloud sendViewProduct (PDP) Event : ${JSON.stringify(interaction)}`,
+            {namespace: 'datacloudEvents'}
+        )
+        this.sdk.webEventsAppSourceIdPost(interaction)
+    }
+
+    async sendViewCategory(category, searchResults, args) {
+        const baseEvent = this._constructBaseEvent(args)
+  
+        const products = searchResults?.hits?.map((product) =>
+            this._constructDatacloudProduct(product)
+        )
+
+        const catalogObjects = products.map(product => {
+            return concatenateEvents(baseEvent, this._generateEventDetails("viewProductImpressions", "Engagement"), {
+                id: product.id,
+                type: "Product",
+                webStoreId: "pwa",
+                catalogId: category.id,
+                interactionName: "catalog-object-impression"
+            })
+        })
+
+        const identityProfile = concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
+            isAnonymous: args.isGuest,
+        })
+
+        const interaction = {
+            events: [identityProfile, ...catalogObjects]
+        }
+
+        logger.info(
+            `Datacloud sendViewCategory (PLP) Event : ${JSON.stringify(interaction)}`,
+            {namespace: 'datacloudEvents'}
+        )
+        this.sdk.webEventsAppSourceIdPost(interaction)
+    }
+
+    async sendViewSearchResults(searchParams, searchResults, args) {
+        const baseEvent = this._constructBaseEvent(args)
+  
+        const products = searchResults?.hits?.map((product) =>
+            this._constructDatacloudProduct(product)
+        )
+
+        const catalogObjects = products.map(product => {
+            return concatenateEvents(baseEvent, this._generateEventDetails("viewProductImpressions", "Engagement"), this._constructBaseSearchResult(searchParams), {
+                id: product.id,
+                type: "Product",
+                webStoreId: "pwa",
+                interactionName: "catalog-object-impression",
+            })
+        })
+
+        const identityProfile = concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
+            isAnonymous: args.isGuest,
+        })
+
+        const interaction = {
+            events: [identityProfile, ...catalogObjects]
+        }
+
+        logger.info(
+            `Datacloud sendViewSearchResults Event : ${JSON.stringify(interaction)}`,
+            {namespace: 'datacloudEvents'}
+        )
+        this.sdk.webEventsAppSourceIdPost(interaction)
+    }
+
+    async sendViewRecommendations(recommenderDetails, products, args) {
+        const baseEvent = this._constructBaseEvent(args)
+
+        const catalogObjects = products.map(product => {
+            return concatenateEvents(baseEvent, this._generateEventDetails("viewProductImpressions", "Engagement"), {
+                id: product.id,
+                type: "Product",
+                webStoreId: "pwa",
+                interactionName: "catalog-object-impression",
+                personalizationId: recommenderDetails.recommenderName, //* The identifier of the personalization (e.g., recommendation), provided by the personalization service provider, that led to the event.
+                personalizationContextId: recommenderDetails.__recoUUID, //* The identifier, provided by the personalization service provider, of the specific content (e.g., product) associated with this event.
+            })
+        })
+
+        const identityProfile = concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
+            isAnonymous: args.isGuest,
+        })
+
+        const interaction = {
+            events: [identityProfile, ...catalogObjects]
+        }
+
+        logger.info(
+            `Datacloud sendViewRecommendations Event : ${JSON.stringify(interaction)}`,
+            {namespace: 'datacloudEvents'}
+        )
+        this.sdk.webEventsAppSourceIdPost(interaction)
     }
 }
 
 const useDataCloud = () => {
-    // Returns true when the feature flag is enabled and the tracking scripts have been executed
-    // This MUST be called before using the `dw` variable, otherwise a ReferenceError will be thrown
-    const canTrack = () => DATACLOUD_ENGAGEMENT_EVENT_ENABLED && typeof dw !== 'undefined'
-
     const {getUsidWhenReady} = useUsid()
-    const {getEncUserIdWhenReady} = useEncUserId()
     const {isRegistered} = useCustomerType()
-
-    const dataCloud = useMemo(
-            () =>
-                new DataCloudApi()
-        )
+    const customerId = useCustomerId() // Bug PWA -> Needs converted to Promise
+    const {site} = useMultiSite()
+    let {effectiveDnt} = useDNT()
+    effectiveDnt = false // Remove after demo
 
     const getEventUserParameters = async () => {
         return {
-            isGuest: isRegistered.isGuest,
+            isGuest: isRegistered ? 0 : 1,
             usid: await getUsidWhenReady(),
-            userId: isRegistered ? await getEncUserIdWhenReady() : undefined,
+            customerId: customerId,
         }
     }
+
+    const {
+        app: {dataCloudAPI: config, defaultSite: siteId}
+    } = getConfig()
+    
+    const {appSourceId, tenantId} = config
+    let sdk = null
+    let isDatacloudInitiated = true
+
+    if (!appSourceId || !tenantId) {
+        isDatacloudInitiated = false
+    } else {
+        sdk = initDataCloudSdk(tenantId, appSourceId)
+    }
+
+    const dataCloud = useMemo(
+        () =>
+            new DataCloudApi({
+                site:site.id,
+                sdk
+            }),
+        [site, sdk]
+    )
     
     return {
         async sendViewPage(...args) {
+            if (!isDatacloudInitiated || effectiveDnt) return
             const userParameters = await getEventUserParameters()
             return dataCloud.sendViewPage(...args.concat(userParameters))
-        }
-        /*
-        async sendViewProduct(category, product, type) {
-            // if (!canTrack()) return
-            try {
-                const catalog = {
-                    eventId: crypto.randomUUID(),
-                    dateTime: new Date().toISOString(),
-                    eventType: 'catalog',
-                    category: 'engagement',
-                    deviceId: '0cd4c80e7dc0f7e0',
-                    sessionId: '0cd4c80e7dc0f7e0',
-                    siteId: 'RefArch',
-                    personalizationContentId: 'personalizationContentId',
-                    catalogObjectId: product.productId,
-                    catalogObjectType: type,
-                    lineItemId: 'line-item-id',
-                    interactionName: 'startViewProduct',
-                    searchResultId: '',
-                    id: '',
-                    categoryId: '',
-                    webStoreId: '',
-                    eventStatus: 'Success',
-                    type: 'product'
-                }
-                const interaction = new ProductViewStartBuilder().withCatalog(catalog).build()
-                await sdk.webEventsAppSourceIdPost(interaction)
-            } catch (err) {
-                logger.error('DataCloud sendViewProduct error', {
-                    namespace: 'useDataCloud.sendViewProduct',
-                    additionalProperties: {error: err}
-                })
-            }
-        } */
-
+        },
+        async sendViewProduct(...args) {
+            if (!isDatacloudInitiated || effectiveDnt) return
+            const userParameters = await getEventUserParameters()
+            return dataCloud.sendViewProduct(...args.concat(userParameters))
+        },
+        async sendViewCategory(...args) {
+            if (!isDatacloudInitiated || effectiveDnt) return
+            const userParameters = await getEventUserParameters()
+            return dataCloud.sendViewCategory(...args.concat(userParameters))
+        },
+        async sendViewSearchResults(...args) {
+            if (!isDatacloudInitiated || effectiveDnt) return
+            const userParameters = await getEventUserParameters()
+            return dataCloud.sendViewSearchResults(...args.concat(userParameters))
+        },
+        async sendViewRecommendations(...args) {
+            if (!isDatacloudInitiated || effectiveDnt) return
+            const userParameters = await getEventUserParameters()
+            return dataCloud.sendViewRecommendations(...args.concat(userParameters))
+        },
     }
 }
 

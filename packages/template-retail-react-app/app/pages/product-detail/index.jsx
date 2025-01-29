@@ -31,6 +31,7 @@ import {useCurrentBasket} from '@salesforce/retail-react-app/app/hooks/use-curre
 import {useVariant} from '@salesforce/retail-react-app/app/hooks'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
+import useDatacloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
 import useActiveData from '@salesforce/retail-react-app/app/hooks/use-active-data'
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 // Project Components
@@ -61,6 +62,7 @@ const ProductDetail = () => {
     const history = useHistory()
     const location = useLocation()
     const einstein = useEinstein()
+    const datacloud = useDatacloud()
     const activeData = useActiveData()
     const toast = useToast()
     const navigate = useNavigation()
@@ -422,6 +424,7 @@ const ProductDetail = () => {
     useEffect(() => {
         if (product && product.type.set) {
             einstein.sendViewProduct(product)
+            datacloud.sendViewProduct(product)
             const childrenProducts = product.setProducts
             childrenProducts.map((child) => {
                 try {
@@ -433,6 +436,7 @@ const ProductDetail = () => {
                     })
                 }
                 activeData.sendViewProduct(category, child, 'detail')
+                datacloud.sendViewProduct(child)
             })
         } else if (product) {
             try {
@@ -444,6 +448,8 @@ const ProductDetail = () => {
                 })
             }
             activeData.sendViewProduct(category, product, 'detail')
+            datacloud.sendViewProduct(product)
+
         }
     }, [product])
 

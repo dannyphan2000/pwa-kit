@@ -11,6 +11,7 @@ import {useIntl} from 'react-intl'
 import {Button} from '@salesforce/retail-react-app/app/components/shared/ui'
 import ProductScroller from '@salesforce/retail-react-app/app/components/product-scroller'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
+import useDatacloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 import useIntersectionObserver from '@salesforce/retail-react-app/app/hooks/use-intersection-observer'
 import {useWishList} from '@salesforce/retail-react-app/app/hooks/use-wish-list'
@@ -41,6 +42,7 @@ const RecommendedProducts = ({zone, recommender, products, title, shouldFetch, .
     const {data: customer} = useCurrentCustomer()
     const {customerId} = customer
     const {data: wishlist} = useWishList()
+    const datacloud = useDatacloud()
 
     const createCustomerProductListItem = useShopperCustomersMutation(
         'createCustomerProductListItem'
@@ -98,6 +100,11 @@ const RecommendedProducts = ({zone, recommender, products, title, shouldFetch, .
                 },
                 recommendations.recs.map((rec) => ({id: rec.id}))
             )
+            datacloud.sendViewRecommendations({
+                recommenderName: recommendations.recommenderName,
+                __recoUUID: recommendations.recoUUID
+            },
+            recommendations.recs.map((rec) => ({id: rec.id})))
         }
     }, [isOnScreen, recommendations])
 
