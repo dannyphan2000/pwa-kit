@@ -93,7 +93,7 @@ async function sendMagicLinkEmail(req, res, landingPath, emailTemplate, redirect
         // Add email query parameter for reset password flow
         magicLink += `&email=${email_id}`
     }
-    if (landingPath === PASSWORDLESS_LOGIN_LANDING_PATH) {
+    if (landingPath === PASSWORDLESS_LOGIN_LANDING_PATH && redirectUrl) {
         magicLink += `&redirect_url=${redirectUrl}`
     }
 
