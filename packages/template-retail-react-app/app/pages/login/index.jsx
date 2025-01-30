@@ -151,8 +151,9 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     useEffect(() => {
         if (path === PASSWORDLESS_LOGIN_LANDING_PATH && isSuccessCustomerBaskets) {
             const token = decodeURIComponent(queryParams.get('token'))
-            const redirect_url = decodeURIComponent(queryParams.get('redirect_url'))
-            setRedirectPath(redirect_url)
+            if (queryParams.get('redirect_url')) {
+                setRedirectPath(decodeURIComponent(queryParams.get('redirect_url')))
+            } 
 
             const passwordlessLogin = async () => {
                 try {
@@ -173,12 +174,9 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     useEffect(() => {
         if (isRegistered) {
             handleMergeBasket()
-            if (redirectPath) {
-                navigate(redirectPath)
-                setRedirectPath('')
-            } else {
-                navigate('/account')
-            }
+            const redirectTo = redirectPath ? redirectPath : '/account'
+            navigate(redirectTo)
+            setRedirectPath('')
         }
     }, [isRegistered])
 

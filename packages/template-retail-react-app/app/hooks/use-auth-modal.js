@@ -93,6 +93,9 @@ export const AuthModal = ({
     const {getPasswordResetToken} = usePasswordReset()
     const authorizePasswordlessLogin = useAuthHelper(AuthHelpers.AuthorizePasswordless)
     const passwordlessConfigCallback = getConfig().app.login?.passwordless?.callbackURI
+    const callbackURL = isAbsoluteURL(passwordlessConfigCallback)
+        ? passwordlessConfigCallback
+        : `${appOrigin}${passwordlessConfigCallback}`
 
     const {data: baskets} = useCustomerBaskets(
         {parameters: {customerId}},
@@ -109,10 +112,7 @@ export const AuthModal = ({
 
         const handlePasswordlessLogin = async (email) => {
             try {
-                const callbackURL = isAbsoluteURL(passwordlessConfigCallback)
-                    ? passwordlessConfigCallback
-                    : `${appOrigin}${passwordlessConfigCallback}`
-                const redirectPath = window.location.pathname
+                const redirectPath = window.location.pathname + window.location.search
                 await authorizePasswordlessLogin.mutateAsync({
                     userid: email,
                     callbackURI: `${callbackURL}?redirectUrl=${redirectPath}`
