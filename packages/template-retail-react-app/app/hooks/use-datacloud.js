@@ -113,12 +113,11 @@ export class DataCloudApi {
             ]
         }
 
-        logger.info(
-            `Datacloud sendViewPage Event : ${JSON.stringify(interaction)}`,
-            {namespace: 'datacloudEvents'}
-        )
-
-        this.sdk.webEventsAppSourceIdPost(interaction)
+        try {
+            this.sdk.webEventsAppSourceIdPost(interaction)
+        } catch (err) {
+            logger.error('Error sending DataCloud event')
+        }
     }
 
     async sendViewProduct(product, args) {
@@ -152,11 +151,11 @@ export class DataCloudApi {
             ]
         }
 
-        logger.info(
-            `Datacloud sendViewProduct (PDP) Event : ${JSON.stringify(interaction)}`,
-            {namespace: 'datacloudEvents'}
-        )
-        this.sdk.webEventsAppSourceIdPost(interaction)
+        try {
+            this.sdk.webEventsAppSourceIdPost(interaction)
+        } catch (err) {
+            logger.error('Error sending DataCloud event')
+        }
     }
 
     async sendViewCategory(searchParams, category, searchResults, args) {
@@ -197,11 +196,11 @@ export class DataCloudApi {
                 ]
         }
 
-        logger.info(
-            `Datacloud sendViewCategory (PLP) Event : ${JSON.stringify(interaction)}`,
-            {namespace: 'datacloudEvents'}
-        )
-        this.sdk.webEventsAppSourceIdPost(interaction)
+        try {
+            this.sdk.webEventsAppSourceIdPost(interaction)
+        } catch (err) {
+            logger.error('Error sending DataCloud event')
+        }
     }
 
     async sendViewSearchResults(searchParams, searchResults, args) {
@@ -242,11 +241,11 @@ export class DataCloudApi {
             ]
         }
 
-        logger.info(
-            `Datacloud sendViewSearchResults Event : ${JSON.stringify(interaction)}`,
-            {namespace: 'datacloudEvents'}
-        )
-        this.sdk.webEventsAppSourceIdPost(interaction)
+        try {
+            this.sdk.webEventsAppSourceIdPost(interaction)
+        } catch (err) {
+            logger.error('Error sending DataCloud event')
+        }
     }
 
     async sendViewRecommendations(recommenderDetails, products, args) {
@@ -284,11 +283,11 @@ export class DataCloudApi {
             ]
         }
 
-        logger.info(
-            `Datacloud sendViewRecommendations Event : ${JSON.stringify(interaction)}`,
-            {namespace: 'datacloudEvents'}
-        )
-        this.sdk.webEventsAppSourceIdPost(interaction)
+        try {
+            this.sdk.webEventsAppSourceIdPost(interaction)
+        } catch (err) {
+            logger.error('Error sending DataCloud event')
+        }
     }
 }
 
