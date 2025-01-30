@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-/*global dw*/
 import {useMemo} from 'react'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 import {initDataCloudSdk} from '@salesforce/cc-datacloud-typescript'
@@ -16,6 +15,7 @@ import {
     useDNT
 } from '@salesforce/commerce-sdk-react'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
+import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 
 export class DataCloudApi {
     constructor({site, sdk}) {
@@ -29,7 +29,7 @@ export class DataCloudApi {
             sessionId: args.usid, //get dwsid from cookie?
             deviceId: args.usid, //get BrowserID from cookie?
             dateTime: new Date().toISOString(),
-            ...(args.customerId && { customerId: args.customerId })
+            ...(args.customerId && { customerId: args.customerId }), // Can remove the conditionality after the hook -> Promise is changed in future PWA release
         }
     }
     
@@ -88,20 +88,36 @@ export class DataCloudApi {
 
         const identityProfile = this._concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
             isAnonymous: args.isGuest,
+            firstName: args.firstName,
+            lastName: args.lastName,
             sourceUrl: path,
         })
+
         const userEngagement = this._concatenateEvents(baseEvent, this._generateEventDetails("userEngagement", "Engagement"), {
             interactionName: "page-view",
             sourceUrl: path,
         })
+
+        let contactPointEmail = null
+        if (args.email) {
+            contactPointEmail =this._concatenateEvents(baseEvent, this._generateEventDetails("contactPointEmail", "Profile"), {
+                email: args.email,
+            })
+        }
+
         const interaction = {
-            events: [identityProfile, userEngagement]
+            events: [
+                identityProfile,
+                ...(contactPointEmail ? [contactPointEmail] : []),
+                userEngagement
+            ]
         }
 
         logger.info(
             `Datacloud sendViewPage Event : ${JSON.stringify(interaction)}`,
             {namespace: 'datacloudEvents'}
         )
+
         this.sdk.webEventsAppSourceIdPost(interaction)
     }
 
@@ -111,14 +127,29 @@ export class DataCloudApi {
 
         const identityProfile = this._concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
             isAnonymous: args.isGuest,
+            firstName: args.firstName,
+            lastName: args.lastName,
         })
+
+        let contactPointEmail = null
+        if (args.email) {
+            contactPointEmail =this._concatenateEvents(baseEvent, this._generateEventDetails("contactPointEmail", "Profile"), {
+                email: args.email,
+            })
+        }
+
         const catalog = this._concatenateEvents(baseEvent, this._generateEventDetails("productViewStart", "Engagement"), baseProduct, {
             type: "Product",
             webStoreId: "pwa",
             interactionName: "catalog-object-view-start"
         })
+
         const interaction = {
-            events: [identityProfile, catalog]
+            events: [
+                identityProfile,
+                ...(contactPointEmail ? [contactPointEmail] : []),
+                catalog
+            ]
         }
 
         logger.info(
@@ -147,10 +178,23 @@ export class DataCloudApi {
 
         const identityProfile = this._concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
             isAnonymous: args.isGuest,
+            firstName: args.firstName,
+            lastName: args.lastName,
         })
 
+        let contactPointEmail = null
+        if (args.email) {
+            contactPointEmail =this._concatenateEvents(baseEvent, this._generateEventDetails("contactPointEmail", "Profile"), {
+                email: args.email,
+            })
+        }
+
         const interaction = {
-            events: [identityProfile, ...catalogObjects]
+            events: [
+                identityProfile,
+                ...(contactPointEmail ? [contactPointEmail] : []),
+                ...catalogObjects
+                ]
         }
 
         logger.info(
@@ -179,10 +223,23 @@ export class DataCloudApi {
 
         const identityProfile = this._concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
             isAnonymous: args.isGuest,
+            firstName: args.firstName,
+            lastName: args.lastName,
         })
 
+        let contactPointEmail = null
+        if (args.email) {
+            contactPointEmail =this._concatenateEvents(baseEvent, this._generateEventDetails("contactPointEmail", "Profile"), {
+                email: args.email,
+            })
+        }
+
         const interaction = {
-            events: [identityProfile, ...catalogObjects]
+            events: [
+                identityProfile,
+                ...(contactPointEmail ? [contactPointEmail] : []),
+                ...catalogObjects
+            ]
         }
 
         logger.info(
@@ -208,10 +265,23 @@ export class DataCloudApi {
 
         const identityProfile = this._concatenateEvents(baseEvent, this._generateEventDetails("identity", "Profile"), {
             isAnonymous: args.isGuest,
+            firstName: args.firstName,
+            lastName: args.lastName,
         })
 
+        let contactPointEmail = null
+        if (args.email) {
+            contactPointEmail =this._concatenateEvents(baseEvent, this._generateEventDetails("contactPointEmail", "Profile"), {
+                email: args.email,
+            })
+        }
+
         const interaction = {
-            events: [identityProfile, ...catalogObjects]
+            events: [
+                identityProfile,
+                ...(contactPointEmail ? [contactPointEmail] : []),
+                ...catalogObjects
+            ]
         }
 
         logger.info(
@@ -226,6 +296,7 @@ const useDataCloud = () => {
     const {getUsidWhenReady} = useUsid()
     const {isRegistered} = useCustomerType()
     const customerId = useCustomerId() // Bug PWA -> Needs converted to Promise
+    const {data: customer} = useCurrentCustomer()
     const {site} = useMultiSite()
     let {effectiveDnt} = useDNT()
     effectiveDnt = false // Remove after demo
@@ -235,6 +306,9 @@ const useDataCloud = () => {
             isGuest: isRegistered ? 0 : 1,
             usid: await getUsidWhenReady(),
             customerId: customerId,
+            firstName: customer?.firstName,
+            lastName: customer?.lastName,
+            email: customer?.email,
         }
     }
 
