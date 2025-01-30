@@ -153,7 +153,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
             const token = decodeURIComponent(queryParams.get('token'))
             if (queryParams.get('redirect_url')) {
                 setRedirectPath(decodeURIComponent(queryParams.get('redirect_url')))
-            } 
+            }
 
             const passwordlessLogin = async () => {
                 try {
