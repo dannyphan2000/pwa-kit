@@ -88,17 +88,17 @@ async function sendMagicLinkEmail(req, res, landingPath, emailTemplate, redirect
     const {email_id, token} = req.body
 
     // Construct the magic link URL
-    let magicLink = `${base}${landingPath}?token=${token}`
+    let magicLink = `${base}${landingPath}?token=${encodeURIComponent(token)}`
     if (landingPath === RESET_PASSWORD_LANDING_PATH) {
         // Add email query parameter for reset password flow
-        magicLink += `&email=${email_id}`
+        magicLink += `&email=${encodeURIComponent(email_id)}`
     }
     if (landingPath === PASSWORDLESS_LOGIN_LANDING_PATH && redirectUrl) {
-        magicLink += `&redirect_url=${redirectUrl}`
+        magicLink += `&redirect_url=${encodeURIComponent(redirectUrl)}`
     }
 
     // Call the emailLink function to send an email with the magic link using Marketing Cloud
-    const emailLinkResponse = await emailLink(email_id, emailTemplate, encodeURI(magicLink))
+    const emailLinkResponse = await emailLink(email_id, emailTemplate, magicLink)
 
     // Send the response
     res.send(emailLinkResponse)
