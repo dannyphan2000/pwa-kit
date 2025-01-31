@@ -175,8 +175,8 @@ const Login = ({initialView = LOGIN_VIEW}) => {
         if (isRegistered) {
             handleMergeBasket()
             const redirectTo = redirectPath ? redirectPath : '/account'
-            navigate(redirectTo)
             setRedirectPath('')
+            navigate(redirectTo)
         }
     }, [isRegistered])
 
