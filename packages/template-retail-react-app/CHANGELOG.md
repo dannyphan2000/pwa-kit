@@ -10,6 +10,8 @@
 - [BUG] Fixed "getCheckboxProps is not a function" when rendering checkout page in generated app.[#2140](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2140)
 - Replace transfer basket call with merge basket on checkout [#2138](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2138)
 - [BUG] Fix images being fetced multiple times on Safari [#2223](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2223)
+- Support Node 22 [#2218](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2218)
+tags
 - PDP / PLP: Add page meta data tags that have been defined in BM [#2232](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2232)
 
 ### Accessibility Improvements

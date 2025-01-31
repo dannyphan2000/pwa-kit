@@ -11,7 +11,7 @@ const config = {
             require('@babel/preset-env'),
             {
                 targets: {
-                    node: 18
+                    node: 22
                 }
             }
         ],

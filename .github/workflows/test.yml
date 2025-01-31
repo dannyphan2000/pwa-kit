@@ -44,21 +44,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [16, 18, 20]
-        npm: [8, 9, 10]
-        exclude: # node 16 is not compatible with npm 10
+        node: [16, 18, 20, 22]
+        npm: [8, 9, 10, 11]
+        exclude: # node 16 with npm 10/11 and node 18 with npm 11 are not compatible
           - node: 16
             npm: 10
+          - node: 16
+            npm: 11
+          - node: 18
+            npm: 11
     runs-on: ubuntu-latest
     env:
       # The "default" npm is the one that ships with a given version of node.
       # For more: https://nodejs.org/en/download/releases/
       # (We also use this env var for making sure a step runs once for the current node version)
-      # Note: For node 18, the default was npm 9 until v18.19.0, when it became npm 10
-      IS_DEFAULT_NPM: ${{ (matrix.node == 16 && matrix.npm == 8) || (matrix.node == 18 && matrix.npm == 10) || (matrix.node == 20 && matrix.npm == 10) }}
+      IS_DEFAULT_NPM: ${{ (matrix.node == 16 && matrix.npm == 8) || (matrix.node == 18 && matrix.npm == 10) || (matrix.node == 20 && matrix.npm == 10) || (matrix.node == 22 && matrix.npm == 10) }}
       # The current recommended version for Managed Runtime:
       # https://developer.salesforce.com/docs/commerce/pwa-kit-managed-runtime/guide/upgrade-node-version.html
-      IS_MRT_NODE: ${{ matrix.node == 20 && matrix.npm == 10 }}
+      IS_MRT_NODE: ${{ matrix.node == 22 && matrix.npm == 10 }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -141,21 +144,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [16, 18, 20]
-        npm: [8, 9, 10]
-        exclude: # node 16 is not compatible with npm 10
+        node: [16, 18, 20, 22]
+        npm: [8, 9, 10, 11]
+        exclude: # node 16 with npm 10/11 and node 18 with npm 11 are not compatible
           - node: 16
             npm: 10
+          - node: 16
+            npm: 11
+          - node: 18
+            npm: 11
     runs-on: windows-latest
     env:
       # The "default" npm is the one that ships with a given version of node.
       # For more: https://nodejs.org/en/download/releases/
       # (We also use this env var for making sure a step runs once for the current node version)
       # Note: For node 18, the default was npm 9 until v18.19.0, when it became npm 10
-      IS_DEFAULT_NPM: ${{ (matrix.node == 16 && matrix.npm == 8) || (matrix.node == 18 && matrix.npm == 10) || (matrix.node == 20 && matrix.npm == 10) }}
+      IS_DEFAULT_NPM: ${{ (matrix.node == 16 && matrix.npm == 8) || (matrix.node == 18 && matrix.npm == 10) || (matrix.node == 20 && matrix.npm == 10) || (matrix.node == 22 && matrix.npm == 10) }}
       # The current recommended version for Managed Runtime:
       # https://developer.salesforce.com/docs/commerce/pwa-kit-managed-runtime/guide/upgrade-node-version.html
-      IS_MRT_NODE: ${{ matrix.node == 20 && matrix.npm == 10 }}
+      IS_MRT_NODE: ${{ matrix.node == 22 && matrix.npm == 10 }}
     steps:
         - name: Checkout
           uses: actions/checkout@v3
@@ -196,7 +203,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Setup Ubuntu Machine
         uses: "./.github/actions/setup_ubuntu"
@@ -295,7 +302,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Setup Windows Machine
         uses: "./.github/actions/setup_windows"
@@ -339,7 +346,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: [20] # Should match node version supported by MRT.
+        node: [22] # Should match node version supported by MRT.
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
