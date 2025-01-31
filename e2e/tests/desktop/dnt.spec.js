@@ -6,40 +6,15 @@
  */
 
 const { test, expect } = require("@playwright/test");
-const config = require("../config");
+const config = require("../../config.js");
 const {
   generateUserCredentials
-} = require("../scripts/utils.js");
+} = require("../../scripts/utils.js");
+const {
+  registerShopper
+} = require("../../scripts/pageHelpers.js")
 
 const REGISTERED_USER_CREDENTIALS = generateUserCredentials();
-
-const registerUser = async (page) => {
-  await page.goto(config.RETAIL_APP_HOME + "/registration");
-
-  const registrationFormHeading = page.getByText(/Let's get started!/i);
-  await registrationFormHeading.waitFor();
-
-  await page
-    .locator("input#firstName")
-    .fill(REGISTERED_USER_CREDENTIALS.firstName);
-  await page
-    .locator("input#lastName")
-    .fill(REGISTERED_USER_CREDENTIALS.lastName);
-  await page.locator("input#email").fill(REGISTERED_USER_CREDENTIALS.email);
-  await page
-    .locator("input#password")
-    .fill(REGISTERED_USER_CREDENTIALS.password);
-
-  await page.getByRole("button", { name: /Create Account/i }).click();
-
-  await expect(
-    page.getByRole("heading", { name: /Account Details/i })
-  ).toBeVisible();
-
-  await expect(
-    page.getByRole("heading", { name: /My Account/i })
-  ).toBeVisible();
-}
 
 const checkDntCookie = async (page, expectedValue) => {
   var cookies = await page.context().cookies();
@@ -49,9 +24,9 @@ const checkDntCookie = async (page, expectedValue) => {
   expect(cookie.value).toBe(expectedValue);
 }
 
-
 test("Shopper can use the consent tracking form", async ({ page }) => {
   await page.context().clearCookies();
+
   await page.goto(config.RETAIL_APP_HOME);
 
   const modalSelector = '[aria-label="Close consent tracking form"]'
@@ -62,6 +37,7 @@ test("Shopper can use the consent tracking form", async ({ page }) => {
   const declineButton = page.locator('button:visible', { hasText: 'Decline' });
   await expect(declineButton).toBeVisible();
   await declineButton.click();
+  await page.waitForTimeout(5000);
   
   // Intercept einstein request
   let apiCallsMade = false;
@@ -69,9 +45,8 @@ test("Shopper can use the consent tracking form", async ({ page }) => {
     apiCallsMade = true;
     route.continue();
   });
-  
-  // The value of 1 comes from defaultDnt prop in _app-config/index.jsx
-  checkDntCookie(page, '1')
+
+  await checkDntCookie(page, '1')
 
   // Trigger einstein events
   await page.click('text=Womens');
@@ -80,8 +55,8 @@ test("Shopper can use the consent tracking form", async ({ page }) => {
   await expect(page.getByText(/Tracking Consent/i)).toBeHidden();
   
   // Registering after setting DNT persists the preference
-  await registerUser(page)
-  checkDntCookie(page, '1')
+  await registerShopper({page, userCredentials: REGISTERED_USER_CREDENTIALS});
+  await checkDntCookie(page, '1')
   
   // Logging out clears the preference
   const buttons = await page.getByText(/Log Out/i).elementHandles();

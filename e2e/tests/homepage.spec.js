@@ -7,10 +7,12 @@
 
 const { test, expect } = require("@playwright/test");
 const config = require("../config");
+const {answerConsentTrackingForm} = require("../scripts/pageHelpers.js")
 
 test.describe("Retail app home page loads", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(config.RETAIL_APP_HOME);
+    await answerConsentTrackingForm(page);
   });
 
   test("has title", async ({ page }) => {

@@ -3,6 +3,26 @@ const config = require("../config");
 const { getCreditCardExpiry } = require("../scripts/utils.js")
 
 /**
+ * Give an answer to the consent tracking form.
+ * 
+ * Note: the consent tracking form hovers over some elements in the app. This can cause a test to fail.
+ * Run this function after a page.goto to release the form from view.
+ * 
+ * @param {Object} page - Object that represents a tab/window in the browser provided by playwright
+ * @param {Boolean} dnt - Do Not Track value to answer the form. False to enable tracking, True to disable tracking.
+ */
+export const answerConsentTrackingForm = async (page, dnt = false)  => {
+    if (await page.locator('text=Tracking Consent').count() > 0) {
+        var text = 'Accept'
+        if (dnt)
+            text = 'Decline'
+        const answerButton = page.locator('button:visible', { hasText: text });
+        await expect(answerButton).toBeVisible();
+        await answerButton.click();
+    }
+}
+
+/**
  * Navigates to the `Cotton Turtleneck Sweater` PDP (Product Detail Page) on mobile 
  * with the black variant selected
  * 
@@ -11,6 +31,7 @@ const { getCreditCardExpiry } = require("../scripts/utils.js")
 export const navigateToPDPMobile = async ({page}) => {
     // Home page
     await page.goto(config.RETAIL_APP_HOME);
+    await answerConsentTrackingForm(page)
 
     await page.getByLabel("Menu", { exact: true }).click();
 
@@ -64,6 +85,7 @@ export const navigateToPDPMobile = async ({page}) => {
  */
 export const navigateToPDPDesktop = async ({page}) => {
     await page.goto(config.RETAIL_APP_HOME);
+    await answerConsentTrackingForm(page)
 
     await page.getByRole("link", { name: "Womens" }).hover();
     const topsNav = await page.getByRole("link", { name: "Tops", exact: true });
@@ -144,6 +166,7 @@ export const addProductToCart = async ({page, isMobile = false}) => {
 export const registerShopper = async ({page, userCredentials, isMobile = false}) => {
     // Create Account and Sign In
     await page.goto(config.RETAIL_APP_HOME + "/registration");
+    await answerConsentTrackingForm(page)
 
     await page.waitForLoadState();
 
@@ -160,10 +183,13 @@ export const registerShopper = async ({page, userCredentials, isMobile = false})
     await page
         .locator("input#password")
         .fill(userCredentials.password);
-
+    
+    // Best Practice: await the network call and assert on the network response rather than waiting for pageLoadState()
+    // to avoid race conditions from lock in pageLoadState being released before network call resolves
+    const tokenResponsePromise=page.waitForResponse('**/shopper/auth/v1/organizations/**/oauth2/token')
     await page.getByRole("button", { name: /Create Account/i }).click();
-
-    await page.waitForLoadState();
+    await tokenResponsePromise;
+    expect((await tokenResponsePromise).status()).toBe(200);
 
     await expect(
         page.getByRole("heading", { name: /Account Details/i })
@@ -186,6 +212,8 @@ export const registerShopper = async ({page, userCredentials, isMobile = false})
  */
 export const validateOrderHistory = async ({page}) => {
     await page.goto(config.RETAIL_APP_HOME + "/account/orders");
+    await answerConsentTrackingForm(page)
+
     await expect(
       page.getByRole("heading", { name: /Order History/i })
     ).toBeVisible();
@@ -209,6 +237,7 @@ export const validateOrderHistory = async ({page}) => {
  */
 export const validateWishlist = async ({page}) => {
     await page.goto(config.RETAIL_APP_HOME + "/account/wishlist");
+    await answerConsentTrackingForm(page)
 
     await expect(
       page.getByRole("heading", { name: /Wishlist/i })
@@ -236,19 +265,17 @@ export const validateWishlist = async ({page}) => {
 export const loginShopper = async ({page, userCredentials}) => {
     try {
         await page.goto(config.RETAIL_APP_HOME + "/login");
+        await answerConsentTrackingForm(page)
+
         await page.locator("input#email").fill(userCredentials.email);
         await page
             .locator("input#password")
             .fill(userCredentials.password);
+
+        const tokenResponsePromise=page.waitForResponse('**/shopper/auth/v1/organizations/**/oauth2/token')
         await page.getByRole("button", { name: /Sign In/i }).click();
-    
-        await page.waitForLoadState();
-    
-        // redirected to Account Details page after logging in
-        await expect(
-          page.getByRole("heading", { name: /Account Details/i })
-        ).toBeVisible({ timeout: 2000 });
-        return true;
+        await tokenResponsePromise;
+        return await tokenResponsePromise.status() === 200;
     } catch {
         return false;
     }
@@ -263,7 +290,7 @@ export const loginShopper = async ({page, userCredentials}) => {
  */
 export const searchProduct = async ({page, query, isMobile = false}) => {
     await page.goto(config.RETAIL_APP_HOME);
-
+    await answerConsentTrackingForm(page)
     // For accessibility reasons, we have two search bars
     // one for desktop and one for mobile depending on your device type
     const searchInputs = page.locator('input[aria-label="Search for products..."]');

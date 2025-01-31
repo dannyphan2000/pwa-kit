@@ -153,7 +153,7 @@ test("Registered shopper can add item to wishlist", async ({ page }) => {
   if(!isLoggedIn) {
     await registerShopper({
       page,
-      userCredentials: REGISTERED_USER_CREDENTIALS,
+      userCredentials: generateUserCredentials(),
       isMobile: true
     })
   }
