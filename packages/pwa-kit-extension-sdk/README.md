@@ -107,6 +107,11 @@ Now when the base application is built the import for the `logo.ts` in `extensio
 
 This mechanism is useful when you want to allow for fine grained customization of your application extension. Its the responsibility of the extension developer to ensure their document what files are overridable and what the expected input and output of those files are. For example, if the overridable file is a React component you should document the props that get passed to that component and the expected exports of the file.
 
+#### Forced overrides
+In a case when it is necessary to override some files from an extension but the extension developers do not allow those files to be overridden, you can use `forced_overrides` to by pass the restrictions.
+You can create a `.forced_overrides` dot file and list the files you intend to overrides. Any files listed in this files are considered overridable.  
+Note: It is advisable to use this function with caution since it could potential break intended behavior of installed extensions.   
+
 #### Setup App and Setup Server
 
 These two files represent the core of your extension implementation and how your extension is able to enhance and integrate into your PWA-Kit Application. In your generated extension you'll find that we have stubbed each file out for you with implementations for each Application Extensibility integration point. You can choose to change the implementation of these methods to suit the needs of your extensions, or you can leave them as is if your extension does not require them. 
