@@ -99,7 +99,8 @@ const ProductDetail = () => {
                     'prices',
                     'variations',
                     'set_products',
-                    'bundled_products'
+                    'bundled_products',
+                    'page_meta_tags'
                 ],
                 allImages: true
             }
@@ -455,7 +456,17 @@ const ProductDetail = () => {
         >
             <Helmet>
                 <title>{product?.pageTitle}</title>
-                <meta name="description" content={product?.pageDescription} />
+                {product?.pageMetaTags ? (
+                    // description is one of the page meta tags returned for products
+                    // and this is the same as product?.pageDescription
+                    product.pageMetaTags?.map((pageMetaTag) => {
+                        const name = pageMetaTag.id
+                        const content = pageMetaTag.value
+                        return <meta name={name} content={content} key={name} />
+                    })
+                ) : (
+                    <meta name="description" content={product?.pageDescription} />
+                )}
             </Helmet>
 
             <Stack spacing={16}>
