@@ -109,7 +109,7 @@ This mechanism is useful when you want to allow for fine grained customization o
 
 #### Forced overrides
 In a case when it is necessary to override some files from an extension but the extension developers do not allow those files to be overridden, you can use `forced_overrides` to bypass the restrictions.
-To do this, create a .forced_overrides dot file at the root of your base project and list the files you intend to override. Any files specified in this list will be treated as overridable.
+To do this, create a `.forced_overrides` dot file at the root of your base project and list the files you intend to override. Any files specified in this list will be treated as overridable.
 
 Note: It is advisable to use this function with caution since it could potential break intended behavior of installed extensions.   
 
