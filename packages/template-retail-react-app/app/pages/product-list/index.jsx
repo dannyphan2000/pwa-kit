@@ -418,10 +418,8 @@ const ProductList = (props) => {
                 <title>{category?.pageTitle ?? searchQuery}</title>
                 <meta name="description" content={category?.pageDescription ?? searchQuery} />
                 <meta name="keywords" content={category?.pageKeywords} />
-                {productSearchResult?.pageMetaTags?.map((pageMetaTag) => {
-                    const name = pageMetaTag.id
-                    const content = pageMetaTag.value
-                    return <meta name={name} content={content} key={name} />
+                {productSearchResult?.pageMetaTags?.map(({id, value}) => {
+                    return <meta name={id} content={value} key={id} />
                 })}
             </Helmet>
             {showNoResults ? (

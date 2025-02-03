@@ -456,17 +456,15 @@ const ProductDetail = () => {
         >
             <Helmet>
                 <title>{product?.pageTitle}</title>
-                {product?.pageMetaTags ? (
-                    // description is one of the page meta tags returned for products
-                    // and this is the same as product?.pageDescription
-                    product.pageMetaTags?.map((pageMetaTag) => {
-                        const name = pageMetaTag.id
-                        const content = pageMetaTag.value
-                        return <meta name={name} content={content} key={name} />
-                    })
-                ) : (
-                    <meta name="description" content={product?.pageDescription} />
-                )}
+                {product?.pageMetaTags?.length > 0 &&
+                    product.pageMetaTags.map(({id, value}) => (
+                        <meta name={id} content={value} key={id} />
+                    ))}
+                {/* Fallback for description if not included in pageMetaTags */}
+                {!product?.pageMetaTags?.some((tag) => tag.id === 'description') &&
+                    product?.pageDescription && (
+                        <meta name="description" content={product.pageDescription} />
+                    )}
             </Helmet>
 
             <Stack spacing={16}>
