@@ -108,8 +108,9 @@ Now when the base application is built the import for the `logo.ts` in `extensio
 This mechanism is useful when you want to allow for fine grained customization of your application extension. Its the responsibility of the extension developer to ensure their document what files are overridable and what the expected input and output of those files are. For example, if the overridable file is a React component you should document the props that get passed to that component and the expected exports of the file.
 
 #### Forced Overrides
-Sometimes, you may need to override some files from an extension but the extension developers do not allow those files to be overridden, you can use `forced_overrides` to bypass these restrictions.
-To do this, create a `.forced_overrides` dot file at the root of your base project, list the files you intend to override, starting with the extension package name. Any files specified in this list will be treated as overridable.
+Users of your extension may sometimes need to override files that are not explicitly designed to be overridden. To accommodate this, they can use a special dotfile named `.forced_overrides`.
+
+This file, located at the root of their project, should contain a list of files they wish to override, prefixed with the extension package name. Any files listed in `.forced_overrides` will be treated as overridable, bypassing standard restrictions.
 
 Note: It is advisable to use this function with caution since it could potentially break intended behavior of installed extensions. This should be used as a temporary solution to urgently patch/update an extension.   
 
