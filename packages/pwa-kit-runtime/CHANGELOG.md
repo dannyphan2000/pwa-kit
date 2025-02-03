@@ -1,4 +1,5 @@
 ## v3.9.0-dev (Oct 29, 2024)
+- Fix stale service worker file that could cause requests to still use old Content-Security-Policy [#2191](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2191)
 
 ## v3.8.0 (Oct 28, 2024)
 - Add proxy handling for trusted agent on behalf of (TAOB) requests [#2077](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2077)

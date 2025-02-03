@@ -51,6 +51,19 @@ beforeEach(() => {
         rest.get('*/products', (req, res, ctx) => res(ctx.delay(0), ctx.json(mockOrderProducts))),
         rest.get('*/customers/:customerId/orders', (req, res, ctx) =>
             res(ctx.delay(0), ctx.json(mockOrderHistory))
+        ),
+        rest.post('*/oauth2/token', (req, res, ctx) =>
+            res(
+                ctx.delay(0),
+                ctx.json({
+                    customer_id: 'customerid',
+                    access_token: guestToken,
+                    refresh_token: 'testrefeshtoken',
+                    usid: 'testusid',
+                    enc_user_id: 'testEncUserId',
+                    id_token: 'testIdToken'
+                })
+            )
         )
     )
 
