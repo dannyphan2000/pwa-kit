@@ -179,7 +179,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
             const redirectTo = redirectPath ? redirectPath : '/account'
             navigate(redirectTo)
         }
-    }, [isRegistered])
+    }, [isRegistered, redirectPath])
 
     /**************** Einstein ****************/
     useEffect(() => {
