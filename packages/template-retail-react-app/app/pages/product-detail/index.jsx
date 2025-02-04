@@ -449,7 +449,6 @@ const ProductDetail = () => {
             }
             activeData.sendViewProduct(category, product, 'detail')
             datacloud.sendViewProduct(product)
-
         }
     }, [product])
 
