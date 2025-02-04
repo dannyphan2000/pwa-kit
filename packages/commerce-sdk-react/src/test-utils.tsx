@@ -37,12 +37,6 @@ export const DEFAULT_TEST_CONFIG = {
 
 export const createQueryClient = () => {
     return new QueryClient({
-        logger: {
-            ...console,
-            error() {
-                // Disable error logs as we intentionally cause errors during tests
-            }
-        },
         // During testing, we want things to fail immediately
         defaultOptions: {queries: {retry: false}, mutations: {retry: false}}
     })
@@ -198,7 +192,7 @@ export const getUnimplementedEndpoints = (
 // See https://github.com/testing-library/react-hooks-testing-library/blob/chore/migration-guide/MIGRATION_GUIDE.md#waitfor
 const WAIT_FOR_INTERVAL = 5
 /** Helper type for WaitForValueToChange with hooks */
-type GetHookResult<Data, Err, Vars, Ctx> = () =>
+type GetHookResult<Data, Err = unknown, Vars = unknown, Ctx = unknown> = () =>
     | UseQueryResult
     | UseMutationResult<Data, Err, Vars, Ctx>
 /** Helper that asserts that a hook is a success. */

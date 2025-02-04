@@ -154,7 +154,7 @@ export type ApiQueryKey<Params extends Record<string, unknown> = Record<string, 
 /** Query options for endpoint hooks. */
 export type ApiQueryOptions<Method extends ApiMethod<any, unknown>> = Prettify<
     Omit<
-        UseQueryOptions<DataType<Method>, unknown, DataType<Method>, ApiQueryKey>,
+        UseQueryOptions<DataType<Method>, Error, DataType<Method>, ApiQueryKey>,
         'queryFn' | 'queryKey'
     >
 >

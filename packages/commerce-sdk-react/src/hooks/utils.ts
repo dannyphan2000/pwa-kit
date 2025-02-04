@@ -24,10 +24,13 @@ export const updateCache = (queryClient: QueryClient, cacheUpdates: CacheUpdate,
     cacheUpdates.remove?.forEach((remove) => {
         queryClient.removeQueries(remove)
     })
-    cacheUpdates.update?.forEach(({queryKey, updater}) =>
-        // If an updater isn't given, fall back to just setting the data
-        queryClient.setQueryData(queryKey, updater ?? data)
-    )
+    cacheUpdates.update?.forEach(({queryKey, updater}) => {
+        if (typeof updater === 'function') {
+            queryClient.setQueryData(queryKey, updater)
+        } else {
+            queryClient.setQueryData(queryKey, data)
+        }
+    })
 }
 
 /** Error thrown when a method is not implemented. */

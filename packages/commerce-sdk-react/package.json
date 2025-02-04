@@ -47,6 +47,7 @@
   "devDependencies": {
     "@salesforce/pwa-kit-dev": "3.9.0-dev",
     "@tanstack/react-query": "^5.62.11",
+    "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.4.3",
@@ -55,8 +56,8 @@
     "@types/jsonwebtoken": "~9.0.0",
     "@types/node": "~16.0.3",
     "@types/prop-types": "~15.7.9",
-    "@types/react": "~18.2.0",
-    "@types/react-dom": "~18.2.1",
+    "@types/react": "~19.0.8",
+    "@types/react-dom": "~19.0.3",
     "@types/react-helmet": "~6.1.6",
     "@types/react-router-dom": "~5.3.3",
     "cross-env": "^5.2.1",

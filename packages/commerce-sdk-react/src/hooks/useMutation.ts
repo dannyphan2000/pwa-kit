@@ -45,7 +45,8 @@ export const useMutation = <
     const customerId = useCustomerId()
     const authenticatedMethod = useAuthorizationHeader(hookConfig.method)
 
-    return useReactQueryMutation(authenticatedMethod, {
+    return useReactQueryMutation({
+        mutationFn: authenticatedMethod,
         onSuccess(data, options) {
             // commerce-sdk-isomorphic merges `clientConfig` and `options` under the hood,
             // so we also need to do that to get the "net" options that are actually sent to SCAPI.
@@ -91,7 +92,9 @@ export const useCustomMutation = <TData = unknown, TError = unknown>(
     }
 
     return useReactQueryMutation<TData, TError, TMutationVariables, unknown>(
-        createMutationFnWithAuth(),
-        mutationOptions
+        {
+            mutationFn: createMutationFnWithAuth(),
+            ...mutationOptions
+        }
     )
 }
