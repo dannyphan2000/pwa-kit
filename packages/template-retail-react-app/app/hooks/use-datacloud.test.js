@@ -8,8 +8,25 @@
 import React from 'react'
 import {renderHook, waitFor} from '@testing-library/react'
 import useDataCloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
+import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
+import {
+    mockLoginViewPageEvent,
+    mockViewProductEvent,
+    mockViewCategoryEvent,
+    mockViewSearchResultsEvent,
+    mockViewRecommendationsEvent,
+    mockSearchParam,
+    mockGloveSearchResult,
+    mockCategorySearchParams,
+    mockRecommendationIds
+} from '@salesforce/retail-react-app/app/hooks/datacloud-mock-data'
+import {
+    mockProduct,
+    mockCategory,
+    mockSearchResults,
+    mockRecommenderDetails
+} from '@salesforce/retail-react-app/app/hooks/einstein-mock-data'
 
-/* eslint-disable react-hooks/rules-of-hooks */
 const dataCloudConfig = {
     app: {
         dataCloudAPI: {
@@ -62,13 +79,13 @@ jest.mock('@salesforce/retail-react-app/app/hooks/use-current-customer', () => (
 }))
 const mockWebEventsAppSourceIdPost = jest.fn()
 jest.mock('@salesforce/cc-datacloud-typescript', () => {
-        return {
-            initDataCloudSdk: () => {
-                return {
-                    webEventsAppSourceIdPost: mockWebEventsAppSourceIdPost
-                };
+    return {
+        initDataCloudSdk: () => {
+            return {
+                webEventsAppSourceIdPost: mockWebEventsAppSourceIdPost
             }
-        };
+        }
+    }
 })
 
 const mockUseContext = jest.fn().mockImplementation(() => ({site: {id: 'RefArch'}}))
@@ -83,15 +100,49 @@ describe('useDataCloud', function () {
         expect(result.current).toBeDefined()
         result.current.sendViewPage('/login')
         await waitFor(() => {
-            expect(mockWebEventsAppSourceIdPost).toHaveBeenCalledWith()
+            expect(mockWebEventsAppSourceIdPost).toHaveBeenCalledWith(mockLoginViewPageEvent)
         })
     })
 
-    test('sendViewProduct', async () => {})
+    test('sendViewProduct', async () => {
+        const {result} = renderHook(() => useDataCloud())
+        expect(result.current).toBeDefined()
+        result.current.sendViewProduct(mockProduct)
+        await waitFor(() => {
+            expect(mockWebEventsAppSourceIdPost).toHaveBeenCalledWith(mockViewProductEvent)
+        })
+    })
 
-    test('sendViewCategory', async () => {})
+    test('sendViewCategory with no email', async () => {
+        useCurrentCustomer.mockReturnValue({
+            data: {
+                firstName: 'John',
+                lastName: 'Smith'
+            }
+        })
+        const {result} = renderHook(() => useDataCloud())
+        expect(result.current).toBeDefined()
+        result.current.sendViewCategory(mockCategorySearchParams, mockCategory, mockSearchResults)
+        await waitFor(() => {
+            expect(mockWebEventsAppSourceIdPost).toHaveBeenCalledWith(mockViewCategoryEvent)
+        })
+    })
 
-    test('sendViewSearchResults', async () => {})
+    test('sendViewSearchResults', async () => {
+        const {result} = renderHook(() => useDataCloud())
+        expect(result.current).toBeDefined()
+        result.current.sendViewSearchResults(mockSearchParam, mockGloveSearchResult)
+        await waitFor(() => {
+            expect(mockWebEventsAppSourceIdPost).toHaveBeenCalledWith(mockViewSearchResultsEvent)
+        })
+    })
 
-    test('sendViewRecommendations', async () => {})
+    test('sendViewRecommendations', async () => {
+        const {result} = renderHook(() => useDataCloud())
+        expect(result.current).toBeDefined()
+        result.current.sendViewRecommendations(mockRecommenderDetails, mockRecommendationIds)
+        await waitFor(() => {
+            expect(mockWebEventsAppSourceIdPost).toHaveBeenCalledWith(mockViewRecommendationsEvent)
+        })
+    })
 })
