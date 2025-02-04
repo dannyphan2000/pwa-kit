@@ -61,8 +61,7 @@ export const useGiftCertificate = (
             // endpoint hooks. This is because this method is a post method, rather than GET,
             // and its body contains secrets. Setting cacheTime to 0 avoids exposing the secrets in
             // the shared cache.
-            // @ts-ignore
-            cacheTime: 0,
+            gcTime: 0,
             ...queryOptions
         },
         {
