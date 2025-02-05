@@ -39,11 +39,11 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         const requiredHOCs = [
             withLayout,
             withChakraUI,
-            withCurrency,
-            withReactIntl,
-            withMultiSite,
             withStorefrontPreview,
-            withCommerceSdkReact
+            withReactIntl,
+            withCommerceSdkReact,
+            withCurrency,
+            withMultiSite,
         ]
 
         return applyHOCs(App, requiredHOCs)

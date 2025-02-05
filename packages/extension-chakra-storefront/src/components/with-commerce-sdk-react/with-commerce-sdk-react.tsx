@@ -37,6 +37,7 @@ type WithCommerceSDKReactProps = {
 // Define the HOC function
 const withCommerceSDKReact = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const WithCommerceSDKReact: React.FC<P> = (props: WithCommerceSDKReactProps) => {
+        console.log("withCommerceSDKReact")
         const {req} = useServerContext()
         const path = req?.originalUrl || `${window.location.pathname}${window.location.search}`
 

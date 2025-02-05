@@ -18,6 +18,7 @@ type WithStorefrontPreviewProps = React.ComponentPropsWithoutRef<any>
 // Define the HOC function
 const withStorefrontPreview = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const WithStorefrontPreview: React.FC<P> = (props: WithStorefrontPreviewProps) => {
+        console.log("withStorefrontPreview")
         const {getTokenWhenReady} = useAccessToken()
         return (
             <StorefrontPreview getToken={getTokenWhenReady}>

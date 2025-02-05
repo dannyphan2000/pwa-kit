@@ -23,6 +23,7 @@ type WithReactIntlProps = React.ComponentPropsWithoutRef<any>
 // Define the HOC function
 const withReactIntl = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const WithReactIntl: React.FC<P> = (props: WithReactIntlProps) => {
+        console.log("withReactIntl")
         const {site, locale} = useMultiSite()
         const location = useLocation()
         const config = useExtensionConfig()
