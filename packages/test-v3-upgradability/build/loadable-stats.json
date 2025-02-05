@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "hash": "2aca682c692df33a1ac7",
+  "hash": "4f277c5d390ef7fbc7b9",
   "publicPath": "",
   "outputPath": "/Users/kevin.he/dev/pwa-kit/packages/test-v3-upgradability/build",
   "assetsByChunkName": {
@@ -87,7 +87,7 @@
     {
       "type": "asset",
       "name": "main.js",
-      "size": 1173154,
+      "size": 1163307,
       "emitted": false,
       "comparedForEmit": false,
       "cached": true,
@@ -473,31 +473,6 @@
     },
     {
       "type": "asset",
-      "name": "pages-home.js",
-      "size": 12173,
-      "emitted": false,
-      "comparedForEmit": false,
-      "cached": true,
-      "info": {
-        "javascriptModule": false,
-        "related": {
-          "sourceMap": "pages-home.js.map"
-        }
-      },
-      "chunkNames": [
-        "pages-home"
-      ],
-      "chunkIdHints": [],
-      "auxiliaryChunkNames": [],
-      "auxiliaryChunkIdHints": [],
-      "filteredRelated": 1,
-      "chunks": [
-        "pages-home"
-      ],
-      "auxiliaryChunks": []
-    },
-    {
-      "type": "asset",
       "name": "pages-login.js",
       "size": 11771,
       "emitted": false,
@@ -518,6 +493,31 @@
       "filteredRelated": 1,
       "chunks": [
         "pages-login"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "pages-home.js",
+      "size": 11710,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "pages-home.js.map"
+        }
+      },
+      "chunkNames": [
+        "pages-home"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "pages-home"
       ],
       "auxiliaryChunks": []
     },

@@ -82,7 +82,7 @@ const Home = () => {
             />
 
             <Hero
-                title={CUSTOM_HOME_TITLE}
+                title="Test"
                 img={{
                     src: getAssetUrl('static/img/hero.png'),
                     alt: 'npx pwa-kit-create-app'
@@ -97,10 +97,7 @@ const Home = () => {
                             paddingX={7}
                             _hover={{textDecoration: 'none'}}
                         >
-                            <FormattedMessage
-                                defaultMessage="Get started"
-                                id="home.link.get_started"
-                            />
+                            Test
                         </Button>
                     </Stack>
                 }
