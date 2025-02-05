@@ -89,10 +89,7 @@ const Home = () => {
             />
 
             <Hero
-                title={intl.formatMessage({
-                    defaultMessage: 'The React PWA Starter Store for Retail',
-                    id: 'home.title.react_starter_store'
-                })}
+                title={"this is @salesforce/extension-chakra-storefront"}
                 img={{
                     src: getStaticAssetUrl('img/hero.png', {
                         appExtensionPackageName: '@salesforce/extension-chakra-storefront'

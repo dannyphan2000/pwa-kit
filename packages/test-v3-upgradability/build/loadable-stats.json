@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "hash": "c340dd816982f787357c",
+  "hash": "d25f899b502fbb22c781",
   "publicPath": "",
   "outputPath": "/Users/kevin.he/dev/pwa-kit/packages/test-v3-upgradability/build",
   "assetsByChunkName": {
@@ -51,7 +51,7 @@
     {
       "type": "asset",
       "name": "vendor.js",
-      "size": 6850289,
+      "size": 6810136,
       "emitted": false,
       "comparedForEmit": false,
       "cached": true,
@@ -78,7 +78,7 @@
     {
       "type": "asset",
       "name": "salesforce-extension-chakra-storefront-setup-app.js",
-      "size": 1045141,
+      "size": 1028285,
       "emitted": false,
       "comparedForEmit": false,
       "cached": true,
@@ -369,31 +369,6 @@
     },
     {
       "type": "asset",
-      "name": "overridable!-home.js",
-      "size": 43424,
-      "emitted": false,
-      "comparedForEmit": false,
-      "cached": true,
-      "info": {
-        "javascriptModule": false,
-        "related": {
-          "sourceMap": "overridable!-home.js.map"
-        }
-      },
-      "chunkNames": [
-        "overridable!-home"
-      ],
-      "chunkIdHints": [],
-      "auxiliaryChunkNames": [],
-      "auxiliaryChunkIdHints": [],
-      "filteredRelated": 1,
-      "chunks": [
-        "overridable!-home"
-      ],
-      "auxiliaryChunks": []
-    },
-    {
-      "type": "asset",
       "name": "extension-chakra-storefront_src_components_product-item_index_jsx-extension-chakra-storefront-c6f5fc.js",
       "size": 30752,
       "emitted": false,
@@ -487,6 +462,31 @@
       "filteredRelated": 1,
       "chunks": [
         "overridable!-registration"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "overridable!-home.js",
+      "size": 9586,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "overridable!-home.js.map"
+        }
+      },
+      "chunkNames": [
+        "overridable!-home"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "overridable!-home"
       ],
       "auxiliaryChunks": []
     },
@@ -721,20 +721,16 @@
     "overridable!-home": {
       "name": "overridable!-home",
       "chunks": [
-        "vendor",
         "overridable!-home"
       ],
       "assets": [
-        {
-          "name": "vendor.js"
-        },
         {
           "name": "overridable!-home.js"
         }
       ],
       "filteredAssets": 0,
       "assetsSize": null,
-      "filteredAuxiliaryAssets": 2,
+      "filteredAuxiliaryAssets": 1,
       "auxiliaryAssetsSize": null,
       "children": {},
       "childAssets": {}

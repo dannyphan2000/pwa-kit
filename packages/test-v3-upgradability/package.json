@@ -12,7 +12,8 @@
     "@salesforce/pwa-kit-dev": "^4.0.0-extensibility-preview.3",
     "@salesforce/pwa-kit-extension-sdk": "^4.0.0-extensibility-preview.3",
     "@salesforce/pwa-kit-react-sdk": "^4.0.0-extensibility-preview.3",
-    "@salesforce/pwa-kit-runtime": "^4.0.0-extensibility-preview.3"
+    "@salesforce/pwa-kit-runtime": "^4.0.0-extensibility-preview.3",
+    "@salesforce/retail-react-app": "^5.1.0-extensibility-preview.3"
   },
   "scripts": {
     "lint": "pwa-kit-dev lint \"**/*.{js,jsx}\"",
