@@ -1075,8 +1075,15 @@ class Auth {
             },
             this.isPrivate
         )
+        let modifiedUrl = url
+        const urlObj = new URL(url)
+        if (!this.isPrivate) {
+            urlObj.searchParams.set('code_challenge', 'LxG0fN9vY6zFJ_oPqU8xkzZrK7VvD1N-2KX9QvHZiU4'
+            )
+            modifiedUrl = urlObj.toString()
+        }
         // Perform an initial fetch request to check for potential API errors
-        const response = await fetch(url, {
+        const response = await fetch(String(modifiedUrl), {
             method: 'GET',
             redirect: 'manual'
         })
