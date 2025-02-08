@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
 import {defineMessage, useIntl} from 'react-intl'
 import {Button} from '@salesforce/retail-react-app/app/components/shared/ui'
@@ -71,7 +71,19 @@ const SocialLogin = ({form, idps = []}) => {
         })
     }, [idps])
 
+    const [isLoggingIn, setIsLoggingIn] = useState(() => {
+        const loggingIn = {}
+        idps.forEach((idp) => {
+            loggingIn[idp] = false
+        })
+        return loggingIn
+    })
+
     const onSocialLoginClick = async (name) => {
+        setIsLoggingIn((state) => {
+            state[name] = true
+            return state
+        })
         try {
             // Save the path where the user logged in
             setSessionJSONItem('returnToPage', window.location.pathname)
@@ -99,6 +111,8 @@ const SocialLogin = ({form, idps = []}) => {
                         return (
                             config && (
                                 <Button
+                                    leftIcon={<Icon />}
+                                    isLoading={isLoggingIn[name]}
                                     onClick={() => {
                                         onSocialLoginClick(name)
                                     }}
@@ -106,7 +120,6 @@ const SocialLogin = ({form, idps = []}) => {
                                     color="blue.600"
                                     variant="outline"
                                 >
-                                    <Icon sx={{marginRight: 2}} />
                                     {message}
                                 </Button>
                             )
