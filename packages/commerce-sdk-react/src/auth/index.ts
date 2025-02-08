@@ -1085,9 +1085,12 @@ class Auth {
             const errorData = await response.json()
             throw new Error(errorData.message || 'API validation failed')
         }
-        // Await 1s before calling authorizeIDP again
-        await new Promise((resolve) => setTimeout(resolve, 1000))
         if (onClient()) {
+            // To avoid seeing 409 Conflict error from SLAS,
+            // we need to wait a second before calling the url again
+            await new Promise((resolve) => setTimeout(resolve, 1000))
+
+            // Navigate to the url and follow its redirect this time
             window.location.assign(url)
         } else {
             console.warn('Something went wrong, this client side method is invoked on the server.')
