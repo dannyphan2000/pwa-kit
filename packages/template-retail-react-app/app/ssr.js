@@ -60,7 +60,7 @@ const options = {
     // environment variable as this endpoint will return HTTP 501 if it is not set
     useSLASPrivateClient: false,
     applySLASPrivateClientToEndpoints:
-        /oauth2\/(token|passwordless|password\/(login|token|reset|action))/,
+        /oauth2\/(token|authorize|passwordless\/(login|token)|password\/(reset|action))/,
 
     // If this is enabled, any HTTP header that has a non ASCII value will be URI encoded
     // If there any HTTP headers that have been encoded, an additional header will be
