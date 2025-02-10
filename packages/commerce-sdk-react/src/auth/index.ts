@@ -1075,25 +1075,7 @@ class Auth {
             },
             this.isPrivate
         )
-        let modifiedUrl = url
-        const urlObj = new URL(url)
-        if (!this.isPrivate) {
-            urlObj.searchParams.set('code_challenge', 'LxG0fN9vY6zFJ_oPqU8xkzZrK7VvD1N-2KX9QvHZiU4'
-            )
-            modifiedUrl = urlObj.toString()
-        }
-        // Perform an initial fetch request to check for potential API errors
-        const response = await fetch(String(modifiedUrl), {
-            method: 'GET',
-            redirect: 'manual'
-        })
-        // Check if the response indicates an HTTP error (status codes 400 and above)
-        if (response.status >= 400) {
-            const errorData = await response.json()
-            throw new Error(errorData.message || 'API validation failed')
-        }
-        // Await 1s before calling authorizeIDP again
-        await new Promise((resolve) => setTimeout(resolve, 1000))
+
         if (onClient()) {
             window.location.assign(url)
         } else {
