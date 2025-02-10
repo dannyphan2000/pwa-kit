@@ -1236,6 +1236,7 @@ class Auth {
             )}`
         }
         // TODO: no code verifier needed with the fix blair has made, delete this when the fix has been merged to production
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const res = await this.client.resetPassword(options)
         return res
