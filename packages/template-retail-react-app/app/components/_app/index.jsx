@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 import {useHistory, useLocation} from 'react-router-dom'
 import {StorefrontPreview} from '@salesforce/commerce-sdk-react/components'
 import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
+import {useBlock} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import useActiveData from '@salesforce/retail-react-app/app/hooks/use-active-data'
 import {useQuery} from '@tanstack/react-query'
 import {
@@ -27,9 +28,14 @@ import {
     Fade,
     Spinner,
     useDisclosure,
-    useStyleConfig
+    useStyleConfig,
+    Stack,
+    SimpleGrid,
+    Grid,
+    Skeleton
 } from '@salesforce/retail-react-app/app/components/shared/ui'
 import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
+import {Skeleton as ProductTileSkeleton} from '@salesforce/retail-react-app/app/components/product-tile'
 
 // Contexts
 import {CurrencyProvider} from '@salesforce/retail-react-app/app/contexts'
@@ -68,6 +74,7 @@ import {IntlProvider} from 'react-intl'
 // Others
 import {watchOnlineStatus, flatten, isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getTargetLocale, fetchTranslations} from '@salesforce/retail-react-app/app/utils/locale'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {
     DEFAULT_SITE_TITLE,
     HOME_HREF,
@@ -145,6 +152,7 @@ const App = (props) => {
         onOpen: onOpenStoreLocator,
         onClose: onCloseStoreLocator
     } = useDisclosure()
+    const config = getConfig()
 
     const targetLocale = getTargetLocale({
         getUserPreferredLocales: () => {
@@ -198,6 +206,19 @@ const App = (props) => {
 
     const updateBasket = useShopperBasketsMutation('updateBasket')
     const updateCustomerForBasket = useShopperBasketsMutation('updateCustomerForBasket')
+    const [isBlocked, setIsBlocked] = useState(false)
+
+    useBlock(async (location) => {
+        setIsBlocked(true)
+        if (!config.app.PWA_FallbackBMRouting) {
+            return false
+        }
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+        await delay(10000) // 10 seconds
+
+        /* getUrlMapping will be used here */
+        return false
+    }, setIsBlocked)
 
     useEffect(() => {
         // update the basket currency if it doesn't match the current locale currency
@@ -402,27 +423,80 @@ const App = (props) => {
                             </Box>
                             {!isOnline && <OfflineBanner />}
                             <AddToCartModalProvider>
-                                <SkipNavContent
-                                    style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        flex: 1,
-                                        outline: 0
-                                    }}
-                                >
-                                    <Box
-                                        as="main"
-                                        id="app-main"
-                                        role="main"
-                                        display="flex"
-                                        flexDirection="column"
-                                        flex="1"
+                                {!isBlocked ? (
+                                    <SkipNavContent
+                                        style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            flex: 1,
+                                            outline: 0
+                                        }}
                                     >
-                                        <OfflineBoundary isOnline={false}>
-                                            {children}
-                                        </OfflineBoundary>
-                                    </Box>
-                                </SkipNavContent>
+                                        <Box
+                                            as="main"
+                                            id="app-main"
+                                            role="main"
+                                            display="flex"
+                                            flexDirection="column"
+                                            flex="1"
+                                        >
+                                            <OfflineBoundary isOnline={false}>
+                                                {children}
+                                            </OfflineBoundary>
+                                        </Box>
+                                    </SkipNavContent>
+                                ) : (
+                                    <Grid
+                                        templateColumns={{base: '1fr', md: '280px 1fr'}}
+                                        columnGap={6}
+                                        style={{margin: '30px'}}
+                                    >
+                                        <Stack display={{base: 'none', md: 'flex', margin: '30px'}}>
+                                            {new Array(3).fill(0).map((_, index) => (
+                                                <Box style={{margin: '30px'}} key={index}>
+                                                    <Skeleton
+                                                        width="180px"
+                                                        height={5}
+                                                        margin={'10px'}
+                                                    />
+                                                    <Skeleton
+                                                        width="150px"
+                                                        height={5}
+                                                        margin={'10px'}
+                                                    />
+                                                    <Skeleton
+                                                        width="100px"
+                                                        height={5}
+                                                        margin={'10px'}
+                                                    />
+                                                    <Skeleton
+                                                        width="140px"
+                                                        height={5}
+                                                        margin={'10px'}
+                                                    />
+                                                    <Skeleton
+                                                        width="120px"
+                                                        height={5}
+                                                        margin={'10px'}
+                                                    />
+                                                </Box>
+                                            ))}
+                                        </Stack>
+                                        <Box marginBottom={10} paddingBottom={10}>
+                                            <SimpleGrid
+                                                columns={[2, 2, 3, 3]}
+                                                spacingX={4}
+                                                spacingY={{base: 12, lg: 16}}
+                                                marginBottom={10}
+                                                paddingBottom={10}
+                                            >
+                                                {new Array(12).fill(0).map((value, index) => (
+                                                    <ProductTileSkeleton key={index} />
+                                                ))}
+                                            </SimpleGrid>
+                                        </Box>
+                                    </Grid>
+                                )}
 
                                 {!isCheckout ? <Footer /> : <CheckoutFooter />}
 

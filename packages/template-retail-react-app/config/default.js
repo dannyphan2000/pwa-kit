@@ -36,7 +36,8 @@ module.exports = {
             // This differs from the siteId in commerceAPIConfig for testing purposes
             siteId: 'aaij-MobileFirst',
             isProduction: false
-        }
+        },
+        PWA_FallbackBMRouting: process.env.PWA_FallbackBMRouting || 'false'
     },
     externals: [],
     pageNotFoundURL: '/page-not-found',
