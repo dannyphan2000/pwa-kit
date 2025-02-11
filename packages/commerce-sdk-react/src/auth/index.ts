@@ -1151,13 +1151,15 @@ class Auth {
      */
     async getPasswordLessAccessToken(parameters: LoginPasswordlessParams) {
         const pwdlessLoginToken = parameters.pwdlessLoginToken
+        const dntPref = this.getDnt({includeDefaults: true})
         const token = await helpers.getPasswordLessAccessToken(
             this.client,
             {
                 clientSecret: this.clientSecret
             },
             {
-                pwdlessLoginToken
+                pwdlessLoginToken,
+                dnt: String(dntPref)
             }
         )
         const isGuest = false
