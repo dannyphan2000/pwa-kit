@@ -1159,7 +1159,7 @@ class Auth {
             },
             {
                 pwdlessLoginToken,
-                dnt: String(dntPref)
+                dnt: dntPref !== undefined ? String(dntPref) : undefined
             }
         )
         const isGuest = false
