@@ -160,8 +160,10 @@ test('Registered shopper can add item to wishlist', async ({page}) => {
 
 /**
  * Test that social login persists a user's shopping cart
+ * TODO: Fix flaky test
+ * Skipping this test for now because Google login requires 2FA, which Playwright cannot get past.
  */
-test("Registered shopper logged in through social retains persisted cart", async ({ page }) => {
+test.skip("Registered shopper logged in through social retains persisted cart", async ({ page }) => {
   navigateToPDPDesktopSocial({page, productName: "Floral Ruffle Top", productColor: "Cardinal Red Multi", productPrice: "£35.19"})
 
   // Add to Cart
