@@ -17,16 +17,7 @@ const {
   navigateToPDPDesktopSocial,
   socialLoginShopper,
 } = require("../../scripts/pageHelpers");
-const {
-    addProductToCart,
-    registerShopper,
-    validateOrderHistory,
-    validateWishlist,
-    loginShopper,
-    navigateToPDPDesktop
-} = require('../../scripts/pageHelpers')
 const {generateUserCredentials, getCreditCardExpiry} = require('../../scripts/utils.js')
-
 let registeredUserCredentials = {}
 
 test.beforeAll(async () => {
@@ -193,7 +184,7 @@ test("Registered shopper logged in through social retains persisted cart", async
 
   await addedToCartModal.waitFor();
 
-  await page.getByLabel("Close").click();
+  await page.getByLabel("Close", { exact: true }).click();
 
   // Social Login
   await socialLoginShopper({

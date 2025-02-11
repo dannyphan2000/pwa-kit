@@ -157,5 +157,6 @@ module.exports = {
     ],
   },
   PWA_E2E_USER_EMAIL: process.env.PWA_E2E_USER_EMAIL,
-  PWA_E2E_USER_PASSWORD: process.env.PWA_E2E_USER_PASSWORD
+  PWA_E2E_USER_PASSWORD: process.env.PWA_E2E_USER_PASSWORD,
+  SOCIAL_LOGIN_RETAIL_APP_HOME: "https://wasatch-mrt-feature-public.mrt-storefront-staging.com"
 };
