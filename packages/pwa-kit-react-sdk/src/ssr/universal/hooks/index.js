@@ -75,11 +75,11 @@ export const useOrigin = ({fromXForwardedHeader = false}) => {
 /**
  * Blocks the navigation to run a provided function whenever there is a new page being navigated to
  * The function must return truthy to block (empty or false return will not block)
- * @param {function} func 
- * @param {function} setIsBlocked 
+ * @param {function} func
+ * @param {function} setIsBlocked
  */
 export const useBlock = (func, setIsBlocked) => {
-    const { block, push, location } = useHistory()
+    const {block, push, location} = useHistory()
     const lastLocation = useRef()
     const funcRef = useRef()
 
