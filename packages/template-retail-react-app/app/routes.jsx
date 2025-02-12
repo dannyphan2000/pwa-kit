@@ -16,6 +16,7 @@ import React from 'react'
 import {Redirect} from 'react-router-dom'
 import loadable from '@loadable/component'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+import {transformUrlMappingToRoute} from '@salesforce/retail-react-app/app/utils/routes-utils'
 
 // Components
 import {Skeleton} from '@salesforce/retail-react-app/app/components/shared/ui'
@@ -136,6 +137,11 @@ const componentNameMap = {
     'PageNotFound': PageNotFound
 }
 
+const resourceableComponentsMap = {
+    category: ProductList,
+    product: ProductDetail
+}
+
 export default async (locals) => {
     const config = getConfig()
     let configuredRoutes = []
@@ -187,38 +193,11 @@ export default async (locals) => {
                 "statusCode": "301"
             }
             if (mapping) {
-                // Resource type is not defined for redirects with a URL destination
-                const isRedirect = !mapping.resourceType
-
-                // Set the type. 301/302/307
-                // locals.res.status = mapping.type
-
-                // DEVELOPER NOTE: Here is where you would use the resource type to assign the corrent component.
-
-                let Component
-                let props
-                if (isRedirect) {
-                    Component = Redirect
-                    props = {
-                        to: mapping.destinationUrl
-                    }
-                } else {
-                    const resourceableComponents = {
-                        category: ProductList,
-                        product: ProductDetail
-                    }
-                    Component = resourceableComponents[mapping.resourceType]
-                    props = {
-                        [`${mapping.resourceType}Id`]: mapping.resourceId
-                    }
-                }
+                const path = locals.originalUrl.split('?')[0]
+                const route = transformUrlMappingToRoute(path, mapping, resourceableComponentsMap)
 
                 configuredRoutes = [
-                    ...configureRoutes([{
-                        path: locals.originalUrl.split('?')[0],
-                        component: Component,
-                        props
-                    }], config, {
+                    ...configureRoutes([route], config, {
                         ignoredRoutes: []
                     }),
                     ...configuredRoutes
