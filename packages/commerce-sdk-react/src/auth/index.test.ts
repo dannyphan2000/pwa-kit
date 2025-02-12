@@ -7,7 +7,7 @@
 import Auth, {AuthData} from './'
 import {waitFor} from '@testing-library/react'
 import jwt from 'jsonwebtoken'
-import {helpers, ShopperCustomersTypes} from 'commerce-sdk-isomorphic'
+import {helpers, ShopperCustomersTypes, ShopperLogin} from 'commerce-sdk-isomorphic'
 import * as utils from '../utils'
 import {SLAS_SECRET_PLACEHOLDER} from '../constant'
 import {ShopperLoginTypes} from 'commerce-sdk-isomorphic'
@@ -15,7 +15,7 @@ import {
     DEFAULT_SLAS_REFRESH_TOKEN_REGISTERED_TTL,
     DEFAULT_SLAS_REFRESH_TOKEN_GUEST_TTL
 } from './index'
-import {RequireKeys} from '../hooks/types'
+import {ApiClientConfigParams, RequireKeys} from '../hooks/types'
 
 const baseCustomer: RequireKeys<ShopperCustomersTypes.Customer, 'login'> = {
     customerId: 'customerId',
@@ -79,6 +79,22 @@ const configSLASPrivate = {
     ...config,
     enablePWAKitPrivateClient: true
 }
+const JWTNotExpired = jwt.sign(
+    {
+        exp: Math.floor(Date.now() / 1000) + 1000,
+        sub: `cc-slas::zzrf_001::scid:xxxxxx::usid:usid`,
+        isb: `uido:ecom::upn:test@gmail.com::uidn:firstname lastname::gcid:guestuserid::rcid:rcid::chid:siteId`
+    },
+    'secret'
+)
+const JWTExpired = jwt.sign(
+    {
+        exp: Math.floor(Date.now() / 1000) - 1000,
+        sub: `cc-slas::zzrf_001::scid:xxxxxx::usid:usid`,
+        isb: `uido:ecom::upn:test@gmail.com::uidn:firstname lastname::gcid:guestuserid::rcid:rcid::chid:siteId`
+    },
+    'secret'
+)
 
 const FAKE_SLAS_EXPIRY = DEFAULT_SLAS_REFRESH_TOKEN_REGISTERED_TTL - 1
 
@@ -160,8 +176,6 @@ describe('Auth', () => {
     })
     test('isTokenExpired', () => {
         const auth = new Auth(config)
-        const JWTNotExpired = jwt.sign({exp: Math.floor(Date.now() / 1000) + 1000}, 'secret')
-        const JWTExpired = jwt.sign({exp: Math.floor(Date.now() / 1000) - 1000}, 'secret')
         // @ts-expect-error private method
         expect(auth.isTokenExpired(JWTNotExpired)).toBe(false)
         // @ts-expect-error private method
@@ -256,7 +270,6 @@ describe('Auth', () => {
     })
     test('ready - re-use valid access token', async () => {
         const auth = new Auth(config)
-        const JWTNotExpired = jwt.sign({exp: Math.floor(Date.now() / 1000) + 1000}, 'secret')
 
         const data: StoredAuthData = {
             refresh_token_guest: 'refresh_token_guest',
@@ -338,8 +351,6 @@ describe('Auth', () => {
     })
     test('ready - use refresh token when access token is expired', async () => {
         const auth = new Auth(config)
-        const JWTNotExpired = jwt.sign({exp: Math.floor(Date.now() / 1000) + 1000}, 'secret')
-        const JWTExpired = jwt.sign({exp: Math.floor(Date.now() / 1000) - 1000}, 'secret')
 
         // To simulate real-world scenario, let's first test with a good valid token
         const data: StoredAuthData = {
@@ -374,8 +385,6 @@ describe('Auth', () => {
 
     test('ready - use refresh token when access token is expired with slas private client', async () => {
         const auth = new Auth(configSLASPrivate)
-        const JWTNotExpired = jwt.sign({exp: Math.floor(Date.now() / 1000) + 1000}, 'secret')
-        const JWTExpired = jwt.sign({exp: Math.floor(Date.now() / 1000) - 1000}, 'secret')
 
         // To simulate real-world scenario, let's first test with a good valid token
         const data: StoredAuthData = {
@@ -429,8 +438,6 @@ describe('Auth', () => {
             }
         })
 
-        const JWTExpired = jwt.sign({exp: Math.floor(Date.now() / 1000) - 1000}, 'secret')
-
         // To simulate real-world scenario, let's start with an expired access token
         const data: StoredAuthData = {
             refresh_token_guest: 'refresh_token_guest',
@@ -471,7 +478,7 @@ describe('Auth', () => {
         // When user has not selected DNT pref
         [true, undefined, {dnt: true}],
         [false, undefined, {dnt: false}],
-        [undefined, undefined, {}],
+        [undefined, undefined, {dnt: false}],
         // When user has selected DNT, the dw_dnt cookie sets dnt
         [true, '0', {dnt: false}],
         [false, '1', {dnt: true}],
@@ -489,6 +496,11 @@ describe('Auth', () => {
                 expect.anything(),
                 expect.objectContaining(expected)
             )
+            const expectedDnt = 'dnt' in expected ? expected.dnt : false
+            const dntPref = auth.getDnt({
+                includeDefaults: true
+            })
+            expect(dntPref).toBe(expectedDnt)
         }
     )
 
@@ -718,5 +730,89 @@ describe('Auth', () => {
         await waitFor(() => {
             expect(auth.getDnt()).toBeUndefined()
         })
+    })
+})
+
+describe('Auth service sends credentials fetch option to the ShopperLogin API', () => {
+    beforeEach(() => {
+        jest.clearAllMocks()
+    })
+
+    test('Adds fetch options with credentials when not defined in config', async () => {
+        const auth = new Auth(config)
+        await auth.loginGuestUser()
+
+        // Ensure the helper method was called
+        expect(helpers.loginGuestUser).toHaveBeenCalled()
+        expect(helpers.loginGuestUser).toHaveBeenCalledTimes(1)
+
+        // Check that the correct parameters were passed to the helper
+        const callArguments = (helpers.loginGuestUser as jest.Mock).mock.calls[0]
+        expect(callArguments).toBeDefined()
+        expect(callArguments.length).toBeGreaterThan(0)
+
+        const shopperLogin: ShopperLogin<ApiClientConfigParams> = callArguments[0]
+        expect(shopperLogin).toBeDefined()
+        expect(shopperLogin.clientConfig).toBeDefined()
+        expect(shopperLogin.clientConfig.fetchOptions).toBeDefined()
+
+        // Ensure fetch options include the expected credentials
+        expect(shopperLogin.clientConfig.fetchOptions.credentials).toBe('same-origin')
+    })
+
+    test('Does not override the credentials in fetch options if already exists', async () => {
+        const configWithFetchOptions = {
+            ...config,
+            fetchOptions: {
+                credentials: 'include'
+            }
+        }
+        const auth = new Auth(configWithFetchOptions)
+        await auth.loginGuestUser()
+
+        // Ensure the helper method was called
+        expect(helpers.loginGuestUser).toHaveBeenCalled()
+        expect(helpers.loginGuestUser).toHaveBeenCalledTimes(1)
+
+        // Check that the correct parameters were passed to the helper
+        const callArguments = (helpers.loginGuestUser as jest.Mock).mock.calls[0]
+        expect(callArguments).toBeDefined()
+        expect(callArguments.length).toBeGreaterThan(0)
+
+        const shopperLogin: ShopperLogin<ApiClientConfigParams> = callArguments[0]
+        expect(shopperLogin).toBeDefined()
+        expect(shopperLogin.clientConfig).toBeDefined()
+        expect(shopperLogin.clientConfig.fetchOptions).toBeDefined()
+
+        // Ensure fetch options include the expected credentials
+        expect(shopperLogin.clientConfig.fetchOptions.credentials).toBe('include')
+    })
+
+    test('Adds credentials to the fetch options if it is missing', async () => {
+        const configWithFetchOptions = {
+            ...config,
+            fetchOptions: {
+                cache: 'no-cache'
+            }
+        }
+        const auth = new Auth(configWithFetchOptions)
+        await auth.loginGuestUser()
+
+        // Ensure the helper method was called
+        expect(helpers.loginGuestUser).toHaveBeenCalled()
+        expect(helpers.loginGuestUser).toHaveBeenCalledTimes(1)
+
+        // Check that the correct parameters were passed to the helper
+        const callArguments = (helpers.loginGuestUser as jest.Mock).mock.calls[0]
+        expect(callArguments).toBeDefined()
+        expect(callArguments.length).toBeGreaterThan(0)
+
+        const shopperLogin: ShopperLogin<ApiClientConfigParams> = callArguments[0]
+        expect(shopperLogin).toBeDefined()
+        expect(shopperLogin.clientConfig).toBeDefined()
+        expect(shopperLogin.clientConfig.fetchOptions).toBeDefined()
+
+        // Ensure fetch options include the expected credentials
+        expect(shopperLogin.clientConfig.fetchOptions.credentials).toBe('same-origin')
     })
 })
