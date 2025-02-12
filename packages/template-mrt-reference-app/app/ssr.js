@@ -209,10 +209,17 @@ const responseHeadersTest = async (req, res) => {
 }
 
 const ssrShared = async (req, res) => {
-    var filename = require.resolve("./static/example.json");
-    const data = await fs.readFile(filename, { encoding: 'utf8' })
-    const jsonData = JSON.parse(data)
-    res.json(jsonData)
+    const fileName = `${__dirname}/static/example.json`
+    try {
+        const data = await fs.readFile(fileName, { encoding: 'utf8' })
+        const jsonData = JSON.parse(data)
+        res.json(jsonData)
+    } catch (error) {
+        res.json({
+            error: error
+        })
+    }
+    
 }
 
 const customLogLevel = async (req, res) => {
