@@ -29,6 +29,7 @@ env:
 
 jobs:
   changelog-check:
+    if: env.DEVELOP == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
