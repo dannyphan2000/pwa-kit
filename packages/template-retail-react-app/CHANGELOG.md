@@ -1,5 +1,6 @@
 ## v6.0.0
 - DNT Consent Banner: [#2203](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2203)
+- DNT Consent Banner Shadow Fix: [#2246](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2246)
 
 ## v5.1.0-dev (TBD)
 
