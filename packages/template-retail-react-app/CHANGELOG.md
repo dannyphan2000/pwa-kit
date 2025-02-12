@@ -17,6 +17,7 @@
 ### Accessibility Improvements
 - [a11y] Fix LinkList component to follow a11y practise [#2098])(https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2098)
 
+
 ## v5.0.0 (Oct 28, 2024)
 
 ### New Features
