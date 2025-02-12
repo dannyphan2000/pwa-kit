@@ -100,7 +100,6 @@ const RecommendedProducts = ({zone, recommender, products, title, shouldFetch, .
                 },
                 recommendations.recs.map((rec) => ({id: rec.id}))
             )
-            recommendations.recs.map((rec) => console.log(rec.id))
             datacloud.sendViewRecommendations(
                 {
                     recommenderName: recommendations.recommenderName,
