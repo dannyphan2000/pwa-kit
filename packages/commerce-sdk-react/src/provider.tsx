@@ -20,7 +20,6 @@ import {
     ShopperBasketsTypes,
     ShopperStores
 } from 'commerce-sdk-isomorphic'
-
 import Auth from './auth'
 import {ApiClientConfigParams, ApiClients} from './hooks/types'
 import {Logger} from './types'
