@@ -13,6 +13,7 @@
 // metric for this file in its test.
 
 import React from 'react'
+import {Redirect} from 'react-router-dom'
 import loadable from '@loadable/component'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
@@ -36,8 +37,8 @@ const Checkout = loadable(() => import('./pages/checkout'), {
 })
 const CheckoutConfirmation = loadable(() => import('./pages/checkout/confirmation'), {fallback})
 const LoginRedirect = loadable(() => import('./pages/login-redirect'), {fallback})
-const ProductDetail = loadable(() => import('./pages/product-detail'), {fallback})
-const ProductList = loadable(() => import('./pages/product-list'), {
+export const ProductDetail = loadable(() => import('./pages/product-detail'), {fallback})
+export const ProductList = loadable(() => import('./pages/product-list'), {
     fallback
 })
 const StoreLocator = loadable(() => import('./pages/store-locator'), {
@@ -47,6 +48,15 @@ const Wishlist = loadable(() => import('./pages/account/wishlist'), {
     fallback
 })
 const PageNotFound = loadable(() => import('./pages/page-not-found'))
+
+// Set the display names
+// Home.displayName = 'Home'
+// Cart.displayName = 'Cart'
+// ProductDetail.displayName = 'ProductDetail'
+// ProductList.displayName = 'ProductList'
+// PageNotFound.displayName = 'PageNotFound'
+
+const isServerSide = typeof window === 'undefined'
 
 export const routes = [
     {
@@ -118,9 +128,97 @@ export const routes = [
     }
 ]
 
-export default () => {
+const componentNameMap = {
+    'Home': Home,
+    'Cart': Cart,
+    'ProductDetail': ProductDetail,
+    'ProductList': ProductList,
+    'PageNotFound': PageNotFound
+}
+
+export default async (locals) => {
     const config = getConfig()
-    return configureRoutes(routes, config, {
-        ignoredRoutes: ['/callback', '*']
-    })
+    let configuredRoutes = []
+
+    const seoUrlMappingEnabled = false
+
+    console.log('isClient', !isServerSide)
+    if (!isServerSide) {
+        // CLIENT!
+
+        // Router Deserialization
+        let _routes = window.__CONFIG__.app.routes
+        console.log('_routes', _routes)
+        configuredRoutes = await Promise.all(_routes.map(async ({path}) => {
+            // DEVELOPER NOTE: We previously tried to dynamically load the component using the path to map to the
+            // filename and use import, but I couldn't get that to work. So here we are using the original routes
+            // array to find the component for a given path from the serialized route config. It doesn't completely
+            // work as it will remove the configured routes as they don't match the path. This should be done in
+            // another way.
+            const {component} = routes.find((route) => route.path === path) || {}
+            if (!component) {
+                return
+            }
+
+            return {
+                path,
+                exact: true,
+                component
+            }
+        }))
+        configuredRoutes = configuredRoutes.filter((route => !!route))
+        configuredRoutes = configureRoutes(configuredRoutes, config, {
+            ignoredRoutes: ['/callback', '*']
+        })
+    } else {
+        // SERVER!
+        configuredRoutes = configureRoutes(routes, config, {
+            ignoredRoutes: ['/callback', '*']
+        })
+
+        if (seoUrlMappingEnabled) {
+            const mapping = await getUrlMapping(locals.originalUrl.split('?')[0])
+            if (mapping) {
+                // Resource type is not defined for redirects with a URL destination
+                const isRedirect = !mapping.resourceType
+
+                // Set the type. 301/302/307
+                // locals.res.status = mapping.type
+
+                // DEVELOPER NOTE: Here is where you would use the resource type to assign the corrent component.
+
+                let Component
+                let props
+                if (isRedirect) {
+                    Component = Redirect
+                    props = {
+                        to: mapping.destinationUrl
+                    }
+                } else {
+                    const resourceableComponents = {
+                        category: ProductList,
+                        product: ProductDetail
+                    }
+                    Component = resourceableComponents[mapping.resourceType]
+                    props = {
+                        [`${mapping.resourceType}Id`]: mapping.resourceId
+                    }
+                }
+
+                configuredRoutes = [
+                    ...configureRoutes([{
+                        path: locals.originalUrl.split('?')[0],
+                        component: Component,
+                        props
+                    }], config, {
+                        ignoredRoutes: []
+                    }),
+                    ...configuredRoutes
+                ]
+            }
+        }
+    }
+
+    console.log('configuredRoutes: ', configuredRoutes)
+    return configuredRoutes
 }
