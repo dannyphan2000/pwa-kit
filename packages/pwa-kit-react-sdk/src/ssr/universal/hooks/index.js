@@ -85,11 +85,12 @@ export const useBlock = (func, setIsBlocked) => {
 
     funcRef.current = func
     useEffect(() => {
-        lastLocation.current = location
         if (location === lastLocation.current || !funcRef.current) {
+            lastLocation.current = location
             return
         }
 
+        lastLocation.current = location
         const unblock = block((location, action) => {
             const doBlock = async () => {
                 if (!(await funcRef.current(location, action))) {
