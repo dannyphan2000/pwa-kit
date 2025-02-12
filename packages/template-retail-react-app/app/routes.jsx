@@ -140,7 +140,7 @@ export default async (locals) => {
     const config = getConfig()
     let configuredRoutes = []
 
-    const seoUrlMappingEnabled = false
+    const seoUrlMappingEnabled = true
 
     console.log('isClient', !isServerSide)
     if (!isServerSide) {
@@ -177,7 +177,15 @@ export default async (locals) => {
         })
 
         if (seoUrlMappingEnabled) {
-            const mapping = await getUrlMapping(locals.originalUrl.split('?')[0])
+            // DEVELOPER NOTES: Replace with actual getUrlMapping call
+            // For now we Mock resourceType category
+            const mapping = {
+                "copySourceParams": false,
+                "destinationUrl": "/s/RefArch/search?lang=en_US&cgid=newarrivals",
+                "resourceId": "newarrivals",
+                "resourceType": "category",
+                "statusCode": "301"
+            }
             if (mapping) {
                 // Resource type is not defined for redirects with a URL destination
                 const isRedirect = !mapping.resourceType
