@@ -131,8 +131,9 @@ const ProductList = (props) => {
     let searchQuery = urlParams.get('q')
     const isSearch = !!searchQuery
 
-    if (params.categoryId) {
-        searchParams._refine.push(`cgid=${params.categoryId}`)
+    const categoryId = props?.categoryId || params?.categoryId
+    if (categoryId) {
+        searchParams._refine.push(`cgid=${categoryId}`)
     }
 
     /**************** Mutation Actions ****************/
@@ -178,11 +179,11 @@ const ProductList = (props) => {
     const {error, data: category} = useCategory(
         {
             parameters: {
-                id: params.categoryId
+                id: categoryId
             }
         },
         {
-            enabled: !isSearch && !!params.categoryId
+            enabled: !isSearch && !!categoryId
         }
     )
 

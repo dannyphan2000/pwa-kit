@@ -161,11 +161,16 @@ export default async (locals) => {
             // array to find the component for a given path from the serialized route config. It doesn't completely
             // work as it will remove the configured routes as they don't match the path. This should be done in
             // another way.
-            const {component} = routes.find((route) => route.path === path) || {}
+            let component = componentNameMap[componentName]
             if (!component) {
                 return
             }
 
+            if (componentProps) {
+                const ComponentClass = componentNameMap[componentName]
+
+                component = () => <ComponentClass {...componentProps} />
+            }
             return {
                 path,
                 exact: true,
@@ -193,7 +198,7 @@ export default async (locals) => {
                 "statusCode": "301"
             }
             if (mapping) {
-                const path = locals.originalUrl.split('?')[0]
+                const path = '/category/top-seller'
                 const route = transformUrlMappingToRoute(path, mapping, resourceableComponentsMap)
 
                 configuredRoutes = [
