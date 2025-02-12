@@ -30,13 +30,19 @@ env:
 
 jobs:
   changelog-check:
-    if: env.DEVELOP == 'true'
+    if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository) && (github.head_ref || github.ref_name) == 'develop'
     runs-on: ubuntu-latest
     steps:
+      - name: Auto-pass for non-PR events
+        if: env.DEVELOP == 'true'
+        run: exit 0
+
       - name: Checkout
+        if: env.DEVELOP != 'true'
         uses: actions/checkout@v4
 
       - name: Changelog Check
+        if: env.DEVELOP != 'true'
         uses: ./.github/actions/changelog-check
         with:
           pr_number: ${{ github.event.pull_request.number }}
