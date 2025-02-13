@@ -206,19 +206,17 @@ const App = (props) => {
 
     const updateBasket = useShopperBasketsMutation('updateBasket')
     const updateCustomerForBasket = useShopperBasketsMutation('updateCustomerForBasket')
-    const [isBlocked, setIsBlocked] = useState(false)
 
-    useBlock(async (location) => {
-        setIsBlocked(true)
-        if (!config.app.PWA_FallbackBMRouting) {
+    const isBlocked = useBlock(async () => {
+        if (!config.app.PWA_FallbackBMRouting && !config.app.PWA_BMRouting) {
             return false
         }
+        // In W-17530042, updateRoutes will be used here and return false after API call completion
+        // A manual delay is added for now just to see the skeleton that would show while the API call is made
         const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-        await delay(10000) // 10 seconds
-
-        /* getUrlMapping will be used here */
+        await delay(10000)
         return false
-    }, setIsBlocked)
+    })
 
     useEffect(() => {
         // update the basket currency if it doesn't match the current locale currency

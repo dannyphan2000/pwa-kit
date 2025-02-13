@@ -6,7 +6,7 @@
  */
 /* istanbul ignore file */
 
-import React, {useContext, useEffect, useRef} from 'react'
+import React, {useContext, useEffect, useRef, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {CorrelationIdContext, ServerContext} from '../contexts'
 
@@ -74,33 +74,35 @@ export const useOrigin = ({fromXForwardedHeader = false}) => {
 
 /**
  * Blocks the navigation to run a provided function whenever there is a new page being navigated to
- * The function must return truthy to block (empty or false return will not block)
+ * The function must return false to unblock, otherwise it will continue to block
+ *
  * @param {function} func
- * @param {function} setIsBlocked
+ * @returns {object} State that is set to true during blocking, false otherwise.
  */
-export const useBlock = (func, setIsBlocked) => {
+export const useBlock = (func) => {
     const {block, push, location} = useHistory()
+    const [isBlocked, setIsBlocked] = useState(false)
     const lastLocation = useRef()
     const funcRef = useRef()
 
     funcRef.current = func
     useEffect(() => {
-        if (location === lastLocation.current || !funcRef.current) {
+        if (lastLocation.current === location || !funcRef.current) {
             lastLocation.current = location
-            return
+            return false
         }
 
         lastLocation.current = location
-        const unblock = block((location, action) => {
-            const doBlock = async () => {
-                if (!(await funcRef.current(location, action))) {
-                    setIsBlocked(false)
-                    unblock()
-                    push(location)
-                }
+        const unblock = block(async ({action, location}) => {
+            setIsBlocked(true)
+            if (!(await funcRef.current(action, location))) {
+                await unblock()
+                await push(location)
+                setIsBlocked(false)
             }
-            doBlock()
             return false
         })
-    }, [location, block, push])
+    }, [location])
+
+    return isBlocked
 }

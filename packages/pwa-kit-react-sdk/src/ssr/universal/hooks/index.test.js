@@ -5,11 +5,17 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {useBlock} from './index'
-import React from 'react'
+import React, {act} from 'react'
 import {render} from '@testing-library/react'
 
-// Mock the entire 'react-router-dom' module
-const mockBlock = jest.fn()
+const mockUnblock = jest.fn()
+const mockBlock = jest.fn().mockImplementation((someFunc) => {
+    someFunc({action: jest.fn(), location: 'another place'})
+
+    return mockUnblock
+})
+const mockFunc = jest.fn()
+
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
     useHistory: () => ({
@@ -19,33 +25,33 @@ jest.mock('react-router-dom', () => ({
     })
 }))
 
-const mockFunc = jest.fn()
-const mockSetIsBlocked = jest.fn()
-
 const AComponent = () => {
-    useBlock(mockFunc, mockSetIsBlocked)
+    useBlock(mockFunc)
     return <></>
 }
 
 describe('useBlock', () => {
     beforeEach(() => {
         mockFunc.mockReset()
-        mockSetIsBlocked.mockReset()
     })
 
     it('should block when function returns true', async () => {
         mockFunc.mockResolvedValueOnce(true)
-        render(<AComponent />)
-        await Promise.resolve()
-
+        await act(async () => {
+            render(<AComponent />)
+        })
+        expect(mockFunc).toHaveBeenCalled()
         expect(mockBlock).toHaveBeenCalled()
     })
 
     it('should not block when function returns false', async () => {
-        mockFunc.mockResolvedValueOnce(false)
-        render(<AComponent />)
-        await Promise.resolve()
+        mockFunc.mockResolvedValue(false)
+        await act(async () => {
+            render(<AComponent />)
+        })
 
-        expect(mockBlock).not.toHaveBeenCalled()
+        expect(mockFunc).toHaveBeenCalled()
+        expect(mockBlock).toHaveBeenCalled()
+        expect(mockUnblock).toHaveBeenCalled()
     })
 })
