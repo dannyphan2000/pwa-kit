@@ -4,7 +4,6 @@
 - Implemented opt-in Social & Passwordless Login features and fixed the Reset Password flow which now leverages SLAS APIs [#2079] (https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2079)
 - Allow store to be selectable in StoreLocator [#2187](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2187)
 - Replace transfer basket call with merge basket on checkout [#2138](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2138)
-- PDP / PLP: Add page meta data tags that have been defined in BM [#2232](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2232)
 
 ### Bug Fixes
 - [BUG] Fixed GET /shopper-context API calls being made without the usid [#2206](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2206)
@@ -15,6 +14,7 @@
 
 ### Accessibility Improvements
 - [a11y] Fix LinkList component to follow a11y practise [#2098])(https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2098)
+
 
 ## v5.0.0 (Oct 28, 2024)
 
