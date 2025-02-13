@@ -35,7 +35,7 @@ module.exports = {
                 // The third-party identity providers supported by your app. The PWA Kit supports Google and Apple by default.
                 // Additional IDPs will also need to be added to the IDP_CONFIG in the SocialLogin component.
                 idps: ['google', 'apple'],
-                // The redirect URI used after a successful social login authentication. 
+                // The redirect URI used after a successful social login authentication.
                 // This should be a relative path set up by the developer.
                 // If the env var `SOCIAL_LOGIN_REDIRECT_URI` is set, it will override the config value.
                 redirectURI: process.env.SOCIAL_LOGIN_REDIRECT_URI || '/social-callback'
