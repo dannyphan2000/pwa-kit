@@ -1,6 +1,7 @@
 ## v6.0.0
 - DNT Consent Banner: [#2203](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2203)
 - Implemented opt-in Social & Passwordless Login features and fixed the Reset Password flow which now leverages SLAS APIs [#2079] (https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2079)
+- Fix hreflang alternate links [#2269](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2269)
 
 ## v5.1.0-dev (TBD)
 
