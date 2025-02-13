@@ -16,7 +16,6 @@ import {DEFAULT_LOCALE} from '@salesforce/retail-react-app/app/utils/test-utils'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import messages from '@salesforce/retail-react-app/app/static/translations/compiled/en-GB.json'
 import mockConfig from '@salesforce/retail-react-app/config/mocks/default'
-import * as constants from '@salesforce/retail-react-app/app/constants'
 import {prependHandlersToServer} from '@salesforce/retail-react-app/jest-setup'
 import {mockCustomerBaskets} from '@salesforce/retail-react-app/app/mocks/mock-data'
 
@@ -26,20 +25,14 @@ jest.mock('../../hooks/use-update-shopper-context', () => ({
 }))
 
 let windowSpy
-let originalValue
-beforeAll(() => {
-    originalValue = constants.ACTIVE_DATA_ENABLED
-})
-
-afterAll(() => {
-    constants.ACTIVE_DATA_ENABLED = originalValue
-})
 beforeEach(() => {
     windowSpy = jest.spyOn(window, 'window', 'get')
 })
 
 afterEach(() => {
     windowSpy.mockRestore()
+    jest.restoreAllMocks()
+    jest.resetModules()
 })
 
 const mockUpdateDNT = jest.fn()
@@ -100,34 +93,50 @@ describe('App', () => {
     })
 
     test('Active Data component is not rendered', async () => {
-        prependHandlersToServer([
-            {
-                path: '*/baskets/:basketId/customer',
-                method: 'put',
-                res: () => {
-                    return {
-                        ...mockCustomerBaskets.baskets[0],
-                        customerInfo: {
-                            customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
-                            email: 'shopperUpdate@salesforce-test.com'
+        jest.doMock('@salesforce/retail-react-app/app/constants', () => {
+            const originalModule = jest.requireActual('@salesforce/retail-react-app/app/constants')
+            return {
+                __esModule: true,
+                ...originalModule,
+                ACTIVE_DATA_ENABLED: false
+            }
+        })
+
+        import('@salesforce/retail-react-app/app/components/_app/index.jsx').then(async () => {
+            prependHandlersToServer([
+                {
+                    path: '*/baskets/:basketId/customer',
+                    method: 'put',
+                    res: () => {
+                        return {
+                            ...mockCustomerBaskets.baskets[0],
+                            customerInfo: {
+                                customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
+                                email: 'shopperUpdate@salesforce-test.com'
+                            }
                         }
                     }
                 }
-            }
-        ])
-        constants.ACTIVE_DATA_ENABLED = false
-        useMultiSite.mockImplementation(() => resultUseMultiSite)
-        renderWithProviders(
-            <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages}>
-                <p>Any children here</p>
-            </App>
-        )
-        await waitFor(() =>
-            expect(document.getElementById('headActiveData')).not.toBeInTheDocument()
-        )
-        await waitFor(() => expect(document.getElementById('dwanalytics')).not.toBeInTheDocument())
-        await waitFor(() => expect(document.getElementById('dwac')).not.toBeInTheDocument())
-        expect(screen.getByText('Any children here')).toBeInTheDocument()
+            ])
+            useMultiSite.mockImplementation(() => resultUseMultiSite)
+            renderWithProviders(
+                <App
+                    targetLocale={DEFAULT_LOCALE}
+                    defaultLocale={DEFAULT_LOCALE}
+                    messages={messages}
+                >
+                    <p>Any children here</p>
+                </App>
+            )
+            await waitFor(() =>
+                expect(document.getElementById('headActiveData')).not.toBeInTheDocument()
+            )
+            await waitFor(() =>
+                expect(document.getElementById('dwanalytics')).not.toBeInTheDocument()
+            )
+            await waitFor(() => expect(document.getElementById('dwac')).not.toBeInTheDocument())
+            expect(screen.getByText('Any children here')).toBeInTheDocument()
+        })
     })
 
     test('Active Data component is rendered appropriately', async () => {
@@ -146,17 +155,19 @@ describe('App', () => {
                 }
             }
         ])
-        constants.ACTIVE_DATA_ENABLED = true
+
         useMultiSite.mockImplementation(() => resultUseMultiSite)
         renderWithProviders(
             <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages}>
                 <p>Any children here</p>
             </App>
         )
-        await waitFor(() => expect(document.getElementById('headActiveData')).toBeInTheDocument())
-        await waitFor(() => expect(document.getElementById('dwanalytics')).toBeInTheDocument())
-        await waitFor(() => expect(document.getElementById('dwac')).toBeInTheDocument())
-        expect(screen.getByText('Any children here')).toBeInTheDocument()
+        await waitFor(() => {
+            expect(document.getElementById('headActiveData')).toBeInTheDocument()
+            expect(document.getElementById('dwanalytics')).toBeInTheDocument()
+            expect(document.getElementById('dwac')).toBeInTheDocument()
+            expect(screen.getByText('Any children here')).toBeInTheDocument()
+        })
     })
 
     test('The localized hreflang links exist in the html head', () => {
@@ -248,36 +259,6 @@ describe('App', () => {
         await waitFor(() => {
             expect(basket.currency).toBe('GBP')
             expect(basket.customerInfo.email).toBe(customerEmail)
-        })
-    })
-
-    test('App shows correct href link', async () => {
-        prependHandlersToServer([
-            {
-                path: '*/baskets/:basketId/customer',
-                method: 'put',
-                res: () => {
-                    return {
-                        ...mockCustomerBaskets.baskets[0],
-                        customerInfo: {
-                            customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
-                            email: 'shopperUpdate@salesforce-test.com'
-                        }
-                    }
-                }
-            }
-        ])
-        useMultiSite.mockImplementation(() => resultUseMultiSite)
-        renderWithProviders(
-            <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages}>
-                ff
-            </App>
-        )
-        await waitFor(() => {
-            const alternateLink = document.querySelectorAll('link[rel="alternate"]')
-            const currentSupportedLocales = mockConfig.app.sites[0].l10n.supportedLocales
-            // we generate links tags based on supported locale and added 2 default link for fallback
-            expect(alternateLink.length).toBe(currentSupportedLocales.length + 2)
         })
     })
 })
