@@ -28,14 +28,10 @@ jest.mock('../../hooks/use-update-shopper-context', () => ({
 let windowSpy
 let originalValue
 beforeAll(() => {
-    jest.spyOn(console, 'log').mockImplementation(jest.fn())
-    jest.spyOn(console, 'groupCollapsed').mockImplementation(jest.fn())
     originalValue = constants.ACTIVE_DATA_ENABLED
 })
 
 afterAll(() => {
-    console.log.mockRestore()
-    console.groupCollapsed.mockRestore()
     constants.ACTIVE_DATA_ENABLED = originalValue
 })
 beforeEach(() => {
@@ -43,8 +39,6 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-    console.log.mockClear()
-    console.groupCollapsed.mockClear()
     windowSpy.mockRestore()
 })
 
@@ -198,7 +192,7 @@ describe('App', () => {
         expect(hreflangLinks.some((link) => link.hrefLang === 'x-default')).toBe(true)
     })
 
-    test.only('App component updates the basket with correct currency and customer email', async () => {
+    test('App component updates the basket with correct currency and customer email', async () => {
         const customerEmail = 'email@test.com'
 
         // Test basket. _app will be manipulating this basket's currency and customerInfo.email for this test
@@ -252,14 +246,12 @@ describe('App', () => {
         )
 
         await waitFor(() => {
-            screen.logTestingPlaygroundURL()
-
             expect(basket.currency).toBe('GBP')
             expect(basket.customerInfo.email).toBe(customerEmail)
         })
     })
 
-    test.only('App shows correct href link', () => {
+    test('App shows correct href link', async () => {
         prependHandlersToServer([
             {
                 path: '*/baskets/:basketId/customer',
@@ -278,10 +270,14 @@ describe('App', () => {
         useMultiSite.mockImplementation(() => resultUseMultiSite)
         renderWithProviders(
             <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages}>
-                <p>Children</p>
+                ff
             </App>
         )
-        const links = document.querySelector('a')
-        console.log('links', links)
+        await waitFor(() => {
+            const alternateLink = document.querySelectorAll('link[rel="alternate"]')
+            const currentSupportedLocales = mockConfig.app.sites[0].l10n.supportedLocales
+            // we generate links tags based on supported locale and added 2 default link for fallback
+            expect(alternateLink.length).toBe(currentSupportedLocales.length + 2)
+        })
     })
 })
