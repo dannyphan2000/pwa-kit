@@ -17,6 +17,8 @@ import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import messages from '@salesforce/retail-react-app/app/static/translations/compiled/en-GB.json'
 import mockConfig from '@salesforce/retail-react-app/config/mocks/default'
 import * as constants from '@salesforce/retail-react-app/app/constants'
+import {prependHandlersToServer} from '@salesforce/retail-react-app/jest-setup'
+import {mockCustomerBaskets} from '@salesforce/retail-react-app/app/mocks/mock-data'
 
 jest.mock('../../hooks/use-multi-site', () => jest.fn())
 jest.mock('../../hooks/use-update-shopper-context', () => ({
@@ -74,6 +76,21 @@ describe('App', () => {
     }
 
     test('User can select DNT options when App component is rendered with DNT notification', async () => {
+        prependHandlersToServer([
+            {
+                path: '*/baskets/:basketId/customer',
+                method: 'put',
+                res: () => {
+                    return {
+                        ...mockCustomerBaskets.baskets[0],
+                        customerInfo: {
+                            customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
+                            email: 'shopperUpdate@salesforce-test.com'
+                        }
+                    }
+                }
+            }
+        ])
         useMultiSite.mockImplementation(() => resultUseMultiSite)
         const {user} = renderWithProviders(
             <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages}>
@@ -89,6 +106,21 @@ describe('App', () => {
     })
 
     test('Active Data component is not rendered', async () => {
+        prependHandlersToServer([
+            {
+                path: '*/baskets/:basketId/customer',
+                method: 'put',
+                res: () => {
+                    return {
+                        ...mockCustomerBaskets.baskets[0],
+                        customerInfo: {
+                            customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
+                            email: 'shopperUpdate@salesforce-test.com'
+                        }
+                    }
+                }
+            }
+        ])
         constants.ACTIVE_DATA_ENABLED = false
         useMultiSite.mockImplementation(() => resultUseMultiSite)
         renderWithProviders(
@@ -105,6 +137,21 @@ describe('App', () => {
     })
 
     test('Active Data component is rendered appropriately', async () => {
+        prependHandlersToServer([
+            {
+                path: '*/baskets/:basketId/customer',
+                method: 'put',
+                res: () => {
+                    return {
+                        ...mockCustomerBaskets.baskets[0],
+                        customerInfo: {
+                            customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
+                            email: 'shopperUpdate@salesforce-test.com'
+                        }
+                    }
+                }
+            }
+        ])
         constants.ACTIVE_DATA_ENABLED = true
         useMultiSite.mockImplementation(() => resultUseMultiSite)
         renderWithProviders(
@@ -119,6 +166,21 @@ describe('App', () => {
     })
 
     test('The localized hreflang links exist in the html head', () => {
+        prependHandlersToServer([
+            {
+                path: '*/baskets/:basketId/customer',
+                method: 'put',
+                res: () => {
+                    return {
+                        ...mockCustomerBaskets.baskets[0],
+                        customerInfo: {
+                            customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
+                            email: 'shopperUpdate@salesforce-test.com'
+                        }
+                    }
+                }
+            }
+        ])
         useMultiSite.mockImplementation(() => resultUseMultiSite)
         renderWithProviders(
             <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages} />
@@ -136,7 +198,7 @@ describe('App', () => {
         expect(hreflangLinks.some((link) => link.hrefLang === 'x-default')).toBe(true)
     })
 
-    test('App component updates the basket with correct currency and customer email', async () => {
+    test.only('App component updates the basket with correct currency and customer email', async () => {
         const customerEmail = 'email@test.com'
 
         // Test basket. _app will be manipulating this basket's currency and customerInfo.email for this test
@@ -190,8 +252,36 @@ describe('App', () => {
         )
 
         await waitFor(() => {
+            screen.logTestingPlaygroundURL()
+
             expect(basket.currency).toBe('GBP')
             expect(basket.customerInfo.email).toBe(customerEmail)
         })
+    })
+
+    test.only('App shows correct href link', () => {
+        prependHandlersToServer([
+            {
+                path: '*/baskets/:basketId/customer',
+                method: 'put',
+                res: () => {
+                    return {
+                        ...mockCustomerBaskets.baskets[0],
+                        customerInfo: {
+                            customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
+                            email: 'shopperUpdate@salesforce-test.com'
+                        }
+                    }
+                }
+            }
+        ])
+        useMultiSite.mockImplementation(() => resultUseMultiSite)
+        renderWithProviders(
+            <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages}>
+                <p>Children</p>
+            </App>
+        )
+        const links = document.querySelector('a')
+        console.log('links', links)
     })
 })

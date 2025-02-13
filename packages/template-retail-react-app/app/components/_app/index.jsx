@@ -80,6 +80,7 @@ import {
 
 import Seo from '@salesforce/retail-react-app/app/components/seo'
 import {Helmet} from 'react-helmet'
+import {getPathWithLocale} from '@salesforce/retail-react-app/app/utils/url'
 
 const PlaceholderComponent = () => (
     <Center p="2">
@@ -336,7 +337,9 @@ const App = (props) => {
                                 <link
                                     rel="alternate"
                                     hrefLang={locale.id.toLowerCase()}
-                                    href={`${appOrigin}${buildUrl(location.pathname)}`}
+                                    href={`${appOrigin}${getPathWithLocale(locale.id, buildUrl, {
+                                        location
+                                    })}`}
                                     key={locale.id}
                                 />
                             ))}
