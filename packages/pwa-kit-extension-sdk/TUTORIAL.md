@@ -154,7 +154,7 @@ After mastering the use of existing extensions, you're ready to create your own.
 First, we’ll generate a fresh PWA Kit project by running the following command:
 
 ```sh
-npx @salesforce/pwa-kit-create-app@4.0.0-extensibility-preview.3
+npx @salesforce/pwa-kit-create-app
 ```
 
 The generator will prompt you a few questions, answer the questions as follows:
