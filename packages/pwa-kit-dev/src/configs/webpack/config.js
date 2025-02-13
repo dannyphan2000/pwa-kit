@@ -574,7 +574,10 @@ const requestProcessor =
                     libraryTarget: 'commonjs2'
                 },
                 // use eval-source-map for server-side debugging
-                devtool: mode === development && INSPECT ? 'eval-source-map' : false,
+                devtool:
+                    (mode === development && INSPECT) || process.env.PWA_KIT_SOURCE_MAP === 'true'
+                        ? 'eval-source-map'
+                        : false,
                 plugins: [
                     ...config.plugins,
                     analyzeBundle && getBundleAnalyzerPlugin(REQUEST_PROCESSOR)
