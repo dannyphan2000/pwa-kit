@@ -7,6 +7,7 @@
 - Clear auth state if session has been invalidated by a password change [#2092](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2092)
 - DNT interface improvement [#2203](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2203)
 - Support Node 22 [#2218](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2218)
+- Add `authorizeIDP`, `loginIDPUser`, `authorizePasswordless`, `getPasswordLessAccessToken`, `getPasswordResetToken`, and `resetPassword` wrapper functions to support Social Login, Passwordless Login, and Password Reset [#2079] (https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2079)
 
 ## v3.1.0 (Oct 28, 2024)
 
