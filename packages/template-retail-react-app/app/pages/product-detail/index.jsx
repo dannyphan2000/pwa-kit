@@ -101,7 +101,8 @@ const ProductDetail = () => {
                     'prices',
                     'variations',
                     'set_products',
-                    'bundled_products'
+                    'bundled_products',
+                    'page_meta_tags'
                 ],
                 allImages: true
             }
@@ -460,7 +461,15 @@ const ProductDetail = () => {
         >
             <Helmet>
                 <title>{product?.pageTitle}</title>
-                <meta name="description" content={product?.pageDescription} />
+                {product?.pageMetaTags?.length > 0 &&
+                    product.pageMetaTags.map(({id, value}) => (
+                        <meta name={id} content={value} key={id} />
+                    ))}
+                {/* Fallback for description if not included in pageMetaTags */}
+                {!product?.pageMetaTags?.some((tag) => tag.id === 'description') &&
+                    product?.pageDescription && (
+                        <meta name="description" content={product.pageDescription} />
+                    )}
             </Helmet>
 
             <Stack spacing={16}>

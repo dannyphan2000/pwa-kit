@@ -15,6 +15,21 @@ module.exports = {
             showDefaults: true,
             interpretPlusSignAsSpace: false
         },
+        login: {
+            passwordless: {
+                enabled: false,
+                callbackURI:
+                    process.env.PASSWORDLESS_LOGIN_CALLBACK_URI || '/passwordless-login-callback'
+            },
+            social: {
+                enabled: false,
+                idps: ['google', 'apple'],
+                redirectURI: process.env.SOCIAL_LOGIN_REDIRECT_URI || '/social-callback'
+            },
+            resetPassword: {
+                callbackURI: process.env.RESET_PASSWORD_CALLBACK_URI || '/reset-password-callback'
+            }
+        },
         defaultSite: 'RefArchGlobal',
         siteAliases: {
             RefArch: 'us',
@@ -54,7 +69,7 @@ module.exports = {
         '**/*.json'
     ],
     ssrParameters: {
-        ssrFunctionNodeVersion: '20.x',
+        ssrFunctionNodeVersion: '22.x',
         proxyConfigs: [
             {
                 host: 'kv7kzm78.api.commercecloud.salesforce.com',
