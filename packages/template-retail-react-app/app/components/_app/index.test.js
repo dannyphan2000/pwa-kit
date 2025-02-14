@@ -25,17 +25,9 @@ jest.mock('../../hooks/use-update-shopper-context', () => ({
 }))
 
 let windowSpy
-beforeEach(() => {
-    windowSpy = jest.spyOn(window, 'window', 'get')
-})
-
-afterEach(() => {
-    windowSpy.mockRestore()
-    jest.restoreAllMocks()
-    jest.resetModules()
-})
 
 const mockUpdateDNT = jest.fn()
+const mockActiveDataFlag = jest.fn()
 jest.mock('@salesforce/commerce-sdk-react', () => {
     const originalModule = jest.requireActual('@salesforce/commerce-sdk-react')
     return {
@@ -44,6 +36,25 @@ jest.mock('@salesforce/commerce-sdk-react', () => {
     }
 })
 
+jest.mock('@salesforce/retail-react-app/app/constants', () => {
+    const originalModule = jest.requireActual('@salesforce/retail-react-app/app/constants')
+    return {
+        ...originalModule,
+        get ACTIVE_DATA_ENABLED() {
+            return mockActiveDataFlag()
+        }
+    }
+})
+beforeEach(() => {
+    windowSpy = jest.spyOn(window, 'window', 'get')
+    mockActiveDataFlag.mockReturnValue(true)
+})
+
+afterEach(() => {
+    windowSpy.mockRestore()
+    jest.restoreAllMocks()
+    jest.resetModules()
+})
 describe('App', () => {
     const site = {
         ...mockConfig.app.sites[0],
@@ -93,50 +104,34 @@ describe('App', () => {
     })
 
     test('Active Data component is not rendered', async () => {
-        jest.doMock('@salesforce/retail-react-app/app/constants', () => {
-            const originalModule = jest.requireActual('@salesforce/retail-react-app/app/constants')
-            return {
-                __esModule: true,
-                ...originalModule,
-                ACTIVE_DATA_ENABLED: false
-            }
-        })
-
-        import('@salesforce/retail-react-app/app/components/_app/index.jsx').then(async () => {
-            prependHandlersToServer([
-                {
-                    path: '*/baskets/:basketId/customer',
-                    method: 'put',
-                    res: () => {
-                        return {
-                            ...mockCustomerBaskets.baskets[0],
-                            customerInfo: {
-                                customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
-                                email: 'shopperUpdate@salesforce-test.com'
-                            }
+        mockActiveDataFlag.mockImplementation(() => false)
+        prependHandlersToServer([
+            {
+                path: '*/baskets/:basketId/customer',
+                method: 'put',
+                res: () => {
+                    return {
+                        ...mockCustomerBaskets.baskets[0],
+                        customerInfo: {
+                            customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
+                            email: 'shopperUpdate@salesforce-test.com'
                         }
                     }
                 }
-            ])
-            useMultiSite.mockImplementation(() => resultUseMultiSite)
-            renderWithProviders(
-                <App
-                    targetLocale={DEFAULT_LOCALE}
-                    defaultLocale={DEFAULT_LOCALE}
-                    messages={messages}
-                >
-                    <p>Any children here</p>
-                </App>
-            )
-            await waitFor(() =>
-                expect(document.getElementById('headActiveData')).not.toBeInTheDocument()
-            )
-            await waitFor(() =>
-                expect(document.getElementById('dwanalytics')).not.toBeInTheDocument()
-            )
-            await waitFor(() => expect(document.getElementById('dwac')).not.toBeInTheDocument())
-            expect(screen.getByText('Any children here')).toBeInTheDocument()
-        })
+            }
+        ])
+        useMultiSite.mockImplementation(() => resultUseMultiSite)
+        renderWithProviders(
+            <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages}>
+                <p>Any children here</p>
+            </App>
+        )
+        await waitFor(() =>
+            expect(document.getElementById('headActiveData')).not.toBeInTheDocument()
+        )
+        await waitFor(() => expect(document.getElementById('dwanalytics')).not.toBeInTheDocument())
+        await waitFor(() => expect(document.getElementById('dwac')).not.toBeInTheDocument())
+        expect(screen.getByText('Any children here')).toBeInTheDocument()
     })
 
     test('Active Data component is rendered appropriately', async () => {
