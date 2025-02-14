@@ -48,6 +48,21 @@ jest.mock('@salesforce/retail-react-app/app/constants', () => {
 beforeEach(() => {
     windowSpy = jest.spyOn(window, 'window', 'get')
     mockActiveDataFlag.mockReturnValue(true)
+    prependHandlersToServer([
+        {
+            path: '*/baskets/:basketId/customer',
+            method: 'put',
+            res: () => {
+                return {
+                    ...mockCustomerBaskets.baskets[0],
+                    customerInfo: {
+                        customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
+                        email: 'shopperUpdate@salesforce-test.com'
+                    }
+                }
+            }
+        }
+    ])
 })
 
 afterEach(() => {
@@ -74,21 +89,6 @@ describe('App', () => {
     }
 
     test('User can select DNT options when App component is rendered with DNT notification', async () => {
-        prependHandlersToServer([
-            {
-                path: '*/baskets/:basketId/customer',
-                method: 'put',
-                res: () => {
-                    return {
-                        ...mockCustomerBaskets.baskets[0],
-                        customerInfo: {
-                            customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
-                            email: 'shopperUpdate@salesforce-test.com'
-                        }
-                    }
-                }
-            }
-        ])
         useMultiSite.mockImplementation(() => resultUseMultiSite)
         const {user} = renderWithProviders(
             <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages}>
@@ -105,21 +105,6 @@ describe('App', () => {
 
     test('Active Data component is not rendered', async () => {
         mockActiveDataFlag.mockImplementation(() => false)
-        prependHandlersToServer([
-            {
-                path: '*/baskets/:basketId/customer',
-                method: 'put',
-                res: () => {
-                    return {
-                        ...mockCustomerBaskets.baskets[0],
-                        customerInfo: {
-                            customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
-                            email: 'shopperUpdate@salesforce-test.com'
-                        }
-                    }
-                }
-            }
-        ])
         useMultiSite.mockImplementation(() => resultUseMultiSite)
         renderWithProviders(
             <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages}>
@@ -135,22 +120,6 @@ describe('App', () => {
     })
 
     test('Active Data component is rendered appropriately', async () => {
-        prependHandlersToServer([
-            {
-                path: '*/baskets/:basketId/customer',
-                method: 'put',
-                res: () => {
-                    return {
-                        ...mockCustomerBaskets.baskets[0],
-                        customerInfo: {
-                            customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
-                            email: 'shopperUpdate@salesforce-test.com'
-                        }
-                    }
-                }
-            }
-        ])
-
         useMultiSite.mockImplementation(() => resultUseMultiSite)
         renderWithProviders(
             <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages}>
@@ -166,21 +135,6 @@ describe('App', () => {
     })
 
     test('The localized hreflang links exist in the html head', () => {
-        prependHandlersToServer([
-            {
-                path: '*/baskets/:basketId/customer',
-                method: 'put',
-                res: () => {
-                    return {
-                        ...mockCustomerBaskets.baskets[0],
-                        customerInfo: {
-                            customerId: 'abmuc2wupJxeoRxuo3wqYYmbhI',
-                            email: 'shopperUpdate@salesforce-test.com'
-                        }
-                    }
-                }
-            }
-        ])
         useMultiSite.mockImplementation(() => resultUseMultiSite)
         renderWithProviders(
             <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages} />
