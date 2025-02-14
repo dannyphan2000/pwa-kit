@@ -15,14 +15,14 @@ import {useBlock} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 export const useRouting = (callback) => {
     const isBlocked = useBlock(async () => {
         const config = getConfig()
-        if (config.app.PWA_BMRouting) {
+        if (config.app.PWA_BMRouting === 'true') {
             // In W-17530042, updateRoutes will be used here and return false after API call completion
             // A manual delay is added for now just to see the skeleton that would show while the API call is made
             const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
             await delay(10000)
         }
 
-        await callback()
+        if (typeof callback === 'function') await callback()
 
         return false
     })
