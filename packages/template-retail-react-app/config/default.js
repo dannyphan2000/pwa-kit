@@ -37,7 +37,7 @@ module.exports = {
             siteId: 'aaij-MobileFirst',
             isProduction: false
         },
-        PWA_FallbackBMRouting: process.env.PWA_FallbackBMRouting || 'false'
+        PWA_BMRouting: process.env.PWA_BMRouting || 'false'
     },
     externals: [],
     pageNotFoundURL: '/page-not-found',

@@ -81,28 +81,28 @@ export const useOrigin = ({fromXForwardedHeader = false}) => {
  */
 export const useBlock = (func) => {
     const {block, push, location} = useHistory()
-    const [isBlocked, setIsBlocked] = useState(false)
     const lastLocation = useRef()
+    const [isBlocked, setIsBlocked] = useState(false)
     const funcRef = useRef()
 
     funcRef.current = func
     useEffect(() => {
-        if (lastLocation.current === location || !funcRef.current) {
+        if (location !== lastLocation.current && funcRef.current) {
             lastLocation.current = location
-            return false
+
+            const unblock = block((location, action) => {
+                // It is necessary to wrap this block in an async function to ensure the callback itself is not async, otherwise it will mess up order of execution
+                ;(async () => {
+                    setIsBlocked(true)
+                    if (!(await funcRef.current(location, action))) {
+                        setIsBlocked(false)
+                        unblock()
+                        push(location)
+                    }
+                })()
+                return false
+            })
         }
-
-        lastLocation.current = location
-        const unblock = block(async ({action, location}) => {
-            setIsBlocked(true)
-            if (!(await funcRef.current(action, location))) {
-                await unblock()
-                await push(location)
-                setIsBlocked(false)
-            }
-            return false
-        })
     }, [location])
-
     return isBlocked
 }

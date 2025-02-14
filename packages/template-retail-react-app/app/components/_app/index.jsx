@@ -10,7 +10,6 @@ import PropTypes from 'prop-types'
 import {useHistory, useLocation} from 'react-router-dom'
 import {StorefrontPreview} from '@salesforce/commerce-sdk-react/components'
 import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
-import {useBlock} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import useActiveData from '@salesforce/retail-react-app/app/hooks/use-active-data'
 import {useQuery} from '@tanstack/react-query'
 import {
@@ -64,7 +63,7 @@ import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 import {useCurrentBasket} from '@salesforce/retail-react-app/app/hooks/use-current-basket'
 import {useUpdateShopperContext} from '@salesforce/retail-react-app/app/hooks/use-update-shopper-context'
-
+import {useRouting} from '@salesforce/retail-react-app/app/hooks/use-routing'
 // HOCs
 import {withCommerceSdkReact} from '@salesforce/retail-react-app/app/components/with-commerce-sdk-react/with-commerce-sdk-react'
 
@@ -74,7 +73,6 @@ import {IntlProvider} from 'react-intl'
 // Others
 import {watchOnlineStatus, flatten, isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getTargetLocale, fetchTranslations} from '@salesforce/retail-react-app/app/utils/locale'
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {
     DEFAULT_SITE_TITLE,
     HOME_HREF,
@@ -152,7 +150,6 @@ const App = (props) => {
         onOpen: onOpenStoreLocator,
         onClose: onCloseStoreLocator
     } = useDisclosure()
-    const config = getConfig()
 
     const targetLocale = getTargetLocale({
         getUserPreferredLocales: () => {
@@ -207,16 +204,7 @@ const App = (props) => {
     const updateBasket = useShopperBasketsMutation('updateBasket')
     const updateCustomerForBasket = useShopperBasketsMutation('updateCustomerForBasket')
 
-    const isBlocked = useBlock(async () => {
-        if (!config.app.PWA_FallbackBMRouting && !config.app.PWA_BMRouting) {
-            return false
-        }
-        // In W-17530042, updateRoutes will be used here and return false after API call completion
-        // A manual delay is added for now just to see the skeleton that would show while the API call is made
-        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-        await delay(10000)
-        return false
-    })
+    const isBlocked = useRouting()
 
     useEffect(() => {
         // update the basket currency if it doesn't match the current locale currency
