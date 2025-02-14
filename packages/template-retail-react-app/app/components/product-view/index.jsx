@@ -39,6 +39,7 @@ import Swatch from '@salesforce/retail-react-app/app/components/swatch-group/swa
 import SwatchGroup from '@salesforce/retail-react-app/app/components/swatch-group'
 import {getPriceData} from '@salesforce/retail-react-app/app/utils/product-utils'
 import PromoCallout from '@salesforce/retail-react-app/app/components/product-tile/promo-callout'
+import StoreAvailabilityText from '@salesforce/retail-react-app/app/components/store-availability-text'
 
 const ProductViewHeader = ({
     name,
@@ -598,6 +599,7 @@ const ProductView = forwardRef(
                                     />
                                 </VStack>
                             )}
+                            <StoreAvailabilityText productInventories={product?.inventories} />
                             <Box ref={errorContainerRef}>
                                 {!showLoading && showOptionsMessage && (
                                     <Fade in={true}>

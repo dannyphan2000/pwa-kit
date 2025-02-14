@@ -8,6 +8,7 @@
 import React from 'react'
 import StoreLocatorModal from '@salesforce/retail-react-app/app/components/store-locator-modal/index'
 import {renderWithProviders} from '@salesforce/retail-react-app/app/utils/test-utils'
+import {act, fireEvent, screen} from '@testing-library/react'
 import {rest} from 'msw'
 
 const mockStoresData = [
@@ -199,14 +200,40 @@ const mockStores = {
 }
 
 describe('StoreLocatorModal', () => {
-    test('renders without crashing', () => {
+    beforeEach(() => {
         global.server.use(
             rest.get('*/shopper-stores/v1/organizations/*', (req, res, ctx) => {
                 return res(ctx.delay(0), ctx.status(200), ctx.json(mockStores))
             })
         )
-        expect(() => {
-            renderWithProviders(<StoreLocatorModal />)
-        }).not.toThrow()
+    })
+
+    test('does not render when isOpen is false', () => {
+        renderWithProviders(<StoreLocatorModal isOpen={false} />)
+        expect(screen.queryByText(/Find a Store/i)).not.toBeInTheDocument()
+    })
+
+    test('renders when isOpen is true', async () => {
+        renderWithProviders(<StoreLocatorModal isOpen={true} />)
+        expect(screen.getByText(/Find a Store/i)).toBeInTheDocument()
+
+        await act(async () => {
+            // Select the country
+            const countrySelect = screen.getByRole('combobox')
+            fireEvent.change(countrySelect, {target: {value: 'US'}})
+
+            // Enter a postal code
+            const postalCodeInput = screen.getByPlaceholderText(/enter postal code/i)
+            fireEvent.change(postalCodeInput, {target: {value: '12345'}})
+
+            // Click the "Find" button
+            const findButton = screen.getByRole('button', {name: /find/i})
+            fireEvent.click(findButton)
+        })
+
+        mockStoresData.forEach((store) => {
+            expect(screen.getByText(store.name)).toBeInTheDocument()
+            expect(screen.getByText(store.address1)).toBeInTheDocument()
+        })
     })
 })
