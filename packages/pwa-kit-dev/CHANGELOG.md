@@ -1,3 +1,4 @@
+## v3.9.0-nightly-20250214080213 (Feb 14, 2025)
 ## v3.9.0-dev (Oct 29, 2024)
 - Support Node 22 [#2218](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2218)
 - Support source map for both client and server on MRT [#240](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2240)
