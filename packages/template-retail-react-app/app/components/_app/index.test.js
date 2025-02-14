@@ -186,10 +186,38 @@ describe('App', () => {
             <App targetLocale={DEFAULT_LOCALE} defaultLocale={DEFAULT_LOCALE} messages={messages} />
         )
 
+        // expected locales for hrefLang
+        const hrefLangLocales = mockConfig.app.sites[0].l10n.supportedLocales.map(
+            (locale) => locale.id
+        )
         const helmet = Helmet.peek()
         const hreflangLinks = helmet.linkTags.filter((link) => link.rel === 'alternate')
-
         const hasGeneralLocale = ({hrefLang}) => hrefLang === DEFAULT_LOCALE.slice(0, 2)
+
+        hrefLangLocales.forEach((supportedLocale) => {
+            expect(
+                hreflangLinks.some(
+                    (link) => link.hrefLang.toLowerCase() === supportedLocale.toLowerCase()
+                )
+            ).toBe(true)
+            expect(hreflangLinks.some((link) => hasGeneralLocale(link))).toBe(true)
+        })
+
+        // localeRefs takes locale alias into consideration
+        const localeRefs = mockConfig.app.sites[0].l10n.supportedLocales.map(
+            (locale) => locale.alias || locale.id
+        )
+
+        localeRefs.forEach((localeRef) => {
+            expect(hreflangLinks.some((link) => link.href.includes(localeRef))).toBe(true)
+            // expecting href does not contain search query params in the href since it is a canonical url
+            expect(
+                hreflangLinks.some((link) => {
+                    const urlObj = new URL(link.href)
+                    return urlObj.search.length > 0
+                })
+            ).toBe(false)
+        })
 
         // `length + 2` because one for a general locale and the other with x-default value
         expect(hreflangLinks).toHaveLength(resultUseMultiSite.site.l10n.supportedLocales.length + 2)
