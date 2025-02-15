@@ -19,7 +19,8 @@ module.exports = {
             passwordless: {
                 enabled: false,
                 callbackURI:
-                    process.env.PASSWORDLESS_LOGIN_CALLBACK_URI || '/passwordless-login-callback'
+                    process.env.PASSWORDLESS_LOGIN_CALLBACK_URI || '/passwordless-login-callback',
+                landingPath: '/passwordless-login-landing'
             },
             social: {
                 enabled: false,
@@ -27,7 +28,8 @@ module.exports = {
                 redirectURI: process.env.SOCIAL_LOGIN_REDIRECT_URI || '/social-callback'
             },
             resetPassword: {
-                callbackURI: process.env.RESET_PASSWORD_CALLBACK_URI || '/reset-password-callback'
+                callbackURI: process.env.RESET_PASSWORD_CALLBACK_URI || '/reset-password-callback',
+                landingPath: '/reset-password-landing'
             }
         },
         defaultSite: 'RefArchGlobal',
