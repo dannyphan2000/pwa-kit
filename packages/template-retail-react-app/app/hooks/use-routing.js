@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
-import {useBlock} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
+import {useNavigationBlock} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 
 /**
  * Update the routes of the application while navigation is blocked
@@ -13,7 +13,7 @@ import {useBlock} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
  * @param {func} callback Optional function to run while navigation is blocked
  */
 export const useRouting = (callback) => {
-    const isBlocked = useBlock(async () => {
+    const isBlocked = useNavigationBlock(async () => {
         const config = getConfig()
         if (config.app.PWA_BMRouting === 'true') {
             // In W-17530042, updateRoutes will be used here and return false after API call completion

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {useBlock} from './index'
+import {useNavigationBlock} from './index'
 import React, {act} from 'react'
 import {render} from '@testing-library/react'
 
@@ -26,11 +26,11 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const AComponent = () => {
-    useBlock(mockFunc)
+    useNavigationBlock(mockFunc)
     return <></>
 }
 
-describe('useBlock', () => {
+describe('useNavigationBlock', () => {
     beforeEach(() => {
         mockFunc.mockReset()
     })

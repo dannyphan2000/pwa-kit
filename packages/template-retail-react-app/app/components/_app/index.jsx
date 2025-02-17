@@ -432,56 +432,13 @@ const App = (props) => {
                                         </Box>
                                     </SkipNavContent>
                                 ) : (
-                                    <Grid
-                                        templateColumns={{base: '1fr', md: '280px 1fr'}}
-                                        columnGap={6}
-                                        style={{margin: '30px'}}
-                                    >
-                                        <Stack display={{base: 'none', md: 'flex', margin: '30px'}}>
-                                            {new Array(3).fill(0).map((_, index) => (
-                                                <Box style={{margin: '30px'}} key={index}>
-                                                    <Skeleton
-                                                        width="180px"
-                                                        height={5}
-                                                        margin={'10px'}
-                                                    />
-                                                    <Skeleton
-                                                        width="150px"
-                                                        height={5}
-                                                        margin={'10px'}
-                                                    />
-                                                    <Skeleton
-                                                        width="100px"
-                                                        height={5}
-                                                        margin={'10px'}
-                                                    />
-                                                    <Skeleton
-                                                        width="140px"
-                                                        height={5}
-                                                        margin={'10px'}
-                                                    />
-                                                    <Skeleton
-                                                        width="120px"
-                                                        height={5}
-                                                        margin={'10px'}
-                                                    />
-                                                </Box>
-                                            ))}
-                                        </Stack>
-                                        <Box marginBottom={10} paddingBottom={10}>
-                                            <SimpleGrid
-                                                columns={[2, 2, 3, 3]}
-                                                spacingX={4}
-                                                spacingY={{base: 12, lg: 16}}
-                                                marginBottom={10}
-                                                paddingBottom={10}
-                                            >
-                                                {new Array(12).fill(0).map((value, index) => (
-                                                    <ProductTileSkeleton key={index} />
-                                                ))}
-                                            </SimpleGrid>
-                                        </Box>
-                                    </Grid>
+                                    <Box height='700px' style={{
+                                        "display": "flex",
+                                        "justify-content": "center", /* Centers horizontally */
+                                        "align-items": "center" /* Centers vertically */
+                                    }}>
+                                        <PlaceholderComponent></PlaceholderComponent>
+                                    </Box>
                                 )}
 
                                 {!isCheckout ? <Footer /> : <CheckoutFooter />}
