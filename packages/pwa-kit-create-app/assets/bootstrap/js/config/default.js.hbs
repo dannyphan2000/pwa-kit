@@ -25,7 +25,9 @@ module.exports = {
                 // Required in 'callback' mode; if missing, passwordless login defaults to 'sms' mode, which requires Marketing Cloud configuration.
                 // If the env var `PASSWORDLESS_LOGIN_CALLBACK_URI` is set, it will override the config value.
                 callbackURI:
-                    process.env.PASSWORDLESS_LOGIN_CALLBACK_URI || '/passwordless-login-callback'
+                    process.env.PASSWORDLESS_LOGIN_CALLBACK_URI || '/passwordless-login-callback',
+                // The landing path for passwordless login
+                landingPath: '/passwordless-login-landing'
             },
             social: {
                 // Enables or disables social login for the site. Defaults to: false
@@ -41,7 +43,9 @@ module.exports = {
             resetPassword: {
                 // The callback URI, which can be an absolute URL (including third-party URIs) or a relative path set up by the developer.
                 // If the env var `RESET_PASSWORD_CALLBACK_URI` is set, it will override the config value.
-                callbackURI: process.env.RESET_PASSWORD_CALLBACK_URI || '/reset-password-callback'
+                callbackURI: process.env.RESET_PASSWORD_CALLBACK_URI || '/reset-password-callback',
+                // The landing path for reset password
+                landingPath: '/reset-password-landing'
             }
         },
         // The default site for your app. This value will be used when a siteRef could not be determined from the url
