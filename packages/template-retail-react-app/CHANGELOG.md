@@ -1,3 +1,5 @@
+## v6.1.0-dev (Feb 18, 2025)
+
 - Fix hreflang alternate links [#2269](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2269)
 
 ## v6.0.0 (Feb 18, 2025)
