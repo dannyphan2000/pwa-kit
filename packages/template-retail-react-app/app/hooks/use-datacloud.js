@@ -24,7 +24,8 @@ export class DataCloudApi {
             sessionId: args.usid, //get dwsid from cookie?
             deviceId: args.usid, //get BrowserID from cookie?
             dateTime: new Date().toISOString(),
-            ...(args.customerId && {customerId: args.customerId}) // Can remove the conditionality after the hook -> Promise is changed in future PWA release
+            ...(args.customerId && {customerId: args.customerId}), // Can remove the conditionality after the hook -> Promise is changed in future PWA release
+            customerNo: args.customerNo
         }
     }
 
@@ -360,6 +361,7 @@ const useDataCloud = () => {
             isGuest: isRegistered ? 0 : 1,
             usid: await getUsidWhenReady(),
             customerId: customerId,
+            customerNo: customer?.customerNo,
             firstName: customer?.firstName,
             lastName: customer?.lastName,
             email: customer?.email
