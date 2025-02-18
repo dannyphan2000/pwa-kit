@@ -27,14 +27,9 @@ import {
     Fade,
     Spinner,
     useDisclosure,
-    useStyleConfig,
-    Stack,
-    SimpleGrid,
-    Grid,
-    Skeleton
+    useStyleConfig
 } from '@salesforce/retail-react-app/app/components/shared/ui'
 import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
-import {Skeleton as ProductTileSkeleton} from '@salesforce/retail-react-app/app/components/product-tile'
 
 // Contexts
 import {CurrencyProvider} from '@salesforce/retail-react-app/app/contexts'
@@ -432,11 +427,14 @@ const App = (props) => {
                                         </Box>
                                     </SkipNavContent>
                                 ) : (
-                                    <Box height='700px' style={{
-                                        "display": "flex",
-                                        "justify-content": "center", /* Centers horizontally */
-                                        "align-items": "center" /* Centers vertically */
-                                    }}>
+                                    <Box
+                                        height="700px"
+                                        style={{
+                                            display: 'flex',
+                                            'justify-content': 'center',
+                                            'align-items': 'center'
+                                        }}
+                                    >
                                         <PlaceholderComponent></PlaceholderComponent>
                                     </Box>
                                 )}
