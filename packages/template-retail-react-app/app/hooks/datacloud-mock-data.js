@@ -87,7 +87,7 @@ export const mockViewProductEvent = {
             dateTime: expect.any(String),
             customerId: 1234567890,
             eventId: expect.any(String),
-            eventType: 'productViewStart',
+            eventType: 'catalog',
             category: 'Engagement',
             id: '56736828M',
             type: 'Product',
@@ -127,7 +127,7 @@ export const mockViewCategoryEvent = {
             dateTime: expect.any(String),
             customerId: 1234567890,
             eventId: expect.any(String),
-            eventType: 'viewProductImpressions',
+            eventType: 'catalog',
             category: 'Engagement',
             searchResultTitle: undefined,
             searchResultPosition: 0,
@@ -135,7 +135,7 @@ export const mockViewCategoryEvent = {
             id: '25752986M',
             type: 'Product',
             webStoreId: 'pwa',
-            catalogId: 'mens-accessories-ties',
+            categoryId: 'mens-accessories-ties',
             interactionName: 'catalog-object-impression'
         }),
         expect.objectContaining({
@@ -146,7 +146,7 @@ export const mockViewCategoryEvent = {
             dateTime: expect.any(String),
             customerId: 1234567890,
             eventId: expect.any(String),
-            eventType: 'viewProductImpressions',
+            eventType: 'catalog',
             category: 'Engagement',
             searchResultTitle: undefined,
             searchResultPosition: 0,
@@ -154,7 +154,7 @@ export const mockViewCategoryEvent = {
             id: '25752235M',
             type: 'Product',
             webStoreId: 'pwa',
-            catalogId: 'mens-accessories-ties',
+            categoryId: 'mens-accessories-ties',
             interactionName: 'catalog-object-impression'
         }),
         expect.objectContaining({
@@ -165,7 +165,7 @@ export const mockViewCategoryEvent = {
             dateTime: expect.any(String),
             customerId: 1234567890,
             eventId: expect.any(String),
-            eventType: 'viewProductImpressions',
+            eventType: 'catalog',
             category: 'Engagement',
             searchResultTitle: undefined,
             searchResultPosition: 0,
@@ -173,7 +173,7 @@ export const mockViewCategoryEvent = {
             id: '25752218M',
             type: 'Product',
             webStoreId: 'pwa',
-            catalogId: 'mens-accessories-ties',
+            categoryId: 'mens-accessories-ties',
             interactionName: 'catalog-object-impression'
         }),
         expect.objectContaining({
@@ -184,7 +184,7 @@ export const mockViewCategoryEvent = {
             dateTime: expect.any(String),
             customerId: 1234567890,
             eventId: expect.any(String),
-            eventType: 'viewProductImpressions',
+            eventType: 'catalog',
             category: 'Engagement',
             searchResultTitle: undefined,
             searchResultPosition: 0,
@@ -192,7 +192,7 @@ export const mockViewCategoryEvent = {
             id: '25752981M',
             type: 'Product',
             webStoreId: 'pwa',
-            catalogId: 'mens-accessories-ties',
+            categoryId: 'mens-accessories-ties',
             interactionName: 'catalog-object-impression'
         })
     ]
@@ -327,7 +327,7 @@ export const mockViewSearchResultsEvent = {
             dateTime: expect.any(String),
             customerId: 1234567890,
             eventId: expect.any(String),
-            eventType: 'viewProductImpressions',
+            eventType: 'catalog',
             category: 'Engagement',
             searchResultTitle: 'oxford glove',
             searchResultPosition: 0,
@@ -367,7 +367,7 @@ export const mockViewRecommendationsEvent = {
             dateTime: expect.any(String),
             customerId: 1234567890,
             eventId: expect.any(String),
-            eventType: 'viewProductImpressions',
+            eventType: 'catalog',
             category: 'Engagement',
             id: '11111111',
             type: 'Product',
@@ -384,7 +384,7 @@ export const mockViewRecommendationsEvent = {
             dateTime: expect.any(String),
             customerId: 1234567890,
             eventId: expect.any(String),
-            eventType: 'viewProductImpressions',
+            eventType: 'catalog',
             category: 'Engagement',
             id: '22222222',
             type: 'Product',

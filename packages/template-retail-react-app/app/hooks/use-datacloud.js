@@ -155,7 +155,7 @@ export class DataCloudApi {
 
         const catalog = this._concatenateEvents(
             baseEvent,
-            this._generateEventDetails('productViewStart', 'Engagement'),
+            this._generateEventDetails('catalog', 'Engagement'),
             baseProduct,
             {
                 type: 'Product',
@@ -185,13 +185,13 @@ export class DataCloudApi {
         const catalogObjects = products.map((product) => {
             return this._concatenateEvents(
                 baseEvent,
-                this._generateEventDetails('viewProductImpressions', 'Engagement'),
+                this._generateEventDetails('catalog', 'Engagement'),
                 this._constructBaseSearchResult(searchParams),
                 {
                     id: product.id,
                     type: 'Product',
                     webStoreId: 'pwa',
-                    catalogId: category.id,
+                    categoryId: category.id,
                     interactionName: 'catalog-object-impression'
                 }
             )
@@ -243,7 +243,7 @@ export class DataCloudApi {
         const catalogObjects = products.map((product) => {
             return this._concatenateEvents(
                 baseEvent,
-                this._generateEventDetails('viewProductImpressions', 'Engagement'),
+                this._generateEventDetails('catalog', 'Engagement'),
                 this._constructBaseSearchResult(searchParams),
                 {
                     searchResultId: crypto.randomUUID(),
@@ -297,7 +297,7 @@ export class DataCloudApi {
         const catalogObjects = products.map((product) => {
             return this._concatenateEvents(
                 baseEvent,
-                this._generateEventDetails('viewProductImpressions', 'Engagement'),
+                this._generateEventDetails('catalog', 'Engagement'),
                 {
                     id: product.id,
                     type: 'Product',
