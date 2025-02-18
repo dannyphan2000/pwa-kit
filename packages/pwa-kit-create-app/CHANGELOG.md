@@ -1,10 +1,10 @@
-## v3.9.0-preview.5 (Feb 17, 2025)
-
-## v3.9.0-dev (Oct 29, 2024)
+## v3.9.0 (Feb 18, 2025)
 
 - Update `default.js` and `ssr.js` template to support new passwordless, social, and reset password flows. [#2263] (https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2263)
 - Support Node 22 [#2218](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2218)
 - Update `default.js` template to include new login configurations [#2079] (https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2079)
+- Handle import error when ssr.js imports from template retail react app [#2270](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2270)
+
 
 ## v3.8.0 (Oct 28, 2024)
 

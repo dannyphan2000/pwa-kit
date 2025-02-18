@@ -1,9 +1,5 @@
 ## v3.2.0 (Feb 18, 2025)
-## v3.2.0-preview.5 (Feb 18, 2025)
-## v3.9.0 (Feb 18, 2025)
-## v3.2.0-preview.5 (Feb 17, 2025)
 
-## v3.2.0-dev (Oct 29, 2024)
 - Allow cookies for ShopperLogin API [#2190](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2190
 - Fix refresh token TTL warning from firing when override is not provided [#2114](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2114)
 - Readme updates for private clients [#2212](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2212)
@@ -12,6 +8,8 @@
 - DNT interface improvement [#2203](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2203)
 - Support Node 22 [#2218](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2218)
 - Add `authorizeIDP`, `loginIDPUser`, `authorizePasswordless`, `getPasswordLessAccessToken`, `getPasswordResetToken`, and `resetPassword` wrapper functions to support Social Login, Passwordless Login, and Password Reset [#2079] (https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2079)
+- [BUG] Fix images being fetced multiple times on Safari [#2223](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2223)
+
 
 ## v3.1.0 (Oct 28, 2024)
 
