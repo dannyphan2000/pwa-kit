@@ -21,9 +21,9 @@ export class DataCloudApi {
     /**
      * Constructs the base event object with the necessary data required
      * for every event sent to Data Cloud.
-     *
+     * 
      * @param {object} args - The arguments containing event-specific details
-     * @returns {object} The base event object
+     * @returns {object} - The base event object
      */
     _constructBaseEvent(args) {
         return {
@@ -40,12 +40,12 @@ export class DataCloudApi {
     /**
      * Generates the event details object required for sending an
      * event to Data Cloud.
-     *
-     * @param {string} eventType - The type of event being recorded (e.g
+     * 
+     * @param {string} eventType - The type of event being recorded (e.g 
      * "identity", "userEngagement", "contactPointEmail")
-     * @param {string} category - The category of the event, representing
+     * @param {string} category - The category of the event, representing 
      * its broader grouping (e.g. "Profile", "Engagement")
-     * @returns {eventId: string, eventType: string, category: string} - The event details object
+     * @returns {object} - The event details object
      */
     _generateEventDetails(eventType, category) {
         return {
@@ -57,12 +57,12 @@ export class DataCloudApi {
 
     /**
      * Constructs an object containing the product Id.
-     *
-     * This method extracts and returns the appropriate product Id based on
+     * 
+     * This method extracts and returns the appropriate product Id based on 
      * the product type.
-     *
-     * @param {object} product - The product object
-     * @returns {id: string} - An object containing the resolved product Id
+     * 
+     * @param {object} product - The product object 
+     * @returns {object} - An object containing the resolved product Id
      */
     _constructDatacloudProduct(product) {
         // Return the product SKU in the following priority order:
@@ -74,13 +74,11 @@ export class DataCloudApi {
         }
     }
     /**
-     * Constructs the base search result object with relevant search
+     * Constructs the base search result object with relevant search 
      * metadata.
-     *
-     * @param {object} searchParams - The searchParams object returned from the `useSearchParams`
-     * hook containing search-related data
-     * @returns {searchResultTitle: string, searchResultPosition: number, searchResultPageNumber:
-     * number} - The base search result object
+     * 
+     * @param {object} searchParams - The searchParams object
+     * @returns {object} - The base search result object
      */
     _constructBaseSearchResult(searchParams) {
         return {
@@ -94,9 +92,12 @@ export class DataCloudApi {
     _concatenateEvents = (...events) => ({...events.reduce((acc, obj) => ({...acc, ...obj}), {})})
 
     /**
-     *
-     * @param {string} path
-     * @param {object} args
+     * Sends a `page-view` event to Data Cloud.
+     * 
+     * This method records an `userEnagement` event type to track which page the shopper has viewed.
+     * 
+     * @param {string} path - The URL path of the page that was viewed
+     * @param {object} args - Additional metadata for the event
      */
     async sendViewPage(path, args) {
         const baseEvent = this._constructBaseEvent(args)
@@ -139,7 +140,6 @@ export class DataCloudApi {
                 userEngagement
             ]
         }
-        console.log('SEND VIEW PAGE', interaction)
 
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)
@@ -149,9 +149,13 @@ export class DataCloudApi {
     }
 
     /**
-     *
-     * @param {*} product
-     * @param {*} args
+     * Sends a `catalog-object-view-start` event to Data Cloud.
+     * 
+     * This method records a `catalog` event type to track when a shopper 
+     * views the details of a product (e.g. a Product Detail Page).
+     * 
+     * @param {object} product - The product being viewed
+     * @param {object} args - Additional metadata for the event
      */
     async sendViewProduct(product, args) {
         const baseEvent = this._constructBaseEvent(args)
@@ -193,8 +197,6 @@ export class DataCloudApi {
             events: [identityProfile, ...(contactPointEmail ? [contactPointEmail] : []), catalog]
         }
 
-        console.log('SEND VIEW PRODUCT', interaction)
-
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)
         } catch (err) {
@@ -203,11 +205,17 @@ export class DataCloudApi {
     }
 
     /**
-     *
-     * @param {*} searchParams
-     * @param {*} category
-     * @param {*} searchResults
-     * @param {*} args
+     * Sends a `catalog-object-impression` event to Data Cloud.
+     * 
+     * This method records a `catalog` event type and represents a single 
+     * page of product impressions (e.g. a Product List Page).
+     * 
+     * One event is sent for each product on the page.
+     * 
+     * @param {object} searchParams - The searchParams object
+     * @param {object} category - The category object
+     * @param {object} searchResults - The searchResults object
+     * @param {object} args - Additional metadata for the event
      */
     async sendViewCategory(searchParams, category, searchResults, args) {
         const baseEvent = this._constructBaseEvent(args)
@@ -268,10 +276,17 @@ export class DataCloudApi {
     }
 
     /**
-     *
-     * @param {*} searchParams
-     * @param {*} searchResults
-     * @param {*} args
+     * Sends a `catalog-object-impression` event to Data Cloud with 
+     * additional search result data.
+     * 
+     * This method records a `catalog` event type when a shopper completes a 
+     * search, logging an impression of the products displayed in the search 
+     * results.
+     * 
+     * @param {object} searchParams - The searchParams object
+     * @param {object} searchResults - The searchResults object containing an 
+     * array of product impressions
+     * @param {object} args - Additional metadata for the event
      */
     async sendViewSearchResults(searchParams, searchResults, args) {
         const baseEvent = this._constructBaseEvent(args)
@@ -332,10 +347,15 @@ export class DataCloudApi {
     }
 
     /**
-     *
-     * @param {*} recommenderDetails
-     * @param {*} products
-     * @param {*} args
+     * Sends a `catalog-object-impression` event to Data Cloud with 
+     * additional recommendation data.
+     * 
+     * This method records a `catalog` event type when a shopper views a recommendation, 
+     * logging an impression of the products displayed in the recommendation.
+     * 
+     * @param {object} recommenderDetails - Metadata about the recommendation source
+     * @param {array} products - List of recommended products
+     * @param {object} args - Additional metadata for the event
      */
     async sendViewRecommendations(recommenderDetails, products, args) {
         const baseEvent = this._constructBaseEvent(args)
@@ -393,8 +413,12 @@ export class DataCloudApi {
 }
 
 /**
- *
- * @returns
+ * Custom hook for sending PWA Kit events to Data Cloud.
+ * 
+ * This hook provides methods to track various user interactions, such as 
+ * page views, product views, category views, search impressions, and recommendations.
+ * 
+ * @returns {object} An object containing methods for sending different Data Cloud events
  */
 const useDataCloud = () => {
     const {getUsidWhenReady} = useUsid()
