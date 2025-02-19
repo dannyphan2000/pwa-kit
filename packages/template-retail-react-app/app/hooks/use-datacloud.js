@@ -17,6 +17,14 @@ export class DataCloudApi {
         this.site = site
         this.sdk = sdk
     }
+
+    /**
+     * Constructs the base event object with the necessary data required
+     * for every event sent to Data Cloud.
+     *
+     * @param {object} args - The arguments containing event-specific details
+     * @returns {object} The base event object
+     */
     _constructBaseEvent(args) {
         return {
             guestId: args.usid,
@@ -29,6 +37,16 @@ export class DataCloudApi {
         }
     }
 
+    /**
+     * Generates the event details object required for sending an
+     * event to Data Cloud.
+     *
+     * @param {string} eventType - The type of event being recorded (e.g
+     * "identity", "userEngagement", "contactPointEmail")
+     * @param {string} category - The category of the event, representing
+     * its broader grouping (e.g. "Profile", "Engagement")
+     * @returns {eventId: string, eventType: string, category: string} - The event details object
+     */
     _generateEventDetails(eventType, category) {
         return {
             eventId: crypto.randomUUID(),
@@ -37,16 +55,33 @@ export class DataCloudApi {
         }
     }
 
+    /**
+     * Constructs an object containing the product Id.
+     *
+     * This method extracts and returns the appropriate product Id based on
+     * the product type.
+     *
+     * @param {object} product - The product object
+     * @returns {id: string} - An object containing the resolved product Id
+     */
     _constructDatacloudProduct(product) {
         // Return the product SKU in the following priority order:
         // 1. id if available - SKU of the Variant Product
-        // 2. masterId if available - SKU of the Master Product
-        // 3. productId - SKU of product hits within a category
+        // 2. productId if available - SKU of product hits within a category
+        // 3. masterId - SKU of the Master Product
         return {
-            id: product?.id ?? product?.master?.masterId ?? product?.productId
+            id: product?.id ?? product?.productId ?? product?.master?.masterId
         }
     }
-
+    /**
+     * Constructs the base search result object with relevant search
+     * metadata.
+     *
+     * @param {object} searchParams - The searchParams object returned from the `useSearchParams`
+     * hook containing search-related data
+     * @returns {searchResultTitle: string, searchResultPosition: number, searchResultPageNumber:
+     * number} - The base search result object
+     */
     _constructBaseSearchResult(searchParams) {
         return {
             searchResultTitle: searchParams.q,
@@ -58,6 +93,11 @@ export class DataCloudApi {
 
     _concatenateEvents = (...events) => ({...events.reduce((acc, obj) => ({...acc, ...obj}), {})})
 
+    /**
+     *
+     * @param {string} path
+     * @param {object} args
+     */
     async sendViewPage(path, args) {
         const baseEvent = this._constructBaseEvent(args)
 
@@ -99,6 +139,7 @@ export class DataCloudApi {
                 userEngagement
             ]
         }
+        console.log('SEND VIEW PAGE', interaction)
 
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)
@@ -107,6 +148,11 @@ export class DataCloudApi {
         }
     }
 
+    /**
+     *
+     * @param {*} product
+     * @param {*} args
+     */
     async sendViewProduct(product, args) {
         const baseEvent = this._constructBaseEvent(args)
         const baseProduct = this._constructDatacloudProduct(product)
@@ -147,6 +193,8 @@ export class DataCloudApi {
             events: [identityProfile, ...(contactPointEmail ? [contactPointEmail] : []), catalog]
         }
 
+        console.log('SEND VIEW PRODUCT', interaction)
+
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)
         } catch (err) {
@@ -154,6 +202,13 @@ export class DataCloudApi {
         }
     }
 
+    /**
+     *
+     * @param {*} searchParams
+     * @param {*} category
+     * @param {*} searchResults
+     * @param {*} args
+     */
     async sendViewCategory(searchParams, category, searchResults, args) {
         const baseEvent = this._constructBaseEvent(args)
 
@@ -212,6 +267,12 @@ export class DataCloudApi {
         }
     }
 
+    /**
+     *
+     * @param {*} searchParams
+     * @param {*} searchResults
+     * @param {*} args
+     */
     async sendViewSearchResults(searchParams, searchResults, args) {
         const baseEvent = this._constructBaseEvent(args)
 
@@ -270,6 +331,12 @@ export class DataCloudApi {
         }
     }
 
+    /**
+     *
+     * @param {*} recommenderDetails
+     * @param {*} products
+     * @param {*} args
+     */
     async sendViewRecommendations(recommenderDetails, products, args) {
         const baseEvent = this._constructBaseEvent(args)
 
@@ -325,6 +392,10 @@ export class DataCloudApi {
     }
 }
 
+/**
+ *
+ * @returns
+ */
 const useDataCloud = () => {
     const {getUsidWhenReady} = useUsid()
     const {isRegistered} = useCustomerType()
