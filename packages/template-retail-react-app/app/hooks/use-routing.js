@@ -14,8 +14,7 @@ import {useBlockNavigation} from '@salesforce/pwa-kit-react-sdk/ssr/universal/ho
  */
 export const useRouting = (callback) => {
     const config = getConfig()
-    if (config.app.PWA_BMRouting !== 'true') 
-        return false
+    if (config.app.PWA_BMRouting !== 'true') return false
 
     const isBlocked = useBlockNavigation(async () => {
         // In W-17530042, updateRoutes will be used here and return false after API call completion
