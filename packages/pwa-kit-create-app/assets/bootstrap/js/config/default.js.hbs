@@ -47,8 +47,8 @@ module.exports = {
         },
         // Datacloud api config
         dataCloudAPI: {
-            appSourceId: '',
-            tenantId: ''
+            appSourceId: '{{answers.project.dataCloud.appSourceId}}',
+            tenantId: '{{answers.project.dataCloud.tenantId}}'
         }
     },
     // This list contains server-side only libraries that you don't want to be compiled by webpack
