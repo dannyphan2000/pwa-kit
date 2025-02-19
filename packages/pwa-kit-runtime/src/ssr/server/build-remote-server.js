@@ -1046,8 +1046,8 @@ export const RemoteServerFactory = {
             context.callbackWaitsForEmptyEventLoop = false
 
             if (lambdaContainerReused) {
-                const forceGarbageCollection = process.env.FORCE_GC;
-                if (forceGarbageCollection && forceGarbageCollection.toLowerCase() == 'true') {
+                const forceGarbageCollection = process.env.FORCE_GC
+                if (forceGarbageCollection && forceGarbageCollection.toLowerCase() === 'true') {
                     // DESKTOP-434 If this Lambda container is being reused,
                     // clean up memory now, so that we start with low usage.
                     // These regular GC calls take about 80-100 mS each, as opposed

@@ -50,6 +50,36 @@ const httpsAgent = new https.Agent({
     rejectUnauthorized: false
 })
 
+function createServerWithGCSpy(server) {
+    const route = jest.fn((req, res) => {
+        res.send('<html/>')
+    })
+
+    const options = {
+        buildDir: testFixtures,
+        mobify: testPackageMobify,
+        sslFilePath: path.join(testFixtures, 'localhost.pem'),
+        quiet: true,
+        port: TEST_PORT,
+        fetchAgents: {
+            https: httpsAgent
+        }
+    }
+
+    const {
+        app,
+        handler,
+        server: srv
+    } = RemoteServerFactory.createHandler(options, (app) => {
+        app.get('/*', route)
+    })
+
+    const collectGarbage = jest.spyOn(app, '_collectGarbage')
+    const sendMetric = jest.spyOn(app, 'sendMetric')
+    server = srv
+    return {route, handler, collectGarbage, sendMetric, server}
+}
+
 describe('SSRServer Lambda integration', () => {
     let savedEnvironment
     let server
@@ -371,33 +401,59 @@ describe('SSRServer Lambda integration', () => {
         })
     })
 
-    test('Lambda reuse behaviour', () => {
-        const route = jest.fn((req, res) => {
-            res.send('<html/>')
+    test('Lambda reuse -- Default Behavior', () => {
+        const __ret = createServerWithGCSpy(server)
+        const route = __ret.route
+        const handler = __ret.handler
+        const collectGarbage = __ret.collectGarbage
+        const sendMetric = __ret.sendMetric
+        server = __ret.server
+
+        // Set up a fake event and a fake context for the Lambda call
+        const event = createEvent('aws:apiGateway', {
+            path: '/',
+            body: undefined
         })
 
-        const options = {
-            buildDir: testFixtures,
-            mobify: testPackageMobify,
-            sslFilePath: path.join(testFixtures, 'localhost.pem'),
-            quiet: true,
-            port: TEST_PORT,
-            fetchAgents: {
-                https: httpsAgent
-            }
+        if (event.queryStringParameters) {
+            delete event.queryStringParameters
         }
 
-        const {
-            app,
-            handler,
-            server: srv
-        } = RemoteServerFactory.createHandler(options, (app) => {
-            app.get('/*', route)
+        const context = AWSMockContext({
+            functionName: 'SSRTest'
         })
 
-        const collectGarbage = jest.spyOn(app, '_collectGarbage')
-        const sendMetric = jest.spyOn(app, 'sendMetric')
-        server = srv
+        const call = (event) =>
+            new Promise((resolve) => handler(event, context, (err, response) => resolve(response)))
+
+        return Promise.resolve()
+            .then(() => call(event))
+            .then((response) => {
+                // First request - Lambda container created
+                expect(response.statusCode).toBe(200)
+                expect(collectGarbage.mock.calls).toHaveLength(0)
+                expect(route.mock.calls).toHaveLength(1)
+                expect(sendMetric).toHaveBeenCalledWith('LambdaCreated')
+                expect(sendMetric).not.toHaveBeenCalledWith('LambdaReused')
+            })
+            .then(() => call(event))
+            .then((response) => {
+                // Second call - Lambda container reused
+                expect(response.statusCode).toBe(200)
+                expect(collectGarbage.mock.calls).toHaveLength(0)
+                expect(route.mock.calls).toHaveLength(2)
+                expect(sendMetric).toHaveBeenCalledWith('LambdaCreated')
+                expect(sendMetric).toHaveBeenCalledWith('LambdaReused')
+            })
+    })
+    test('Lambda reuse -- with Forced Garbage Collection Enabled', () => {
+        process.env.FORCE_GC = 'true'
+        const __ret = createServerWithGCSpy(server)
+        const route = __ret.route
+        const handler = __ret.handler
+        const collectGarbage = __ret.collectGarbage
+        const sendMetric = __ret.sendMetric
+        server = __ret.server
 
         // Set up a fake event and a fake context for the Lambda call
         const event = createEvent('aws:apiGateway', {
