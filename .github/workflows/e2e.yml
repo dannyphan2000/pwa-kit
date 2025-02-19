@@ -336,6 +336,9 @@ jobs:
 
       - name: Set Retail App Private Client Home
         run: export RETAIL_APP_HOME=https://scaffold-pwa-e2e-pwa-kit-private.mobify-storefront.com/
+    
+      - name: Set PWA Kit E2E Test User
+        run: export PWA_E2E_USER_EMAIL=e2e.pwa.kit@gmail.com PWA_E2E_USER_PASSWORD=hpv_pek-JZK_xkz0wzf
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
