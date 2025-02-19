@@ -266,7 +266,7 @@ const PRESETS = [
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.dataCloud.appSourcedId']: '6ebc532a-2247-48e9-8300-d8c2b84eb463',
+            ['project.dataCloud.appSourceId']: '6ebc532a-2247-48e9-8300-d8c2b84eb463',
             ['project.dataCloud.tenantId']: 'mvst0mlfmrsd8zbwg8zgmytbg1'
         },
         assets: ['translations'],
@@ -293,7 +293,7 @@ const PRESETS = [
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.dataCloud.appSourcedId']: '6ebc532a-2247-48e9-8300-d8c2b84eb463',
+            ['project.dataCloud.appSourceId']: '6ebc532a-2247-48e9-8300-d8c2b84eb463',
             ['project.dataCloud.tenantId']: 'mvst0mlfmrsd8zbwg8zgmytbg1'
         },
         assets: ['translations'],
@@ -320,7 +320,7 @@ const PRESETS = [
             ['project.commerce.isSlasPrivate']: true,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.dataCloud.appSourcedId']: '6ebc532a-2247-48e9-8300-d8c2b84eb463',
+            ['project.dataCloud.appSourceId']: '6ebc532a-2247-48e9-8300-d8c2b84eb463',
             ['project.dataCloud.tenantId']: 'mvst0mlfmrsd8zbwg8zgmytbg1'
         },
         assets: ['translations'],
@@ -347,7 +347,7 @@ const PRESETS = [
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
             ['project.commerce.isSlasPrivate']: true,
-            ['project.dataCloud.appSourcedId']: '6ebc532a-2247-48e9-8300-d8c2b84eb463',
+            ['project.dataCloud.appSourceId']: '6ebc532a-2247-48e9-8300-d8c2b84eb463',
             ['project.dataCloud.tenantId']: 'mvst0mlfmrsd8zbwg8zgmytbg1'
         },
         assets: ['translations'],
@@ -374,7 +374,7 @@ const PRESETS = [
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
             ['project.commerce.isSlasPrivate']: false,
-            ['project.dataCloud.appSourcedId']: '6ebc532a-2247-48e9-8300-d8c2b84eb463',
+            ['project.dataCloud.appSourceId']: '6ebc532a-2247-48e9-8300-d8c2b84eb463',
             ['project.dataCloud.tenantId']: 'mvst0mlfmrsd8zbwg8zgmytbg1'
         },
         assets: ['translations'],
