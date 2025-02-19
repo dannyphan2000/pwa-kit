@@ -38,34 +38,12 @@ export class DataCloudApi {
     }
 
     _constructDatacloudProduct(product) {
-        if (product.type && (product.type.master || product.type.variant)) {
-            // handle variants for PDP / viewProduct
-            // Assumes product is a Product object from SCAPI Shopper-Products:
-            // https://developer.salesforce.com/docs/commerce/commerce-api/references/shopper-products?meta=type%3AProduct
-
-            return {
-                id: product.master.masterId
-            }
-        } else if (
-            product.productType &&
-            (product.productType.master ||
-                product.productType.variant ||
-                product.productType.set ||
-                product.productType.bundle ||
-                product.productType.variationGroup ||
-                product.productType.item)
-        ) {
-            // handle variants & sets for PLP / viewCategory & viewSearch
-            // Assumes product is a ProductSearchHit from SCAPI Shopper-Search:
-            // https://developer.salesforce.com/docs/commerce/commerce-api/references/shopper-search?meta=type%3AProductSearchHit
-            return {
-                id: product.productId
-            }
-        } else {
-            // handles non-variants
-            return {
-                id: product.id
-            }
+        // Return the product SKU in the following priority order:
+        // 1. id if available - SKU of the Variant Product
+        // 2. masterId if available - SKU of the Master Product
+        // 3. productId - SKU of product hits within a category
+        return {
+            id: product?.id ?? product?.master?.masterId ?? product?.productId
         }
     }
 
