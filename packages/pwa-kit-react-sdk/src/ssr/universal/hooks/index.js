@@ -79,7 +79,7 @@ export const useOrigin = ({fromXForwardedHeader = false}) => {
  * @param {function} func
  * @returns {object} State that is set to true during blocking, false otherwise.
  */
-export const useNavigationBlock = (func) => {
+export const useBlockNavigation = (func) => {
     const {block, push, location} = useHistory()
     const lastLocation = useRef()
     const [isBlocked, setIsBlocked] = useState(false)
