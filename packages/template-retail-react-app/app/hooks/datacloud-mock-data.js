@@ -31,18 +31,6 @@ export const mockLoginViewPageEvent = {
             dateTime: expect.any(String),
             customerId: 1234567890,
             eventId: expect.any(String),
-            eventType: 'contactPointEmail',
-            category: 'Profile',
-            email: 'johnsmith@salesforce.com'
-        }),
-        expect.objectContaining({
-            guestId: 'guest-usid',
-            siteId: 'RefArch',
-            sessionId: 'guest-usid',
-            deviceId: 'guest-usid',
-            dateTime: expect.any(String),
-            customerId: 1234567890,
-            eventId: expect.any(String),
             eventType: 'userEngagement',
             category: 'Engagement',
             interactionName: 'page-view',
