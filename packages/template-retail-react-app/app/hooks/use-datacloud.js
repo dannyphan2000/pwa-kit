@@ -122,21 +122,9 @@ export class DataCloudApi {
             }
         )
 
-        let contactPointEmail = null
-        if (args.email) {
-            contactPointEmail = this._concatenateEvents(
-                baseEvent,
-                this._generateEventDetails('contactPointEmail', 'Profile'),
-                {
-                    email: args.email
-                }
-            )
-        }
-
         const interaction = {
             events: [
                 identityProfile,
-                ...(contactPointEmail ? [contactPointEmail] : []),
                 userEngagement
             ]
         }
