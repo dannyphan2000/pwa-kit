@@ -50,7 +50,7 @@ const httpsAgent = new https.Agent({
     rejectUnauthorized: false
 })
 
-function createServerWithGCSpy(server) {
+function createServerWithGCSpy() {
     const route = jest.fn((req, res) => {
         res.send('<html/>')
     })
@@ -67,17 +67,33 @@ function createServerWithGCSpy(server) {
     }
 
     const {
-        app,
         handler,
-        server: srv
+        server,
+        app
     } = RemoteServerFactory.createHandler(options, (app) => {
         app.get('/*', route)
     })
 
     const collectGarbage = jest.spyOn(app, '_collectGarbage')
     const sendMetric = jest.spyOn(app, 'sendMetric')
-    server = srv
     return {route, handler, collectGarbage, sendMetric, server}
+}
+
+function createApiGatewayEvent() {
+    // Set up a fake event and a fake context for the Lambda call
+    const event = createEvent('aws:apiGateway', {
+        path: '/',
+        body: undefined
+    })
+
+    if (event.queryStringParameters) {
+        delete event.queryStringParameters
+    }
+
+    const context = AWSMockContext({
+        functionName: 'SSRTest'
+    })
+    return {event, context}
 }
 
 describe('SSRServer Lambda integration', () => {
@@ -402,26 +418,9 @@ describe('SSRServer Lambda integration', () => {
     })
 
     test('Lambda reuse -- Default Behavior', () => {
-        const __ret = createServerWithGCSpy(server)
-        const route = __ret.route
-        const handler = __ret.handler
-        const collectGarbage = __ret.collectGarbage
-        const sendMetric = __ret.sendMetric
-        server = __ret.server
-
-        // Set up a fake event and a fake context for the Lambda call
-        const event = createEvent('aws:apiGateway', {
-            path: '/',
-            body: undefined
-        })
-
-        if (event.queryStringParameters) {
-            delete event.queryStringParameters
-        }
-
-        const context = AWSMockContext({
-            functionName: 'SSRTest'
-        })
+        const {route, handler, collectGarbage, sendMetric, new_server} = createServerWithGCSpy()
+        const {event, context} = createApiGatewayEvent()
+        server = new_server
 
         const call = (event) =>
             new Promise((resolve) => handler(event, context, (err, response) => resolve(response)))
@@ -446,28 +445,12 @@ describe('SSRServer Lambda integration', () => {
                 expect(sendMetric).toHaveBeenCalledWith('LambdaReused')
             })
     })
+
     test('Lambda reuse -- with Forced Garbage Collection Enabled', () => {
         process.env.FORCE_GC = 'true'
-        const __ret = createServerWithGCSpy(server)
-        const route = __ret.route
-        const handler = __ret.handler
-        const collectGarbage = __ret.collectGarbage
-        const sendMetric = __ret.sendMetric
-        server = __ret.server
-
-        // Set up a fake event and a fake context for the Lambda call
-        const event = createEvent('aws:apiGateway', {
-            path: '/',
-            body: undefined
-        })
-
-        if (event.queryStringParameters) {
-            delete event.queryStringParameters
-        }
-
-        const context = AWSMockContext({
-            functionName: 'SSRTest'
-        })
+        const {event, context} = createApiGatewayEvent()
+        const {route, handler, collectGarbage, sendMetric, new_server} = createServerWithGCSpy()
+        server = new_server
 
         const call = (event) =>
             new Promise((resolve) => handler(event, context, (err, response) => resolve(response)))
