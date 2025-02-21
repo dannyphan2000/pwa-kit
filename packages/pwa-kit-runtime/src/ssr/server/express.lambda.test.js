@@ -66,11 +66,7 @@ function createServerWithGCSpy() {
         }
     }
 
-    const {
-        handler,
-        server,
-        app
-    } = RemoteServerFactory.createHandler(options, (app) => {
+    const {handler, server, app} = RemoteServerFactory.createHandler(options, (app) => {
         app.get('/*', route)
     })
 
