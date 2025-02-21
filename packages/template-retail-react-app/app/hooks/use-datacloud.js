@@ -123,10 +123,7 @@ export class DataCloudApi {
         )
 
         const interaction = {
-            events: [
-                identityProfile,
-                userEngagement
-            ]
+            events: [identityProfile, userEngagement]
         }
 
         try {
