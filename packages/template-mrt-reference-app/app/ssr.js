@@ -216,7 +216,8 @@ const memoryTest = async (req, res) => {
     const memory_before = process.memoryUsage()
     const test_count = req?.query?.count ? parseInt(req.query.count) : 1
     const test_size = req?.query?.size ? parseInt(req.query.size) : 1024
-    const force_gc = global?.gc && req?.query && (parseBoolean(req.query.forcegc) || parseBoolean(req.query.gc))
+    const force_gc =
+        global?.gc && req?.query && (parseBoolean(req.query.forcegc) || parseBoolean(req.query.gc))
 
     // allocate temporary memory blocks
     const malloc_time_start = Date.now()
@@ -231,8 +232,9 @@ const memoryTest = async (req, res) => {
 
     const memory_after = process.memoryUsage()
     const memory_delta = calculateNumericDeltas(memory_after, memory_before)
-    const factor = 10;
-    const test_total_alloc_mb = Math.round(test_count * test_size / 1024 / 1024 * factor) / factor
+    const factor = 10
+    const test_total_alloc_mb =
+        Math.round(((test_count * test_size) / 1024 / 1024) * factor) / factor
     const additional_info = {
         memory_end: memory_after,
         memory_delta: memory_delta,
