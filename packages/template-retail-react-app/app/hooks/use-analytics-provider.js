@@ -23,8 +23,8 @@ const useAnalyticsProvider = () => {
 
     const sendEvent = useCallback((eventName, metadata = {}) => {
         analyticsProviders.forEach(provider => {
-            if (provider?.eventName) {
-                provider.eventName(metadata)
+            if (provider[eventName]) {
+                provider[eventName](metadata)
             }
         })
     })

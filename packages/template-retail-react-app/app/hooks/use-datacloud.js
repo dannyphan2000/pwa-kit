@@ -99,7 +99,8 @@ export class DataCloudApi {
      * @param {string} path - The URL path of the page that was viewed
      * @param {object} args - Additional metadata for the event
      */
-    async sendViewPage(path, args) {
+    async sendViewPage(viewPageData, args) {
+        const path = viewPageData.pathname
         const baseEvent = this._constructBaseEvent(args)
 
         const identityProfile = this._concatenateEvents(
@@ -125,6 +126,7 @@ export class DataCloudApi {
         const interaction = {
             events: [identityProfile, userEngagement]
         }
+        console.log('SENDVIEWPAGE', interaction)
 
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)

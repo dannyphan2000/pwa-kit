@@ -286,7 +286,8 @@ export class EinsteinAPI {
      * Tells the Einstein engine when a user views a page.
      * Use this only for pages where another activity does not fit. (ie. on the PDP, use viewProduct rather than this)
      **/
-    async sendViewPage(path, args) {
+    async sendViewPage(sendViewPageData, args) {
+        const path = sendViewPageData.pathname
         const endpoint = `/activities/${this.siteId}/viewPage`
         const method = 'POST'
         const body = {

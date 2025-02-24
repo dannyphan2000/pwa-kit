@@ -34,7 +34,7 @@ import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
 import {heroFeatures, features} from '@salesforce/retail-react-app/app/pages/home/data'
 
 //Hooks
-import useAnalyticsProvider from '@salesforce/retail-react-app/hooks/use-analytics-provider'
+import useAnalyticsProvider from '@salesforce/retail-react-app/app/hooks/use-analytics-provider'
 
 // Constants
 import {
