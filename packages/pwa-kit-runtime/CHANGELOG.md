@@ -1,6 +1,6 @@
 ## v3.10.0-dev (Feb 18, 2025)
 
-- Remove forced garbage collection on each invocation. Set `FORCE_GC=true` for the old behavior.
+- Remove forced garbage collection on each invocation. Set `FORCE_GC=true` for the old behavior. [#2285](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2285)
 
 ## v3.9.0 (Feb 18, 2025)
 - Fix stale service worker file that could cause requests to still use old Content-Security-Policy [#2191](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2191)
