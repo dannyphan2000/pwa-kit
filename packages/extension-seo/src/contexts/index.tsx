@@ -32,7 +32,7 @@ import {useBlockNavigation} from '@salesforce/pwa-kit-react-sdk/ssr/universal/ho
  *
  */
 interface NavigationGuardContextType {
-    isBlocked: object;
+    isBlocked: boolean;
 }
 interface NavigationGuardProviderProps {
     callback: () => any,
