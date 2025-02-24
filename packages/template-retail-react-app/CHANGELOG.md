@@ -1,6 +1,7 @@
 ## v6.1.0-dev (Feb 18, 2025)
 
 - Fix hreflang alternate links [#2269](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2269)
+- PDP / PLP: Add page meta data tags that have been defined in BM [#2232](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2232)
 - Enable social & passwordless login in the demo storefront [#2284](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2284)
 
 ## v6.0.0 (Feb 18, 2025)
