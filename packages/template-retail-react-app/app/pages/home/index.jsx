@@ -34,8 +34,7 @@ import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
 import {heroFeatures, features} from '@salesforce/retail-react-app/app/pages/home/data'
 
 //Hooks
-import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
-import useDatacloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
+import useAnalyticsProvider from '@salesforce/retail-react-app/hooks/use-analytics-provider'
 
 // Constants
 import {
@@ -55,9 +54,8 @@ import {useProductSearch} from '@salesforce/commerce-sdk-react'
  */
 const Home = () => {
     const intl = useIntl()
-    const einstein = useEinstein()
-    const datacloud = useDatacloud()
     const {pathname} = useLocation()
+    const analyticsProvider = useAnalyticsProvider()
 
     const {res} = useServerContext()
     if (res) {
@@ -78,10 +76,9 @@ const Home = () => {
         }
     })
 
-    /**************** Einstein ****************/
+    /**************** Analytics ****************/
     useEffect(() => {
-        einstein.sendViewPage(pathname)
-        datacloud.sendViewPage(pathname)
+        analyticsProvider.sendViewPage({pathname: pathname})
     }, [])
 
     return (

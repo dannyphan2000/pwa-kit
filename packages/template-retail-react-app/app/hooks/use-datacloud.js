@@ -273,7 +273,7 @@ export class DataCloudApi {
      * array of product impressions
      * @param {object} args - Additional metadata for the event
      */
-    async sendViewSearchResults(searchParams, searchResults, args) {
+    async sendViewSearch(searchParams, searchResults, args) {
         const baseEvent = this._constructBaseEvent(args)
 
         const products = searchResults?.hits?.map((product) =>
@@ -465,10 +465,10 @@ const useDataCloud = () => {
             const userParameters = await getEventUserParameters()
             return dataCloud.sendViewCategory(...args.concat(userParameters))
         },
-        async sendViewSearchResults(...args) {
+        async sendViewSearch(...args) {
             if (!isDatacloudInitiated || effectiveDnt) return
             const userParameters = await getEventUserParameters()
-            return dataCloud.sendViewSearchResults(...args.concat(userParameters))
+            return dataCloud.sendViewSearch(...args.concat(userParameters))
         },
         async sendViewRecommendations(...args) {
             if (!isDatacloudInitiated || effectiveDnt) return

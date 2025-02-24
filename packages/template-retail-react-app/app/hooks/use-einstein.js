@@ -250,7 +250,7 @@ export class EinsteinAPI {
      * Tells the Einstein engine when a user views a set of recommendations
      * https://developer.salesforce.com/docs/commerce/einstein-api/references#einstein-recommendations:Summary
      **/
-    async sendViewReco(recommenderDetails, products, args) {
+    async sendViewRecommendations(recommenderDetails, products, args) {
         const endpoint = `/activities/${this.siteId}/viewReco`
         const method = 'POST'
         const {__recoUUID, recommenderName} = recommenderDetails
@@ -518,9 +518,9 @@ const useEinstein = () => {
             const userParameters = await getEventUserParameters()
             return einstein.sendCheckoutStep(...args.concat(userParameters))
         },
-        async sendViewReco(...args) {
+        async sendViewRecommendations(...args) {
             const userParameters = await getEventUserParameters()
-            return einstein.sendViewReco(...args.concat(userParameters))
+            return einstein.sendViewRecommendations(...args.concat(userParameters))
         },
         async sendClickReco(...args) {
             const userParameters = await getEventUserParameters()
