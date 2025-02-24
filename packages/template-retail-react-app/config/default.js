@@ -58,7 +58,7 @@ module.exports = {
     externals: [],
     pageNotFoundURL: '/page-not-found',
     ssrEnabled: true,
-    ssrOnly: ['ssr.js', 'ssr.js.map', 'node_modules/**/*.*'],
+    ssrOnly: ['ssr.js', '*.map', 'node_modules/**/*.*'],
     ssrShared: [
         'static/ico/favicon.ico',
         'static/robots.txt',
