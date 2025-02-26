@@ -16,7 +16,11 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {getUrlMapping, transformUrlMappingToRoute} from '@salesforce/pwa-kit-react-sdk/utils/routes'
+import {
+    generateResourceTypeMap,
+    getUrlMapping,
+    transformUrlMappingToRoute
+} from '@salesforce/pwa-kit-react-sdk/utils/routes'
 
 // Local Imports
 import {Config} from './types'
@@ -84,25 +88,18 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
     // TODO: make async so it can make the seo API call
     async beforeRouteMatch(allRoutes: RouteProps[], locals: any): Promise<RouteProps[]> {
         // TODO: Get map from config ----
-        // const config = this.getConfig()
-        // let {resourceTypeToComponentMap} = config
-        // console.log('config', config)
-        // if (typeof resourceTypeToComponentMap === 'function') {
-        //     console.log('resourceTypeToComponentMap is a function')
-        //     resourceTypeToComponentMap = resourceTypeToComponentMap(allRoutes)
-        // }
-        // console.log('resourceTypeToComponentMap', resourceTypeToComponentMap)
+        const config = this.getConfig()
+        let {resourceTypeToComponentMap} = config
+        console.log('config', config, 'resourceTypeToComponentMap', resourceTypeToComponentMap)
+        if (resourceTypeToComponentMap === undefined) {
+            resourceTypeToComponentMap = generateResourceTypeMap(allRoutes)
+        }
 
         const mapping = await getUrlMapping(allRoutes)
         if (!mapping) {
             return allRoutes
         }
 
-        const resourceTypeToComponentMap = {
-            category: Sample,
-            product: Sample,
-            content: Sample
-        }
         // TODO get current path from request
         const path = '/category/top-seller'
         const route = transformUrlMappingToRoute(path, mapping, resourceTypeToComponentMap, locals)

@@ -16,12 +16,14 @@ module.exports = {
           }}],
         ["@salesforce/extension-seo-url-mapping", {
             enabled: true,
-            test: 'yes it works',
+            test: 'yes it works 2',
             resourceTypeToComponentMap: (allRoutes) => {
               console.log('in resourceTypeToComponentMap FUNCTION')
               return {
-                category: allRoutes.find(route => route.component.displayName === 'ProductList'),
-                product: allRoutes.find(route => route.component.displayName === 'ProductDetail'),
+                category: allRoutes.find(route => route.component.displayName === 'ProductList').component,
+                product: allRoutes.find(route => route.component.displayName === 'ProductDetail').component,
+                // TODO: what component should content use?
+                content: allRoutes.find(route => route.component.displayName === 'ProductDetail').component
               }
             }
         }]

@@ -65,3 +65,18 @@ export const getUrlMapping = async (routes) => {
 
     return mapping
 }
+
+export const generateResourceTypeMap = (allRoutes) => {
+    // TODO error handling if component not found
+    return {
+        category: allRoutes.find((route) =>
+            route.component?.displayName?.includes('ProductList')
+        )?.component,
+        product: allRoutes.find((route) =>
+            route.component?.displayName?.includes('ProductDetail')
+        )?.component,
+        content: allRoutes.find((route) =>
+            route.component?.displayName?.includes('ProductDetail')
+        )?.component
+    }
+}
