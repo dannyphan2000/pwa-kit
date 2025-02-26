@@ -7,7 +7,7 @@
 import React from 'react'
 import hoistNonReactStatic from 'hoist-non-react-statics'
 import ssrPrepass from 'react-ssr-prepass'
-import {dehydrate, Hydrate, QueryClient, QueryClientProvider} from '@tanstack/react-query'
+import {dehydrate, HydrationBoundary, QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {FetchStrategy} from '../fetch-strategy'
 import {PERFORMANCE_MARKS} from '../../../../utils/performance'
 import logger from '../../../../utils/logger-instance'
@@ -36,6 +36,7 @@ export const withReactQuery = (Wrapped, options = {}) => {
      */
     class WithReactQuery extends FetchStrategy {
         render() {
+            console.log('WithReactQuery render')
             let preloadedState = {}
 
             this.props.locals.__queryClient =
@@ -52,11 +53,14 @@ export const withReactQuery = (Wrapped, options = {}) => {
                 }
             }
 
+            console.log('WithReactQuery render 2')
+            console.log(this.props.locals.__queryClient)
+            console.log(preloadedState)
             return (
                 <QueryClientProvider client={this.props.locals.__queryClient}>
-                    <Hydrate state={preloadedState}>
+                    <HydrationBoundary state={preloadedState}>
                         <Wrapped {...this.props} />
-                    </Hydrate>
+                    </HydrationBoundary>
                 </QueryClientProvider>
             )
         }
