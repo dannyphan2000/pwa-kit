@@ -20,10 +20,10 @@ export class DataCloudApi {
         const {
             app: {dataCloudAPI: config}
         } = getConfig()
-    
+
         const {appSourceId, tenantId} = config
         let sdk = null
-    
+
         if (!appSourceId || !tenantId) {
             console.error('DataCloud API Configuration is missing.')
             return
@@ -52,6 +52,14 @@ export class DataCloudApi {
         }
     }
 
+    _costructUserDetails(args) {
+        return {
+            isAnonymous: args.isGuest,
+            firstName: args.firstName,
+            lastName: args.lastName
+        }
+    }
+
     /**
      * Generates the event details object required for sending an
      * event to Data Cloud.
@@ -62,11 +70,12 @@ export class DataCloudApi {
      * its broader grouping (e.g. "Profile", "Engagement")
      * @returns {object} - The event details object
      */
-    _generateEventDetails(eventType, category) {
+    _generateEventDetails(eventType, category, email = '') {
         return {
             eventId: crypto.randomUUID(),
             eventType: eventType,
-            category: category
+            category: category,
+            ...(eventType === 'contactPointEmail' && {email})
         }
     }
 
@@ -116,14 +125,13 @@ export class DataCloudApi {
      */
     async sendViewPage(path, args) {
         const baseEvent = this._constructBaseEvent(args)
+        const userDetails = this._costructUserDetails(args)
 
         const identityProfile = this._concatenateEvents(
             baseEvent,
             this._generateEventDetails('identity', 'Profile'),
+            userDetails,
             {
-                isAnonymous: args.isGuest,
-                firstName: args.firstName,
-                lastName: args.lastName,
                 sourceUrl: path
             }
         )
@@ -161,25 +169,19 @@ export class DataCloudApi {
     async sendViewProduct(product, args) {
         const baseEvent = this._constructBaseEvent(args)
         const baseProduct = this._constructDatacloudProduct(product)
+        const userDetails = this._costructUserDetails(args)
 
         const identityProfile = this._concatenateEvents(
             baseEvent,
             this._generateEventDetails('identity', 'Profile'),
-            {
-                isAnonymous: args.isGuest,
-                firstName: args.firstName,
-                lastName: args.lastName
-            }
+            userDetails
         )
 
         let contactPointEmail = null
         if (args.email) {
             contactPointEmail = this._concatenateEvents(
                 baseEvent,
-                this._generateEventDetails('contactPointEmail', 'Profile'),
-                {
-                    email: args.email
-                }
+                this._generateEventDetails('contactPointEmail', 'Profile', args.email)
             )
         }
 
@@ -220,6 +222,7 @@ export class DataCloudApi {
      */
     async sendViewCategory(searchParams, category, searchResults, args) {
         const baseEvent = this._constructBaseEvent(args)
+        const userDetails = this._costructUserDetails(args)
 
         const products = searchResults?.hits?.map((product) =>
             this._constructDatacloudProduct(product)
@@ -243,21 +246,14 @@ export class DataCloudApi {
         const identityProfile = this._concatenateEvents(
             baseEvent,
             this._generateEventDetails('identity', 'Profile'),
-            {
-                isAnonymous: args.isGuest,
-                firstName: args.firstName,
-                lastName: args.lastName
-            }
+            userDetails
         )
 
         let contactPointEmail = null
         if (args.email) {
             contactPointEmail = this._concatenateEvents(
                 baseEvent,
-                this._generateEventDetails('contactPointEmail', 'Profile'),
-                {
-                    email: args.email
-                }
+                this._generateEventDetails('contactPointEmail', 'Profile', args.email)
             )
         }
 
@@ -291,6 +287,7 @@ export class DataCloudApi {
      */
     async sendViewSearchResults(searchParams, searchResults, args) {
         const baseEvent = this._constructBaseEvent(args)
+        const userDetails = this._costructUserDetails(args)
 
         const products = searchResults?.hits?.map((product) =>
             this._constructDatacloudProduct(product)
@@ -314,21 +311,14 @@ export class DataCloudApi {
         const identityProfile = this._concatenateEvents(
             baseEvent,
             this._generateEventDetails('identity', 'Profile'),
-            {
-                isAnonymous: args.isGuest,
-                firstName: args.firstName,
-                lastName: args.lastName
-            }
+            userDetails
         )
 
         let contactPointEmail = null
         if (args.email) {
             contactPointEmail = this._concatenateEvents(
                 baseEvent,
-                this._generateEventDetails('contactPointEmail', 'Profile'),
-                {
-                    email: args.email
-                }
+                this._generateEventDetails('contactPointEmail', 'Profile', args.email)
             )
         }
 
@@ -360,6 +350,7 @@ export class DataCloudApi {
      */
     async sendViewRecommendations(recommenderDetails, products, args) {
         const baseEvent = this._constructBaseEvent(args)
+        const userDetails = this._costructUserDetails(args)
 
         const catalogObjects = products.map((product) => {
             return this._concatenateEvents(
@@ -379,21 +370,14 @@ export class DataCloudApi {
         const identityProfile = this._concatenateEvents(
             baseEvent,
             this._generateEventDetails('identity', 'Profile'),
-            {
-                isAnonymous: args.isGuest,
-                firstName: args.firstName,
-                lastName: args.lastName
-            }
+            userDetails
         )
 
         let contactPointEmail = null
         if (args.email) {
             contactPointEmail = this._concatenateEvents(
                 baseEvent,
-                this._generateEventDetails('contactPointEmail', 'Profile'),
-                {
-                    email: args.email
-                }
+                this._generateEventDetails('contactPointEmail', 'Profile', args.email)
             )
         }
 
@@ -452,30 +436,25 @@ const useDataCloud = () => {
 
     // If effectiveDnt is true, we do NOT want to send analytics events
     return {
-        async sendViewPage(...args) {
+        async processEvent(eventMethod, ...args) {
             if (effectiveDnt) return
             const userParameters = await getEventUserParameters()
-            return dataCloud.sendViewPage(...args.concat(userParameters))
+            return eventMethod(...args.concat(userParameters))
+        },
+        async sendViewPage(...args) {
+            return this.processEvent(dataCloud.sendViewPage, ...args)
         },
         async sendViewProduct(...args) {
-            if (effectiveDnt) return
-            const userParameters = await getEventUserParameters()
-            return dataCloud.sendViewProduct(...args.concat(userParameters))
+            return this.processEvent(dataCloud.sendViewProduct, ...args)
         },
         async sendViewCategory(...args) {
-            if (effectiveDnt) return
-            const userParameters = await getEventUserParameters()
-            return dataCloud.sendViewCategory(...args.concat(userParameters))
+            return this.processEvent(dataCloud.sendViewCategory, ...args)
         },
         async sendViewSearchResults(...args) {
-            if (effectiveDnt) return
-            const userParameters = await getEventUserParameters()
-            return dataCloud.sendViewSearchResults(...args.concat(userParameters))
+            return this.processEvent(dataCloud.sendViewSearchResults, ...args)
         },
         async sendViewRecommendations(...args) {
-            if (effectiveDnt) return
-            const userParameters = await getEventUserParameters()
-            return dataCloud.sendViewRecommendations(...args.concat(userParameters))
+            return this.processEvent(dataCloud.sendViewRecommendations, ...args)
         }
     }
 }
