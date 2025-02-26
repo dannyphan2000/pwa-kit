@@ -1,9 +1,11 @@
 name: SalesforceCommerceCloud/pwa-kit/bug_bounty
 on:
-  push:
-    branches:
-      - 'release-*'
-      - 'mrt-test-ci-deploy'
+  # Runs this job when a new Github release is published
+  # TODO: How do we ensure this only runs for the latest major version? We don't want to run this
+  # for a new v2 release. But due to policy, we are not allowed to use unverified marketplace actions
+  # such as https://github.com/marketplace/actions/version-check
+  release:
+    types: [released]
 
 jobs:
   deploy-bug-bounty:
@@ -12,40 +14,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Uses https://github.com/marketplace/actions/version-check to check the version number on npm
-      # If the version number is new, we kick off the rest of the build
-      - name: Check npm version
-        id: check
-        uses: EndBug/version-check@v2
-        with:
-          file-url: https://www.npmjs.com/package/@salesforce/retail-react-app@latest/package.json
-          static-checking: localIsNew
-
-      - name: Detect version update
-        if: steps.check.outputs.changed == 'false'
-        run: 'echo "Version change NOT found! New version: ${{ steps.check.outputs.version }}"'
-
       - name: Install Monorepo Dependencies
-        if: steps.check.outputs.changed == 'false'
         run: |-
           # Install node dependencies
           node ./scripts/gtime.js monorepo_install npm ci
 
       - name: Generate Retail App Demo
-        if: steps.check.outputs.changed == 'false'
         uses: ./.github/actions/e2e_generate_app
         with:
           PROJECT_KEY: "retail-react-app-bug-bounty"
 
       - name: Create MRT credentials file
-        if: steps.check.outputs.changed == 'false'
         uses: "./.github/actions/create_mrt"
         with:
           mobify_user: ${{ secrets.MOBIFY_STG_CLIENT_USER }}
           mobify_api_key: ${{ secrets.MOBIFY_STG_CLIENT_API_KEY }}
 
       - name: Push Bundle to MRT (Bug Bounty)
-        if: steps.check.outputs.changed == 'false'
         uses: "./.github/actions/push_to_mrt"
         with:
           CWD: "../generated-projects/retail-react-app-bug-bounty"
