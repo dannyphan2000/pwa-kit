@@ -1,9 +1,9 @@
 name: SalesforceCommerceCloud/pwa-kit/bug_bounty
 on:
   push:
-  branches:
-    - 'release-*'
-    - 'mrt-test-ci-deploy'
+    branches:
+      - 'release-*'
+      - 'mrt-test-ci-deploy'
 
 jobs:
   deploy-bug-bounty:
