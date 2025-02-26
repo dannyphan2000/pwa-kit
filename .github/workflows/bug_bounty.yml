@@ -12,34 +12,40 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      # Uses https://github.com/marketplace/actions/version-check to check the version number on npm
+      # If the version number is new, we kick off the rest of the build
+      - name: Check npm version
+        id: check
+        uses: EndBug/version-check@v2
         with:
-          node-version: ${{ matrix.node }}
-          cache: npm
+          file-url: https://www.npmjs.com/package/@salesforce/retail-react-app@latest/package.json
+          static-checking: localIsNew
 
-      - name: Update NPM version
-        if: env.IS_DEFAULT_NPM == 'false'
-        run: |-
-          npm install -g npm@${{ matrix.npm }}
+      - name: Detect version update
+        if: steps.check.outputs.changed == 'false'
+        run: 'echo "Version change NOT found! New version: ${{ steps.check.outputs.version }}"'
 
       - name: Install Monorepo Dependencies
+        if: steps.check.outputs.changed == 'false'
         run: |-
           # Install node dependencies
           node ./scripts/gtime.js monorepo_install npm ci
 
       - name: Generate Retail App Demo
+        if: steps.check.outputs.changed == 'false'
         uses: ./.github/actions/e2e_generate_app
         with:
           PROJECT_KEY: "retail-react-app-bug-bounty"
 
       - name: Create MRT credentials file
+        if: steps.check.outputs.changed == 'false'
         uses: "./.github/actions/create_mrt"
         with:
           mobify_user: ${{ secrets.MOBIFY_STG_CLIENT_USER }}
           mobify_api_key: ${{ secrets.MOBIFY_STG_CLIENT_API_KEY }}
 
       - name: Push Bundle to MRT (Bug Bounty)
+        if: steps.check.outputs.changed == 'false'
         uses: "./.github/actions/push_to_mrt"
         with:
           CWD: "../generated-projects/retail-react-app-bug-bounty"
