@@ -13,8 +13,23 @@ import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 
 export class DataCloudApi {
-    constructor({site, sdk}) {
+    constructor({site}) {
         this.site = site
+
+        // Grab Data Cloud configuration values and intialize the sdk
+        const {
+            app: {dataCloudAPI: config}
+        } = getConfig()
+    
+        const {appSourceId, tenantId} = config
+        let sdk = null
+    
+        if (!appSourceId || !tenantId) {
+            console.error('DataCloud API Configuration is missing.')
+            return
+        } else {
+            sdk = initDataCloudSdk(tenantId, appSourceId)
+        }
         this.sdk = sdk
     }
 
@@ -125,6 +140,7 @@ export class DataCloudApi {
         const interaction = {
             events: [identityProfile, userEngagement]
         }
+        console.log('send view page', interaction)
 
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)
@@ -426,52 +442,38 @@ const useDataCloud = () => {
         }
     }
 
-    const {
-        app: {dataCloudAPI: config, defaultSite: siteId}
-    } = getConfig()
-
-    const {appSourceId, tenantId} = config
-    let sdk = null
-    let isDatacloudInitiated = true
-
-    if (!appSourceId || !tenantId) {
-        isDatacloudInitiated = false
-    } else {
-        sdk = initDataCloudSdk(tenantId, appSourceId)
-    }
-
     const dataCloud = useMemo(
         () =>
             new DataCloudApi({
-                site: site.id,
-                sdk
+                site: site.id
             }),
-        [site, sdk]
+        [site]
     )
 
+    // If effectiveDnt is true, we do NOT want to send analytics events
     return {
         async sendViewPage(...args) {
-            if (!isDatacloudInitiated || effectiveDnt) return
+            if (effectiveDnt) return
             const userParameters = await getEventUserParameters()
             return dataCloud.sendViewPage(...args.concat(userParameters))
         },
         async sendViewProduct(...args) {
-            if (!isDatacloudInitiated || effectiveDnt) return
+            if (effectiveDnt) return
             const userParameters = await getEventUserParameters()
             return dataCloud.sendViewProduct(...args.concat(userParameters))
         },
         async sendViewCategory(...args) {
-            if (!isDatacloudInitiated || effectiveDnt) return
+            if (effectiveDnt) return
             const userParameters = await getEventUserParameters()
             return dataCloud.sendViewCategory(...args.concat(userParameters))
         },
         async sendViewSearchResults(...args) {
-            if (!isDatacloudInitiated || effectiveDnt) return
+            if (effectiveDnt) return
             const userParameters = await getEventUserParameters()
             return dataCloud.sendViewSearchResults(...args.concat(userParameters))
         },
         async sendViewRecommendations(...args) {
-            if (!isDatacloudInitiated || effectiveDnt) return
+            if (effectiveDnt) return
             const userParameters = await getEventUserParameters()
             return dataCloud.sendViewRecommendations(...args.concat(userParameters))
         }
