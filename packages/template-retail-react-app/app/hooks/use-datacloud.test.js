@@ -19,7 +19,7 @@ import {
     mockGloveSearchResult,
     mockCategorySearchParams,
     mockRecommendationIds
-} from '@salesforce/retail-react-app/app/hooks/datacloud-mock-data'
+} from '@salesforce/retail-react-app/app/mocks/datacloud-mock-data'
 import {
     mockProduct,
     mockCategory,
