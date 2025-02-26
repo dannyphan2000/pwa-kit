@@ -23,6 +23,11 @@ jobs:
         run: |-
           npm install -g npm@${{ matrix.npm }}
 
+      - name: Install Monorepo Dependencies
+        run: |-
+          # Install node dependencies
+          node ./scripts/gtime.js monorepo_install npm ci
+
       - name: Generate Retail App Demo
         uses: ./.github/actions/e2e_generate_app
         with:
