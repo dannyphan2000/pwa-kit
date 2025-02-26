@@ -16,7 +16,7 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {getUrlMapping} from '@salesforce/pwa-kit-react-sdk/utils/routes'
+import {getUrlMapping, transformUrlMappingToRoute} from '@salesforce/pwa-kit-react-sdk/utils/routes'
 
 // Local Imports
 import {Config} from './types'
@@ -82,18 +82,31 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
     // TODO: make async so it can make the seo API call
-    beforeRouteMatch(allRoutes: RouteProps[]): RouteProps[] {
-        // TODO: Get map from config
-        const resourceTypeToComponentMap = {
-            category: Sample
-        }
-        const configuredRoutes = getUrlMapping(allRoutes, resourceTypeToComponentMap)
+    async beforeRouteMatch(allRoutes: RouteProps[], locals: any): Promise<RouteProps[]> {
+        // TODO: Get map from config ----
+        // const config = this.getConfig()
+        // let {resourceTypeToComponentMap} = config
+        // console.log('config', config)
+        // if (typeof resourceTypeToComponentMap === 'function') {
+        //     console.log('resourceTypeToComponentMap is a function')
+        //     resourceTypeToComponentMap = resourceTypeToComponentMap(allRoutes)
+        // }
+        // console.log('resourceTypeToComponentMap', resourceTypeToComponentMap)
 
-        console.log('---- beforeRouteMatch configuredRoutes')
-        configuredRoutes.forEach((route: RouteProps) => {
-            console.log(route.path)
-        })
-        return configuredRoutes
+        const mapping = await getUrlMapping(allRoutes)
+        if (!mapping) {
+            return allRoutes
+        }
+
+        const resourceTypeToComponentMap = {
+            category: Sample,
+            product: Sample,
+            content: Sample
+        }
+        // TODO get current path from request
+        const path = '/category/top-seller'
+        const route = transformUrlMappingToRoute(path, mapping, resourceTypeToComponentMap, locals)
+        return [route, ...allRoutes]
     }
 }
 

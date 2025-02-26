@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import type {ApplicationExtensionConfig} from '@salesforce/pwa-kit-extension-sdk/types'
+import {RouteProps} from 'react-router-dom'
 
 // Defines the map of resource types to components.
 // https://developer.salesforce.com/docs/commerce/commerce-api/references/shopper-seo?meta=getUrlMapping
@@ -18,7 +19,9 @@ type ResourceTypeToComponentMap = {
  * This defines how your extension can be configured in the user's project. Please update it to your specific needs!
  */
 export interface UserConfig extends ApplicationExtensionConfig {
-    resourceTypeToComponentMap: ResourceTypeToComponentMap
+    resourceTypeToComponentMap:
+        | ResourceTypeToComponentMap
+        | ((allRoutes: RouteProps[]) => ResourceTypeToComponentMap)
     commerceApi?: {
         proxyPath: string
         parameters: {

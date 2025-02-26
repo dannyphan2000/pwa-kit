@@ -6,6 +6,7 @@
  */
 
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+import {routeComponent} from '../ssr/universal/components/route-component'
 
 /**
  * Transforms a URL mapping from the Shopper Search getUrlMapping API to a routes config.
@@ -17,7 +18,7 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
  * @param {string} urlMapping.destinationUrl - The destination URL for redirects.
  * @param {Object} resourceableComponentsMap - A map of resource types to React components.
  */
-export const transformUrlMappingToRoute = (path, urlMapping, resourceableComponentsMap) => {
+export const transformUrlMappingToRoute = (path, urlMapping, resourceableComponentsMap, locals) => {
     let Component, props
 
     // Resource type is not defined for redirects with a URL destination
@@ -38,16 +39,16 @@ export const transformUrlMappingToRoute = (path, urlMapping, resourceableCompone
     return {
         path: path,
         // DEVELOPER NOTE: Here we would want to use a Loadable component as to not bloat the home page chunk size.
-        component: Component,
+        component: Component ? routeComponent(Component, true, locals) : Component,
         props
     }
 }
 
-export const getUrlMapping = (routes, resourceTypeToComponentMap) => {
+export const getUrlMapping = async (routes) => {
     // SERVER!
     const seoUrlMappingEnabled = true
     if (!seoUrlMappingEnabled) {
-        return routes
+        return
     }
     // DEVELOPER NOTES: Replace with actual getUrlMapping call
     // For now we Mock a response that returns a resourceType category
@@ -59,11 +60,8 @@ export const getUrlMapping = (routes, resourceTypeToComponentMap) => {
         statusCode: '301'
     }
     if (!mapping) {
-        return routes
+        return
     }
 
-    // DEVELOPER NOTES: Here we'd make the getUrlMapping API call
-    const path = '/category/top-seller'
-    const route = transformUrlMappingToRoute(path, mapping, resourceTypeToComponentMap)
-    return [route, ...routes]
+    return mapping
 }
