@@ -34,14 +34,12 @@ jobs:
           PROJECT_KEY: "retail-react-app-bug-bounty"
 
       - name: Create MRT credentials file
-        if: env.IS_NOT_FORK == 'true' && env.IS_MRT_NODE == 'true' && ( env.DEVELOP == 'true' || env.RELEASE == 'true' )
         uses: "./.github/actions/create_mrt"
         with:
           mobify_user: ${{ secrets.MOBIFY_STG_CLIENT_USER }}
           mobify_api_key: ${{ secrets.MOBIFY_STG_CLIENT_API_KEY }}
 
       - name: Push Bundle to MRT (Bug Bounty)
-        if: env.IS_NOT_FORK == 'true' && env.IS_MRT_NODE == 'true' && env.DEVELOP == 'true'
         uses: "./.github/actions/push_to_mrt"
         with:
           CWD: "../generated-projects/retail-react-app-bug-bounty"
