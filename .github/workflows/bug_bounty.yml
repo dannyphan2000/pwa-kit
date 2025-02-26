@@ -45,4 +45,4 @@ jobs:
           CWD: "../generated-projects/retail-react-app-bug-bounty"
           TARGET: testing
           PROJECT: pwa-kit
-          FLAGS: --cloud-origin https://cloud-testing.mobify-staging.com --wait
+          FLAGS: --cloud-origin https://cloud-testing.mobify-staging.com -c ~/.mobify --wait
