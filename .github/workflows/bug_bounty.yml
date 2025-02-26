@@ -1,0 +1,44 @@
+name: SalesforceCommerceCloud/pwa-kit/bug_bounty
+on:
+  push:
+  branches:
+    - 'release-*'
+    - 'mrt-test-ci-deploy'
+
+jobs:
+  deploy-bug-bounty:
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - name: Update NPM version
+        if: env.IS_DEFAULT_NPM == 'false'
+        run: |-
+          npm install -g npm@${{ matrix.npm }}
+
+      - name: Generate Retail App Demo
+        uses: ./.github/actions/e2e_generate_app
+        with:
+          PROJECT_KEY: "retail-react-app-bug-bounty"
+
+      - name: Create MRT credentials file
+        if: env.IS_NOT_FORK == 'true' && env.IS_MRT_NODE == 'true' && ( env.DEVELOP == 'true' || env.RELEASE == 'true' )
+        uses: "./.github/actions/create_mrt"
+        with:
+          mobify_user: ${{ secrets.MOBIFY_STG_CLIENT_USER }}
+          mobify_api_key: ${{ secrets.MOBIFY_STG_CLIENT_API_KEY }}
+
+      - name: Push Bundle to MRT (Bug Bounty)
+        if: env.IS_NOT_FORK == 'true' && env.IS_MRT_NODE == 'true' && env.DEVELOP == 'true'
+        uses: "./.github/actions/push_to_mrt"
+        with:
+          CWD: "../generated-projects/retail-react-app-bug-bounty"
+          TARGET: testing
+          PROJECT: pwa-kit
+          FLAGS: --cloud-origin https://cloud-testing.mobify-staging.com --wait
