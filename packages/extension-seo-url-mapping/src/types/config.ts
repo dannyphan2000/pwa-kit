@@ -7,21 +7,19 @@
 import type {ApplicationExtensionConfig} from '@salesforce/pwa-kit-extension-sdk/types'
 import {RouteProps} from 'react-router-dom'
 
-// Defines the map of resource types to components.
+// Defines the map of resource types to component display name.
 // https://developer.salesforce.com/docs/commerce/commerce-api/references/shopper-seo?meta=getUrlMapping
 type ResourceTypeToComponentMap = {
-    category: React.ComponentType<any>
-    product: React.ComponentType<any>
-    content: React.ComponentType<any>
+    category: string
+    product: string
+    content: string
 }
 
 /**
  * This defines how your extension can be configured in the user's project. Please update it to your specific needs!
  */
 export interface UserConfig extends ApplicationExtensionConfig {
-    resourceTypeToComponentMap:
-        | ResourceTypeToComponentMap
-        | ((allRoutes: RouteProps[]) => ResourceTypeToComponentMap)
+    resourceTypeToComponentMap: ResourceTypeToComponentMap
     commerceApi?: {
         proxyPath: string
         parameters: {

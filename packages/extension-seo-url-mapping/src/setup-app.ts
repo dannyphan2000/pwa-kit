@@ -88,21 +88,26 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
     // TODO: make async so it can make the seo API call
     async beforeRouteMatch(allRoutes: RouteProps[], locals: any): Promise<RouteProps[]> {
         // TODO: Get map from config ----
-        const config = this.getConfig()
-        let {resourceTypeToComponentMap} = config
-        console.log('config', config, 'resourceTypeToComponentMap', resourceTypeToComponentMap)
-        if (resourceTypeToComponentMap === undefined) {
-            resourceTypeToComponentMap = generateResourceTypeMap(allRoutes)
-        }
+        const {resourceTypeToComponentMap} = this.getConfig()
 
         const mapping = await getUrlMapping(allRoutes)
         if (!mapping) {
             return allRoutes
         }
 
+        // Find the component
+        const componentDisplayName =
+            resourceTypeToComponentMap[
+                mapping.resourceType as keyof typeof resourceTypeToComponentMap
+            ]
+        // TODO error handling if component not found
+        const component = allRoutes.find((route) =>
+            route.component?.displayName?.includes(componentDisplayName)
+        )?.component
+
         // TODO get current path from request
         const path = '/category/top-seller'
-        const route = transformUrlMappingToRoute(path, mapping, resourceTypeToComponentMap, locals)
+        const route = transformUrlMappingToRoute(path, mapping, component, locals)
         return [route, ...allRoutes]
     }
 }

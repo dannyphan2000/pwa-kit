@@ -16,9 +16,9 @@ import {routeComponent} from '../ssr/universal/components/route-component'
  * @param {string} urlMapping.resourceType - The type of resource (e.g., 'product', 'category').
  * @param {string} urlMapping.resourceId - The ID of the resource.
  * @param {string} urlMapping.destinationUrl - The destination URL for redirects.
- * @param {Object} resourceableComponentsMap - A map of resource types to React components.
+ * @param {Object} component - The component to be rendered for the route.
  */
-export const transformUrlMappingToRoute = (path, urlMapping, resourceableComponentsMap, locals) => {
+export const transformUrlMappingToRoute = (path, urlMapping, component, locals) => {
     let Component, props
 
     // Resource type is not defined for redirects with a URL destination
@@ -30,7 +30,7 @@ export const transformUrlMappingToRoute = (path, urlMapping, resourceableCompone
             to: urlMapping.destinationUrl
         }
     } else {
-        Component = resourceableComponentsMap[urlMapping.resourceType]
+        Component = component
         props = {
             [`${urlMapping.resourceType}Id`]: urlMapping.resourceId
         }
@@ -64,19 +64,4 @@ export const getUrlMapping = async (routes) => {
     }
 
     return mapping
-}
-
-export const generateResourceTypeMap = (allRoutes) => {
-    // TODO error handling if component not found
-    return {
-        category: allRoutes.find((route) =>
-            route.component?.displayName?.includes('ProductList')
-        )?.component,
-        product: allRoutes.find((route) =>
-            route.component?.displayName?.includes('ProductDetail')
-        )?.component,
-        content: allRoutes.find((route) =>
-            route.component?.displayName?.includes('ProductDetail')
-        )?.component
-    }
 }

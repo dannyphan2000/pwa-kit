@@ -4,6 +4,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+const func = () => {
+  console.log("hellooo")
+}
 
 module.exports = {
     app: {
@@ -16,15 +19,11 @@ module.exports = {
           }}],
         ["@salesforce/extension-seo-url-mapping", {
             enabled: true,
-            test: 'yes it works 2',
-            resourceTypeToComponentMap: (allRoutes) => {
-              console.log('in resourceTypeToComponentMap FUNCTION')
-              return {
-                category: allRoutes.find(route => route.component.displayName === 'ProductList').component,
-                product: allRoutes.find(route => route.component.displayName === 'ProductDetail').component,
-                // TODO: what component should content use?
-                content: allRoutes.find(route => route.component.displayName === 'ProductDetail').component
-              }
+            resourceTypeToComponentMap: {
+              category: 'ProductList',
+              product: 'ProductDetail',
+              // TODO: what component should content be mapped to?
+              content: 'ProductList'
             }
         }]
       ]
