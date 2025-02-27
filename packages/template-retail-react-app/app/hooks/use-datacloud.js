@@ -42,17 +42,17 @@ export class DataCloudApi {
      */
     _constructBaseEvent(args) {
         return {
-            guestId: args.usid,
+            guestId: args.guestId,
             siteId: this.site,
-            sessionId: args.usid, //get dwsid from cookie?
-            deviceId: args.usid, //get BrowserID from cookie?
+            sessionId: args.deviceId, //get dwsid from cookie?
+            deviceId: args.deviceId,
             dateTime: new Date().toISOString(),
             ...(args.customerId && {customerId: args.customerId}), // Can remove the conditionality after the hook -> Promise is changed in future PWA release
-            customerNo: args.customerNo
+            ...(args.customerNo && {customerNo: args.customerNo})
         }
     }
 
-    _costructUserDetails(args) {
+    _constructUserDetails(args) {
         return {
             isAnonymous: args.isGuest,
             firstName: args.firstName,
@@ -125,7 +125,7 @@ export class DataCloudApi {
      */
     async sendViewPage(path, args) {
         const baseEvent = this._constructBaseEvent(args)
-        const userDetails = this._costructUserDetails(args)
+        const userDetails = this._constructUserDetails(args)
 
         const identityProfile = this._concatenateEvents(
             baseEvent,
@@ -168,7 +168,7 @@ export class DataCloudApi {
     async sendViewProduct(product, args) {
         const baseEvent = this._constructBaseEvent(args)
         const baseProduct = this._constructDatacloudProduct(product)
-        const userDetails = this._costructUserDetails(args)
+        const userDetails = this._constructUserDetails(args)
 
         const identityProfile = this._concatenateEvents(
             baseEvent,
@@ -221,7 +221,7 @@ export class DataCloudApi {
      */
     async sendViewCategory(searchParams, category, searchResults, args) {
         const baseEvent = this._constructBaseEvent(args)
-        const userDetails = this._costructUserDetails(args)
+        const userDetails = this._constructUserDetails(args)
 
         const products = searchResults?.hits?.map((product) =>
             this._constructDatacloudProduct(product)
@@ -286,7 +286,7 @@ export class DataCloudApi {
      */
     async sendViewSearchResults(searchParams, searchResults, args) {
         const baseEvent = this._constructBaseEvent(args)
-        const userDetails = this._costructUserDetails(args)
+        const userDetails = this._constructUserDetails(args)
 
         const products = searchResults?.hits?.map((product) =>
             this._constructDatacloudProduct(product)
@@ -349,7 +349,7 @@ export class DataCloudApi {
      */
     async sendViewRecommendations(recommenderDetails, products, args) {
         const baseEvent = this._constructBaseEvent(args)
-        const userDetails = this._costructUserDetails(args)
+        const userDetails = this._constructUserDetails(args)
 
         const catalogObjects = products.map((product) => {
             return this._concatenateEvents(
@@ -411,17 +411,18 @@ const useDataCloud = () => {
     const {data: customer} = useCurrentCustomer()
     const {site} = useMultiSite()
     let {effectiveDnt} = useDNT()
-    effectiveDnt = false // Remove after demo
 
+    // If Do Not Track is enabled, then the following fields are replaced with '__DNT__'
     const getEventUserParameters = async () => {
         return {
             isGuest: isRegistered ? 0 : 1,
-            usid: await getUsidWhenReady(),
-            customerId: customerId,
-            customerNo: customer?.customerNo,
+            customerId: effectiveDnt ? '__DNT__' : customerId,
+            customerNo: effectiveDnt ? '__DNT__' : customer?.customerNo,
+            guestId: effectiveDnt ? '__DNT__' : await getUsidWhenReady(),
+            deviceId: effectiveDnt ? '__DNT__' : 'deviceId', // TODO: Decide what this value should be
             firstName: customer?.firstName,
             lastName: customer?.lastName,
-            email: customer?.email
+            email: !effectiveDnt ? customer?.email : undefined
         }
     }
 
@@ -433,30 +434,24 @@ const useDataCloud = () => {
         [site]
     )
 
-    // If effectiveDnt is true, we do NOT want to send analytics events
     return {
         async sendViewPage(...args) {
-            if (effectiveDnt) return
             const userParameters = await getEventUserParameters()
             return dataCloud.sendViewPage(...args.concat(userParameters))
         },
         async sendViewProduct(...args) {
-            if (effectiveDnt) return
             const userParameters = await getEventUserParameters()
             return dataCloud.sendViewProduct(...args.concat(userParameters))
         },
         async sendViewCategory(...args) {
-            if (effectiveDnt) return
             const userParameters = await getEventUserParameters()
             return dataCloud.sendViewCategory(...args.concat(userParameters))
         },
         async sendViewSearchResults(...args) {
-            if (effectiveDnt) return
             const userParameters = await getEventUserParameters()
             return dataCloud.sendViewSearchResults(...args.concat(userParameters))
         },
         async sendViewRecommendations(...args) {
-            if (effectiveDnt) return
             const userParameters = await getEventUserParameters()
             return dataCloud.sendViewRecommendations(...args.concat(userParameters))
         }
