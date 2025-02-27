@@ -14,8 +14,8 @@ jobs:
           RELEASE_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/releases/latest")
 
-          LATEST_RELEASE_NAME=$(echo "$RELEASE_JSON" | jq -r '.name')
-          echo "IS_LATEST_RELEASE=$(echo "$RELEASE_JSON" | jq -r '.prerelease')" >> $GITHUB_ENV"
+          LATEST_RELEASE_NAME=$(echo '$RELEASE_JSON' | jq -r '.name')
+          echo "IS_LATEST_RELEASE=$(echo '$RELEASE_JSON' | jq -r '.prerelease')" >> $GITHUB_ENV"
 
           echo "Latest release name: $LATEST_RELEASE_NAME"
           echo "Is latest release: ${{ env.IS_LATEST_RELEASE }}"
