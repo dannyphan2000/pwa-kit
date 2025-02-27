@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /* global __webpack_require__ */
-import React, {useEffect, useRef, useState} from 'react'
+import React, {useRef} from 'react'
 import {hydrateRoot} from 'react-dom/client'
 import PropTypes from 'prop-types'
 import {BrowserRouter as Router} from 'react-router-dom'
@@ -49,19 +49,12 @@ export const registerServiceWorker = (url) => {
 export const OuterApp = ({routes, error, extensions, WrappedApp, locals, onHydrate}) => {
     const AppConfig = getAppConfig()
     const isInitialPageRef = useRef(true)
-    const [_routes, setRoutes] = useState(routes)
 
-    useEffect(() => {
     // Invoke the Application Extensions 'beforeRouteMatch' hook. This hook accepts ALL the routes for the current
     // application including all routes added from the configured extensions.
-    const runBeforeRouteMatch = async () => {
-        for (const applicationExtension of extensions){
-            routes = await applicationExtension.beforeRouteMatch(routes, locals)
-        }
-        setRoutes(routes)
-    }
-    runBeforeRouteMatch()
-    }, [])
+    extensions.forEach((applicationExtension) => {
+        routes = applicationExtension.beforeRouteMatch(routes)
+    })
 
     return (
         <ServerContext.Provider value={{}}>

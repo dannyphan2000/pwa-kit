@@ -77,22 +77,12 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
     extendRoutes(routes: RouteProps[]): RouteProps[] {
-        return routes
-    }
-
-    /**
-     * This method is used on the server during the rendering pipeline. It's provided a list of all the routes that your application
-     * is configured with, including those defined in the base application and those added by all the extensions. You can use this
-     * method to modify these routes in any way you want, but you must return an array of routes as a result.
-     */
-    // TODO: make async so it can make the seo API call
-    async beforeRouteMatch(allRoutes: RouteProps[], locals: any): Promise<RouteProps[]> {
         // TODO: Get map from config ----
         const {resourceTypeToComponentMap} = this.getConfig()
-
-        const mapping = await getUrlMapping(allRoutes)
+        console.log('extendRoutes routes', routes)
+        const mapping = getUrlMapping()
         if (!mapping) {
-            return allRoutes
+            return routes
         }
 
         // Find the component
@@ -101,14 +91,25 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
                 mapping.resourceType as keyof typeof resourceTypeToComponentMap
             ]
         // TODO error handling if component not found
-        const component = allRoutes.find((route) =>
+        const component = routes.find((route) =>
             route.component?.displayName?.includes(componentDisplayName)
         )?.component
+        console.log('extendRoutes component', component)
 
         // TODO get current path from request
         const path = '/category/top-seller'
-        const route = transformUrlMappingToRoute(path, mapping, component, locals)
-        return [route, ...allRoutes]
+        const route = transformUrlMappingToRoute(path, mapping, component)
+        console.log('extendRoutes route', route)
+        return [route, ...routes]
+    }
+
+    /**
+     * This method is used on the server during the rendering pipeline. It's provided a list of all the routes that your application
+     * is configured with, including those defined in the base application and those added by all the extensions. You can use this
+     * method to modify these routes in any way you want, but you must return an array of routes as a result.
+     */
+    beforeRouteMatch(allRoutes: RouteProps[]): RouteProps[] {
+        return allRoutes
     }
 }
 

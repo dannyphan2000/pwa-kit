@@ -18,7 +18,7 @@ import {routeComponent} from '../ssr/universal/components/route-component'
  * @param {string} urlMapping.destinationUrl - The destination URL for redirects.
  * @param {Object} component - The component to be rendered for the route.
  */
-export const transformUrlMappingToRoute = (path, urlMapping, component, locals) => {
+export const transformUrlMappingToRoute = (path, urlMapping, component) => {
     let Component, props
 
     // Resource type is not defined for redirects with a URL destination
@@ -39,12 +39,12 @@ export const transformUrlMappingToRoute = (path, urlMapping, component, locals) 
     return {
         path: path,
         // DEVELOPER NOTE: Here we would want to use a Loadable component as to not bloat the home page chunk size.
-        component: Component ? routeComponent(Component, true, locals) : Component,
+        component: Component,
         props
     }
 }
 
-export const getUrlMapping = async (routes) => {
+export const getUrlMapping = () => {
     // SERVER!
     const seoUrlMappingEnabled = true
     if (!seoUrlMappingEnabled) {

@@ -140,6 +140,7 @@ export const render = async (req, res, next) => {
     })
 
     let routes = getRoutes(res.locals)
+    console.log('react-rendering.js routes', routes)
 
     const [pathname] = req.originalUrl.split('?')
 
@@ -153,9 +154,9 @@ export const render = async (req, res, next) => {
     // Step 1 - Find the match.
 
     // Call `beforeRouteMatch` application extension hook.
-    for (const applicationExtension of applicationExtensions){
-        routes = await applicationExtension.beforeRouteMatch(routes, res.locals)
-    }
+    applicationExtensions.forEach((applicationExtension) => {
+        routes = applicationExtension.beforeRouteMatch(routes)
+    })
 
     res.__performanceTimer.mark(PERFORMANCE_MARKS.routeMatching, 'start')
     let route
