@@ -15,10 +15,8 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/releases/latest")
 
           LATEST_RELEASE_NAME=$(echo "$RELEASE_JSON" | jq -r '.name')
-          IS_LATEST_RELEASE=$(echo "$RELEASE_JSON" | jq -r '.prerelease')
+          echo "IS_LATEST_RELEASE=$(echo "$RELEASE_JSON" | jq -r '.prerelease')" >> $GITHUB_ENV"
 
           echo "Latest release name: $LATEST_RELEASE_NAME"
-          echo "Is latest release: $IS_LATEST_RELEASE"
-          echo "IS_LATEST_RELEASE=$IS_LATEST_RELEASE" >> $GITHUB_ENV
-          echo ${{ env.IS_LATEST_RELEASE }}
+          echo "Is latest release: ${{ env.IS_LATEST_RELEASE }}"
 
