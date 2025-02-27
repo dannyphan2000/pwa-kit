@@ -11,7 +11,10 @@ on:
 jobs:
   check-latest-release:
     runs-on: ubuntu-latest
-    steps:
+    steps:  
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Check if latest release
         uses: ./.github/actions/check_if_latest_release
 
