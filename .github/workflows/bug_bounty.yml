@@ -1,39 +1,16 @@
 name: SalesforceCommerceCloud/pwa-kit/bug_bounty
 on:
-  # Runs this job when a new Github release is published
-  # TODO: How do we ensure this only runs for the latest major version? We don't want to run this
-  # for a new v2 release. But due to policy, we are not allowed to use unverified marketplace actions
-  # such as https://github.com/marketplace/actions/version-check
-  release:
-    types: [released]
+  push:
+    branches:
+      - 'mrt-test-ci-deploy'
 
 jobs:
   deploy-bug-bounty:
     runs-on: ubuntu-latest
+    env:
+      IS_LATEST_RELEASE: ${{ (git tag | sort --version-sort | tail -n1) == github.ref_name }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: "Check if latest release"
+        id: set-latest-tag
+        run: echo "${env.IS_LATEST_RELEASE}"
 
-      - name: Install Monorepo Dependencies
-        run: |-
-          # Install node dependencies
-          node ./scripts/gtime.js monorepo_install npm ci
-
-      - name: Generate Retail App Demo
-        uses: ./.github/actions/e2e_generate_app
-        with:
-          PROJECT_KEY: "retail-react-app-bug-bounty"
-
-      - name: Create MRT credentials file
-        uses: "./.github/actions/create_mrt"
-        with:
-          mobify_user: ${{ secrets.MOBIFY_STG_CLIENT_USER }}
-          mobify_api_key: ${{ secrets.MOBIFY_STG_CLIENT_API_KEY }}
-
-      - name: Push Bundle to MRT (Bug Bounty)
-        uses: "./.github/actions/push_to_mrt"
-        with:
-          CWD: "../generated-projects/retail-react-app-bug-bounty"
-          TARGET: testing
-          PROJECT: pwa-kit
-          FLAGS: --cloud-origin https://cloud-testing.mobify-staging.com -c ~/.mobify --wait
