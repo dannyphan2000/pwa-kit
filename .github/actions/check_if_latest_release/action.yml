@@ -22,3 +22,4 @@ runs:
           echo "We are not releasing the latest tag. Stopping deployment workflow."
           exit 1
         fi
+      shell: bash
