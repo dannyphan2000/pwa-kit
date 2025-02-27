@@ -139,8 +139,7 @@ export const render = async (req, res, next) => {
         locals: res.locals
     })
 
-    let routes = getRoutes(res.locals)
-    console.log('react-rendering.js routes', routes)
+    let routes = await getRoutes(res.locals)
 
     const [pathname] = req.originalUrl.split('?')
 

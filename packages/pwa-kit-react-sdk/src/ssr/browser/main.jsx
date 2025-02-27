@@ -132,10 +132,13 @@ export const start = async () => {
         locals
     })
 
+    // Await the async getRoutes function
+    const routes = await getRoutes(locals)
+
     const props = {
         error: window.__ERROR__,
         locals: locals,
-        routes: getRoutes(locals),
+        routes: routes,
         extensions: applicationExtensions,
         WrappedApp
     }

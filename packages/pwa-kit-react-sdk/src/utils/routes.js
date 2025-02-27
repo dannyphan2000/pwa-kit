@@ -44,7 +44,7 @@ export const transformUrlMappingToRoute = (path, urlMapping, component) => {
     }
 }
 
-export const getUrlMapping = () => {
+export const getUrlMapping = async () => {
     // SERVER!
     const seoUrlMappingEnabled = true
     if (!seoUrlMappingEnabled) {

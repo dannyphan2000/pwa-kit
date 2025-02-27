@@ -76,11 +76,10 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
-    extendRoutes(routes: RouteProps[]): RouteProps[] {
+    async extendRoutes(routes: RouteProps[]): Promise<RouteProps[]> {
         // TODO: Get map from config ----
         const {resourceTypeToComponentMap} = this.getConfig()
-        console.log('extendRoutes routes', routes)
-        const mapping = getUrlMapping()
+        const mapping = await getUrlMapping()
         if (!mapping) {
             return routes
         }
@@ -94,12 +93,10 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
         const component = routes.find((route) =>
             route.component?.displayName?.includes(componentDisplayName)
         )?.component
-        console.log('extendRoutes component', component)
 
         // TODO get current path from request
         const path = '/category/top-seller'
         const route = transformUrlMappingToRoute(path, mapping, component)
-        console.log('extendRoutes route', route)
         return [route, ...routes]
     }
 
