@@ -21,6 +21,6 @@ jobs:
 
           echo "Latest tag: $LATEST_TAG_NAME"
           echo "Release event tag: $RELEASE_EVENT_TAG_NAME"
-          echo $('$LATEST_TAG_NAME' == '$RELEASE_EVENT_TAG_NAME')
+          echo $LATEST_TAG_NAME == $RELEASE_EVENT_TAG_NAME
           echo "Is latest release: ${{ env.IS_LATEST_RELEASE }}"
 
