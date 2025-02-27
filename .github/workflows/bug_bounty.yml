@@ -16,8 +16,9 @@ jobs:
 
           LATEST_TAG_NAME=$(echo "$RELEASE_JSON" | jq -r '.tag_name')
           RELEASE_EVENT_TAG_NAME=${{ github.event.release.tag_name }}
-          echo "IS_LATEST_RELEASE=$(echo '$LATEST_TAG_NAME' == '$RELEASE_EVENT_TAG_NAME' )" >> "$GITHUB_ENV"
 
-          echo "Latest tag: $TAG_NAME"
+          echo "IS_LATEST_RELEASE=$('$LATEST_TAG_NAME' == '$RELEASE_EVENT_TAG_NAME')" >> "$GITHUB_ENV"
+
+          echo "Latest tag: $LATEST_TAG_NAME"
           echo "Is latest release: ${{ env.IS_LATEST_RELEASE }}"
 
