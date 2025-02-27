@@ -148,7 +148,6 @@ export class DataCloudApi {
         const interaction = {
             events: [identityProfile, userEngagement]
         }
-        console.log('send view page', interaction)
 
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)

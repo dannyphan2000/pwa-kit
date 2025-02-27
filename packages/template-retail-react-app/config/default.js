@@ -53,8 +53,8 @@ module.exports = {
             isProduction: false
         },
         dataCloudAPI: {
-            appSourceId: '6ebc532a-2247-48e9-8300-d8c2b84eb463',
-            tenantId: 'mvst0mlfmrsd8zbwg8zgmytbg1'
+            appSourceId: '10a761d0-5d19-41fa-8681-0591d5884e27',
+            tenantId: 'g43g8zrvh1ytcztdmmzg8m3dh1'
         }
     },
     externals: [],
