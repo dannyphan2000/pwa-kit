@@ -17,6 +17,8 @@ jobs:
 
       - name: Check if latest release
         uses: ./.github/actions/check_if_latest_release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-bug-bounty:
     needs: check-latest-release
