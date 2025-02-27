@@ -436,25 +436,30 @@ const useDataCloud = () => {
 
     // If effectiveDnt is true, we do NOT want to send analytics events
     return {
-        async processEvent(eventMethod, ...args) {
+        async sendViewPage(...args) {
             if (effectiveDnt) return
             const userParameters = await getEventUserParameters()
-            return eventMethod(...args.concat(userParameters))
-        },
-        async sendViewPage(...args) {
-            return this.processEvent(dataCloud.sendViewPage, ...args)
+            return dataCloud.sendViewPage(...args.concat(userParameters))
         },
         async sendViewProduct(...args) {
-            return this.processEvent(dataCloud.sendViewProduct, ...args)
+            if (effectiveDnt) return
+            const userParameters = await getEventUserParameters()
+            return dataCloud.sendViewProduct(...args.concat(userParameters))
         },
         async sendViewCategory(...args) {
-            return this.processEvent(dataCloud.sendViewCategory, ...args)
+            if (effectiveDnt) return
+            const userParameters = await getEventUserParameters()
+            return dataCloud.sendViewCategory(...args.concat(userParameters))
         },
         async sendViewSearchResults(...args) {
-            return this.processEvent(dataCloud.sendViewSearchResults, ...args)
+            if (effectiveDnt) return
+            const userParameters = await getEventUserParameters()
+            return dataCloud.sendViewSearchResults(...args.concat(userParameters))
         },
         async sendViewRecommendations(...args) {
-            return this.processEvent(dataCloud.sendViewRecommendations, ...args)
+            if (effectiveDnt) return
+            const userParameters = await getEventUserParameters()
+            return dataCloud.sendViewRecommendations(...args.concat(userParameters))
         }
     }
 }
