@@ -1,59 +1,51 @@
-name: SalesforceCommerceCloud/pwa-kit/bug_bounty
+name: SalesforceCommerceCloud/pwa-kit/deploy_latest_release
 on:
   # For testing - to be removed
   push:
     branches:
       - 'mrt-test-ci-deploy'
-  # Run this job when a new Github release is published
+  # Run this workflow when a new Github release is published
   release:
     types: [released]
 
 jobs:
-  deploy-bug-bounty:
+  check-latest-release:
     runs-on: ubuntu-latest
     steps:
       - name: Check if latest release
-        id: release
-        run: |-
-          RELEASE_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/latest")
+        uses: ./.github/actions/check_if_latest_release
 
-          LATEST_TAG_NAME=$(echo "$RELEASE_JSON" | jq -r '.tag_name')
-          RELEASE_EVENT_TAG_NAME=$(echo ${{ github.event.release.tag_name }})
-
-          echo "Latest tag: $LATEST_TAG_NAME"
-          echo "Release event tag: $RELEASE_EVENT_TAG_NAME"
-
-          if [ "$LATEST_TAG_NAME" == "$RELEASE_EVENT_TAG_NAME" ]; then
-            echo "We are releasing the latest. Continuing to deploy to bug bounty instance"
-            echo "IS_LATEST_RELEASE=true" >> $GITHUB_ENV
-          fi
-
+  deploy-bug-bounty:
+    needs: check-latest-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup node
+        id: setup_node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+      
       - name: Checkout
-        if: env.IS_LATEST_RELEASE == 'true'
         uses: actions/checkout@v4
 
       - name: Install Monorepo Dependencies
-        if: env.IS_LATEST_RELEASE == 'true'
         run: |-
           # Install node dependencies
           node ./scripts/gtime.js monorepo_install npm ci
 
       - name: Generate Retail App Demo
-        if: env.IS_LATEST_RELEASE == 'true'
         uses: ./.github/actions/e2e_generate_app
         with:
           PROJECT_KEY: "retail-react-app-bug-bounty"
 
       - name: Create MRT credentials file
-        if: env.IS_LATEST_RELEASE == 'true'
         uses: "./.github/actions/create_mrt"
         with:
           mobify_user: ${{ secrets.MOBIFY_STG_CLIENT_USER }}
           mobify_api_key: ${{ secrets.MOBIFY_STG_CLIENT_API_KEY }}
 
       - name: Push Bundle to MRT (Bug Bounty)
-        if: env.IS_LATEST_RELEASE == 'true'
         uses: "./.github/actions/push_to_mrt"
         with:
           CWD: "../generated-projects/retail-react-app-bug-bounty"

@@ -328,10 +328,10 @@ const PRESETS = [
             type: TEMPLATE_SOURCE_NPM,
             id: '@salesforce/retail-react-app'
         },
-        questions: [...EXTENSIBILITY_QUESTIONS, ...HYBRID_QUESTIONS, ...RETAIL_REACT_APP_QUESTIONS],
+        questions: [...EXTENSIBILITY_QUESTIONS, ...RETAIL_REACT_APP_QUESTIONS],
         answers: {
             ['project.extend']: true,
-            ['project.hybrid']: true,
+            ['project.hybrid']: false,
             ['project.name']: 'retail-react-app',
             ['project.commerce.instanceUrl']: 'https://zzec-006.dx.commercecloud.salesforce.com',
             ['project.commerce.clientId']: 'b56e7ad3-2237-42c9-8f55-41e63ebca420',
