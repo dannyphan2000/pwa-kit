@@ -1,8 +1,12 @@
 name: SalesforceCommerceCloud/pwa-kit/bug_bounty
 on:
+  # For testing - to be removed
   push:
     branches:
       - 'mrt-test-ci-deploy'
+  # Run this job when a new Github release is published
+  release:
+    types: [released]
 
 jobs:
   deploy-bug-bounty:
@@ -10,30 +14,49 @@ jobs:
     steps:
       - name: Check if latest release
         id: release
-        run: |
+        run: |-
           RELEASE_JSON=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/releases/latest")
 
           LATEST_TAG_NAME=$(echo "$RELEASE_JSON" | jq -r '.tag_name')
           RELEASE_EVENT_TAG_NAME=$(echo ${{ github.event.release.tag_name }})
-          if [ "$LATEST_TAG_NAME" == "$RELEASE_EVENT_TAG_NAME" ]; then
-            echo "true"
-            echo "IS_LATEST_RELEASE=true" >> $GITHUB_ENV
-          else
-            echo "false"
-            echo "IS_LATEST_RELEASE=false" >> $GITHUB_ENV
-          fi
 
           echo "Latest tag: $LATEST_TAG_NAME"
           echo "Release event tag: $RELEASE_EVENT_TAG_NAME"
-          echo "Is latest release: ${{ env.IS_LATEST_RELEASE }}"
-      
-      - name: Test env var true
+
+          if [ "$LATEST_TAG_NAME" == "$RELEASE_EVENT_TAG_NAME" ]; then
+            echo "We are releasing the latest. Continuing to deploy to bug bounty instance"
+            echo "IS_LATEST_RELEASE=true" >> $GITHUB_ENV
+          fi
+
+      - name: Checkout
         if: env.IS_LATEST_RELEASE == 'true'
-        run: |
-          echo "true"
-      
-      - name: Test env var false
-        if: env.IS_LATEST_RELEASE == 'false'
-        run: |
-          echo "false"
+        uses: actions/checkout@v4
+
+      - name: Install Monorepo Dependencies
+        if: env.IS_LATEST_RELEASE == 'true'
+        run: |-
+          # Install node dependencies
+          node ./scripts/gtime.js monorepo_install npm ci
+
+      - name: Generate Retail App Demo
+        if: env.IS_LATEST_RELEASE == 'true'
+        uses: ./.github/actions/e2e_generate_app
+        with:
+          PROJECT_KEY: "retail-react-app-bug-bounty"
+
+      - name: Create MRT credentials file
+        if: env.IS_LATEST_RELEASE == 'true'
+        uses: "./.github/actions/create_mrt"
+        with:
+          mobify_user: ${{ secrets.MOBIFY_STG_CLIENT_USER }}
+          mobify_api_key: ${{ secrets.MOBIFY_STG_CLIENT_API_KEY }}
+
+      - name: Push Bundle to MRT (Bug Bounty)
+        if: env.IS_LATEST_RELEASE == 'true'
+        uses: "./.github/actions/push_to_mrt"
+        with:
+          CWD: "../generated-projects/retail-react-app-bug-bounty"
+          TARGET: testing
+          PROJECT: pwa-kit
+          FLAGS: --cloud-origin https://cloud-testing.mobify-staging.com -c ~/.mobify --wait
