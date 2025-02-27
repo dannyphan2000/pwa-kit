@@ -24,7 +24,7 @@ jobs:
           echo "Latest tag: $LATEST_TAG_NAME"
           echo "Release event tag: $RELEASE_EVENT_TAG_NAME"
 
-          if [ "$LATEST_TAG_NAME" != "$RELEASE_EVENT_TAG_NAME" ]; then
+          if [ "$LATEST_TAG_NAME" == "$RELEASE_EVENT_TAG_NAME" ]; then
             echo "We are releasing the latest. Continuing to deploy to bug bounty instance"
             echo "IS_LATEST_RELEASE=true" >> $GITHUB_ENV
           fi
