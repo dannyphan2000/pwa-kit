@@ -1,3 +1,4 @@
+## v3.10.0-nightly-20250228080210 (Feb 28, 2025)
 ## v3.10.0-dev (Feb 18, 2025)
 
 - Support source map for both client and server on MRT [#240](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2240)
