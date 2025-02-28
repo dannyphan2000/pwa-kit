@@ -56,4 +56,5 @@ jobs:
           CWD: "../generated-projects/retail-react-app-bug-bounty"
           TARGET: testing
           PROJECT: pwa-kit
+          MESSAGE: "${{ github.event.release.tag_name }})"
           FLAGS: --cloud-origin https://cloud-testing.mobify-staging.com -c ~/.mobify --wait
