@@ -5,8 +5,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Push Bundle to MRT
-      id: release
+    - name: Check if latest release
       run: |-
         RELEASE_JSON=$(curl -s -H "Authorization: token ${{ inputs.token }}" \
           "https://api.github.com/repos/${{ github.repository }}/releases/latest")
@@ -17,7 +16,7 @@ runs:
         echo "Latest tag: $LATEST_TAG_NAME"
         echo "Release event tag: $RELEASE_EVENT_TAG_NAME"
 
-        if [ "$LATEST_TAG_NAME" == "$RELEASE_EVENT_TAG_NAME" ]; then
+        if [ "$LATEST_TAG_NAME" != "$RELEASE_EVENT_TAG_NAME" ]; then
           echo "We are releasing the latest tag. Continuing deployment workflow."
           exit 0
         else
