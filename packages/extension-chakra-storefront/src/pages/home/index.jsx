@@ -20,26 +20,32 @@ import {
     Flex,
     Stack,
     Container,
-    Link
+    Link,
+    useRecipe
 } from '@chakra-ui/react'
 
 // Project Components
-import Hero from '../../components/hero'
-import Seo from '../../components/seo'
-import Section from '../../components/section'
-import ProductScroller from '../../components/product-scroller'
+// import Hero from '@salesforce/retail-react-app/app/components/hero'
+// import Seo from '@salesforce/retail-react-app/app/components/seo'
+// import Section from '@salesforce/retail-react-app/app/components/section'
+// import ProductScroller from '@salesforce/retail-react-app/app/components/product-scroller'
 
 // Others
-import {getStaticAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
-import {heroFeatures, features} from '../../pages/home/data'
+import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
+// import {heroFeatures, features} from '@salesforce/retail-react-app/app/pages/home/data'
 
 //Hooks
-import useEinstein from '../../hooks/use-einstein'
+import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
 
 // Constants
+import {
+    HOME_SHOP_PRODUCTS_CATEGORY_ID,
+    HOME_SHOP_PRODUCTS_LIMIT,
+    MAX_CACHE_AGE,
+    STALE_WHILE_REVALIDATE
+} from '@salesforce/retail-react-app/app/constants'
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useProductSearch} from '@salesforce/commerce-sdk-react'
-import {useExtensionConfig} from '../../hooks'
 
 /**
  * This is the home page for Retail React App.
@@ -51,11 +57,7 @@ const Home = () => {
     const intl = useIntl()
     const einstein = useEinstein()
     const {pathname} = useLocation()
-    const {
-        pages: {Home: homeConfig},
-        maxCacheAge: MAX_CACHE_AGE,
-        staleWhileRevalidate: STALE_WHILE_REVALIDATE
-    } = useExtensionConfig()
+
     const {res} = useServerContext()
     if (res) {
         res.set(
@@ -69,9 +71,9 @@ const Home = () => {
             allImages: true,
             allVariationProperties: true,
             expand: ['promotions', 'variations', 'prices', 'images', 'custom_properties'],
-            limit: homeConfig.productLimit,
+            limit: HOME_SHOP_PRODUCTS_LIMIT,
             perPricebook: true,
-            refine: [`cgid=${homeConfig.mainCategory}`, 'htype=master']
+            refine: [`cgid=${HOME_SHOP_PRODUCTS_CATEGORY_ID}`, 'htype=master']
         }
     })
 
@@ -79,6 +81,22 @@ const Home = () => {
     useEffect(() => {
         einstein.sendViewPage(pathname)
     }, [])
+
+    return (
+        <Box>
+            <Button
+                as={Link}
+                href="https://developer.salesforce.com/docs/commerce/pwa-kit-managed-runtime/guide/getting-started.html"
+                target="_blank"
+                width={{base: 'full', md: 'inherit'}}
+                paddingX={7}
+                _hover={{textDecoration: 'none'}}
+            >
+                <FormattedMessage defaultMessage="Get started" id="home.link.get_started" />
+            </Button>
+            <Button>Solid</Button>
+        </Box>
+    )
 
     return (
         <Box data-testid="home-page" layerStyle="page">
@@ -94,9 +112,7 @@ const Home = () => {
                     id: 'home.title.react_starter_store'
                 })}
                 img={{
-                    src: getStaticAssetUrl('img/hero.png', {
-                        appExtensionPackageName: '@salesforce/extension-chakra-storefront'
-                    }),
+                    src: getAssetUrl('static/img/hero.png'),
                     alt: 'npx pwa-kit-create-app'
                 }}
                 actions={
@@ -114,6 +130,7 @@ const Home = () => {
                                 id="home.link.get_started"
                             />
                         </Button>
+                        <Button variant="solid">Solid</Button>
                     </Stack>
                 }
             />

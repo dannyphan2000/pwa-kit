@@ -46,6 +46,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
             withCommerceSdkReact
         ]
 
+        console.log('requiredHOCs', requiredHOCs)
         return applyHOCs(App, requiredHOCs)
     }
 
@@ -57,54 +58,55 @@ class ChakraStorefront extends ApplicationExtension<Config> {
                 path: config.pages.Home && config.pages.Home.path,
                 component: Pages.Home,
                 exact: true
-            },
-            {
-                path: config.pages.Login && config.pages.Login.path,
-                component: Pages.Login,
-                exact: true
-            },
-            {
-                path: config.pages.Registration && config.pages.Registration.path,
-                component: Pages.Registration,
-                exact: true
-            },
-            {
-                path: config.pages.ResetPassword && config.pages.ResetPassword.path,
-                component: Pages.ResetPassword,
-                exact: true
-            },
-            {
-                path: config.pages.Account && config.pages.Account.path,
-                component: Pages.Account
-            },
-            {
-                path: config.pages.Checkout && config.pages.Checkout.path,
-                component: Pages.Checkout,
-                exact: true
-            },
-            {
-                path: config.pages.CheckoutConfirmation && config.pages.CheckoutConfirmation.path,
-                component: Pages.CheckoutConfirmation
-            },
-            {
-                path: config.pages.LoginRedirect && config.pages.LoginRedirect.path,
-                component: Pages.LoginRedirect,
-                exact: true
-            },
-            {
-                path: config.pages.Cart && config.pages.Cart.path,
-                component: Pages.Cart,
-                exact: true
-            },
-            {
-                path: config.pages.ProductDetail && config.pages.ProductDetail.path,
-                component: Pages.ProductDetail
-            },
-            {
-                path: config.pages.ProductList && config.pages.ProductList.path,
-                component: Pages.ProductList
             }
+            // {
+            //     path: config.pages.Login && config.pages.Login.path,
+            //     component: Pages.Login,
+            //     exact: true
+            // },
+            // {
+            //     path: config.pages.Registration && config.pages.Registration.path,
+            //     component: Pages.Registration,
+            //     exact: true
+            // },
+            // {
+            //     path: config.pages.ResetPassword && config.pages.ResetPassword.path,
+            //     component: Pages.ResetPassword,
+            //     exact: true
+            // },
+            // {
+            //     path: config.pages.Account && config.pages.Account.path,
+            //     component: Pages.Account
+            // },
+            // {
+            //     path: config.pages.Checkout && config.pages.Checkout.path,
+            //     component: Pages.Checkout,
+            //     exact: true
+            // },
+            // {
+            //     path: config.pages.CheckoutConfirmation && config.pages.CheckoutConfirmation.path,
+            //     component: Pages.CheckoutConfirmation
+            // },
+            // {
+            //     path: config.pages.LoginRedirect && config.pages.LoginRedirect.path,
+            //     component: Pages.LoginRedirect,
+            //     exact: true
+            // },
+            // {
+            //     path: config.pages.Cart && config.pages.Cart.path,
+            //     component: Pages.Cart,
+            //     exact: true
+            // },
+            // {
+            //     path: config.pages.ProductDetail && config.pages.ProductDetail.path,
+            //     component: Pages.ProductDetail
+            // },
+            // {
+            //     path: config.pages.ProductList && config.pages.ProductList.path,
+            //     component: Pages.ProductList
+            // }
         ].filter((route) => route.path !== false)
+        console.log('extensionRoutes', extensionRoutes)
         return [...routes, ...(extensionRoutes as RouteProps[])]
     }
 

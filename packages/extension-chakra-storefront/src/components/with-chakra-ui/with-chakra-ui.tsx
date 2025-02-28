@@ -13,12 +13,12 @@ import theme from '../../theme'
 
 // Define a type for the HOC props
 type WithChakraUIProps = React.ComponentPropsWithoutRef<any>
-
+console.log('theme', theme)
 // Define the HOC function
 const withChakraUI = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const WithChakraUI: React.FC<P> = (props: WithChakraUIProps) => {
         return (
-            <ChakraProvider theme={theme}>
+            <ChakraProvider value={theme}>
                 <WrappedComponent {...(props as P)} />
             </ChakraProvider>
         )

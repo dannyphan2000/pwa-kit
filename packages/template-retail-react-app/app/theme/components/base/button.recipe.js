@@ -4,13 +4,15 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-export default {
-    baseStyle: {
+import {defineRecipe} from '@chakra-ui/react'
+
+export default defineRecipe({
+    base: {
         borderRadius: 'base'
     },
     variants: {
         solid: (props) =>
-            props.colorScheme === 'blue'
+            props.colorPalette === 'blue'
                 ? {
                       backgroundColor: 'blue.600',
                       color: 'white',
@@ -20,7 +22,7 @@ export default {
                   }
                 : {},
         outline: (props) =>
-            props.colorScheme === 'black'
+            props.colorPalette === 'black'
                 ? {color: 'gray.900', _hover: {bg: 'gray.50'}, borderColor: 'gray.200'}
                 : {color: 'blue.600', _hover: {bg: 'gray.50'}},
         footer: {
@@ -33,7 +35,7 @@ export default {
             paddingRight: 3
         },
         link: (props) => ({
-            color: props.colorScheme === 'red' ? 'red.500' : 'blue.600',
+            color: props.colorPalette === 'red' ? 'red.500' : 'blue.600',
             fontWeight: 'normal',
             minWidth: '1em',
             lineHeight: 4
@@ -76,6 +78,6 @@ export default {
         }
     },
     defaultProps: {
-        colorScheme: 'blue'
+        colorPalette: 'blue'
     }
-}
+})

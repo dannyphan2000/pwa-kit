@@ -5,37 +5,70 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 const card = {
-    py: 6,
-    px: 4,
-    backgroundColor: 'white',
-    rounded: 'base',
-    boxShadow: 'base'
+    py: {
+        value: '{space.6}'
+    },
+    px: {
+        value: '{space.4}'
+    },
+    backgroundColor: {
+        value: '{colors.white}'
+    },
+    rounded: {
+        value: '{radii.base}'
+    },
+    boxShadow: {
+        value: '{shadows.base}'
+    }
 }
 
 const cardBordered = {
     ...card,
-    px: [4, 4, 5, 6],
-    border: '1px solid',
-    borderColor: 'gray.50'
+    px: {
+        value: ['{space.4}', '{space.4}', '{space.5}', '{space.6}']
+    },
+    border: {
+        value: '1px solid'
+    },
+    borderColor: {
+        value: '{colors.gray.50}'
+    }
 }
 
 export default {
     card,
-
     cardBordered,
 
     ccIcon: {
-        width: '34px',
-        height: '22px'
+        width: {
+            value: '34px'
+        },
+        height: {
+            value: '22px'
+        }
     },
 
     page: {
-        px: [4, 4, 6, 6, 8],
-        paddingTop: [4, 4, 6, 6, 8],
-        paddingBottom: 32,
-        width: '100%',
-        maxWidth: 'container.xxxl',
-        marginLeft: 'auto',
-        marginRight: 'auto'
+        px: {
+            value: ['{space.4}', '{space.4}', '{space.6}', '{space.6}', '{space.8}']
+        },
+        paddingTop: {
+            value: ['{space.4}', '{space.4}', '{space.6}', '{space.6}', '{space.8}']
+        },
+        paddingBottom: {
+            value: '{space.32}'
+        },
+        width: {
+            value: '100%'
+        },
+        maxWidth: {
+            value: '{sizes.container.xxxl}'
+        },
+        marginLeft: {
+            value: 'auto'
+        },
+        marginRight: {
+            value: 'auto'
+        }
     }
 }
