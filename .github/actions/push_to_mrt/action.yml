@@ -20,6 +20,6 @@ runs:
       run: |-
         cd ${{ inputs.CWD }}
         if [[ ${{ inputs.TARGET }} ]]; then
-          npm run push -- -s ${{ inputs.PROJECT }} --message ${{ inputs.MESSAGE }} --target ${{ inputs.TARGET }} ${{ inputs.FLAGS }}
+          npm run push -- -s ${{ inputs.PROJECT }} --message "${{ inputs.MESSAGE }}" --target ${{ inputs.TARGET }} ${{ inputs.FLAGS }}
         fi
       shell: bash
