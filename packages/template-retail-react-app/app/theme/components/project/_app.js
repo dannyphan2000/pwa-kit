@@ -4,11 +4,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-// import {theme} from '@chakra-ui/theme'
-import {defineRecipe} from '@chakra-ui/react'
+import theme from '@salesforce/retail-react-app/app/components/shared/theme'
 
-export default defineRecipe({
-    base: {
+export default {
+    baseStyle: {
         container: {
             flex: 1,
             display: 'flex',
@@ -18,8 +17,9 @@ export default defineRecipe({
         },
         headerWrapper: {
             position: 'sticky',
-            top: 0
-            // zIndex: theme.zIndices.sticky
+            top: 0,
+            zIndex: theme.zIndices.sticky
         }
     },
-})
+    parts: ['container']
+}

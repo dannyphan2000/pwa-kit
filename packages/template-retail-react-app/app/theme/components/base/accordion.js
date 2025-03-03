@@ -4,14 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {defineRecipe} from '@chakra-ui/react'
-
-export default defineRecipe({
-    name: 'Accordion',
-    description: 'An accordion component for collapsible content',
-    base: {
+export default {
+    baseStyle: {
         button: {
             paddingLeft: 0,
+
             _hover: {
                 background: 'none'
             }
@@ -21,4 +18,4 @@ export default defineRecipe({
             paddingBottom: 0
         }
     }
-})
+}

@@ -4,10 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-
-// this file is used for generic styles that are applied globally
 export default {
-    globalCss: {
+    global: {
         'html, body': {
             backgroundColor: 'white',
             color: 'gray.900'

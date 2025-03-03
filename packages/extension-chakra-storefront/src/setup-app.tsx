@@ -46,7 +46,6 @@ class ChakraStorefront extends ApplicationExtension<Config> {
             withCommerceSdkReact
         ]
 
-        console.log('requiredHOCs', requiredHOCs)
         return applyHOCs(App, requiredHOCs)
     }
 
@@ -106,7 +105,6 @@ class ChakraStorefront extends ApplicationExtension<Config> {
             //     component: Pages.ProductList
             // }
         ].filter((route) => route.path !== false)
-        console.log('extensionRoutes', extensionRoutes)
         return [...routes, ...(extensionRoutes as RouteProps[])]
     }
 
