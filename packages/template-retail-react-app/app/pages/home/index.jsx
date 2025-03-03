@@ -21,7 +21,7 @@ import {
     Stack,
     Container,
     Link
-} from '@salesforce/retail-react-app/app/components/shared/ui'
+} from '@chakra-ui/react'
 
 // Project Components
 import Hero from '@salesforce/retail-react-app/app/components/hero'
@@ -35,7 +35,6 @@ import {heroFeatures, features} from '@salesforce/retail-react-app/app/pages/hom
 
 //Hooks
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
-import useDatacloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
 
 // Constants
 import {
@@ -56,7 +55,6 @@ import {useProductSearch} from '@salesforce/commerce-sdk-react'
 const Home = () => {
     const intl = useIntl()
     const einstein = useEinstein()
-    const datacloud = useDatacloud()
     const {pathname} = useLocation()
 
     const {res} = useServerContext()
@@ -81,7 +79,6 @@ const Home = () => {
     /**************** Einstein ****************/
     useEffect(() => {
         einstein.sendViewPage(pathname)
-        datacloud.sendViewPage(pathname)
     }, [])
 
     return (
