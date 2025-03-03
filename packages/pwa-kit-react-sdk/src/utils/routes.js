@@ -44,10 +44,14 @@ export const transformUrlMappingToRoute = (path, urlMapping, component) => {
     }
 }
 
-export const getUrlMapping = async () => {
+export const getUrlMapping = async (path) => {
     // SERVER!
     const seoUrlMappingEnabled = true
     if (!seoUrlMappingEnabled) {
+        return
+    }
+    if (!path === '/category/top-seller') {
+        console.log('getUrlMapping path:', path)
         return
     }
     // DEVELOPER NOTES: Replace with actual getUrlMapping call

@@ -8,6 +8,7 @@
 // Third-Party
 import React from 'react'
 import {RouteProps} from 'react-router-dom'
+import {Request} from 'express'
 
 // Platform Imports
 import {
@@ -76,10 +77,16 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
-    async extendRoutes(routes: RouteProps[]): Promise<RouteProps[]> {
+    async extendRoutes(routes: RouteProps[], req?: Request): Promise<RouteProps[]> {
         // TODO: Get map from config ----
         const {resourceTypeToComponentMap} = this.getConfig()
-        const mapping = await getUrlMapping()
+        console.log('extendRoutes req', req?.path)
+        const path = req?.path
+        if (!path) {
+            console.log('extendRoutes routes (no path)', routes)
+            return routes
+        }
+        const mapping = await getUrlMapping(path)
         if (!mapping) {
             return routes
         }
@@ -94,9 +101,8 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
             route.component?.displayName?.includes(componentDisplayName)
         )?.component
 
-        // TODO get current path from request
-        const path = '/category/top-seller'
         const route = transformUrlMappingToRoute(path, mapping, component)
+        console.log('extendRoutes route', route, routes[0])
         return [route, ...routes]
     }
 

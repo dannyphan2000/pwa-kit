@@ -402,7 +402,7 @@ export const routeComponent = (Wrapped, isPage, locals) => {
  *
  * @private
  */
-export const getRoutes = async (locals = {}) => {
+export const getRoutes = async (locals = {}, req = {}) => {
     let _routes = routes
     const {applicationExtensions = []} = locals
     if (typeof routes === 'function') {
@@ -411,7 +411,7 @@ export const getRoutes = async (locals = {}) => {
 
     // Call the `extendRoutes` function for all the Application Extensions.
     for (const applicationExtension of applicationExtensions) {
-        _routes = await applicationExtension.extendRoutes(_routes)
+        _routes = await applicationExtension.extendRoutes(_routes, req)
     }
 
     const allRoutes = [

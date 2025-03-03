@@ -139,7 +139,7 @@ export const render = async (req, res, next) => {
         locals: res.locals
     })
 
-    let routes = await getRoutes(res.locals)
+    let routes = await getRoutes(res.locals, req)
 
     const [pathname] = req.originalUrl.split('?')
 
