@@ -406,7 +406,7 @@ export const getRoutes = async (locals = {}, req = {}) => {
     let _routes = routes
     const {applicationExtensions = []} = locals
     if (typeof routes === 'function') {
-        _routes = routes()
+        _routes = await routes(locals)
     }
 
     // Call the `extendRoutes` function for all the Application Extensions.

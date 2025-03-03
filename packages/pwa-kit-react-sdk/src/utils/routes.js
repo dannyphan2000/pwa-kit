@@ -5,8 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
-import {routeComponent} from '../ssr/universal/components/route-component'
+import React from 'react'
 
 /**
  * Transforms a URL mapping from the Shopper Search getUrlMapping API to a routes config.
@@ -50,7 +49,7 @@ export const getUrlMapping = async (path) => {
     if (!seoUrlMappingEnabled) {
         return
     }
-    if (!path === '/category/top-seller') {
+    if (path !== '/category/top-seller') {
         console.log('getUrlMapping path:', path)
         return
     }

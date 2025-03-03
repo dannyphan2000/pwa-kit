@@ -26,7 +26,6 @@ export const useRoutesContext = () => useContext(RoutesContext)
 const Switch = (props) => {
     const {error, appState, routes, App} = props
     const [_routes, setRoutes] = useState(routes)
-    console.log('JINSU Switch/index.jsx routes', routes)
     return (
         <UIDReset>
             <AppErrorBoundary error={error}>
