@@ -25,6 +25,7 @@ import {
 
 // Local Imports
 import {Config} from './types'
+import {SerializedRoute} from './types/routes'
 
 // Pages
 import Sample from './pages/sample'
@@ -83,8 +84,37 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
         console.log('extendRoutes req', req?.path)
         const path = req?.path
         if (!path) {
-            console.log('extendRoutes routes (no path)', routes)
-            return routes
+            // Client
+            // console.log('extendRoutes routes (no path)', routes)
+            const _routes = window.__CONFIG__.app.routes
+            const configuredRoutes = await Promise.all(
+                _routes.map(async ({path, componentName, componentProps}: SerializedRoute) => {
+                    // DEVELOPER NOTE: We previously tried to dynamically load the component using the path to map to the
+                    // filename and use import, but I couldn't get that to work. So here we are using the original routes
+                    // array to find the component for a given path from the serialized route config. It doesn't completely
+                    // work as it will remove the configured routes as they don't match the path. This should be done in
+                    // another way.
+                    let Component = routes.find((route) =>
+                        route.component?.displayName?.includes(componentName)
+                    )?.component
+                    if (!Component) {
+                        // TODO: Error handling if given component couldn't be found
+                        return
+                    }
+
+                    if (componentProps) {
+                        Component = () => <Component {...componentProps} />
+                    }
+                    return {
+                        path,
+                        exact: true,
+                        Component
+                    }
+                })
+            )
+            // TODO: do I need to configureRoutes here for locals? My guess is no because chakra-storerfront does it beforehand
+
+            return configuredRoutes
         }
         const mapping = await getUrlMapping(path)
         if (!mapping) {
