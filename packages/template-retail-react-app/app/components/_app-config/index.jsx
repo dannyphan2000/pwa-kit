@@ -15,7 +15,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import {ChakraProvider} from '@chakra-ui/react'
+import {ChakraProvider} from '@salesforce/retail-react-app/app/components/shared/ui'
 
 // Removes focus for non-keyboard interactions for the whole application
 import 'focus-visible/dist/focus-visible'
@@ -35,7 +35,7 @@ import {CommerceApiProvider} from '@salesforce/commerce-sdk-react'
 import {withReactQuery} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/with-react-query'
 import {useCorrelationId} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
-console.log('theme', theme)
+import {DEFAULT_DNT_STATE} from '@salesforce/retail-react-app/app/constants'
 /**
  * Use the AppConfig component to inject extra arguments into the getProps
  * methods for all Route Components in the app – typically you'd want to do this
@@ -51,7 +51,10 @@ const AppConfig = ({children, locals = {}}) => {
     }
 
     const commerceApiConfig = locals.appConfig.commerceAPI
+
     const appOrigin = useAppOrigin()
+
+    const passwordlessCallback = locals.appConfig.login?.passwordless?.callbackURI
 
     return (
         <CommerceApiProvider
@@ -62,15 +65,17 @@ const AppConfig = ({children, locals = {}}) => {
             locale={locals.locale?.id}
             currency={locals.locale?.preferredCurrency}
             redirectURI={`${appOrigin}/callback`}
+            passwordlessLoginCallbackURI={passwordlessCallback}
             proxy={`${appOrigin}${commerceApiConfig.proxyPath}`}
             headers={headers}
+            defaultDnt={DEFAULT_DNT_STATE}
             // Uncomment 'enablePWAKitPrivateClient' to use SLAS private client login flows.
             // Make sure to also enable useSLASPrivateClient in ssr.js when enabling this setting.
             // enablePWAKitPrivateClient={true}
             logger={createLogger({packageName: 'commerce-sdk-react'})}
         >
             <MultiSiteProvider site={locals.site} locale={locals.locale} buildUrl={locals.buildUrl}>
-                <ChakraProvider value={theme}>{children}</ChakraProvider>
+                <ChakraProvider theme={theme}>{children}</ChakraProvider>
             </MultiSiteProvider>
             <ReactQueryDevtools />
         </CommerceApiProvider>

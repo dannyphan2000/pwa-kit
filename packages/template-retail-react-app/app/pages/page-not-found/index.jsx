@@ -6,13 +6,20 @@
  */
 
 import React from 'react'
-import {Box, Heading, Flex, Button, Stack, Text} from '@chakra-ui/react'
+import {
+    Box,
+    Heading,
+    Flex,
+    Button,
+    Stack,
+    Text
+} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {Helmet} from 'react-helmet'
 import {useIntl} from 'react-intl'
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
-// import {SearchIcon} from '@salesforce/retail-react-app/app/components/icons'
+import {SearchIcon} from '@salesforce/retail-react-app/app/components/icons'
 import {useHistory} from 'react-router-dom'
-// import Link from '@salesforce/retail-react-app/app/components/link'
+import Link from '@salesforce/retail-react-app/app/components/link'
 
 const PageNotFound = () => {
     const intl = useIntl()
@@ -22,8 +29,6 @@ const PageNotFound = () => {
     if (res) {
         res.status(404)
     }
-
-    return <div>Page Not Found</div>
 
     return (
         <Box

@@ -21,30 +21,39 @@ import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
 
 // Chakra
-import {Box, Center,
-    // Fade,
-    Spinner, useDisclosure, useStyleConfig} from '@chakra-ui/react'
+import {
+    Box,
+    Center,
+    Fade,
+    Spinner,
+    useDisclosure,
+    useStyleConfig
+} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
 
 // Contexts
 import {CurrencyProvider} from '@salesforce/retail-react-app/app/contexts'
 
 // Local Project Components
-// import Header from '@salesforce/retail-react-app/app/components/header'
-// import OfflineBanner from '@salesforce/retail-react-app/app/components/offline-banner'
-// import OfflineBoundary from '@salesforce/retail-react-app/app/components/offline-boundary'
+import Header from '@salesforce/retail-react-app/app/components/header'
+import OfflineBanner from '@salesforce/retail-react-app/app/components/offline-banner'
+import OfflineBoundary from '@salesforce/retail-react-app/app/components/offline-boundary'
 import ScrollToTop from '@salesforce/retail-react-app/app/components/scroll-to-top'
-// import Footer from '@salesforce/retail-react-app/app/components/footer'
-// import CheckoutHeader from '@salesforce/retail-react-app/app/pages/checkout/partials/checkout-header'
-// import CheckoutFooter from '@salesforce/retail-react-app/app/pages/checkout/partials/checkout-footer'
-// import {DrawerMenu} from '@salesforce/retail-react-app/app/components/drawer-menu'
-// import {ListMenu, ListMenuContent} from '@salesforce/retail-react-app/app/components/list-menu'
-// import {HideOnDesktop, HideOnMobile} from '@salesforce/retail-react-app/app/components/responsive'
-// import AboveHeader from '@salesforce/retail-react-app/app/components/_app/partials/above-header'
-// import StoreLocatorModal from '@salesforce/retail-react-app/app/components/store-locator-modal'
+import Footer from '@salesforce/retail-react-app/app/components/footer'
+import CheckoutHeader from '@salesforce/retail-react-app/app/pages/checkout/partials/checkout-header'
+import CheckoutFooter from '@salesforce/retail-react-app/app/pages/checkout/partials/checkout-footer'
+import {DrawerMenu} from '@salesforce/retail-react-app/app/components/drawer-menu'
+import {ListMenu, ListMenuContent} from '@salesforce/retail-react-app/app/components/list-menu'
+import {HideOnDesktop, HideOnMobile} from '@salesforce/retail-react-app/app/components/responsive'
+import AboveHeader from '@salesforce/retail-react-app/app/components/_app/partials/above-header'
+import StoreLocatorModal from '@salesforce/retail-react-app/app/components/store-locator-modal'
 // Hooks
-// import {AuthModal, useAuthModal} from '@salesforce/retail-react-app/app/hooks/use-auth-modal'
-// import {AddToCartModalProvider} from '@salesforce/retail-react-app/app/hooks/use-add-to-cart-modal'
+import {AuthModal, useAuthModal} from '@salesforce/retail-react-app/app/hooks/use-auth-modal'
+import {
+    DntNotification,
+    useDntNotification
+} from '@salesforce/retail-react-app/app/hooks/use-dnt-notification'
+import {AddToCartModalProvider} from '@salesforce/retail-react-app/app/hooks/use-add-to-cart-modal'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 import {useCurrentBasket} from '@salesforce/retail-react-app/app/hooks/use-current-basket'
@@ -78,40 +87,40 @@ const PlaceholderComponent = () => (
     </Center>
 )
 
-// const DrawerMenuItemWithData = withCommerceSdkReact(
-//     ({itemComponent: ItemComponent, data, ...rest}) => (
-//         <Fade in={true}>
-//             <ItemComponent {...rest} item={data} itemComponent={DrawerMenuItemWithData} />
-//         </Fade>
-//     ),
-//     {
-//         hook: useCategory,
-//         queryOptions: ({item}) => ({
-//             parameters: {
-//                 id: item.id
-//             }
-//         }),
-//         placeholder: PlaceholderComponent
-//     }
-// )
+const DrawerMenuItemWithData = withCommerceSdkReact(
+    ({itemComponent: ItemComponent, data, ...rest}) => (
+        <Fade in={true}>
+            <ItemComponent {...rest} item={data} itemComponent={DrawerMenuItemWithData} />
+        </Fade>
+    ),
+    {
+        hook: useCategory,
+        queryOptions: ({item}) => ({
+            parameters: {
+                id: item.id
+            }
+        }),
+        placeholder: PlaceholderComponent
+    }
+)
 
-// const ListMenuContentWithData = withCommerceSdkReact(
-//     ({data, ...rest}) => (
-//         <Fade in={true}>
-//             <ListMenuContent {...rest} item={data} />
-//         </Fade>
-//     ),
-//     {
-//         hook: useCategory,
-//         queryOptions: ({item}) => ({
-//             parameters: {
-//                 id: item.id,
-//                 levels: 2
-//             }
-//         }),
-//         placeholder: PlaceholderComponent
-//     }
-// )
+const ListMenuContentWithData = withCommerceSdkReact(
+    ({data, ...rest}) => (
+        <Fade in={true}>
+            <ListMenuContent {...rest} item={data} />
+        </Fade>
+    ),
+    {
+        hook: useCategory,
+        queryOptions: ({item}) => ({
+            parameters: {
+                id: item.id,
+                levels: 2
+            }
+        }),
+        placeholder: PlaceholderComponent
+    }
+)
 
 const App = (props) => {
     const {children} = props
@@ -124,11 +133,12 @@ const App = (props) => {
     const activeData = useActiveData()
     const history = useHistory()
     const location = useLocation()
-    // const authModal = useAuthModal()
+    const authModal = useAuthModal()
+    const dntNotification = useDntNotification()
     const {site, locale, buildUrl} = useMultiSite()
 
     const [isOnline, setIsOnline] = useState(true)
-    // const styles = useStyleConfig('App')
+    const styles = useStyleConfig('App')
     const {isOpen, onOpen, onClose} = useDisclosure()
     const {
         isOpen: isOpenStoreLocator,
@@ -271,7 +281,7 @@ const App = (props) => {
     }, [location])
 
     return (
-        <Box className="sf-app">
+        <Box className="sf-app" {...styles.container}>
             <StorefrontPreview getToken={getTokenWhenReady}>
                 <Helmet>
                     {ACTIVE_DATA_ENABLED && (
@@ -343,8 +353,82 @@ const App = (props) => {
                         <ScrollToTop />
 
                         <Box id="app" display="flex" flexDirection="column" flex={1}>
-                            {/*<SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>*/}
-                            <div>{children}</div>
+                            <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>
+                            <StoreLocatorModal
+                                isOpen={isOpenStoreLocator}
+                                onClose={onCloseStoreLocator}
+                            />
+                            <Box {...styles.headerWrapper}>
+                                {!isCheckout ? (
+                                    <>
+                                        <AboveHeader />
+                                        <Header
+                                            onMenuClick={onOpen}
+                                            onLogoClick={onLogoClick}
+                                            onMyCartClick={onCartClick}
+                                            onMyAccountClick={onAccountClick}
+                                            onWishlistClick={onWishlistClick}
+                                            onStoreLocatorClick={onOpenStoreLocator}
+                                        >
+                                            <HideOnDesktop>
+                                                <DrawerMenu
+                                                    isOpen={isOpen}
+                                                    onClose={onClose}
+                                                    onLogoClick={onLogoClick}
+                                                    root={
+                                                        categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]
+                                                    }
+                                                    itemsKey="categories"
+                                                    itemsCountKey="onlineSubCategoriesCount"
+                                                    itemComponent={DrawerMenuItemWithData}
+                                                />
+                                            </HideOnDesktop>
+
+                                            <HideOnMobile>
+                                                <ListMenu
+                                                    root={
+                                                        categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]
+                                                    }
+                                                    itemsKey="categories"
+                                                    itemsCountKey="onlineSubCategoriesCount"
+                                                    contentComponent={ListMenuContentWithData}
+                                                />
+                                            </HideOnMobile>
+                                        </Header>
+                                    </>
+                                ) : (
+                                    <CheckoutHeader />
+                                )}
+                            </Box>
+                            {!isOnline && <OfflineBanner />}
+                            <AddToCartModalProvider>
+                                <SkipNavContent
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        flex: 1,
+                                        outline: 0
+                                    }}
+                                >
+                                    <Box
+                                        as="main"
+                                        id="app-main"
+                                        role="main"
+                                        display="flex"
+                                        flexDirection="column"
+                                        flex="1"
+                                    >
+                                        <OfflineBoundary isOnline={false}>
+                                            {children}
+                                        </OfflineBoundary>
+                                    </Box>
+                                </SkipNavContent>
+
+                                {!isCheckout ? <Footer /> : <CheckoutFooter />}
+
+                                <AuthModal {...authModal} />
+                                <DntNotification {...dntNotification} />
+                            </AddToCartModalProvider>
                         </Box>
                     </CurrencyProvider>
                 </IntlProvider>

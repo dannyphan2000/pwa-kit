@@ -20,21 +20,22 @@ import {
     Flex,
     Stack,
     Container,
-    Link, useRecipe
-} from '@chakra-ui/react'
+    Link
+} from '@salesforce/retail-react-app/app/components/shared/ui'
 
 // Project Components
-// import Hero from '@salesforce/retail-react-app/app/components/hero'
-// import Seo from '@salesforce/retail-react-app/app/components/seo'
-// import Section from '@salesforce/retail-react-app/app/components/section'
-// import ProductScroller from '@salesforce/retail-react-app/app/components/product-scroller'
+import Hero from '@salesforce/retail-react-app/app/components/hero'
+import Seo from '@salesforce/retail-react-app/app/components/seo'
+import Section from '@salesforce/retail-react-app/app/components/section'
+import ProductScroller from '@salesforce/retail-react-app/app/components/product-scroller'
 
 // Others
 import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
-// import {heroFeatures, features} from '@salesforce/retail-react-app/app/pages/home/data'
+import {heroFeatures, features} from '@salesforce/retail-react-app/app/pages/home/data'
 
 //Hooks
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
+import useDatacloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
 
 // Constants
 import {
@@ -55,6 +56,7 @@ import {useProductSearch} from '@salesforce/commerce-sdk-react'
 const Home = () => {
     const intl = useIntl()
     const einstein = useEinstein()
+    const datacloud = useDatacloud()
     const {pathname} = useLocation()
 
     const {res} = useServerContext()
@@ -79,24 +81,8 @@ const Home = () => {
     /**************** Einstein ****************/
     useEffect(() => {
         einstein.sendViewPage(pathname)
+        datacloud.sendViewPage(pathname)
     }, [])
-
-    return (
-        <Box>
-            <Button
-                as={Link}
-                href="https://developer.salesforce.com/docs/commerce/pwa-kit-managed-runtime/guide/getting-started.html"
-                target="_blank"
-                width={{base: 'full', md: 'inherit'}}
-                paddingX={7}
-                _hover={{textDecoration: 'none'}}
-            >
-                <FormattedMessage defaultMessage="Get started" id="home.link.get_started" />
-            </Button>
-            <Button>Solid</Button>
-
-        </Box>
-    )
 
     return (
         <Box data-testid="home-page" layerStyle="page">
@@ -130,8 +116,6 @@ const Home = () => {
                                 id="home.link.get_started"
                             />
                         </Button>
-                        <Button variant="solid">Solid</Button>
-
                     </Stack>
                 }
             />
