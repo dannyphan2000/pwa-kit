@@ -73,7 +73,7 @@ const ListMenu = ({
         >
             <Flex {...baseStyle.container}>
                 {items ? (
-                    <Stack direction={'row'} spacing={0} {...baseStyle.stackContainer}>
+                    <Stack direction={'row'} gap={0} {...baseStyle.stackContainer}>
                         {items?.map?.((item) => {
                             const {id, name} = item
                             const itemsCount = item[itemsCountKey] || item[itemsKey]?.length || 0

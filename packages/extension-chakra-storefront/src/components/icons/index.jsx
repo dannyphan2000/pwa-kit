@@ -7,7 +7,7 @@
 import React, {forwardRef, useContext} from 'react'
 import {defineMessage, IntlContext} from 'react-intl'
 import PropTypes from 'prop-types'
-import {Icon, useTheme} from '@chakra-ui/react'
+import {Icon, useToken} from '@chakra-ui/react'
 
 // Our own SVG imports. These will be extracted to a single sprite sheet by the
 // svg-sprite-loader webpack plugin at build time and injected in the <body> tag
@@ -98,7 +98,6 @@ export const icon = (name, passProps, localizationAttributes) => {
         .replace(/(?:^|[\s-/])\w/g, (match) => match.toUpperCase())
         .replace(/-/g, '')
     const component = forwardRef((props, ref) => {
-        const theme = useTheme()
         // NOTE: We want to avoid `useIntl` here because that throws when <IntlProvider> is not in
         // the component ancestry, but we only enforce `intl` if we have `localizationAttributes`.
         let intl = useContext(IntlContext)
@@ -118,9 +117,8 @@ export const icon = (name, passProps, localizationAttributes) => {
                 passProps[key] = intl.formatMessage(localizationAttributes[key])
             })
         }
-        const baseStyle = theme?.components?.Icon?.baseStyle
         return (
-            <Icon ref={ref} role="img" aria-label={name} {...baseStyle} {...props} {...passProps}>
+            <Icon ref={ref} role="img" aria-label={name} as="svg" {...passProps} {...props}>
                 <use role="presentation" xlinkHref={`#${name}`} />
             </Icon>
         )

@@ -260,7 +260,7 @@ const Header = ({
                                 </PopoverHeader>
                                 <PopoverBody>
                                     <Box as="nav">
-                                        <Stack spacing={0} as="ul" data-testid="account-detail-nav">
+                                        <Stack gap={0} as="ul" data-testid="account-detail-nav">
                                             {navLinks.map((link) => {
                                                 const LinkIcon = link.icon
                                                 return (

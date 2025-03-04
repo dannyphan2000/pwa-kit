@@ -14,7 +14,7 @@ const ProfileFields = ({form, prefix = ''}) => {
     const fields = useProfileFields({form, prefix})
 
     return (
-        <Stack spacing={5}>
+        <Stack gap={5}>
             <SimpleGrid columns={[1, 1, 1, 2]} spacing={5}>
                 <Field {...fields.firstName} />
                 <Field {...fields.lastName} />

@@ -20,32 +20,26 @@ import {
     Flex,
     Stack,
     Container,
-    Link,
-    useRecipe
+    Link
 } from '@chakra-ui/react'
 
 // Project Components
-// import Hero from '@salesforce/retail-react-app/app/components/hero'
-// import Seo from '@salesforce/retail-react-app/app/components/seo'
-// import Section from '@salesforce/retail-react-app/app/components/section'
-// import ProductScroller from '@salesforce/retail-react-app/app/components/product-scroller'
+import Hero from '../../components/hero'
+import Seo from '../../components/seo'
+import Section from '../../components/section'
+// import ProductScroller from '../../components/product-scroller'
 
 // Others
-import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
-// import {heroFeatures, features} from '@salesforce/retail-react-app/app/pages/home/data'
+import {getStaticAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
+import {heroFeatures, features} from '../../pages/home/data'
 
 //Hooks
-import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
+import useEinstein from '../../hooks/use-einstein'
 
 // Constants
-import {
-    HOME_SHOP_PRODUCTS_CATEGORY_ID,
-    HOME_SHOP_PRODUCTS_LIMIT,
-    MAX_CACHE_AGE,
-    STALE_WHILE_REVALIDATE
-} from '@salesforce/retail-react-app/app/constants'
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useProductSearch} from '@salesforce/commerce-sdk-react'
+import {useExtensionConfig} from '../../hooks'
 
 /**
  * This is the home page for Retail React App.
@@ -57,46 +51,34 @@ const Home = () => {
     const intl = useIntl()
     const einstein = useEinstein()
     const {pathname} = useLocation()
-
-    const {res} = useServerContext()
-    if (res) {
-        res.set(
-            'Cache-Control',
-            `s-maxage=${MAX_CACHE_AGE}, stale-while-revalidate=${STALE_WHILE_REVALIDATE}`
-        )
-    }
-
-    const {data: productSearchResult, isLoading} = useProductSearch({
-        parameters: {
-            allImages: true,
-            allVariationProperties: true,
-            expand: ['promotions', 'variations', 'prices', 'images', 'custom_properties'],
-            limit: HOME_SHOP_PRODUCTS_LIMIT,
-            perPricebook: true,
-            refine: [`cgid=${HOME_SHOP_PRODUCTS_CATEGORY_ID}`, 'htype=master']
-        }
-    })
-
+    // const {
+    //     pages: {Home: homeConfig},
+    //     maxCacheAge: MAX_CACHE_AGE,
+    //     staleWhileRevalidate: STALE_WHILE_REVALIDATE
+    // } = useExtensionConfig()
+    // const {res} = useServerContext()
+    // if (res) {
+    //     res.set(
+    //         'Cache-Control',
+    //         `s-maxage=${MAX_CACHE_AGE}, stale-while-revalidate=${STALE_WHILE_REVALIDATE}`
+    //     )
+    // }
+    //
+    // const {data: productSearchResult, isLoading} = useProductSearch({
+    //     parameters: {
+    //         allImages: true,
+    //         allVariationProperties: true,
+    //         expand: ['promotions', 'variations', 'prices', 'images', 'custom_properties'],
+    //         limit: homeConfig.productLimit,
+    //         perPricebook: true,
+    //         refine: [`cgid=${homeConfig.mainCategory}`, 'htype=master']
+    //     }
+    // })
+    //
     /**************** Einstein ****************/
     useEffect(() => {
         einstein.sendViewPage(pathname)
     }, [])
-
-    return (
-        <Box>
-            <Button
-                as={Link}
-                href="https://developer.salesforce.com/docs/commerce/pwa-kit-managed-runtime/guide/getting-started.html"
-                target="_blank"
-                width={{base: 'full', md: 'inherit'}}
-                paddingX={7}
-                _hover={{textDecoration: 'none'}}
-            >
-                <FormattedMessage defaultMessage="Get started" id="home.link.get_started" />
-            </Button>
-            <Button>Solid</Button>
-        </Box>
-    )
 
     return (
         <Box data-testid="home-page" layerStyle="page">
@@ -112,11 +94,13 @@ const Home = () => {
                     id: 'home.title.react_starter_store'
                 })}
                 img={{
-                    src: getAssetUrl('static/img/hero.png'),
+                    src: getStaticAssetUrl('img/hero.png', {
+                        appExtensionPackageName: '@salesforce/extension-chakra-storefront'
+                    }),
                     alt: 'npx pwa-kit-create-app'
                 }}
                 actions={
-                    <Stack spacing={{base: 4, sm: 6}} direction={{base: 'column', sm: 'row'}}>
+                    <Stack gap={{base: 4, sm: 6}} direction={{base: 'column', sm: 'row'}}>
                         <Button
                             as={Link}
                             href="https://developer.salesforce.com/docs/commerce/pwa-kit-managed-runtime/guide/getting-started.html"
@@ -130,7 +114,6 @@ const Home = () => {
                                 id="home.link.get_started"
                             />
                         </Button>
-                        <Button variant="solid">Solid</Button>
                     </Stack>
                 }
             />
@@ -182,58 +165,58 @@ const Home = () => {
                 </SimpleGrid>
             </Section>
 
-            {productSearchResult && (
-                <Section
-                    padding={4}
-                    paddingTop={16}
-                    title={intl.formatMessage({
-                        defaultMessage: 'Shop Products',
-                        id: 'home.heading.shop_products'
-                    })}
-                    subtitle={intl.formatMessage(
-                        {
-                            defaultMessage:
-                                'This section contains content from the catalog. {docLink} on how to replace it.',
-                            id: 'home.description.shop_products',
-                            description:
-                                '{docLink} is a html button that links the user to https://sfdc.co/business-manager-manage-catalogs'
-                        },
-                        {
-                            docLink: (
-                                <Link
-                                    target="_blank"
-                                    href={'https://sfdc.co/business-manager-manage-catalogs'}
-                                    textDecoration={'none'}
-                                    position={'relative'}
-                                    _after={{
-                                        position: 'absolute',
-                                        content: `""`,
-                                        height: '2px',
-                                        bottom: '-2px',
-                                        margin: '0 auto',
-                                        left: 0,
-                                        right: 0,
-                                        background: 'gray.700'
-                                    }}
-                                    _hover={{textDecoration: 'none'}}
-                                >
-                                    {intl.formatMessage({
-                                        defaultMessage: 'Read docs',
-                                        id: 'home.link.read_docs'
-                                    })}
-                                </Link>
-                            )
-                        }
-                    )}
-                >
-                    <Stack pt={8} spacing={16}>
-                        <ProductScroller
-                            products={productSearchResult?.hits}
-                            isLoading={isLoading}
-                        />
-                    </Stack>
-                </Section>
-            )}
+            {/*{productSearchResult && (*/}
+            {/*    <Section*/}
+            {/*        padding={4}*/}
+            {/*        paddingTop={16}*/}
+            {/*        title={intl.formatMessage({*/}
+            {/*            defaultMessage: 'Shop Products',*/}
+            {/*            id: 'home.heading.shop_products'*/}
+            {/*        })}*/}
+            {/*        subtitle={intl.formatMessage(*/}
+            {/*            {*/}
+            {/*                defaultMessage:*/}
+            {/*                    'This section contains content from the catalog. {docLink} on how to replace it.',*/}
+            {/*                id: 'home.description.shop_products',*/}
+            {/*                description:*/}
+            {/*                    '{docLink} is a html button that links the user to https://sfdc.co/business-manager-manage-catalogs'*/}
+            {/*            },*/}
+            {/*            {*/}
+            {/*                docLink: (*/}
+            {/*                    <Link*/}
+            {/*                        target="_blank"*/}
+            {/*                        href={'https://sfdc.co/business-manager-manage-catalogs'}*/}
+            {/*                        textDecoration={'none'}*/}
+            {/*                        position={'relative'}*/}
+            {/*                        _after={{*/}
+            {/*                            position: 'absolute',*/}
+            {/*                            content: `""`,*/}
+            {/*                            height: '2px',*/}
+            {/*                            bottom: '-2px',*/}
+            {/*                            margin: '0 auto',*/}
+            {/*                            left: 0,*/}
+            {/*                            right: 0,*/}
+            {/*                            background: 'gray.700'*/}
+            {/*                        }}*/}
+            {/*                        _hover={{textDecoration: 'none'}}*/}
+            {/*                    >*/}
+            {/*                        {intl.formatMessage({*/}
+            {/*                            defaultMessage: 'Read docs',*/}
+            {/*                            id: 'home.link.read_docs'*/}
+            {/*                        })}*/}
+            {/*                    </Link>*/}
+            {/*                )*/}
+            {/*            }*/}
+            {/*        )}*/}
+            {/*    >*/}
+            {/*        <Stack pt={8} gap={16}>*/}
+            {/*            <ProductScroller*/}
+            {/*                products={productSearchResult?.hits}*/}
+            {/*                isLoading={isLoading}*/}
+            {/*            />*/}
+            {/*        </Stack>*/}
+            {/*    </Section>*/}
+            {/*)}*/}
 
             <Section
                 padding={4}

@@ -174,7 +174,7 @@ const Account = () => {
                 </Accordion>
 
                 {/* large screen nav sidebar */}
-                <Stack display={{base: 'none', lg: 'flex'}} spacing={4}>
+                <Stack display={{base: 'none', lg: 'flex'}} gap={4}>
                     {showLoading && <LoadingSpinner wrapperStyles={{height: '100vh'}} />}
 
                     <Heading as="h6" fontSize="18px">

@@ -111,7 +111,7 @@ const AccountOrderHistory = () => {
     }, [customer, searchParams.offset])
 
     return (
-        <Stack spacing={4} data-testid="account-order-history-page">
+        <Stack gap={4} data-testid="account-order-history-page">
             <Stack>
                 <Heading as="h1" fontSize="2xl" tabIndex="0" ref={headingRef}>
                     <FormattedMessage
@@ -123,8 +123,8 @@ const AccountOrderHistory = () => {
 
             {isLoading ? (
                 [1, 2, 3].map((i) => (
-                    <Stack key={i} spacing={4} layerStyle="cardBordered">
-                        <Stack spacing={2}>
+                    <Stack key={i} gap={4} layerStyle="cardBordered">
+                        <Stack gap={2}>
                             <Skeleton h="20px" w="112px" />
                             <Skeleton h="20px" w="200px" />
                         </Stack>
@@ -137,10 +137,10 @@ const AccountOrderHistory = () => {
                     </Stack>
                 ))
             ) : (
-                <Stack spacing={4}>
+                <Stack gap={4}>
                     {orders?.map((order) => {
                         return (
-                            <Stack key={order.orderNo} spacing={4} layerStyle="cardBordered">
+                            <Stack key={order.orderNo} gap={4} layerStyle="cardBordered">
                                 <Box>
                                     <Flex justifyContent="space-between">
                                         <Text fontWeight="bold" fontSize="lg">
@@ -191,7 +191,7 @@ const AccountOrderHistory = () => {
                                 <Stack
                                     direction={{base: 'column', lg: 'row'}}
                                     alignItems={{base: 'flex-start', lg: 'center'}}
-                                    spacing={{base: '2px', lg: 3}}
+                                    gap={{base: '2px', lg: 3}}
                                     divider={
                                         <Divider
                                             visibility={{base: 'hidden', lg: 'visible'}}

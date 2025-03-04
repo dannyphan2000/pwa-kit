@@ -13,7 +13,7 @@ import loadable from '@loadable/component'
 // import {Skeleton} from '@chakra-ui/react'
 //
 // // Page fallback
-// const fallback = <Skeleton height="75vh" width="100%" />
+const fallback = <div style={{height: '75vh', width: '100%'}} />
 //
 // // Page Loadables
 // const Account = loadable(() => import('overridable!./account'), {fallback})

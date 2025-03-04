@@ -7,49 +7,50 @@
 import {createSystem, defaultConfig, defineConfig} from '@chakra-ui/react'
 
 // Foundational style overrides
-import styles from '@salesforce/retail-react-app/app/theme/foundations/styles'
-import colors from '@salesforce/retail-react-app/app/theme/foundations/colors'
-import gradients from '@salesforce/retail-react-app/app/theme/foundations/gradients'
-import sizes from '@salesforce/retail-react-app/app/theme/foundations/sizes'
-import space from '@salesforce/retail-react-app/app/theme/foundations/space'
-import layerStyles from '@salesforce/retail-react-app/app/theme/foundations/layerStyles'
-import shadows from '@salesforce/retail-react-app/app/theme/foundations/shadows'
+import styles from './foundations/styles'
+import colors from './foundations/colors'
+import gradients from './foundations/gradients'
+import sizes from './foundations/sizes'
+import space from './foundations/space'
+import layerStyles from './foundations/layerStyles'
+console.log('layerStyles', layerStyles)
+import shadows from './foundations/shadows'
 
 // Base component style overrides
-// import Alert from '@salesforce/retail-react-app/app/theme/components/base/alert'
-// import Accordion from '@salesforce/retail-react-app/app/theme/components/base/accordion'
-// import Badge from '@salesforce/retail-react-app/app/theme/components/base/badge'
-import buttonRecipe from '@salesforce/retail-react-app/app/theme/components/base/button.recipe'
-// import Checkbox from '@salesforce/retail-react-app/app/theme/components/base/checkbox'
-// import Container from '@salesforce/retail-react-app/app/theme/components/base/container'
-// import Drawer from '@salesforce/retail-react-app/app/theme/components/base/drawer'
-// import FormLabel from '@salesforce/retail-react-app/app/theme/components/base/formLabel'
-// import Icon from '@salesforce/retail-react-app/app/theme/components/base/icon'
-// import Input from '@salesforce/retail-react-app/app/theme/components/base/input'
-// import Modal from '@salesforce/retail-react-app/app/theme/components/base/modal'
-// import Radio from '@salesforce/retail-react-app/app/theme/components/base/radio'
-// import Select from '@salesforce/retail-react-app/app/theme/components/base/select'
-// import Skeleton from '@salesforce/retail-react-app/app/theme/components/base/skeleton'
-// import Tooltip from '@salesforce/retail-react-app/app/theme/components/base/tooltip'
-// import Popover from '@salesforce/retail-react-app/app/theme/components/base/popover'
+import alert from './components/base/alert'
+import accordion from './components/base/accordion'
+import badge from './components/base/badge'
+import button from './components/base/button'
+import checkbox from './components/base/checkbox'
+import container from './components/base/container'
+import drawer from './components/base/drawer'
+import formLabel from './components/base/formLabel'
+import icon from './components/base/icon'
+import input from './components/base/input'
+import modal from './components/base/modal'
+import radio from './components/base/radio'
+import select from './components/base/select'
+import skeleton from './components/base/skeleton'
+import tooltip from './components/base/tooltip'
+import popover from './components/base/popover'
 //
 // // Project Component style overrides
-// import App from '@salesforce/retail-react-app/app/theme/components/project/_app'
-// import Breadcrumb from '@salesforce/retail-react-app/app/theme/components/project/breadcrumb'
-// import Header from '@salesforce/retail-react-app/app/theme/components/project/header'
-// import ListMenu from '@salesforce/retail-react-app/app/theme/components/project/list-menu'
-// import Footer from '@salesforce/retail-react-app/app/theme/components/project/footer'
-// import CheckoutFooter from '@salesforce/retail-react-app/app/theme/components/project/checkout-footer'
-// import LinksList from '@salesforce/retail-react-app/app/theme/components/project/links-list'
-// import DrawerMenu from '@salesforce/retail-react-app/app/theme/components/project/drawer-menu'
-// import NestedAccordion from '@salesforce/retail-react-app/app/theme/components/project/nested-accordion'
-// import LocaleSelector from '@salesforce/retail-react-app/app/theme/components/project/locale-selector'
-// import OfflineBanner from '@salesforce/retail-react-app/app/theme/components/project/offline-banner'
-// import Pagination from '@salesforce/retail-react-app/app/theme/components/project/pagination'
-// import ProductTile from '@salesforce/retail-react-app/app/theme/components/project/product-tile'
-// import SocialIcons from '@salesforce/retail-react-app/app/theme/components/project/social-icons'
-// import SwatchGroup from '@salesforce/retail-react-app/app/theme/components/project/swatch-group'
-// import ImageGallery from '@salesforce/retail-react-app/app/theme/components/project/image-gallery'
+import appRecipe from './components/project/_app'
+// import Breadcrumb from './components/project/breadcrumb'
+// import Header from './components/project/header'
+// import ListMenu from './components/project/list-menu'
+// import Footer from './components/project/footer'
+// import CheckoutFooter from './components/project/checkout-footer'
+// import LinksList from './components/project/links-list'
+// import DrawerMenu from './components/project/drawer-menu'
+// import NestedAccordion from './components/project/nested-accordion'
+// import LocaleSelector from './components/project/locale-selector'
+// import OfflineBanner from './components/project/offline-banner'
+// import Pagination from './components/project/pagination'
+// import ProductTile from './components/project/product-tile'
+// import SocialIcons from './components/project/social-icons'
+// import SwatchGroup from './components/project/swatch-group'
+// import ImageGallery from './components/project/image-gallery'
 
 // Please refer to the Chakra-Ui theme customization docs found
 // here https://chakra-ui.com/docs/theming/customize-theme to learn
@@ -58,8 +59,8 @@ import buttonRecipe from '@salesforce/retail-react-app/app/theme/components/base
 export const overrides = defineConfig({
     ...styles,
     theme: {
+        layerStyles,
         tokens: {
-            layerStyles,
             colors,
             sizes,
             space,
@@ -67,7 +68,25 @@ export const overrides = defineConfig({
             shadows
         },
         recipes: {
-            buttonRecipe
+            alert,
+            accordion,
+            badge,
+            button,
+            checkbox,
+            container,
+            drawer,
+            formLabel,
+            icon,
+            input,
+            modal,
+            radio,
+            select,
+            skeleton,
+            tooltip,
+            popover
+        },
+        slotRecipes: {
+            app: appRecipe
         }
         // components: {
         //     // base components

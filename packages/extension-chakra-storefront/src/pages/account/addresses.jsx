@@ -74,7 +74,7 @@ const ShippingAddressForm = ({form, hasAddresses, selectedAddressId, toggleEdit,
             })}
         >
             {form.formState.isSubmitting && <LoadingSpinner />}
-            <Stack spacing={6} padding={6}>
+            <Stack gap={6} padding={6}>
                 <Heading as="h3" size="sm">
                     {selectedAddressId ? (
                         <FormattedMessage
@@ -91,7 +91,7 @@ const ShippingAddressForm = ({form, hasAddresses, selectedAddressId, toggleEdit,
                 <Box>
                     <Container variant="form">
                         <form onSubmit={form.handleSubmit(submitForm)}>
-                            <Stack spacing={6}>
+                            <Stack gap={6}>
                                 {form.formState.errors?.global && (
                                     <Alert status="error">
                                         <AlertIcon color="red.600" boxSize={4} />
@@ -260,7 +260,7 @@ const AccountAddresses = () => {
     }
 
     return (
-        <Stack spacing={4} data-testid="account-addresses-page">
+        <Stack gap={4} data-testid="account-addresses-page">
             <Heading as="h1" fontSize="2xl" tabIndex="0" ref={headingRef}>
                 <FormattedMessage
                     defaultMessage="Addresses"
@@ -269,11 +269,11 @@ const AccountAddresses = () => {
             </Heading>
 
             {isLoading && (
-                <SimpleGrid columns={[1, 2, 2, 2, 3]} spacing={4}>
+                <SimpleGrid columns={[1, 2, 2, 2, 3]} gap={4}>
                     {new Array(DEFAULT_SKELETON_COUNT).fill().map((_, index) => {
                         return (
                             <ActionCard key={index}>
-                                <Stack spacing={2} marginBottom={7}>
+                                <Stack gap={2} marginBottom={7}>
                                     <Skeleton height="23px" width="120px" />
 
                                     <Skeleton height="23px" width="84px" />

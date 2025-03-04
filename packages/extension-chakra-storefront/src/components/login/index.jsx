@@ -16,7 +16,7 @@ import {noop} from '../../utils/utils'
 const LoginForm = ({submitForm, clickForgotPassword = noop, clickCreateAccount = noop, form}) => {
     return (
         <Fragment>
-            <Stack justify="center" align="center" spacing={8} marginBottom={8}>
+            <Stack justify="center" align="center" gap={8} marginBottom={8}>
                 <BrandLogo width="60px" height="auto" />
                 <Text align="center" fontSize="xl" fontWeight="semibold">
                     <FormattedMessage
@@ -30,7 +30,7 @@ const LoginForm = ({submitForm, clickForgotPassword = noop, clickCreateAccount =
                 onSubmit={form.handleSubmit(submitForm)}
                 data-testid="sf-auth-modal-form"
             >
-                <Stack spacing={8} paddingLeft={4} paddingRight={4}>
+                <Stack gap={8} paddingLeft={4} paddingRight={4}>
                     {form.formState.errors?.global && (
                         <Alert status="error">
                             <AlertIcon color="red.500" boxSize={4} />
@@ -51,7 +51,7 @@ const LoginForm = ({submitForm, clickForgotPassword = noop, clickCreateAccount =
                             </Button>
                         </Box>
                     </Stack>
-                    <Stack spacing={6}>
+                    <Stack gap={6}>
                         <Button
                             type="submit"
                             onClick={() => {
@@ -65,7 +65,7 @@ const LoginForm = ({submitForm, clickForgotPassword = noop, clickCreateAccount =
                             />
                         </Button>
 
-                        <Stack direction="row" spacing={1} justify="center">
+                        <Stack direction="row" gap={1} justify="center">
                             <Text fontSize="sm">
                                 <FormattedMessage
                                     defaultMessage="Don't have an account?"

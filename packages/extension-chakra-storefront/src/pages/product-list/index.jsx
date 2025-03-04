@@ -419,7 +419,7 @@ const ProductList = (props) => {
                         direction="row"
                         justify="flex-start"
                         align="flex-start"
-                        spacing={4}
+                        gap={4}
                         marginBottom={6}
                     >
                         <Flex align="left" width="287px">
@@ -449,7 +449,7 @@ const ProductList = (props) => {
                     </Stack>
 
                     <HideOnDesktop>
-                        <Stack spacing={6}>
+                        <Stack gap={6}>
                             <PageHeader
                                 searchQuery={searchQuery}
                                 category={category}
@@ -461,7 +461,7 @@ const ProductList = (props) => {
                                 direction="row"
                                 justify="flex-start"
                                 align="center"
-                                spacing={1}
+                                gap={1}
                                 height={12}
                                 borderColor="gray.100"
                             >
@@ -469,7 +469,7 @@ const ProductList = (props) => {
                                     <Button
                                         fontSize="sm"
                                         colorScheme="black"
-                                        variant="outline"
+                                        variant="outline-black"
                                         marginRight={2}
                                         display="inline-flex"
                                         leftIcon={<FilterIcon boxSize={5} />}
@@ -487,7 +487,7 @@ const ProductList = (props) => {
                                         fontSize="sm"
                                         marginRight={2}
                                         colorScheme="black"
-                                        variant="outline"
+                                        variant="outline-black"
                                         display="inline-flex"
                                         rightIcon={<ChevronDownIcon boxSize={5} />}
                                         onClick={() => setSortOpen(true)}

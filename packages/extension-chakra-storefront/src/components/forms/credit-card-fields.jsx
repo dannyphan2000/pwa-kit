@@ -60,7 +60,7 @@ const CreditCardFields = ({form, prefix = ''}) => {
 
     return (
         <Box>
-            <Stack spacing={5}>
+            <Stack gap={5}>
                 <Field
                     {...fields.number}
                     formLabel={

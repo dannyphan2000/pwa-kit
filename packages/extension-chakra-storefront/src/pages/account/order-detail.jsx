@@ -77,7 +77,7 @@ const OrderProducts = ({productItems, currency}) => {
                             <ItemVariantProvider variant={variant} currency={currency}>
                                 <Flex width="full" alignItems="flex-start">
                                     <CartItemVariantImage width={['88px', 36]} mr={4} />
-                                    <Stack spacing={1} marginTop="-3px" flex={1}>
+                                    <Stack gap={1} marginTop="-3px" flex={1}>
                                         <CartItemVariantName />
                                         <Flex
                                             width="full"
@@ -132,7 +132,7 @@ const AccountOrderDetail = () => {
     }, [])
 
     return (
-        <Stack spacing={6} data-testid="account-order-details-page">
+        <Stack gap={6} data-testid="account-order-details-page">
             <Stack>
                 <Box>
                     <Button
@@ -155,7 +155,7 @@ const AccountOrderDetail = () => {
                     </Button>
                 </Box>
 
-                <Stack spacing={[1, 2]}>
+                <Stack gap={[1, 2]}>
                     <Heading as="h1" fontSize={['lg', '2xl']} tabIndex="0" ref={headingRef}>
                         <FormattedMessage
                             defaultMessage="Order Details"
@@ -167,7 +167,7 @@ const AccountOrderDetail = () => {
                         <Stack
                             direction={['column', 'row']}
                             alignItems={['flex-start', 'center']}
-                            spacing={[0, 3]}
+                            gap={[0, 3]}
                             divider={
                                 <Divider
                                     visibility={{base: 'hidden', lg: 'visible'}}
@@ -233,7 +233,7 @@ const AccountOrderDetail = () => {
                             </>
                         ) : (
                             <>
-                                <Stack spacing={1}>
+                                <Stack gap={1}>
                                     <Text fontWeight="bold" fontSize="sm">
                                         <FormattedMessage
                                             defaultMessage="Shipping Method"
@@ -275,7 +275,7 @@ const AccountOrderDetail = () => {
                                         </Text>
                                     </Box>
                                 </Stack>
-                                <Stack spacing={1}>
+                                <Stack gap={1}>
                                     <Text fontWeight="bold" fontSize="sm">
                                         <FormattedMessage
                                             defaultMessage="Payment Method"
@@ -299,7 +299,7 @@ const AccountOrderDetail = () => {
                                         </Box>
                                     </Stack>
                                 </Stack>
-                                <Stack spacing={1}>
+                                <Stack gap={1}>
                                     <Text fontWeight="bold" fontSize="sm">
                                         <FormattedMessage
                                             defaultMessage="Shipping Address"
@@ -317,7 +317,7 @@ const AccountOrderDetail = () => {
                                         </Text>
                                     </Box>
                                 </Stack>
-                                <Stack spacing={1}>
+                                <Stack gap={1}>
                                     <Text fontWeight="bold" fontSize="sm">
                                         <FormattedMessage
                                             defaultMessage="Billing Address"
@@ -356,7 +356,7 @@ const AccountOrderDetail = () => {
                 </Grid>
             </Box>
 
-            <Stack spacing={4}>
+            <Stack gap={4}>
                 {!isLoading && (
                     <Text>
                         <FormattedMessage
@@ -367,7 +367,7 @@ const AccountOrderDetail = () => {
                     </Text>
                 )}
 
-                <Stack spacing={4}>
+                <Stack gap={4}>
                     {isLoading ? (
                         [1, 2, 3].map((i) => (
                             <Box
@@ -380,7 +380,7 @@ const AccountOrderDetail = () => {
                                 <Flex width="full" align="flex-start">
                                     <Skeleton boxSize={['88px', 36]} mr={4} />
 
-                                    <Stack spacing={2}>
+                                    <Stack gap={2}>
                                         <Skeleton h="20px" w="112px" />
                                         <Skeleton h="20px" w="84px" />
                                         <Skeleton h="20px" w="140px" />

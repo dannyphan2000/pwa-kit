@@ -301,7 +301,7 @@ export const AddToCartModal = () => {
                                         })}
                                 </Text>
                             </Flex>
-                            <Stack spacing="4">
+                            <Stack gap="4">
                                 <Button as={Link} to="/cart" width="100%" variant="solid">
                                     {intl.formatMessage({
                                         defaultMessage: 'View Cart',
@@ -366,7 +366,7 @@ export const AddToCartModal = () => {
                                 })}
                         </Text>
                     </Flex>
-                    <Stack spacing="4">
+                    <Stack gap="4">
                         <Button as={Link} to="/cart" width="100%" variant="solid">
                             {intl.formatMessage({
                                 defaultMessage: 'View Cart',

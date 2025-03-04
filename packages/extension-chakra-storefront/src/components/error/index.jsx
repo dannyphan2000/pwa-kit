@@ -89,7 +89,7 @@ const Error = (props) => {
                                 </Box>
                             )}
                         </Box>
-                        <Stack direction={['column', 'row']} spacing={4} width={['100%', 'auto']}>
+                        <Stack direction={['column', 'row']} gap={4} width={['100%', 'auto']}>
                             <Button
                                 variant="outline"
                                 bg="white"

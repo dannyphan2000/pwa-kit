@@ -13,7 +13,7 @@ import Field from '../../components/field'
 const LoginFields = ({form, prefix = ''}) => {
     const fields = useLoginFields({form, prefix})
     return (
-        <Stack spacing={5}>
+        <Stack gap={5}>
             <Field {...fields.email} />
             <Field {...fields.password} />
         </Stack>

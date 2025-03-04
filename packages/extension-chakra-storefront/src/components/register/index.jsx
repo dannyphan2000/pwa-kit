@@ -17,9 +17,9 @@ import Link from '../../components/link'
 const RegisterForm = ({submitForm, clickSignIn = noop, form}) => {
     return (
         <Fragment>
-            <Stack justify="center" align="center" spacing={8}>
+            <Stack justify="center" align="center" gap={8}>
                 <BrandLogo width="60px" height="auto" />
-                <Stack spacing={2}>
+                <Stack gap={2}>
                     <Text align="center" fontSize="xl" fontWeight="semibold">
                         <FormattedMessage
                             defaultMessage="Let's get started!"
@@ -38,7 +38,7 @@ const RegisterForm = ({submitForm, clickSignIn = noop, form}) => {
                 onSubmit={form.handleSubmit(submitForm)}
                 data-testid="sf-auth-modal-form-register"
             >
-                <Stack paddingTop={8} spacing={8} paddingLeft={4} paddingRight={4}>
+                <Stack paddingTop={8} gap={8} paddingLeft={4} paddingRight={4}>
                     {form.formState.errors?.global && (
                         <Alert status="error">
                             <AlertIcon color="red.500" boxSize={4} />

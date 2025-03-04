@@ -18,7 +18,7 @@ const Section = ({title, subtitle, actions, maxWidth, children, ...props}) => {
     const sectionMaxWidth = maxWidth || '3xl'
     return (
         <Box as={'section'} paddingBottom="16" {...props}>
-            <Stack spacing={4} as={Container} maxW={sectionMaxWidth} textAlign={'center'}>
+            <Stack gap={4} as={Container} maxW={sectionMaxWidth} textAlign={'center'}>
                 {title && (
                     <Heading as="h2" fontSize={40} textAlign="center">
                         {title}

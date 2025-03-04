@@ -9,8 +9,8 @@ import React, {Fragment, useRef} from 'react'
 import PropTypes from 'prop-types'
 
 // Project Components
-import {ListMenuContent} from '../../components/list-menu/list-menu-content'
-import {ListMenuTrigger} from '../../components/list-menu/list-menu-trigger'
+import {ListMenuContent} from './list-menu-content'
+import {ListMenuTrigger} from './list-menu-trigger'
 
 // Components
 import {

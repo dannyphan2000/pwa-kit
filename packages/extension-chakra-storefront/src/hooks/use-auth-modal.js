@@ -236,7 +236,7 @@ export const AuthModal = ({
         initialView === PASSWORD_VIEW ? onClose() : setCurrentView(LOGIN_VIEW)
 
     const PasswordResetSuccess = () => (
-        <Stack justify="center" align="center" spacing={6}>
+        <Stack justify="center" align="center" gap={6}>
             <BrandLogo width="60px" height="auto" />
             <Text align="center" fontSize="md">
                 <FormattedMessage
@@ -244,7 +244,7 @@ export const AuthModal = ({
                     id="auth_modal.password_reset_success.title.password_reset"
                 />
             </Text>
-            <Stack spacing={6} pt={4}>
+            <Stack gap={6} pt={4}>
                 <Text align="center" fontSize="sm">
                     <FormattedMessage
                         defaultMessage="You will receive an email at <b>{email}</b> with a link to reset your password shortly."

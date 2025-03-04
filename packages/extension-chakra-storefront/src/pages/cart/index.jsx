@@ -523,8 +523,8 @@ const Cart = () => {
                 paddingTop={{base: 8, lg: 8}}
                 paddingBottom={{base: 8, lg: 14}}
             >
-                <Stack spacing={24}>
-                    <Stack spacing={4}>
+                <Stack gap={24}>
+                    <Stack gap={4}>
                         <CartTitle />
 
                         <Grid
@@ -532,7 +532,7 @@ const Cart = () => {
                             gap={{base: 10, xl: 20}}
                         >
                             <GridItem>
-                                <Stack spacing={4}>
+                                <Stack gap={4}>
                                     {basket.productItems?.map((productItem, idx) => {
                                         return (
                                             <ProductItem
@@ -607,7 +607,7 @@ const Cart = () => {
                                 </Box>
                             </GridItem>
                             <GridItem>
-                                <Stack spacing={4}>
+                                <Stack gap={4}>
                                     <OrderSummary
                                         showPromoCodeForm={true}
                                         isEstimate={true}
@@ -621,7 +621,7 @@ const Cart = () => {
                         </Grid>
 
                         {/* Product Recommendations */}
-                        <Stack spacing={16}>
+                        <Stack gap={16}>
                             <RecommendedProducts
                                 title={
                                     <FormattedMessage

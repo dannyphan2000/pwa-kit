@@ -454,7 +454,7 @@ const ProductDetail = () => {
                 <meta name="description" content={product?.pageDescription} />
             </Helmet>
 
-            <Stack spacing={16}>
+            <Stack gap={16}>
                 {isProductASet || isProductABundle ? (
                     <Fragment>
                         <ProductView
@@ -565,7 +565,7 @@ const ProductDetail = () => {
                 )}
 
                 {/* Product Recommendations */}
-                <Stack spacing={16}>
+                <Stack gap={16}>
                     {!isProductASet && (
                         <RecommendedProducts
                             title={

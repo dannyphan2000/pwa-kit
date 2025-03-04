@@ -69,7 +69,7 @@ const ResetPassword = () => {
                         clickSignIn={() => navigate('/login')}
                     />
                 ) : (
-                    <Stack justify="center" align="center" spacing={6}>
+                    <Stack justify="center" align="center" gap={6}>
                         <BrandLogo width="60px" height="auto" />
                         <Text align="center" fontSize="md">
                             <FormattedMessage
@@ -77,7 +77,7 @@ const ResetPassword = () => {
                                 id="reset_password.title.password_reset"
                             />
                         </Text>
-                        <Stack spacing={6} pt={4}>
+                        <Stack gap={6} pt={4}>
                             <Text align="center" fontSize="sm">
                                 <FormattedMessage
                                     defaultMessage="You will receive an email at <b>{email}</b> with a link to reset your password shortly."

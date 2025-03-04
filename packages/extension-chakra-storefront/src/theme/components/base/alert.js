@@ -4,14 +4,26 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-export default {
+import {defineRecipe} from '@chakra-ui/react'
+
+export default defineRecipe({
     variants: {
-        subtle: (props) => ({
-            container: {
-                borderColor: `${props.colorScheme || 'green'}.600`,
-                borderWidth: 1,
-                borderStyle: 'solid'
+        variant: {
+            subtle: {
+                container: {
+                    borderColor: 'green.600',
+                    borderWidth: 1,
+                    borderStyle: 'solid'
+                }
             }
-        })
+
+            //     (props) => ({
+            //     container: {
+            //         borderColor: `${props.colorScheme || 'green'}.600`,
+            //         borderWidth: 1,
+            //         borderStyle: 'solid'
+            //     }
+            // })
+        }
     }
-}
+})

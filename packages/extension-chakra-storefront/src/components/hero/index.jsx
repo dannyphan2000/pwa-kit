@@ -21,12 +21,12 @@ const Hero = ({title, img, actions, ...props}) => {
         >
             <Stack
                 align={'center'}
-                spacing={{base: 8, md: 10}}
+                gap={{base: 8, md: 10}}
                 paddingTop={{base: 12, md: 10}}
                 paddingBottom={{base: 6, md: 10}}
                 direction={{base: 'column', lg: 'row'}}
             >
-                <Stack flex={1} spacing={{base: 5, md: 8}}>
+                <Stack flex={1} gap={{base: 5, md: 8}}>
                     <Heading
                         as="h1"
                         fontSize={{base: '4xl', md: '5xl', lg: '6xl'}}

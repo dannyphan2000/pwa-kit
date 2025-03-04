@@ -144,7 +144,7 @@ const ProfileCard = () => {
             <ToggleCardEdit>
                 <Container variant="form">
                     <form onSubmit={form.handleSubmit(submit)}>
-                        <Stack spacing={6}>
+                        <Stack gap={6}>
                             {form.formState.errors?.global && (
                                 <Alert status="error">
                                     <AlertIcon color="red.500" boxSize={4} />
@@ -280,7 +280,7 @@ const PasswordCard = () => {
             <ToggleCardEdit>
                 <Container variant="form">
                     <form onSubmit={form.handleSubmit(submit)}>
-                        <Stack spacing={6}>
+                        <Stack gap={6}>
                             {form.formState.errors?.root?.global && (
                                 <Alert data-testid="password-update-error" status="error">
                                     <AlertIcon color="red.500" boxSize={4} />
@@ -333,7 +333,7 @@ const AccountDetail = () => {
     }, [])
 
     return (
-        <Stack data-testid="account-detail-page" spacing={6}>
+        <Stack data-testid="account-detail-page" gap={6}>
             <Heading as="h1" fontSize="24px" tabIndex="0" ref={headingRef}>
                 <FormattedMessage
                     defaultMessage="Account Details"
@@ -341,7 +341,7 @@ const AccountDetail = () => {
                 />
             </Heading>
 
-            <Stack spacing={4}>
+            <Stack gap={4}>
                 <ProfileCard />
                 <PasswordCard />
             </Stack>
