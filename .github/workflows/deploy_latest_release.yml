@@ -18,10 +18,17 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check if latest release
-        id: checkRelease
         uses: ./.github/actions/check_if_latest_release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Update Github Outputs
+        id: checkRelease
+        run: |-
+          echo "IS_LATEST_RELEASE=${{ env.IS_LATEST_RELEASE }}" >> "$GITHUB_OUTPUT"
+          echo ${{ env.IS_LATEST_RELEASE }}
+          echo ${{ steps.checkRelease.outputs.test }}
+
 
   # Re-enable this when the PR is ready to be merged
   # deploy-bug-bounty:
