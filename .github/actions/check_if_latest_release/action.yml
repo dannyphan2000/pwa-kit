@@ -22,6 +22,7 @@ runs:
           exit 0
         else
           echo "We are not releasing the latest tag. Stopping deployment workflow."
+          echo "IS_LATEST_RELEASE=false" >> $GITHUB_OUTPUT
           exit 0
         fi
       shell: bash

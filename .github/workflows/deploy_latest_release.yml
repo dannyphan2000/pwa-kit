@@ -69,38 +69,42 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ needs.check-latest-release.outputs.IS_LATEST_RELEASE}} == 'true'
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup node
-        id: setup_node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: "npm"
-
-      - name: Install Monorepo Dependencies
+      - name: Did we trigger?
         run: |-
-          # Install node dependencies
-          node ./scripts/gtime.js monorepo_install npm ci
+          echo "Job started"
 
-      - name: Generate Retail App Demo
-        uses: ./.github/actions/e2e_generate_app
-        with:
-          PROJECT_KEY: "retail-react-app-demo-site"
+      # - name: Checkout
+      #   uses: actions/checkout@v4
 
-      - name: Create MRT credentials file
-        uses: "./.github/actions/create_mrt"
-        with:
-          mobify_user: ${{ secrets.MOBIFY_CLIENT_USER }}
-          mobify_api_key: ${{ secrets.MOBIFY_CLIENT_API_KEY }}
+      # - name: Setup node
+      #   id: setup_node
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 22
+      #     cache: "npm"
 
-      #TODO - change target to production once testing is done
-      - name: Push Bundle to MRT (Demo Site)
-        uses: "./.github/actions/push_to_mrt"
-        with:
-          CWD: "../generated-projects/retail-react-app-demo-site"
-          TARGET: staging
-          PROJECT: scaffold-pwa
-          MESSAGE: "tag ${{ github.event.release.tag_name }}"
-          FLAGS: --wait
+      # - name: Install Monorepo Dependencies
+      #   run: |-
+      #     # Install node dependencies
+      #     node ./scripts/gtime.js monorepo_install npm ci
+
+      # - name: Generate Retail App Demo
+      #   uses: ./.github/actions/e2e_generate_app
+      #   with:
+      #     PROJECT_KEY: "retail-react-app-demo-site"
+
+      # - name: Create MRT credentials file
+      #   uses: "./.github/actions/create_mrt"
+      #   with:
+      #     mobify_user: ${{ secrets.MOBIFY_CLIENT_USER }}
+      #     mobify_api_key: ${{ secrets.MOBIFY_CLIENT_API_KEY }}
+
+      # #TODO - change target to production once testing is done
+      # - name: Push Bundle to MRT (Demo Site)
+      #   uses: "./.github/actions/push_to_mrt"
+      #   with:
+      #     CWD: "../generated-projects/retail-react-app-demo-site"
+      #     TARGET: staging
+      #     PROJECT: scaffold-pwa
+      #     MESSAGE: "tag ${{ github.event.release.tag_name }}"
+      #     FLAGS: --wait
