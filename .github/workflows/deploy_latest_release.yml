@@ -3,7 +3,7 @@ on:
   # For testing - to be removed
   push:
     branches:
-      - 'mrt-test-ci-deploy'
+      - 'deploy-demo-env-on-release'
   # Run this workflow when a new Github release is published
   release:
     types: [released]
@@ -92,11 +92,12 @@ jobs:
           mobify_user: ${{ secrets.MOBIFY_CLIENT_USER }}
           mobify_api_key: ${{ secrets.MOBIFY_CLIENT_API_KEY }}
 
+      #TODO - change target to production once testing is done
       - name: Push Bundle to MRT (Demo Site)
         uses: "./.github/actions/push_to_mrt"
         with:
           CWD: "../generated-projects/retail-react-app-demo-site"
-          TARGET: production
+          TARGET: staging
           PROJECT: scaffold-pwa
           MESSAGE: "tag ${{ github.event.release.tag_name }}"
           FLAGS: --wait
