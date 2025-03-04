@@ -35,7 +35,7 @@ export const getUrlMapping = async (urlSegment, commerceApiConfig) => {
     } else if (urlSegment === '/seo-redirect') {
         mapping = {
             copySourceParams: false,
-            destinationUrl: '/sample-product-redirected',
+            destinationUrl: '/category/top-sellers',
             statusCode: '301'
         }
     } else if (urlSegment === '/seo-content') {

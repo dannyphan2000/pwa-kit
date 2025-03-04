@@ -20,7 +20,7 @@ module.exports = {
               category: 'ProductList',
               product: 'ProductDetail',
               // TODO: what component should content be mapped to?
-              content: 'ProductList'
+              content_asset: 'ProductList'
             }
         }]
       ]

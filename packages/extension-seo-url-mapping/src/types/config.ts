@@ -11,7 +11,7 @@ import type {ApplicationExtensionConfig} from '@salesforce/pwa-kit-extension-sdk
 type ResourceTypeToComponentMap = {
     category: string
     product: string
-    content: string
+    content_asset: string
 }
 
 /**

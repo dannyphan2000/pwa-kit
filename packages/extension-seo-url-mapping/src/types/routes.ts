@@ -8,6 +8,5 @@
 export type SerializedRoute = {
     path: string
     componentName: string
-    // TODO: is this the right tpye for componentProps?
-    componentProps: object
+    componentProps: Record<string, any>
 }
