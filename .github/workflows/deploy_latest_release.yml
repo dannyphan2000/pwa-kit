@@ -11,20 +11,23 @@ on:
 jobs:
   check-latest-release:
     runs-on: ubuntu-latest
+    outputs:
+      IS_LATEST_RELEASE: ${{ steps.checkRelease.outputs.IS_LATEST_RELEASE }}
     steps:  
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Check if latest release
+        id: checkRelease
         uses: ./.github/actions/check_if_latest_release
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
   # Re-enable this when the PR is ready to be merged
   # deploy-bug-bounty:
-  #   if: env.IS_LATEST_RELEASE == 'true'
   #   needs: check-latest-release
   #   runs-on: ubuntu-latest
+  #   if: ${{ needs.check-latest-release.outputs.IS_LATEST_RELEASE}} == 'true'
   #   steps:
   #     - name: Checkout
   #       uses: actions/checkout@v4
@@ -62,9 +65,9 @@ jobs:
   #         FLAGS: --cloud-origin https://cloud-testing.mobify-staging.com -c ~/.mobify --wait
 
   deploy-demo-site:
-    if: env.IS_LATEST_RELEASE == 'true'
     needs: check-latest-release
     runs-on: ubuntu-latest
+    if: ${{ needs.check-latest-release.outputs.IS_LATEST_RELEASE}} == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4

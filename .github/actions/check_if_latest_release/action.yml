@@ -18,7 +18,7 @@ runs:
 
         if [ "$LATEST_TAG_NAME" == "$RELEASE_EVENT_TAG_NAME" ]; then
           echo "We are releasing the latest tag. Continuing deployment workflow."
-          echo "IS_LATEST_RELEASE=true" >> $GITHUB_ENV
+          echo "IS_LATEST_RELEASE=true" >> $GITHUB_OUTPUT
           exit 0
         else
           echo "We are not releasing the latest tag. Stopping deployment workflow."
