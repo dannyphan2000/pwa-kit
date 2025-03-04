@@ -73,43 +73,12 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
     async extendRoutes(routes: RouteProps[], req?: Request): Promise<RouteProps[]> {
-        // TODO: Get map from config ----
-        const {resourceTypeToComponentMap, commerceApi} = this.getConfig()
         const path = req?.path
-        if (!path) {
-            // Client
-            const _routes = window.__CONFIG__.app.routes
-            let configuredRoutes = _routes.map(
-                ({path, componentName, componentProps}: SerializedRoute) => {
-                    // DEVELOPER NOTE: We previously tried to dynamically load the component using the path to map to the
-                    // filename and use import, but I couldn't get that to work. So here we are using the original routes
-                    // array to find the component for a given path from the serialized route config. It doesn't completely
-                    // work as it will remove the configured routes as they don't match the path. This should be done in
-                    // another way.
-                    let component = routes.find((route) =>
-                        route.component?.displayName?.includes(componentName)
-                    )?.component
-                    if (!component) {
-                        // TODO: Error handling if given component couldn't be found
-                        return
-                    }
-
-                    if (componentProps) {
-                        const Component = component
-                        component = () => <Component {...componentProps} />
-                    }
-                    return {
-                        path,
-                        exact: true,
-                        component
-                    }
-                }
-            )
-            configuredRoutes = configuredRoutes.filter((route) => !!route)
-            // TODO: do I need to run configureRoutes here for locals? My guess is no because chakra-storerfront does it beforehand
-            return configuredRoutes
-        }
-        const mapping = await getUrlMapping(path, commerceApi)
+        const {resourceTypeToComponentMap} = this.getConfig()
+        // TODO: How to call urlMapping API when React Hook "useUrlMapping"
+        // cannot be called in a class component. React Hooks must be called
+        // in a React function component or a custom React Hook function.
+        const mapping = await getUrlMapping(path)
         if (!mapping) {
             return routes
         }

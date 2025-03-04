@@ -3,7 +3,7 @@
     "resourceTypeToComponentMap": {
         "category": "ProductList",
         "product": "ProductDetail",
-        "content": "ProductList"
+        "content_asset": "ProductList"
     },
     "commerceAPI": {
         "proxyPath": "/mobify/proxy/api",

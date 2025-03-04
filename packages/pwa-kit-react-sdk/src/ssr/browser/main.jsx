@@ -133,7 +133,34 @@ export const start = async () => {
     })
 
     // Await the async getRoutes function
-    const routes = await getRoutes(locals)
+    let routes = await getRoutes(locals)
+
+    let serializedRoutes = window.__CONFIG__.app.routes
+    // Deserialize routes
+    serializedRoutes = serializedRoutes.map(
+        ({path, componentName, componentProps}) => {
+            let component = routes.find((route) =>
+                route.component?.displayName?.includes(componentName)
+            )?.component
+            if (!component) {
+                // TODO: Error handling if given component couldn't be found
+                console.error('Component', componentName, 'could not be deserialized for path', path)
+                return
+            }
+
+            if (componentProps) {
+                const Component = component
+                component = () => <Component {...componentProps} />
+            }
+            return {
+                path,
+                exact: true,
+                component
+            }
+        }
+    )
+    serializedRoutes = serializedRoutes.filter((route) => !!route)
+    routes = serializedRoutes
 
     const props = {
         error: window.__ERROR__,

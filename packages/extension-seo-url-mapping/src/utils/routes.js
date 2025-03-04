@@ -5,10 +5,8 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React from 'react'
-
 // TODO: should we create a useShopperSeo hook in commerce-sdk-react
-export const getUrlMapping = async (urlSegment, commerceApiConfig) => {
+export const getUrlMapping = async (urlSegment) => {
     let mapping
 
     // DEVELOPER NOTES: Replace with actual getUrlMapping call
