@@ -26,9 +26,6 @@ jobs:
         id: checkRelease
         run: |-
           echo "IS_LATEST_RELEASE=${{ env.IS_LATEST_RELEASE }}" >> "$GITHUB_OUTPUT"
-          echo "Env: ${{ env.IS_LATEST_RELEASE }}"
-          echo "Var: $IS_LATEST_RELEASE"
-          echo "Output: ${{ steps.checkRelease.outputs.test }}"
 
 
   # Re-enable this when the PR is ready to be merged
@@ -78,7 +75,7 @@ jobs:
     steps:
       - name: Continue deployment?
         run: |-
-          if [${{ needs.check-latest-release.outputs.IS_LATEST_RELEASE }} != 'true']
+          if [${{ needs.check-latest-release.outputs.IS_LATEST_RELEASE }} != 'true']; then
             echo "Deploy is not for the latest release. Stopping deployment"
             exit 0
           fi
