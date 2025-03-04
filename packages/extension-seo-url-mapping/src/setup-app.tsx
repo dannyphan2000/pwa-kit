@@ -17,18 +17,12 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {
-    generateResourceTypeMap,
-    getUrlMapping,
-    transformUrlMappingToRoute
-} from '@salesforce/pwa-kit-react-sdk/utils/routes'
+import {transformUrlMappingToRoute} from '@salesforce/pwa-kit-react-sdk/utils/routes'
 
 // Local Imports
 import {Config} from './types'
 import {SerializedRoute} from './types/routes'
-
-// Pages
-import Sample from './pages/sample'
+import {getUrlMapping} from './utils/routes'
 
 // Others
 import extensionMeta from '../extension-meta.json'
@@ -80,7 +74,7 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
      */
     async extendRoutes(routes: RouteProps[], req?: Request): Promise<RouteProps[]> {
         // TODO: Get map from config ----
-        const {resourceTypeToComponentMap} = this.getConfig()
+        const {resourceTypeToComponentMap, commerceApi} = this.getConfig()
         const path = req?.path
         if (!path) {
             // Client
@@ -111,11 +105,11 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
                     }
                 }
             )
-            configuredRoutes = configuredRoutes.filter((route => !!route))
+            configuredRoutes = configuredRoutes.filter((route) => !!route)
             // TODO: do I need to run configureRoutes here for locals? My guess is no because chakra-storerfront does it beforehand
             return configuredRoutes
         }
-        const mapping = await getUrlMapping(path)
+        const mapping = await getUrlMapping(path, commerceApi)
         if (!mapping) {
             return routes
         }

@@ -42,29 +42,3 @@ export const transformUrlMappingToRoute = (path, urlMapping, component) => {
         props
     }
 }
-
-export const getUrlMapping = async (path) => {
-    // SERVER!
-    const seoUrlMappingEnabled = true
-    if (!seoUrlMappingEnabled) {
-        return
-    }
-    if (path !== '/category/top-seller') {
-        console.log('getUrlMapping path:', path)
-        return
-    }
-    // DEVELOPER NOTES: Replace with actual getUrlMapping call
-    // For now we Mock a response that returns a resourceType category
-    const mapping = {
-        copySourceParams: false,
-        destinationUrl: '/s/RefArch/search?lang=en_US&cgid=newarrivals',
-        resourceId: 'newarrivals',
-        resourceType: 'category',
-        statusCode: '301'
-    }
-    if (!mapping) {
-        return
-    }
-
-    return mapping
-}
