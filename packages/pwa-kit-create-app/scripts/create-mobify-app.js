@@ -271,6 +271,37 @@ const PRESETS = [
         private: false
     },
     {
+        id: 'retail-react-app-demo-private',
+        name: 'Retail React App Demo Private Client',
+        description: `
+            Generates a project using the settings for a special B2C Commerce
+            instance that is used for demo purposes and sets it up with a private SLAS client.
+
+            This has social and passwordless login enabled but requires a client secret to run.
+        `,
+        shortDescription: 'The Retail app with demo Commerce Cloud instance and a private SLAS client',
+        templateSource: {
+            type: TEMPLATE_SOURCE_NPM,
+            id: '@salesforce/retail-react-app'
+        },
+        questions: [...EXTENSIBILITY_QUESTIONS, ...RETAIL_REACT_APP_QUESTIONS],
+        answers: {
+            ['project.extend']: true,
+            ['project.hybrid']: false,
+            ['project.name']: 'demo-storefront',
+            ['project.commerce.instanceUrl']: 'https://zzte-053.dx.commercecloud.salesforce.com',
+            ['project.commerce.clientId']: '',
+            ['project.commerce.siteId']: 'RefArch',
+            ['project.commerce.organizationId']: 'f_ecom_zzte_053',
+            ['project.commerce.shortCode']: 'kv7kzm78',
+            ['project.commerce.isSlasPrivate']: false,
+            ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
+            ['project.einstein.siteId']: 'aaij-MobileFirst'
+        },
+        assets: ['translations'],
+        private: true
+    },
+    {
         id: 'retail-react-app-test-project',
         name: 'Retail React App Test Project',
         description: '',
