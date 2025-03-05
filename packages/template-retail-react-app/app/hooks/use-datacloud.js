@@ -13,24 +13,9 @@ import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 
 export class DataCloudApi {
-    constructor({site}) {
+    constructor({site, appSourceId, tenantId}) {
         this.site = site
-
-        // Grab Data Cloud configuration values and intialize the sdk
-        const {
-            app: {dataCloudAPI: config}
-        } = getConfig()
-
-        const {appSourceId, tenantId} = config
-        let sdk = null
-
-        if (!appSourceId || !tenantId) {
-            console.error('DataCloud API Configuration is missing.')
-            return
-        } else {
-            sdk = initDataCloudSdk(tenantId, appSourceId)
-        }
-        this.sdk = sdk
+        this.sdk = initDataCloudSdk(tenantId, appSourceId)
     }
 
     /**
@@ -152,7 +137,7 @@ export class DataCloudApi {
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)
         } catch (err) {
-            logger.error('Error sending DataCloud event')
+            logger.error('Error sending DataCloud event', err)
         }
     }
 
@@ -202,7 +187,7 @@ export class DataCloudApi {
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)
         } catch (err) {
-            logger.error('Error sending DataCloud event')
+            logger.error('Error sending DataCloud event', err)
         }
     }
 
@@ -267,7 +252,7 @@ export class DataCloudApi {
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)
         } catch (err) {
-            logger.error('Error sending DataCloud event')
+            logger.error('Error sending DataCloud event', err)
         }
     }
 
@@ -332,7 +317,7 @@ export class DataCloudApi {
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)
         } catch (err) {
-            logger.error('Error sending DataCloud event')
+            logger.error('Error sending DataCloud event', err)
         }
     }
 
@@ -391,7 +376,7 @@ export class DataCloudApi {
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)
         } catch (err) {
-            logger.error('Error sending DataCloud event')
+            logger.error('Error sending DataCloud event', err)
         }
     }
 }
@@ -426,10 +411,24 @@ const useDataCloud = () => {
         }
     }
 
+    // Grab Data Cloud configuration values and intialize the sdk
+    const {
+        app: {dataCloudAPI: config}
+    } = getConfig()
+
+    const {appSourceId, tenantId} = config
+
+    if (!appSourceId || !tenantId) {
+        console.error('DataCloud API Configuration is missing.')
+        return
+    }
+
     const dataCloud = useMemo(
         () =>
             new DataCloudApi({
-                site: site.id
+                site: site.id,
+                appSourceId: appSourceId,
+                tenantId: tenantId
             }),
         [site]
     )
