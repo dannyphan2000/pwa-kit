@@ -45,6 +45,12 @@ export const transformUrlMappingToRoute = (path, urlMapping, component) => {
         path: path,
         // DEVELOPER NOTE: Here we would want to use a Loadable component as to not bloat the home page chunk size.
         component: Component,
+        // component: () => {
+        //     const WrapperComponent = (props) => <Component {...props} />
+        //     console.log('JINSUUU', Component.displayName)
+        //     WrapperComponent.displayName = Component.displayName
+        //     return WrapperComponent
+        // },
         props
     }
 }
