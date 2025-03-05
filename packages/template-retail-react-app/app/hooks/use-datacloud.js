@@ -15,6 +15,12 @@ import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-cur
 export class DataCloudApi {
     constructor({site, appSourceId, tenantId}) {
         this.site = site
+
+        // Return early if Data Cloud API configuration is not available
+        if (!appSourceId || !tenantId) {
+            console.error('DataCloud API Configuration is missing.')
+            return
+        }
         this.sdk = initDataCloudSdk(tenantId, appSourceId)
     }
 
@@ -417,11 +423,6 @@ const useDataCloud = () => {
     } = getConfig()
 
     const {appSourceId, tenantId} = config
-
-    if (!appSourceId || !tenantId) {
-        console.error('DataCloud API Configuration is missing.')
-        return
-    }
 
     const dataCloud = useMemo(
         () =>
