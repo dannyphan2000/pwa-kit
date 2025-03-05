@@ -59,6 +59,10 @@ sh.set('-e')
 // will ensure those escaped double quotes are still escaped after processing the template.
 Handlebars.registerHelper('script', (object) => object.replaceAll('"', '\\"'))
 
+Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+})
+
 // Validations
 const validPreset = (preset) => {
     return ALL_PRESET_NAMES.includes(preset)
