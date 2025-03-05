@@ -17,6 +17,7 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
+import {useUrlMapping} from '@salesforce/commerce-sdk-react'
 
 // Local Imports
 import {Config} from './types'
@@ -25,21 +26,6 @@ import {getUrlMapping, transformUrlMappingToRoute} from './utils/routes'
 // Others
 import extensionMeta from '../extension-meta.json'
 
-interface StoreSlice {
-    count: number
-    increment: () => void
-    decrement: () => void
-}
-
-// This is safe to delete if your extension does not use state. If you aren't using this, ensure you remove the
-// `withApplicationExtensionStore` usage below as well.
-const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
-    count: 0,
-    increment: () => set((state) => ({count: state.count + 1})),
-    decrement: () => set((state) => ({count: state.count - 1}))
-})
-
-// TODO: change name of extension
 class SeoUrlMappingExtension extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 
@@ -51,14 +37,7 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
     extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
-        const HOCs = [
-            // Optionally include state for this extension using `withApplicationExtensionStore`
-            (component: React.ComponentType<any>) =>
-                withApplicationExtensionStore(component, {
-                    id: extensionMeta.id,
-                    initializer: sliceInitializer
-                })
-        ]
+        const HOCs = []
 
         return applyHOCs(App, HOCs)
     }
@@ -76,6 +55,9 @@ class SeoUrlMappingExtension extends ApplicationExtension<Config> {
         // TODO: How to call urlMapping API when React Hook "useUrlMapping"
         // cannot be called in a class component. React Hooks must be called
         // in a React function component or a custom React Hook function.
+        // const {data: mapping, error} = useUrlMapping({
+        //     parameters: {urlSegment: path}
+        // })
         const mapping = await getUrlMapping(path)
         if (!mapping) {
             return routes
