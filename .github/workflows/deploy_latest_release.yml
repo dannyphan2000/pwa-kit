@@ -75,7 +75,7 @@ jobs:
   deploy-demo-site:
     needs: check-latest-release
     runs-on: ubuntu-latest
-    if: needs.check-latest-release.outputs.IS_LATEST_RELEASE == 'true'
+    if: needs.check-latest-release.outputs.IS_LATEST_RELEASE != 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
