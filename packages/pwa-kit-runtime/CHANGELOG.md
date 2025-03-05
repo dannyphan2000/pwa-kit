@@ -1,3 +1,4 @@
+## v3.10.0-nightly-20250305080208 (Mar 05, 2025)
 ## v3.10.0-dev (Feb 18, 2025)
 
 - Remove forced garbage collection on each invocation. Set `FORCE_GC=true` for the old behavior. [#2285](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2285)
