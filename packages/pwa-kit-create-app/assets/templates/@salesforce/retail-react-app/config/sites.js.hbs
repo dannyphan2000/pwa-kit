@@ -12,9 +12,14 @@ module.exports = [
         id: '{{answers.project.commerce.siteId}}',
         {{#ifEquals answers.project.commerce.siteId "RefArchGlobal" }}
         l10n: {
-            supportedCurrencies: ['GBP', 'EUR', 'CNY', 'JPY'],
-            defaultCurrency: 'GBP',
+            supportedCurrencies: ['USD', 'GBP', 'EUR', 'CNY', 'JPY'],
+            defaultCurrency: 'USD',
+            defaultLocale: 'en-US',
             supportedLocales: [
+                {
+                    id: 'en-US',
+                    preferredCurrency: 'USD'
+                },
                 {
                     id: 'de-DE',
                     preferredCurrency: 'EUR'
@@ -55,8 +60,7 @@ module.exports = [
                     id: 'zh-TW',
                     preferredCurrency: 'TWD'
                 }
-            ],
-            defaultLocale: 'en-GB'
+            ]
         }
         {{else}}
         l10n: {
