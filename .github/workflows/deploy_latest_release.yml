@@ -78,13 +78,8 @@ jobs:
   deploy-demo-site:
     needs: check-latest-release
     runs-on: ubuntu-latest
+    if: needs.check-latest-release.outputs.IS_LATEST_RELEASE != 'true'
     steps:
-      - name: Continue deployment?
-        if: needs.check-latest-release.outputs.IS_LATEST_RELEASE != 'true'
-        run: |-
-            echo "Deploy is not for the latest release. Stopping deployment"
-            exit 0
-
       - name: Checkout
         uses: actions/checkout@v4
 
