@@ -135,8 +135,8 @@ export const start = async () => {
     // Await the async getRoutes function
     let routes = await getRoutes(locals)
 
-    let serializedRoutes = window.__CONFIG__.app.routes
     // Deserialize routes
+    let serializedRoutes = window.__CONFIG__.app.routes
     serializedRoutes = serializedRoutes.map(
         ({path, componentName, componentProps}) => {
             let component = routes.find((route) =>

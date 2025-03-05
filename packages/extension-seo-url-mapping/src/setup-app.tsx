@@ -17,12 +17,10 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {transformUrlMappingToRoute} from '@salesforce/pwa-kit-react-sdk/utils/routes'
 
 // Local Imports
 import {Config} from './types'
-import {SerializedRoute} from './types/routes'
-import {getUrlMapping} from './utils/routes'
+import {getUrlMapping, transformUrlMappingToRoute} from './utils/routes'
 
 // Others
 import extensionMeta from '../extension-meta.json'
