@@ -80,9 +80,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Continue deployment?
-        if: needs.check-latest-release.outputs.IS_LATEST_RELEASE == 'true'
+        if: needs.check-latest-release.outputs.IS_LATEST_RELEASE != 'true'
         run: |-
-            echo "Input: ${{ needs.check-latest-release.outputs.IS_LATEST_RELEASE }}"
             echo "Deploy is not for the latest release. Stopping deployment"
             exit 0
 
