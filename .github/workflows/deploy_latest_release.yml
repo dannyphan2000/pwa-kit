@@ -25,8 +25,9 @@ jobs:
       - name: Update Github Outputs
         id: checkRelease
         run: |-
+          IS_LATEST_RELEASE=$(echo ${{ env.IS_LATEST_RELEASE }})
           echo "IS_LATEST_RELEASE=${{ env.IS_LATEST_RELEASE }}" >> "$GITHUB_OUTPUT"
-          if [ "${{ env.IS_LATEST_RELEASE }}" != "true"]; then
+          if [ $IS_LATEST_RELEASE != "true" ]; then
             echo "Deploy is not for the latest release. Stopping deployment"
           fi
 
