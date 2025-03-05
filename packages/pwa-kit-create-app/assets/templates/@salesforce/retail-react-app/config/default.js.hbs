@@ -21,10 +21,11 @@ module.exports = {
         },
         login: {
             passwordless: {
-                // Enables or disables passwordless login for the site. Defaults to: false
                 {{~#if answers.project.demo.enablePasswordlessAndSocialLogin}}
+                // Enables or disables passwordless login for the site. Defaults to: false
                 enabled: true,
                 {{else}}
+                // Enables or disables passwordless login for the site. Defaults to: false
                 enabled: false,
                 {{/if}}
                 // The callback URI, which can be an absolute URL (including third-party URIs) or a relative path set up by the developer.
@@ -36,10 +37,11 @@ module.exports = {
                 landingPath: '/passwordless-login-landing'
             },
             social: {
-                // Enables or disables social login for the site. Defaults to: false
                 {{~#if answers.project.demo.enablePasswordlessAndSocialLogin}}
+                // Enables or disables social login for the site. Defaults to: false
                 enabled: true,
                 {{else}}
+                // Enables or disables social login for the site. Defaults to: false
                 enabled: false,
                 {{/if}}
                 // The third-party identity providers supported by your app. The PWA Kit supports Google and Apple by default.
