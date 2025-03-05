@@ -27,7 +27,6 @@ jobs:
         run: |-
           echo "IS_LATEST_RELEASE=${{ env.IS_LATEST_RELEASE }}" >> "$GITHUB_OUTPUT"
           if [${{ env.IS_LATEST_RELEASE }} != 'true']; then
-            run: |-
             echo "Deploy is not for the latest release. Stopping deployment"
           fi
 
