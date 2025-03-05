@@ -133,13 +133,13 @@ const Home = () => {
             >
                 <SimpleGrid
                     columns={{base: 1, md: 1, lg: 3}}
-                    spacingX={{base: 1, md: 4}}
-                    spacingY={{base: 4, md: 14}}
+                    columnGap={{base: 1, md: 4}}
+                    rowGap={{base: 4, md: 14}}
                 >
                     {heroFeatures.map((feature, index) => {
                         const featureMessage = feature.message
                         return (
-                            <Link key={index} target="_blank" href={feature.href}>
+                            <Link key={index} target="_blank" href={feature.href} display="block">
                                 <Box
                                     background={'white'}
                                     boxShadow="0px 2px 2px rgba(0, 0, 0, 0.1)"
@@ -232,7 +232,7 @@ const Home = () => {
                 })}
             >
                 <Container maxW={'6xl'} marginTop={10}>
-                    <SimpleGrid columns={{base: 1, md: 2, lg: 3}} spacing={10}>
+                    <SimpleGrid columns={{base: 1, md: 2, lg: 3}} gap={10}>
                         {features.map((feature, index) => {
                             const featureMessage = feature.message
                             return (

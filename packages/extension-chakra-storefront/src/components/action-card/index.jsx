@@ -30,7 +30,7 @@ const ActionCard = ({children, onEdit, onRemove, editBtnRef, ...props}) => {
 
     return (
         <Box
-            spacing={4}
+            gap={4}
             p={4}
             position="relative"
             border="1px solid"
@@ -41,7 +41,7 @@ const ActionCard = ({children, onEdit, onRemove, editBtnRef, ...props}) => {
             {showLoading && <LoadingSpinner />}
             <Stack gap={3}>
                 <Box>{children}</Box>
-                <Stack direction="row" spacing={4}>
+                <Stack direction="row" gap={4}>
                     {onEdit && (
                         <Button onClick={onEdit} variant="link" size="sm" ref={editBtnRef}>
                             <FormattedMessage defaultMessage="Edit" id="action_card.action.edit" />

@@ -9,31 +9,30 @@ import React from 'react'
 import {useIntl} from 'react-intl'
 
 // Components
-import {
-    Alert,
-    Text,
-
-    // Hooks
-    useStyleConfig
-} from '@chakra-ui/react'
+import {Alert, Text, useSlotRecipe} from '@chakra-ui/react'
 
 // Icons
-import {AlertIcon} from '../../components/icons'
+import {AlertIcon} from '../icons'
 
 const OfflineBanner = () => {
     const intl = useIntl()
-    const style = useStyleConfig('OfflineBanner')
+    const recipe = useSlotRecipe({key: 'offlineBanner'})
+    const recipe1 = useSlotRecipe({key: 'alert'})
+    console.log('recipe1()', recipe1())
 
+    const styles = recipe()
     return (
-        <Alert status="info" {...style.container}>
-            <AlertIcon {...style.icon} />
-            <Text {...style.message}>
+        <Alert.Root status="info" css={styles.container} role="alert" size="lg">
+            <Alert.Indicator>
+                <AlertIcon css={styles.icon} />
+            </Alert.Indicator>
+            <Text css={styles.message}>
                 {intl.formatMessage({
                     id: 'offline_banner.description.browsing_offline_mode',
                     defaultMessage: "You're currently browsing in offline mode"
                 })}
             </Text>
-        </Alert>
+        </Alert.Root>
     )
 }
 

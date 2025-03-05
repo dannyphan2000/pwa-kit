@@ -13,7 +13,6 @@ import gradients from './foundations/gradients'
 import sizes from './foundations/sizes'
 import space from './foundations/space'
 import layerStyles from './foundations/layerStyles'
-console.log('layerStyles', layerStyles)
 import shadows from './foundations/shadows'
 
 // Base component style overrides
@@ -37,7 +36,7 @@ import popover from './components/base/popover'
 // // Project Component style overrides
 import appRecipe from './components/project/_app'
 // import Breadcrumb from './components/project/breadcrumb'
-// import Header from './components/project/header'
+import headerRecipe from './components/project/header'
 // import ListMenu from './components/project/list-menu'
 // import Footer from './components/project/footer'
 // import CheckoutFooter from './components/project/checkout-footer'
@@ -45,7 +44,7 @@ import appRecipe from './components/project/_app'
 // import DrawerMenu from './components/project/drawer-menu'
 // import NestedAccordion from './components/project/nested-accordion'
 // import LocaleSelector from './components/project/locale-selector'
-// import OfflineBanner from './components/project/offline-banner'
+import offlineBannerRecipe from './components/project/offline-banner'
 // import Pagination from './components/project/pagination'
 // import ProductTile from './components/project/product-tile'
 // import SocialIcons from './components/project/social-icons'
@@ -65,16 +64,18 @@ export const overrides = defineConfig({
             sizes,
             space,
             gradients,
-            shadows
+            shadows,
+            fonts: {
+                heading: `-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
+                body: `-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
+                mono: `SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace`
+            }
         },
         recipes: {
-            alert,
-            accordion,
+            // Built-in components
             badge,
             button,
-            checkbox,
             container,
-            drawer,
             formLabel,
             icon,
             input,
@@ -82,11 +83,20 @@ export const overrides = defineConfig({
             radio,
             select,
             skeleton,
-            tooltip,
             popover
         },
         slotRecipes: {
-            app: appRecipe
+            // Built-in components
+            alert,
+            accordion,
+            drawer,
+            checkbox,
+            tooltip,
+
+            // project components
+            app: appRecipe,
+            header: headerRecipe,
+            offlineBanner: offlineBannerRecipe
         }
         // components: {
         //     // base components

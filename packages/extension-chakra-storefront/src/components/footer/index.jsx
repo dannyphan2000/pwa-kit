@@ -65,7 +65,7 @@ const Footer = ({...otherProps}) => {
             <Box {...styles.content}>
                 <StylesProvider value={styles}>
                     <HideOnMobile>
-                        <SimpleGrid columns={4} spacing={3}>
+                        <SimpleGrid columns={4} gap={3}>
                             <LinksList
                                 heading={intl.formatMessage({
                                     id: 'footer.column.customer_support',

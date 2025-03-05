@@ -66,7 +66,7 @@ const CreditCardFields = ({form, prefix = ''}) => {
                     formLabel={
                         <Flex justify="space-between">
                             <FormLabel>{fields.number.label}</FormLabel>
-                            <Stack direction="row" spacing={1}>
+                            <Stack direction="row" gap={1}>
                                 <VisaIcon layerStyle="ccIcon" />
                                 <MastercardIcon layerStyle="ccIcon" />
                                 <AmexIcon layerStyle="ccIcon" />
@@ -96,7 +96,7 @@ const CreditCardFields = ({form, prefix = ''}) => {
 
                 <Field {...fields.holder} />
 
-                <SimpleGrid columns={[2, 2, 3]} spacing={5}>
+                <SimpleGrid columns={[2, 2, 3]} gap={5}>
                     <Field
                         {...fields.expiry}
                         inputProps={({onChange}) => ({

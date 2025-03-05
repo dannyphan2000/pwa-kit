@@ -86,7 +86,7 @@ const button = defineRecipe({
                 _hover: {textDecoration: 'none'}
             }
         },
-        sizes: {
+        size: {
             md: {
                 height: 11,
                 minWidth: 11

@@ -13,7 +13,7 @@ const Suggestions = ({suggestions, closeAndNavigate}) => {
         return null
     }
     return (
-        <Stack spacing={0} data-testid="sf-suggestion">
+        <Stack gap={0} data-testid="sf-suggestion">
             <Box mx={'-16px'}>
                 {suggestions.map((suggestion, idx) => (
                     <Button

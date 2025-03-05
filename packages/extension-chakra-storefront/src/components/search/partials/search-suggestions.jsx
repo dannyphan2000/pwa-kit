@@ -13,7 +13,7 @@ import Suggestions from '../../../components/search/partials/suggestions'
 const SearchSuggestions = ({recentSearches, searchSuggestions, closeAndNavigate}) => {
     const useSuggestions = searchSuggestions && searchSuggestions?.categorySuggestions?.length
     return (
-        <Stack padding={6} spacing={0}>
+        <Stack padding={6} gap={0}>
             {useSuggestions ? (
                 <Fragment>
                     <Suggestions

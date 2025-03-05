@@ -16,9 +16,9 @@ import ResetPasswordFields from '../../components/forms/reset-password-fields'
 const ResetPasswordForm = ({submitForm, clickSignIn = noop, form}) => {
     return (
         <Fragment>
-            <Stack justify="center" align="center" spacing={8}>
+            <Stack justify="center" align="center" gap={8}>
                 <BrandLogo width="60px" height="auto" />
-                <Stack spacing={2}>
+                <Stack gap={2}>
                     <Text align="center" fontSize="xl" fontWeight="semibold">
                         <FormattedMessage
                             defaultMessage="Reset Password"
@@ -34,7 +34,7 @@ const ResetPasswordForm = ({submitForm, clickSignIn = noop, form}) => {
                 </Stack>
             </Stack>
             <form onSubmit={form.handleSubmit(submitForm)} data-testid="sf-auth-modal-form">
-                <Stack paddingTop={8} spacing={8} paddingLeft={4} paddingRight={4}>
+                <Stack paddingTop={8} gap={8} paddingLeft={4} paddingRight={4}>
                     {form.formState.errors?.global && (
                         <Alert status="error">
                             <AlertIcon color="red.500" boxSize={4} />
@@ -44,7 +44,7 @@ const ResetPasswordForm = ({submitForm, clickSignIn = noop, form}) => {
                         </Alert>
                     )}
                     <ResetPasswordFields form={form} />
-                    <Stack spacing={6}>
+                    <Stack gap={6}>
                         <Button
                             type="submit"
                             onClick={() => form.clearErrors('global')}
@@ -56,7 +56,7 @@ const ResetPasswordForm = ({submitForm, clickSignIn = noop, form}) => {
                             />
                         </Button>
 
-                        <Stack direction="row" spacing={1} justify="center">
+                        <Stack direction="row" gap={1} justify="center">
                             <Text fontSize="sm">
                                 <FormattedMessage
                                     defaultMessage="Or return to"

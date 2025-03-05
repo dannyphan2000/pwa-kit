@@ -71,7 +71,7 @@ const CartItems = ({basket}) => {
                     <AccordionIcon />
                 </AccordionButton>
                 <AccordionPanel px={0} py={4}>
-                    <Stack spacing={5} align="flex-start" divider={<Divider />}>
+                    <Stack gap={5} align="flex-start" divider={<Divider />}>
                         {basket.productItems?.map((product, idx) => {
                             const variant = {
                                 ...product,
@@ -86,7 +86,7 @@ const CartItems = ({basket}) => {
                                 >
                                     <Flex width="full" alignItems="flex-start">
                                         <CartItemVariantImage width="80px" mr={2} />
-                                        <Stack width="full" spacing={1} marginTop="-3px">
+                                        <Stack width="full" gap={1} marginTop="-3px">
                                             <CartItemVariantName />
                                             <CartItemVariantAttributes includeQuantity />
                                             <CartItemVariantPrice
@@ -132,7 +132,7 @@ const OrderSummary = ({
     const hasShippingPromos = shippingItem?.priceAdjustments?.length > 0
 
     return (
-        <Stack data-testid="sf-order-summary" spacing={5}>
+        <Stack data-testid="sf-order-summary" gap={5}>
             <Heading fontSize={fontSize} pt={1} id="order-summary-heading">
                 <FormattedMessage
                     defaultMessage="Order Summary"
@@ -140,12 +140,7 @@ const OrderSummary = ({
                 />
             </Heading>
 
-            <Stack
-                spacing={4}
-                align="flex-start"
-                role="region"
-                aria-labelledby="order-summary-heading"
-            >
+            <Stack gap={4} align="flex-start" role="region" aria-labelledby="order-summary-heading">
                 {showCartItems && <CartItems basket={basket} />}
 
                 <Stack w="full">
@@ -267,7 +262,7 @@ const OrderSummary = ({
                     <Divider />
                 )}
 
-                <Stack spacing={4} w="full">
+                <Stack gap={4} w="full">
                     <Flex w="full" justify="space-between" aria-live="polite" aria-atomic="true">
                         {isEstimate ? (
                             <Text fontWeight="bold" fontSize={fontSize}>

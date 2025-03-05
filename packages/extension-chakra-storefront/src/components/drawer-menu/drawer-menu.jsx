@@ -183,7 +183,7 @@ const DrawerMenu = ({
                         <DrawerSeparator />
 
                         {/* Application Actions */}
-                        <VStack align="stretch" spacing={0} {...styles.actions} px={0}>
+                        <VStack align="stretch" gap={0} {...styles.actions} px={0}>
                             <Box {...styles.actionsItem}>
                                 {isRegistered ? (
                                     <NestedAccordion

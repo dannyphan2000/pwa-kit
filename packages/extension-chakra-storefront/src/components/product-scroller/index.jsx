@@ -49,7 +49,7 @@ const ProductScroller = forwardRef(
 
         return (
             <Box position="relative" data-testid="product-scroller" ref={ref}>
-                <Stack spacing={6} {...props}>
+                <Stack gap={6} {...props}>
                     {isLoading && <Skeleton height={6} width="150px" m="auto" />}
 
                     {title && !header && !isLoading && (
@@ -63,7 +63,7 @@ const ProductScroller = forwardRef(
                     <Stack
                         ref={scrollRef}
                         direction="row"
-                        spacing={4}
+                        gap={4}
                         wrap="nowrap"
                         overflowX="scroll"
                         px={{base: 4, md: 8, lg: 0}}
@@ -89,7 +89,7 @@ const ProductScroller = forwardRef(
                                               <AspectRatio ratio={1}>
                                                   <Skeleton />
                                               </AspectRatio>
-                                              <Stack spacing={2}>
+                                              <Stack gap={2}>
                                                   <Skeleton width="150px" height={5} />
                                                   <Skeleton width="75px" height={5} />
                                               </Stack>

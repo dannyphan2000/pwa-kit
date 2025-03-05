@@ -39,7 +39,7 @@ const ProductViewHeader = ({
     isProductPartOfBundle
 }) => {
     return (
-        <VStack mr={4} spacing={2} align="flex-start" marginBottom={[4, 4, 4, 0, 0]}>
+        <VStack mr={4} gap={2} align="flex-start" marginBottom={[4, 4, 4, 0, 0]}>
             {category && (
                 <Skeleton isLoaded={category} minWidth={64}>
                     <Breadcrumb categories={category} />
@@ -434,7 +434,7 @@ const ProductView = forwardRef(
                     )}
 
                     {/* Variations & Quantity Selector & CTA buttons */}
-                    <VStack align="stretch" spacing={8} flex={1}>
+                    <VStack align="stretch" gap={8} flex={1}>
                         <Box display={['none', 'none', 'none', 'block']}>
                             <ProductViewHeader
                                 name={product?.name}
@@ -445,7 +445,7 @@ const ProductView = forwardRef(
                                 isProductPartOfBundle={isProductPartOfBundle}
                             />
                         </Box>
-                        <VStack align="stretch" spacing={4}>
+                        <VStack align="stretch" gap={4}>
                             {isProductPartOfBundle && (
                                 <Box>
                                     <Text fontWeight="medium" fontSize="md" aria-label="price">

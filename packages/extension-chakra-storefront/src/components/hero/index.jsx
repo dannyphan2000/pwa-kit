@@ -29,7 +29,7 @@ const Hero = ({title, img, actions, ...props}) => {
                 <Stack flex={1} gap={{base: 5, md: 8}}>
                     <Heading
                         as="h1"
-                        fontSize={{base: '4xl', md: '5xl', lg: '6xl'}}
+                        size={{base: '4xl', md: '5xl', lg: '6xl'}}
                         maxWidth={{base: '75%', md: '50%', lg: 'md'}}
                     >
                         {title}

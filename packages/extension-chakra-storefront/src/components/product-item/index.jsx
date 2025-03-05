@@ -54,8 +54,8 @@ const ProductItem = ({
                 <Stack layerStyle="cardBordered" align="flex-start">
                     <Flex width="full" alignItems="flex-start" backgroundColor="white">
                         <CartItemVariantImage width={['88px', '136px']} mr={4} />
-                        <Stack spacing={3} flex={1}>
-                            <Stack spacing={1}>
+                        <Stack gap={3} flex={1}>
+                            <Stack gap={1}>
                                 <CartItemVariantName />
                                 <CartItemVariantAttributes />
                                 <HideOnDesktop>
@@ -69,7 +69,7 @@ const ProductItem = ({
                             </Stack>
 
                             <Flex align="flex-end" justify="space-between">
-                                <Stack spacing={1}>
+                                <Stack gap={1}>
                                     <Text fontSize="sm" color="gray.700">
                                         <FormattedMessage
                                             defaultMessage="Quantity:"

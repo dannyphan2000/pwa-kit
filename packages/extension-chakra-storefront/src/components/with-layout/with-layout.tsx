@@ -26,15 +26,14 @@ import {
     Spinner,
     useDisclosure,
     useSlotRecipe
-    // useStyleConfig
 } from '@chakra-ui/react'
-// import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
+import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
 
 // Local Project Components
 // import {DrawerMenu} from '../drawer-menu'
-// import {HideOnDesktop, HideOnMobile} from '../responsive'
+import {HideOnDesktop, HideOnMobile} from '../responsive'
 // import {ListMenu, ListMenuContent} from '../list-menu'
-// import {withCommerceSdkReactHookData} from '../with-commerce-sdk-react-hook-data'
+import {withCommerceSdkReactHookData} from '../with-commerce-sdk-react-hook-data'
 // import AboveHeader from '../above-header'
 // import CheckoutHeader from '../../pages/checkout/partials/checkout-header'
 // import CheckoutFooter from '../../pages/checkout/partials/checkout-footer'
@@ -59,11 +58,11 @@ import {UserConfig} from '../../types/config'
 // Define a type for the HOC props
 type WithAppLayoutProps = React.ComponentPropsWithoutRef<any>
 
-// const PlaceholderComponent: React.FC = () => (
-//     <Center p="2">
-//         <Spinner size="lg" />
-//     </Center>
-// )
+const PlaceholderComponent: React.FC = () => (
+    <Center p="2">
+        <Spinner size="lg" />
+    </Center>
+)
 
 // const DrawerMenuItemWithData = withCommerceSdkReactHookData(
 //     ({itemComponent: ItemComponent, data, ...rest}: any) => (
@@ -84,9 +83,9 @@ type WithAppLayoutProps = React.ComponentPropsWithoutRef<any>
 //
 // const ListMenuContentWithData = withCommerceSdkReactHookData(
 //     ({data, ...rest}: any) => (
-//         <Fade in={true}>
+//         <div in={true}>
 //             <ListMenuContent {...rest} item={data} />
-//         </Fade>
+//         </div>
 //     ),
 //     {
 //         hook: useCategory,
@@ -125,7 +124,8 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         // Apply styles from the theme
         const recipe = useSlotRecipe({key: 'app'})
         const styles = recipe()
-        const {isOpen, onOpen, onClose} = useDisclosure()
+
+        const {open, onOpen, onClose} = useDisclosure()
         // Used to conditionally render header/footer for checkout page
         const isCheckout = /\/checkout$/.test(location?.pathname)
 
@@ -167,32 +167,32 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 })
             }
         }, [customer?.isRegistered, customer?.email, basket?.customerInfo?.email])
-        //
-        // useEffect(() => {
-        //     // Listen for online status changes.
-        //     watchOnlineStatus((isOnline: boolean) => {
-        //         setIsOnline(isOnline)
-        //     })
-        // }, [])
-        //
-        // useEffect(() => {
-        //     // Lets automatically close the mobile navigation when the
-        //     // location path is changed.
-        //     onClose()
-        // }, [location])
-        //
-        // const onLogoClick = () => {
-        //     // Goto the home page.
-        //     const path = config.pages?.Home
-        //         ? buildUrl(config.pages.Home.path, site.id, locale.id)
-        //         : '/'
-        //
-        //     history.push(path)
-        //
-        //     // Close the drawer.
-        //     onClose()
-        // }
-        //
+
+        useEffect(() => {
+            // Listen for online status changes.
+            watchOnlineStatus((isOnline: boolean) => {
+                setIsOnline(isOnline)
+            })
+        }, [])
+
+        useEffect(() => {
+            // Lets automatically close the mobile navigation when the
+            // location path is changed.
+            onClose()
+        }, [location])
+
+        const onLogoClick = () => {
+            // Goto the home page.
+            const path = config.pages?.Home
+                ? buildUrl(config.pages.Home.path, site.id, locale.id)
+                : '/'
+
+            history.push(path)
+
+            // Close the drawer.
+            onClose()
+        }
+
         // const onCartClick = () => {
         //     const path = buildUrl('/cart', site.id, locale.id)
         //     history.push(path)
@@ -201,18 +201,18 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         //     onClose()
         // }
         //
-        // const onAccountClick = () => {
-        //     // Link to account page if registered; Header component will show auth modal for guest users
-        //     const path = buildUrl('/account', site.id, locale.id)
-        //     history.push(path)
-        // }
-        //
-        // const onWishlistClick = () => {
-        //     // Link to wishlist page if registered; Header component will show auth modal for guest users
-        //     const path = buildUrl('/account/wishlist', site.id, locale.id)
-        //     history.push(path)
-        // }
-        //
+        const onAccountClick = () => {
+            // Link to account page if registered; Header component will show auth modal for guest users
+            const path = buildUrl('/account', site.id, locale.id)
+            history.push(path)
+        }
+
+        const onWishlistClick = () => {
+            // Link to wishlist page if registered; Header component will show auth modal for guest users
+            const path = buildUrl('/account/wishlist', site.id, locale.id)
+            history.push(path)
+        }
+
         const trackPage = () => {
             void activeData.trackPage(site.id, locale.id, currency)
         }
@@ -220,10 +220,6 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         useEffect(() => {
             trackPage()
         }, [location])
-        //
-        // // Ensure styles.container is an object
-        // const containerStyles = (styles.container as React.CSSProperties) || {}
-        // const headerWrapperStyles = {display: 'flex'}
 
         return (
             <Box className="sf-app" css={styles.container}>
@@ -270,67 +266,69 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 <ScrollToTop />
 
                 <Box id="app" display="flex" flexDirection="column" flex={1}>
-                    {/*    <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>*/}
+                    <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>
                     <Box css={styles.headerWrapper}>
-                        Header
+                        <Box width="100%" bg="red.400">
+                            Header
+                        </Box>
                         {/*        {!isCheckout ? (*/}
                         {/*            <>*/}
                         {/*                <AboveHeader />*/}
-                        {/*                <Header*/}
-                        {/*                    onMenuClick={onOpen}*/}
-                        {/*                    onLogoClick={onLogoClick}*/}
-                        {/*                    onMyCartClick={onCartClick}*/}
-                        {/*                    onMyAccountClick={onAccountClick}*/}
-                        {/*                    onWishlistClick={onWishlistClick}*/}
-                        {/*                >*/}
-                        {/*                    <HideOnDesktop>*/}
-                        {/*                        <DrawerMenu*/}
-                        {/*                            isOpen={isOpen}*/}
-                        {/*                            onClose={onClose}*/}
-                        {/*                            onLogoClick={onLogoClick}*/}
-                        {/*                            root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
-                        {/*                            itemsKey="categories"*/}
-                        {/*                            itemsCountKey="onlineSubCategoriesCount"*/}
-                        {/*                            itemComponent={DrawerMenuItemWithData}*/}
-                        {/*                        />*/}
-                        {/*                    </HideOnDesktop>*/}
-                        {/*                    <HideOnMobile>*/}
-                        {/*                        <ListMenu*/}
-                        {/*                            root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
-                        {/*                            itemsKey="categories"*/}
-                        {/*                            itemsCountKey="onlineSubCategoriesCount"*/}
-                        {/*                            contentComponent={ListMenuContentWithData}*/}
-                        {/*                        />*/}
-                        {/*                    </HideOnMobile>*/}
-                        {/*                </Header>*/}
-                        {/*            </>*/}
+                        {/*<Header*/}
+                        {/*    onMenuClick={onOpen}*/}
+                        {/*    onLogoClick={onLogoClick}*/}
+                        {/*    // onMyCartClick={onCartClick}*/}
+                        {/*    onMyAccountClick={onAccountClick}*/}
+                        {/*    onWishlistClick={onWishlistClick}*/}
+                        {/*>*/}
+                        {/*    /!*<HideOnDesktop>*!/*/}
+                        {/*    /!*    <DrawerMenu*!/*/}
+                        {/*    /!*        open={open}*!/*/}
+                        {/*    /!*        onClose={onClose}*!/*/}
+                        {/*    /!*        onLogoClick={onLogoClick}*!/*/}
+                        {/*    /!*        root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*!/*/}
+                        {/*    /!*        itemsKey="categories"*!/*/}
+                        {/*    /!*        itemsCountKey="onlineSubCategoriesCount"*!/*/}
+                        {/*    /!*        itemComponent={DrawerMenuItemWithData}*!/*/}
+                        {/*    /!*    />*!/*/}
+                        {/*    /!*</HideOnDesktop>*!/*/}
+                        {/*    <HideOnMobile>*/}
+                        {/*        <ListMenu*/}
+                        {/*            root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
+                        {/*            itemsKey="categories"*/}
+                        {/*            itemsCountKey="onlineSubCategoriesCount"*/}
+                        {/*            contentComponent={ListMenuContentWithData}*/}
+                        {/*        />*/}
+                        {/*    </HideOnMobile>*/}
+                        {/*</Header>*/}
+                        {/*</>*/}
                         {/*        ) : (*/}
                         {/*            <CheckoutHeader />*/}
                         {/*        )}*/}
                     </Box>
-                    {/*    {!isOnline && <OfflineBanner />}*/}
+                    {!isOnline && <OfflineBanner />}
                     {/*    <AddToCartModalProvider>*/}
-                    {/*        <SkipNavContent*/}
-                    {/*            style={{*/}
-                    {/*                display: 'flex',*/}
-                    {/*                flexDirection: 'column',*/}
-                    {/*                flex: 1,*/}
-                    {/*                outline: 0*/}
-                    {/*            }}*/}
-                    {/*        >*/}
-                    <Box
-                        as="main"
-                        id="app-main"
-                        role="main"
-                        display="flex"
-                        flexDirection="column"
-                        flex="1"
+                    <SkipNavContent
+                        css={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            flex: 1,
+                            outline: 0
+                        }}
                     >
-                        <OfflineBoundary isOnline={false}>
-                            <WrappedComponent {...(props as P)} />
-                        </OfflineBoundary>
-                    </Box>
-                    {/*        </SkipNavContent>*/}
+                        <Box
+                            as="main"
+                            id="app-main"
+                            role="main"
+                            display="flex"
+                            flexDirection="column"
+                            flex="1"
+                        >
+                            <OfflineBoundary isOnline={false}>
+                                <WrappedComponent {...(props as P)} />
+                            </OfflineBoundary>
+                        </Box>
+                    </SkipNavContent>
 
                     {/*        {!isCheckout ? <Footer /> : <CheckoutFooter />}*/}
 

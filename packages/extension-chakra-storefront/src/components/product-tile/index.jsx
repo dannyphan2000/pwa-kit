@@ -52,7 +52,7 @@ export const Skeleton = () => {
     const styles = useMultiStyleConfig('ProductTile')
     return (
         <Box data-testid="sf-product-tile-skeleton">
-            <Stack spacing={2}>
+            <Stack gap={2}>
                 <Box {...styles.imageWrapper}>
                     <AspectRatio ratio={1} {...styles.image}>
                         <ChakraSkeleton />

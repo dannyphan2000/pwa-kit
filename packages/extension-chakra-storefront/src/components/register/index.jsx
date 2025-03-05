@@ -48,7 +48,7 @@ const RegisterForm = ({submitForm, clickSignIn = noop, form}) => {
                         </Alert>
                     )}
                     <RegistrationFields form={form} />
-                    <Stack spacing={6}>
+                    <Stack gap={6}>
                         <Button
                             type="submit"
                             onClick={() => form.clearErrors('global')}
@@ -60,7 +60,7 @@ const RegisterForm = ({submitForm, clickSignIn = noop, form}) => {
                             />
                         </Button>
 
-                        <Stack direction="row" spacing={1} justify="center">
+                        <Stack direction="row" gap={1} justify="center">
                             <Text fontSize="sm">
                                 <FormattedMessage
                                     defaultMessage="Already have an account?"

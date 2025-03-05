@@ -34,7 +34,7 @@ const ListMenuContent = ({maxColumns, item, itemsKey, onClose, initialFocusRef})
     return (
         <Container as={Stack} {...baseStyle.popoverContainer}>
             <SimpleGrid
-                spacing={8}
+                gap={8}
                 justifyContent={'left'}
                 gridTemplateColumns={`repeat(${
                     items.length > maxColumns ? maxColumns : items.length

@@ -4,8 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-export default {
-    baseStyle: {
+import {defineRecipe} from '@chakra-ui/react'
+
+export default defineRecipe({
+    slots: ['container', 'content', 'searchContainer', 'bodyContainer', 'logo', 'icons', 'signout'],
+    base: {
         container: {
             minWidth: 'xs',
             width: 'full',
@@ -85,6 +88,5 @@ export default {
         signoutIcon: {
             marginRight: 2
         }
-    },
-    parts: ['container', 'content', 'searchContainer', 'bodyContainer', 'logo', 'icons', 'signout']
-}
+    }
+})
