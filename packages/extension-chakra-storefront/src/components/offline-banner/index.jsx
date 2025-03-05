@@ -17,8 +17,6 @@ import {AlertIcon} from '../icons'
 const OfflineBanner = () => {
     const intl = useIntl()
     const recipe = useSlotRecipe({key: 'offlineBanner'})
-    const recipe1 = useSlotRecipe({key: 'alert'})
-    console.log('recipe1()', recipe1())
 
     const styles = recipe()
     return (
