@@ -269,7 +269,8 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.demo.enablePasswordlessAndSocialLogin']: false
         },
         assets: ['translations'],
         private: false
@@ -300,7 +301,8 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: true,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.demo.enablePasswordlessAndSocialLogin']: true // True only for PWA Kit demo environments!
         },
         assets: ['translations'],
         private: true
@@ -325,7 +327,8 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.demo.enablePasswordlessAndSocialLogin']: false
         },
         assets: ['translations'],
         private: true
@@ -350,7 +353,8 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: true,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.demo.enablePasswordlessAndSocialLogin']: false
         },
         assets: ['translations'],
         private: true
@@ -375,7 +379,8 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'staging-001',
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.commerce.isSlasPrivate']: true
+            ['project.commerce.isSlasPrivate']: true,
+            ['project.demo.enablePasswordlessAndSocialLogin']: false
         },
         assets: ['translations'],
         private: true
@@ -400,7 +405,8 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'xitgmcd3',
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.commerce.isSlasPrivate']: true
+            ['project.commerce.isSlasPrivate']: true,
+            ['project.demo.enablePasswordlessAndSocialLogin']: false
         },
         assets: ['translations'],
         private: true
@@ -425,7 +431,8 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'performance-001',
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.commerce.isSlasPrivate']: false
+            ['project.commerce.isSlasPrivate']: false,
+            ['project.demo.enablePasswordlessAndSocialLogin']: false
         },
         assets: ['translations'],
         private: true
