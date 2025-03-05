@@ -12,12 +12,12 @@ module.exports = {
         url: {
             {{#if answers.project.demo.enableDemoSettings}}
             // Determine where the siteRef is located. Valid values include 'path|query_param|none'. Defaults to: 'none'
-            // site: 'path',
+            site: 'path',
             // Determine where the localeRef is located. Valid values include 'path|query_param|none'. Defaults to: 'none'
             locale: 'path',
             {{else}}
             // Determine where the siteRef is located. Valid values include 'path|query_param|none'. Defaults to: 'none'
-            // site: 'none',
+            site: 'none',
             // Determine where the localeRef is located. Valid values include 'path|query_param|none'. Defaults to: 'none'
             locale: 'none',
             {{/if}}
