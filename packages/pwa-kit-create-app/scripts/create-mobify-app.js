@@ -291,7 +291,7 @@ const PRESETS = [
             ['project.name']: 'demo-storefront',
             ['project.commerce.instanceUrl']: 'https://zzrf-001.dx.commercecloud.salesforce.com',
             ['project.commerce.clientId']: '083859f2-5d93-4209-b999-a112266d63a0',
-            ['project.commerce.siteId']: 'RefArch',
+            ['project.commerce.siteId']: 'RefArchGlobal',
             ['project.commerce.organizationId']: 'f_ecom_zzrf_001',
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: true,
@@ -839,6 +839,11 @@ const main = async (opts) => {
 
     // Add the preset to the context.
     context.preset = selectedPreset
+
+    // If using the preset, output the preset name
+    if (presetId) {
+        console.log(`Using preset "${selectedPreset.name}"`)
+    }
 
     if (!OUTPUT_DIR_FLAG_ACTIVE) {
         outputDir = p.join(process.cwd(), selectedPreset.id)
