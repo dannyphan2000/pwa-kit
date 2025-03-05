@@ -402,17 +402,17 @@ export const routeComponent = (Wrapped, isPage, locals) => {
  *
  * @private
  */
-export const getRoutes = (locals = {}) => {
+export const getRoutes = async (locals = {}, req = {}) => {
     let _routes = routes
     const {applicationExtensions = []} = locals
     if (typeof routes === 'function') {
-        _routes = routes()
+        _routes = await routes(locals)
     }
 
     // Call the `extendRoutes` function for all the Application Extensions.
-    applicationExtensions.forEach((applicationExtension) => {
-        _routes = applicationExtension.extendRoutes(_routes)
-    })
+    for (const applicationExtension of applicationExtensions) {
+        _routes = await applicationExtension.extendRoutes(_routes, req)
+    }
 
     const allRoutes = [
         // NOTE: this route needs to be above _routes, in case _routes has a fallback route of `path: '*'`

@@ -139,7 +139,7 @@ export const render = async (req, res, next) => {
         locals: res.locals
     })
 
-    let routes = getRoutes(res.locals)
+    let routes = await getRoutes(res.locals, req)
 
     const [pathname] = req.originalUrl.split('?')
 
@@ -149,6 +149,14 @@ export const render = async (req, res, next) => {
             interpretPlusSignAsSpace: config?.app?.url?.interpretPlusSignAsSpace
         })
     }
+
+    // Serialize the routes and add them to the config. We'll use this on the client-side later.
+    // TODO: Don't serialize all the routes (only the one route or only the non-localized routes before configurRoutes is run)
+    config.app.routes = routes.map((route) => ({
+        path: route.path,
+        componentName: route.component.displayName.match(/\((\w+)\)/)[1],
+        componentProps: route.props
+    }))
 
     // Step 1 - Find the match.
 
