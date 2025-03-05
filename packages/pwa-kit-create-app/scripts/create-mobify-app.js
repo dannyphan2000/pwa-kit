@@ -59,10 +59,6 @@ sh.set('-e')
 // will ensure those escaped double quotes are still escaped after processing the template.
 Handlebars.registerHelper('script', (object) => object.replaceAll('"', '\\"'))
 
-Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
-    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-})
-
 // Validations
 const validPreset = (preset) => {
     return ALL_PRESET_NAMES.includes(preset)
@@ -270,7 +266,7 @@ const PRESETS = [
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.demo.enablePasswordlessAndSocialLogin']: false
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: false
@@ -284,7 +280,8 @@ const PRESETS = [
 
             This has social and passwordless login enabled but requires a client secret to run.
         `,
-        shortDescription: 'The Retail app with demo Commerce Cloud instance and a private SLAS client',
+        shortDescription:
+            'The Retail app with demo Commerce Cloud instance and a private SLAS client',
         templateSource: {
             type: TEMPLATE_SOURCE_NPM,
             id: '@salesforce/retail-react-app'
@@ -302,7 +299,7 @@ const PRESETS = [
             ['project.commerce.isSlasPrivate']: true,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.demo.enablePasswordlessAndSocialLogin']: true // True only for PWA Kit demo environments!
+            ['project.demo.enableDemoSettings']: true // True only for presets deployed to demo environments like pwa-kit.mobify-storefront.com
         },
         assets: ['translations'],
         private: true
@@ -328,7 +325,7 @@ const PRESETS = [
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.demo.enablePasswordlessAndSocialLogin']: false
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -354,7 +351,7 @@ const PRESETS = [
             ['project.commerce.isSlasPrivate']: true,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.demo.enablePasswordlessAndSocialLogin']: false
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -380,7 +377,7 @@ const PRESETS = [
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
             ['project.commerce.isSlasPrivate']: true,
-            ['project.demo.enablePasswordlessAndSocialLogin']: false
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -406,7 +403,7 @@ const PRESETS = [
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
             ['project.commerce.isSlasPrivate']: true,
-            ['project.demo.enablePasswordlessAndSocialLogin']: false
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -432,7 +429,7 @@ const PRESETS = [
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
             ['project.commerce.isSlasPrivate']: false,
-            ['project.demo.enablePasswordlessAndSocialLogin']: false
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true

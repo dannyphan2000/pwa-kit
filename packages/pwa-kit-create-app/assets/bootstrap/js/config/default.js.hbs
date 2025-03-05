@@ -10,17 +10,24 @@ module.exports = {
     app: {
         // Customize how your 'site' and 'locale' are displayed in the url.
         url: {
+            {{#if answers.project.demo.enableDemoSettings}}
+            // Determine where the siteRef is located. Valid values include 'path|query_param|none'. Defaults to: 'none'
+            // site: 'path',
+            // Determine where the localeRef is located. Valid values include 'path|query_param|none'. Defaults to: 'none'
+            locale: 'path',
+            {{else}}
             // Determine where the siteRef is located. Valid values include 'path|query_param|none'. Defaults to: 'none'
             // site: 'none',
             // Determine where the localeRef is located. Valid values include 'path|query_param|none'. Defaults to: 'none'
-            locale: 'none'
+            locale: 'none',
+            {{/if}}
             // This boolean value dictates whether or not default site or locale values are shown in the url. Defaults to: false
             // showDefaults: true
         },
         login: {
             passwordless: {
                 // Enables or disables passwordless login for the site. Defaults to: false
-                {{#if answers.project.demo.enablePasswordlessAndSocialLogin}}
+                {{#if answers.project.demo.enableDemoSettings}}
                 enabled: true,
                 {{else}}
                 enabled: false,
@@ -35,7 +42,7 @@ module.exports = {
             },
             social: {
                 // Enables or disables social login for the site. Defaults to: false
-                {{#if answers.project.demo.enablePasswordlessAndSocialLogin}}
+                {{#if answers.project.demo.enableDemoSettings}}
                 enabled: true,
                 {{else}}
                 enabled: false,
