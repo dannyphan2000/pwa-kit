@@ -13,10 +13,7 @@ export default defineRecipe({
             paddingTop: 4,
             paddingBottom: 4,
             paddingLeft: [4, 4, 6, 6, 8],
-            paddingRight: [4, 4, 6, 6, 8],
-            color: 'gray.900',
-            // fontSize: 'md',
-            borderRadius: 0
+            paddingRight: [4, 4, 6, 6, 8]
         },
         icon: {
             height: 5,
