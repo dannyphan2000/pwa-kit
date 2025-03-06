@@ -8,7 +8,6 @@ import React, {useRef, useState} from 'react'
 import PropTypes from 'prop-types'
 import {useIntl} from 'react-intl'
 import {
-    useMultiStyleConfig,
     Box,
     Flex,
     IconButton,
@@ -38,7 +37,7 @@ import {useCurrentBasket} from '../../hooks/use-current-basket'
 
 import Link from '../../components/link'
 import Search from '../../components/search'
-import withRegistration from '../../components/with-registration'
+// import withRegistration from '../../components/with-registration'
 import {
     AccountIcon,
     BrandLogo,
@@ -56,7 +55,7 @@ import LoadingSpinner from '../../components/loading-spinner'
 import {HideOnDesktop, HideOnMobile} from '../../components/responsive'
 import {isHydrated, noop} from '../../utils/utils'
 
-const IconButtonWithRegistration = withRegistration(IconButton)
+// const IconButtonWithRegistration = withRegistration(IconButton)
 
 /**
  * Search bar for the header.
@@ -69,7 +68,6 @@ const IconButtonWithRegistration = withRegistration(IconButton)
  * @returns {Element} the search bar element
  */
 const SearchBar = (props) => {
-    // const styles = useMultiStyleConfig('Header')
     const recipe = useSlotRecipe({key: 'header'})
     const styles = recipe()
 
@@ -131,7 +129,7 @@ const Header = ({
         onClose: onAccountMenuClose,
         onOpen: onAccountMenuOpen
     } = useDisclosure()
-    const [isDesktop] = useMediaQuery('(min-width: 992px)')
+    const [isDesktop] = useMediaQuery('(min-width: 992px)', {fallback: [false]})
     const storeLocatorExtension = useApplicationExtension(
         '@salesforce/extension-chakra-store-locator'
     )
@@ -147,7 +145,6 @@ const Header = ({
 
     const recipe = useSlotRecipe({key: 'header'})
     const styles = recipe()
-
     const onSignoutClick = async () => {
         setShowLoading(true)
         await logout.mutateAsync()
@@ -171,8 +168,8 @@ const Header = ({
     }
 
     return (
-        <Box {...styles.container} {...props}>
-            <Box {...styles.content}>
+        <Box css={styles.container} {...props}>
+            <Box css={styles.content}>
                 {showLoading && <LoadingSpinner wrapperStyles={{height: '100vh'}} />}
                 <Flex wrap="wrap" alignItems={['baseline', 'baseline', 'baseline', 'center']}>
                     <IconButton
@@ -204,18 +201,18 @@ const Header = ({
                     <HideOnMobile>
                         <SearchBar />
                     </HideOnMobile>
-                    <IconButtonWithRegistration
-                        icon={<AccountIcon />}
-                        aria-label={intl.formatMessage({
-                            id: 'header.button.assistive_msg.my_account',
-                            defaultMessage: 'My account'
-                        })}
-                        variant="unstyled"
-                        {...styles.icons}
-                        {...styles.accountIcon}
-                        onClick={onMyAccountClick}
-                        onMouseOver={isDesktop ? onAccountMenuOpen : noop}
-                    />
+                    {/*<IconButtonWithRegistration*/}
+                    {/*    icon={<AccountIcon />}*/}
+                    {/*    aria-label={intl.formatMessage({*/}
+                    {/*        id: 'header.button.assistive_msg.my_account',*/}
+                    {/*        defaultMessage: 'My account'*/}
+                    {/*    })}*/}
+                    {/*    variant="unstyled"*/}
+                    {/*    {...styles.icons}*/}
+                    {/*    {...styles.accountIcon}*/}
+                    {/*    onClick={onMyAccountClick}*/}
+                    {/*    onMouseOver={isDesktop ? onAccountMenuOpen : noop}*/}
+                    {/*/>*/}
                     {/*{isRegistered && isHydrated() && (*/}
                     {/*    <Popover*/}
                     {/*        isLazy*/}
@@ -355,9 +352,9 @@ const Header = ({
                     {/*    {...styles.icons}*/}
                     {/*    onClick={onMyCartClick}*/}
                     {/*/>*/}
-                    {/*<HideOnDesktop display={{base: 'contents', lg: 'none'}}>*/}
-                    {/*    <SearchBar />*/}
-                    {/*</HideOnDesktop>*/}
+                    <HideOnDesktop display={{base: 'contents', lg: 'none'}}>
+                        <SearchBar />
+                    </HideOnDesktop>
                 </Flex>
             </Box>
         </Box>

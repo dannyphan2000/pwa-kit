@@ -8,9 +8,8 @@ import React, {useEffect, useMemo, useRef, useState} from 'react'
 import {useSearchSuggestions} from '@salesforce/commerce-sdk-react'
 import {
     Input,
-    InputGroup,
-    InputLeftElement,
     Popover,
+    PopoverRoot,
     PopoverTrigger,
     PopoverContent,
     Button,
@@ -19,6 +18,7 @@ import {
     HStack,
     Spinner
 } from '@chakra-ui/react'
+import InputGroup from '../input-group'
 import SearchSuggestions from '../../components/search/partials/search-suggestions'
 import {SearchIcon} from '../../components/icons'
 import {capitalize, boldString, getSessionJSONItem, setSessionJSONItem} from '../../utils/utils'
@@ -183,14 +183,11 @@ const Search = (props) => {
 
     return (
         <Box>
-            <Popover isOpen={isOpen} isLazy initialFocusRef={searchInputRef}>
+            <PopoverRoot isOpen={isOpen} isLazy initialFocusRef={searchInputRef}>
                 <PopoverTrigger>
                     <form onSubmit={onSubmitSearch}>
                         <HStack>
-                            <InputGroup>
-                                <InputLeftElement pointerEvents="none">
-                                    <SearchIcon />
-                                </InputLeftElement>
+                            <InputGroup startElement={<SearchIcon />}>
                                 <Input
                                     autoComplete="off"
                                     id="search-input"
@@ -203,61 +200,61 @@ const Search = (props) => {
                                     variant="filled"
                                 />
                             </InputGroup>
-                            <HideOnDesktop>
-                                <Button
-                                    display={isOpen ? 'block' : 'none'}
-                                    variant="link"
-                                    size="sm"
-                                    onMouseDown={() => closeAndNavigate(false)}
-                                >
-                                    <FormattedMessage
-                                        defaultMessage="Cancel"
-                                        id="search.action.cancel"
-                                    />
-                                </Button>
-                            </HideOnDesktop>
+                            {/*<HideOnDesktop>*/}
+                            {/*    <Button*/}
+                            {/*        display={isOpen ? 'block' : 'none'}*/}
+                            {/*        variant="link"*/}
+                            {/*        size="sm"*/}
+                            {/*        onMouseDown={() => closeAndNavigate(false)}*/}
+                            {/*    >*/}
+                            {/*        <FormattedMessage*/}
+                            {/*            defaultMessage="Cancel"*/}
+                            {/*            id="search.action.cancel"*/}
+                            {/*        />*/}
+                            {/*    </Button>*/}
+                            {/*</HideOnDesktop>*/}
                         </HStack>
                     </form>
                 </PopoverTrigger>
 
-                <HideOnMobile>
-                    <PopoverContent data-testid="sf-suggestion-popover">
-                        <SearchSuggestions
-                            closeAndNavigate={closeAndNavigate}
-                            recentSearches={recentSearches}
-                            searchSuggestions={searchSuggestions}
-                        />
-                    </PopoverContent>
-                </HideOnMobile>
-            </Popover>
-            <HideOnDesktop>
-                <Flex
-                    display={isOpen || searchInputRef?.value?.length > 0 ? 'block' : 'none'}
-                    postion="absolute"
-                    background="white"
-                    left={0}
-                    right={0}
-                    height="100vh"
-                >
-                    {searchSuggestion.isLoading ? (
-                        <Spinner
-                            position="absolute"
-                            top="50%"
-                            left="50%"
-                            opacity={0.85}
-                            color="blue.600"
-                            zIndex="9999"
-                            margin="-25px 0 0 -25px"
-                        />
-                    ) : (
-                        <SearchSuggestions
-                            closeAndNavigate={closeAndNavigate}
-                            recentSearches={recentSearches}
-                            searchSuggestions={searchSuggestions}
-                        />
-                    )}
-                </Flex>
-            </HideOnDesktop>
+                {/*<HideOnMobile>*/}
+                {/*    <PopoverContent data-testid="sf-suggestion-popover">*/}
+                {/*        <SearchSuggestions*/}
+                {/*            closeAndNavigate={closeAndNavigate}*/}
+                {/*            recentSearches={recentSearches}*/}
+                {/*            searchSuggestions={searchSuggestions}*/}
+                {/*        />*/}
+                {/*    </PopoverContent>*/}
+                {/*</HideOnMobile>*/}
+            </PopoverRoot>
+            {/*<HideOnDesktop>*/}
+            {/*    <Flex*/}
+            {/*        display={isOpen || searchInputRef?.value?.length > 0 ? 'block' : 'none'}*/}
+            {/*        postion="absolute"*/}
+            {/*        background="white"*/}
+            {/*        left={0}*/}
+            {/*        right={0}*/}
+            {/*        height="100vh"*/}
+            {/*    >*/}
+            {/*        {searchSuggestion.isLoading ? (*/}
+            {/*            <Spinner*/}
+            {/*                position="absolute"*/}
+            {/*                top="50%"*/}
+            {/*                left="50%"*/}
+            {/*                opacity={0.85}*/}
+            {/*                color="blue.600"*/}
+            {/*                zIndex="9999"*/}
+            {/*                margin="-25px 0 0 -25px"*/}
+            {/*            />*/}
+            {/*        ) : (*/}
+            {/*            <SearchSuggestions*/}
+            {/*                closeAndNavigate={closeAndNavigate}*/}
+            {/*                recentSearches={recentSearches}*/}
+            {/*                searchSuggestions={searchSuggestions}*/}
+            {/*            />*/}
+            {/*        )}*/}
+            {/*    </Flex>*/}
+            {/*</HideOnDesktop>*/}
         </Box>
     )
 }

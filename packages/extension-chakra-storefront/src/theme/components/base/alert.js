@@ -6,7 +6,6 @@
  */
 import {defineRecipe} from '@chakra-ui/react/'
 import {alertAnatomy} from '@chakra-ui/react/dist/esm/anatomy'
-console.log('alertAnatomy', alertAnatomy.keys())
 
 export default defineRecipe({
     slots: alertAnatomy.keys(),

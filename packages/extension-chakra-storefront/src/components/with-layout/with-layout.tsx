@@ -34,11 +34,11 @@ import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
 import {HideOnDesktop, HideOnMobile} from '../responsive'
 // import {ListMenu, ListMenuContent} from '../list-menu'
 import {withCommerceSdkReactHookData} from '../with-commerce-sdk-react-hook-data'
-// import AboveHeader from '../above-header'
+import AboveHeader from '../above-header'
 // import CheckoutHeader from '../../pages/checkout/partials/checkout-header'
 // import CheckoutFooter from '../../pages/checkout/partials/checkout-footer'
 // import Footer from '../footer'
-// import Header from '../header'
+import Header from '../header'
 import OfflineBanner from '../offline-banner'
 import OfflineBoundary from '../offline-boundary'
 import Seo from '../seo'
@@ -220,7 +220,6 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         useEffect(() => {
             trackPage()
         }, [location])
-
         return (
             <Box className="sf-app" css={styles.container}>
                 <Helmet>
@@ -268,43 +267,42 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 <Box id="app" display="flex" flexDirection="column" flex={1}>
                     <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>
                     <Box css={styles.headerWrapper}>
-                        <Box width="100%" bg="red.400">
-                            Header
-                        </Box>
-                        {/*        {!isCheckout ? (*/}
-                        {/*            <>*/}
-                        {/*                <AboveHeader />*/}
-                        {/*<Header*/}
-                        {/*    onMenuClick={onOpen}*/}
-                        {/*    onLogoClick={onLogoClick}*/}
-                        {/*    // onMyCartClick={onCartClick}*/}
-                        {/*    onMyAccountClick={onAccountClick}*/}
-                        {/*    onWishlistClick={onWishlistClick}*/}
-                        {/*>*/}
-                        {/*    /!*<HideOnDesktop>*!/*/}
-                        {/*    /!*    <DrawerMenu*!/*/}
-                        {/*    /!*        open={open}*!/*/}
-                        {/*    /!*        onClose={onClose}*!/*/}
-                        {/*    /!*        onLogoClick={onLogoClick}*!/*/}
-                        {/*    /!*        root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*!/*/}
-                        {/*    /!*        itemsKey="categories"*!/*/}
-                        {/*    /!*        itemsCountKey="onlineSubCategoriesCount"*!/*/}
-                        {/*    /!*        itemComponent={DrawerMenuItemWithData}*!/*/}
-                        {/*    /!*    />*!/*/}
-                        {/*    /!*</HideOnDesktop>*!/*/}
-                        {/*    <HideOnMobile>*/}
-                        {/*        <ListMenu*/}
-                        {/*            root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
-                        {/*            itemsKey="categories"*/}
-                        {/*            itemsCountKey="onlineSubCategoriesCount"*/}
-                        {/*            contentComponent={ListMenuContentWithData}*/}
-                        {/*        />*/}
-                        {/*    </HideOnMobile>*/}
-                        {/*</Header>*/}
-                        {/*</>*/}
-                        {/*        ) : (*/}
-                        {/*            <CheckoutHeader />*/}
-                        {/*        )}*/}
+                        {!isCheckout ? (
+                            <>
+                                <AboveHeader />
+                                <Header
+                                    onMenuClick={onOpen}
+                                    onLogoClick={onLogoClick}
+                                    // onMyCartClick={onCartClick}
+                                    onMyAccountClick={onAccountClick}
+                                    onWishlistClick={onWishlistClick}
+                                >
+                                    <div>Header</div>
+                                    {/*<HideOnDesktop>*/}
+                                    {/*    <DrawerMenu*/}
+                                    {/*        open={open}*/}
+                                    {/*        onClose={onClose}*/}
+                                    {/*        onLogoClick={onLogoClick}*/}
+                                    {/*        root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
+                                    {/*        itemsKey="categories"*/}
+                                    {/*        itemsCountKey="onlineSubCategoriesCount"*/}
+                                    {/*        itemComponent={DrawerMenuItemWithData}*/}
+                                    {/*    />*/}
+                                    {/*</HideOnDesktop>*/}
+                                    {/*<HideOnMobile>*/}
+                                    {/*    <ListMenu*/}
+                                    {/*        root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
+                                    {/*        itemsKey="categories"*/}
+                                    {/*        itemsCountKey="onlineSubCategoriesCount"*/}
+                                    {/*        contentComponent={ListMenuContentWithData}*/}
+                                    {/*    />*/}
+                                    {/*</HideOnMobile>*/}
+                                </Header>
+                            </>
+                        ) : (
+                            <div>Checkout Header</div>
+                            // <CheckoutHeader />
+                        )}
                     </Box>
                     {!isOnline && <OfflineBanner />}
                     {/*    <AddToCartModalProvider>*/}

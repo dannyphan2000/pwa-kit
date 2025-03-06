@@ -26,25 +26,26 @@ export default defineRecipe({
             filled: {
                 // we use filled variant for
                 // search input
-                field: {
-                    borderColor: 'gray.600',
+                borderColor: 'gray.600',
+                backgroundColor: 'gray.100',
+                _focus: {
+                    backgroundColor: 'white'
+                },
+                _hover: {
                     backgroundColor: 'gray.100',
                     _focus: {
                         backgroundColor: 'white'
-                    },
-                    _hover: {
-                        backgroundColor: 'gray.100',
-                        _focus: {
-                            backgroundColor: 'white'
-                        }
-                    },
-                    _placeholder: {
-                        color: 'gray.700'
                     }
+                },
+                _placeholder: {
+                    color: 'gray.700'
                 }
+                // field: {
+                //
+                // }
             }
         },
-        sizes: {
+        size: {
             md: {
                 field: {...mdSize, px: 3},
                 addon: mdSize
