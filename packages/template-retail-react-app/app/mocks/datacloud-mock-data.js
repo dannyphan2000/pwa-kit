@@ -39,6 +39,25 @@ export const mockLoginViewPageEvent = {
     ]
 }
 
+export const mockLoginViewPageEventDNT = {
+    events: [
+        expect.objectContaining({
+            guestId: '__DNT__',
+            siteId: 'RefArch',
+            sessionId: '__DNT__',
+            deviceId: '__DNT__',
+            dateTime: expect.any(String),
+            customerId: '__DNT__',
+            customerNo: '__DNT__',
+            eventId: expect.any(String),
+            eventType: 'userEngagement',
+            category: 'Engagement',
+            interactionName: 'page-view',
+            sourceUrl: '/login'
+        })
+    ]
+}
+
 export const mockViewProductEvent = {
     events: [
         expect.objectContaining({

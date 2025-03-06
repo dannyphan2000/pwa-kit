@@ -11,9 +11,10 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useUsid, useCustomerId, useCustomerType, useDNT} from '@salesforce/commerce-sdk-react'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
+import {identity} from 'lodash'
 
 export class DataCloudApi {
-    constructor({site, appSourceId, tenantId}) {
+    constructor({site, appSourceId, tenantId, dnt}) {
         this.site = site
 
         // Return early if Data Cloud API configuration is not available
@@ -22,6 +23,7 @@ export class DataCloudApi {
             return
         }
         this.sdk = initDataCloudSdk(tenantId, appSourceId)
+        this.dnt = dnt
     }
 
     /**
@@ -118,14 +120,17 @@ export class DataCloudApi {
         const baseEvent = this._constructBaseEvent(args)
         const userDetails = this._constructUserDetails(args)
 
-        const identityProfile = this._concatenateEvents(
-            baseEvent,
-            this._generateEventDetails('identity', 'Profile'),
-            userDetails,
-            {
-                sourceUrl: path
-            }
-        )
+        // If DNT, we do not send the identity Profile event
+        const identityProfile = this.dnt
+            ? {}
+            : this._concatenateEvents(
+                  baseEvent,
+                  this._generateEventDetails('identity', 'Profile'),
+                  userDetails,
+                  {
+                      sourceUrl: path
+                  }
+              )
 
         const userEngagement = this._concatenateEvents(
             baseEvent,
@@ -137,7 +142,7 @@ export class DataCloudApi {
         )
 
         const interaction = {
-            events: [identityProfile, userEngagement]
+            events: [...(!this.dnt ? [identityProfile] : []), userEngagement]
         }
 
         try {
@@ -161,11 +166,13 @@ export class DataCloudApi {
         const baseProduct = this._constructDatacloudProduct(product)
         const userDetails = this._constructUserDetails(args)
 
-        const identityProfile = this._concatenateEvents(
-            baseEvent,
-            this._generateEventDetails('identity', 'Profile'),
-            userDetails
-        )
+        const identityProfile = this.dnt
+            ? {}
+            : this._concatenateEvents(
+                  baseEvent,
+                  this._generateEventDetails('identity', 'Profile'),
+                  userDetails
+              )
 
         let contactPointEmail = null
         if (args.email) {
@@ -187,7 +194,11 @@ export class DataCloudApi {
         )
 
         const interaction = {
-            events: [identityProfile, ...(contactPointEmail ? [contactPointEmail] : []), catalog]
+            events: [
+                ...(!this.dnt ? [identityProfile] : []),
+                ...(contactPointEmail ? [contactPointEmail] : []),
+                catalog
+            ]
         }
 
         try {
@@ -233,11 +244,13 @@ export class DataCloudApi {
             )
         })
 
-        const identityProfile = this._concatenateEvents(
-            baseEvent,
-            this._generateEventDetails('identity', 'Profile'),
-            userDetails
-        )
+        const identityProfile = this.dnt
+            ? null
+            : this._concatenateEvents(
+                  baseEvent,
+                  this._generateEventDetails('identity', 'Profile'),
+                  userDetails
+              )
 
         let contactPointEmail = null
         if (args.email) {
@@ -249,7 +262,7 @@ export class DataCloudApi {
 
         const interaction = {
             events: [
-                identityProfile,
+                ...(!this.dnt ? [identityProfile] : []),
                 ...(contactPointEmail ? [contactPointEmail] : []),
                 ...catalogObjects
             ]
@@ -298,11 +311,13 @@ export class DataCloudApi {
             )
         })
 
-        const identityProfile = this._concatenateEvents(
-            baseEvent,
-            this._generateEventDetails('identity', 'Profile'),
-            userDetails
-        )
+        const identityProfile = this.dnt
+            ? {}
+            : this._concatenateEvents(
+                  baseEvent,
+                  this._generateEventDetails('identity', 'Profile'),
+                  userDetails
+              )
 
         let contactPointEmail = null
         if (args.email) {
@@ -314,7 +329,7 @@ export class DataCloudApi {
 
         const interaction = {
             events: [
-                identityProfile,
+                ...(!this.dnt ? [identityProfile] : []),
                 ...(contactPointEmail ? [contactPointEmail] : []),
                 ...catalogObjects
             ]
@@ -357,11 +372,13 @@ export class DataCloudApi {
             )
         })
 
-        const identityProfile = this._concatenateEvents(
-            baseEvent,
-            this._generateEventDetails('identity', 'Profile'),
-            userDetails
-        )
+        const identityProfile = this.dnt
+            ? {}
+            : this._concatenateEvents(
+                  baseEvent,
+                  this._generateEventDetails('identity', 'Profile'),
+                  userDetails
+              )
 
         let contactPointEmail = null
         if (args.email) {
@@ -373,7 +390,7 @@ export class DataCloudApi {
 
         const interaction = {
             events: [
-                identityProfile,
+                ...(!this.dnt ? [identityProfile] : []),
                 ...(contactPointEmail ? [contactPointEmail] : []),
                 ...catalogObjects
             ]
@@ -401,7 +418,7 @@ const useDataCloud = () => {
     const customerId = useCustomerId() // Bug PWA -> Needs converted to Promise
     const {data: customer} = useCurrentCustomer()
     const {site} = useMultiSite()
-    let {effectiveDnt} = useDNT()
+    const {effectiveDnt} = useDNT()
 
     // If Do Not Track is enabled, then the following fields are replaced with '__DNT__'
     const getEventUserParameters = async () => {
@@ -429,7 +446,8 @@ const useDataCloud = () => {
             new DataCloudApi({
                 site: site.id,
                 appSourceId: appSourceId,
-                tenantId: tenantId
+                tenantId: tenantId,
+                dnt: effectiveDnt
             }),
         [site]
     )

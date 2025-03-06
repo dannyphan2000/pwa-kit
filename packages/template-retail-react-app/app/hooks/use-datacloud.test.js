@@ -9,6 +9,7 @@ import React from 'react'
 import {renderHook, waitFor} from '@testing-library/react'
 import useDataCloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
+import {useDNT} from '@salesforce/commerce-sdk-react'
 import {
     mockLoginViewPageEvent,
     mockViewProductEvent,
@@ -18,7 +19,8 @@ import {
     mockSearchParam,
     mockGloveSearchResult,
     mockCategorySearchParams,
-    mockRecommendationIds
+    mockRecommendationIds,
+    mockLoginViewPageEventDNT
 } from '@salesforce/retail-react-app/app/mocks/datacloud-mock-data'
 import {
     mockProduct,
@@ -101,6 +103,18 @@ describe('useDataCloud', function () {
         result.current.sendViewPage('/login')
         await waitFor(() => {
             expect(mockWebEventsAppSourceIdPost).toHaveBeenCalledWith(mockLoginViewPageEvent)
+        })
+    })
+
+    test('sendViewPage DNT', async () => {
+        useDNT.mockReturnValueOnce({
+            effectiveDnt: true
+        })
+        const {result} = renderHook(() => useDataCloud())
+        expect(result.current).toBeDefined()
+        result.current.sendViewPage('/login')
+        await waitFor(() => {
+            expect(mockWebEventsAppSourceIdPost).toHaveBeenCalledWith(mockLoginViewPageEventDNT)
         })
     })
 
