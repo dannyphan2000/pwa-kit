@@ -63,18 +63,18 @@ module.exports = [
             ]
         }
         {{else}}
-            l10n: {
-                supportedCurrencies: ['USD'],
-                defaultCurrency: 'USD',
-                defaultLocale: 'en-US',
-                supportedLocales: [
-                    {
-                        id: 'en-US',
-                        // alias: 'us',
-                        preferredCurrency: 'USD'
-                    }
-                ]
-            }
+        l10n: {
+            supportedCurrencies: ['USD'],
+            defaultCurrency: 'USD',
+            defaultLocale: 'en-US',
+            supportedLocales: [
+                {
+                    id: 'en-US',
+                    // alias: 'us',
+                    preferredCurrency: 'USD'
+                }
+            ]
+        }
         {{/ifEquals}}
     }
 ]
