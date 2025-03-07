@@ -10,6 +10,7 @@ import {renderHook, waitFor} from '@testing-library/react'
 import useDataCloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 import {useDNT} from '@salesforce/commerce-sdk-react'
+import {getCookie} from '@salesforce/retail-react-app/app/utils/utils'
 import {
     mockLoginViewPageEvent,
     mockViewProductEvent,
@@ -77,6 +78,11 @@ jest.mock('@salesforce/retail-react-app/app/hooks/use-current-customer', () => (
                 email: 'johnsmith@salesforce.com'
             }
         }
+    })
+}))
+jest.mock('@salesforce/retail-react-app/app/utils/utils', () => ({
+    getCookie: jest.fn(() => {
+        return 'abcdefghijklmnopqrstuvwxyz'
     })
 }))
 const mockWebEventsAppSourceIdPost = jest.fn()

@@ -11,11 +11,11 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useUsid, useCustomerId, useCustomerType, useDNT} from '@salesforce/commerce-sdk-react'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
-import {identity} from 'lodash'
+import {getCookie} from '@salesforce/retail-react-app/app/utils/utils'
 
 export class DataCloudApi {
-    constructor({site, appSourceId, tenantId, dnt}) {
-        this.site = site
+    constructor({siteId, appSourceId, tenantId, dnt}) {
+        this.siteId = siteId
 
         // Return early if Data Cloud API configuration is not available
         if (!appSourceId || !tenantId) {
@@ -36,8 +36,8 @@ export class DataCloudApi {
     _constructBaseEvent(args) {
         return {
             guestId: args.guestId,
-            siteId: this.site,
-            sessionId: args.deviceId, //get dwsid from cookie?
+            siteId: this.siteId,
+            sessionId: args.sessionId,
             deviceId: args.deviceId,
             dateTime: new Date().toISOString(),
             ...(args.customerId && {customerId: args.customerId}), // Can remove the conditionality after the hook -> Promise is changed in future PWA release
@@ -145,6 +145,7 @@ export class DataCloudApi {
             events: [...(!this.dnt ? [identityProfile] : []), userEngagement]
         }
 
+        console.log(interaction)
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)
         } catch (err) {
@@ -415,19 +416,22 @@ export class DataCloudApi {
 const useDataCloud = () => {
     const {getUsidWhenReady} = useUsid()
     const {isRegistered} = useCustomerType()
-    const customerId = useCustomerId() // Bug PWA -> Needs converted to Promise
+    const customerId = useCustomerId()
     const {data: customer} = useCurrentCustomer()
     const {site} = useMultiSite()
     const {effectiveDnt} = useDNT()
+    const sessionId = getCookie('sid')
 
     // If Do Not Track is enabled, then the following fields are replaced with '__DNT__'
     const getEventUserParameters = async () => {
+        const usid = await getUsidWhenReady()
         return {
             isGuest: isRegistered ? 0 : 1,
             customerId: effectiveDnt ? '__DNT__' : customerId,
             customerNo: effectiveDnt ? '__DNT__' : customer?.customerNo,
-            guestId: effectiveDnt ? '__DNT__' : await getUsidWhenReady(),
-            deviceId: effectiveDnt ? '__DNT__' : 'deviceId', // TODO: Decide what this value should be
+            guestId: effectiveDnt ? '__DNT__' : usid,
+            deviceId: effectiveDnt ? '__DNT__' : usid,
+            sessionId: effectiveDnt ? '__DNT__' : sessionId,
             firstName: customer?.firstName,
             lastName: customer?.lastName,
             email: !effectiveDnt ? customer?.email : undefined
@@ -444,7 +448,7 @@ const useDataCloud = () => {
     const dataCloud = useMemo(
         () =>
             new DataCloudApi({
-                site: site.id,
+                siteId: site.id,
                 appSourceId: appSourceId,
                 tenantId: tenantId,
                 dnt: effectiveDnt
