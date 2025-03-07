@@ -28,7 +28,7 @@ type Client = ApiClients['shopperPromotions']
 export const usePromotions = (
     apiOptions: NullableParameters<Argument<Client['getPromotions']>>,
     queryOptions: ApiQueryOptions<Client['getPromotions']> = {}
-): UseQueryResult<DataType<Client['getPromotions']>, unknown> => {
+): UseQueryResult<DataType<Client['getPromotions']>, Error> => {
     type Options = Argument<Client['getPromotions']>
     type Data = DataType<Client['getPromotions']>
     const {shopperPromotions: client} = useCommerceApi()
@@ -53,6 +53,7 @@ export const usePromotions = (
 
     // For some reason, if we don't explicitly set these generic parameters, the inferred type for
     // `Data` sometimes, but not always, includes `Response`, which is incorrect. I don't know why.
+    // @ts-ignore TODO: Fix react query result error generics
     return useQuery<Client, Options, Data>({...netOptions, parameters}, queryOptions, {
         method,
         queryKey,
@@ -77,7 +78,7 @@ promotions, since the server does not consider promotion qualifiers or schedules
 export const usePromotionsForCampaign = (
     apiOptions: NullableParameters<Argument<Client['getPromotionsForCampaign']>>,
     queryOptions: ApiQueryOptions<Client['getPromotionsForCampaign']> = {}
-): UseQueryResult<DataType<Client['getPromotionsForCampaign']>, unknown> => {
+): UseQueryResult<DataType<Client['getPromotionsForCampaign']>, Error> => {
     type Options = Argument<Client['getPromotionsForCampaign']>
     type Data = DataType<Client['getPromotionsForCampaign']>
     const {shopperPromotions: client} = useCommerceApi()
@@ -103,6 +104,7 @@ export const usePromotionsForCampaign = (
 
     // For some reason, if we don't explicitly set these generic parameters, the inferred type for
     // `Data` sometimes, but not always, includes `Response`, which is incorrect. I don't know why.
+    // @ts-ignore TODO: Fix react query result error generics
     return useQuery<Client, Options, Data>({...netOptions, parameters}, queryOptions, {
         method,
         queryKey,

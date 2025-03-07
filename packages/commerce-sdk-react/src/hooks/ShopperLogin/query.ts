@@ -28,7 +28,7 @@ type Client = ApiClients['shopperLogin']
 export const useUserInfo = (
     apiOptions: NullableParameters<Argument<Client['getUserInfo']>>,
     queryOptions: ApiQueryOptions<Client['getUserInfo']> = {}
-): UseQueryResult<DataType<Client['getUserInfo']>, unknown> => {
+): UseQueryResult<DataType<Client['getUserInfo']>, Error> => {
     type Options = Argument<Client['getUserInfo']>
     type Data = DataType<Client['getUserInfo']>
     const {shopperLogin: client} = useCommerceApi()
@@ -50,6 +50,7 @@ export const useUserInfo = (
 
     // For some reason, if we don't explicitly set these generic parameters, the inferred type for
     // `Data` sometimes, but not always, includes `Response`, which is incorrect. I don't know why.
+    // @ts-ignore TODO: Fix react query result error generics
     return useQuery<Client, Options, Data>({...netOptions, parameters}, queryOptions, {
         method,
         queryKey,
@@ -70,7 +71,7 @@ export const useUserInfo = (
 export const useWellknownOpenidConfiguration = (
     apiOptions: NullableParameters<Argument<Client['getWellknownOpenidConfiguration']>>,
     queryOptions: ApiQueryOptions<Client['getWellknownOpenidConfiguration']> = {}
-): UseQueryResult<DataType<Client['getWellknownOpenidConfiguration']>, unknown> => {
+): UseQueryResult<DataType<Client['getWellknownOpenidConfiguration']>, Error> => {
     type Options = Argument<Client['getWellknownOpenidConfiguration']>
     type Data = DataType<Client['getWellknownOpenidConfiguration']>
     const {shopperLogin: client} = useCommerceApi()
@@ -92,6 +93,7 @@ export const useWellknownOpenidConfiguration = (
 
     // For some reason, if we don't explicitly set these generic parameters, the inferred type for
     // `Data` sometimes, but not always, includes `Response`, which is incorrect. I don't know why.
+    // @ts-ignore TODO: Fix react query result error generics
     return useQuery<Client, Options, Data>({...netOptions, parameters}, queryOptions, {
         method,
         queryKey,
@@ -112,7 +114,7 @@ export const useWellknownOpenidConfiguration = (
 export const useJwksUri = (
     apiOptions: NullableParameters<Argument<Client['getJwksUri']>>,
     queryOptions: ApiQueryOptions<Client['getJwksUri']> = {}
-): UseQueryResult<DataType<Client['getJwksUri']>, unknown> => {
+): UseQueryResult<DataType<Client['getJwksUri']>, Error> => {
     type Options = Argument<Client['getJwksUri']>
     type Data = DataType<Client['getJwksUri']>
     const {shopperLogin: client} = useCommerceApi()
@@ -134,6 +136,7 @@ export const useJwksUri = (
 
     // For some reason, if we don't explicitly set these generic parameters, the inferred type for
     // `Data` sometimes, but not always, includes `Response`, which is incorrect. I don't know why.
+    // @ts-ignore TODO: Fix react query result error generics
     return useQuery<Client, Options, Data>({...netOptions, parameters}, queryOptions, {
         method,
         queryKey,

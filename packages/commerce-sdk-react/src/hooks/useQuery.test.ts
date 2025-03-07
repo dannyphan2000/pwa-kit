@@ -55,6 +55,7 @@ describe('useCustomQuery', () => {
                 rawResponse: false
             })
         })
+        // @ts-ignore TODO: Fix react query result error generics
         await waitAndExpectSuccess(() => result.current)
         expect(result.current.data).toEqual(mockRes)
     })
@@ -90,6 +91,7 @@ describe('useCustomQuery', () => {
                 rawResponse: false
             })
         })
+        // @ts-ignore TODO: Fix react query result error generics
         await waitAndExpectError(() => result.current)
 
         // Validate that we get a `ResponseError` from commerce-sdk-isomorphic. Ideally, we could do
@@ -117,6 +119,7 @@ describe('useCustomQuery', () => {
                 rawResponse: false
             })
         })
+        // @ts-ignore TODO: Fix react query result error generics
         await waitAndExpectSuccess(() => result.current)
         expect(result.current.data).toEqual(mockRes)
     })
@@ -140,6 +143,7 @@ describe('useCustomQuery', () => {
                 rawResponse: false
             })
         })
+        // @ts-ignore TODO: Fix react query result error generics
         await waitAndExpectSuccess(() => result.current)
         expect(result.current.data).toEqual(mockRes)
     })
@@ -172,6 +176,7 @@ describe('useCustomQuery', () => {
             })
         })
 
+        // @ts-ignore TODO: Fix react query result error generics
         await waitAndExpectError(() => result.current)
         expect(spy).toHaveBeenCalled()
     })
@@ -219,6 +224,7 @@ describe('useQuery', () => {
             return useQuery(options, {}, hookConfig as any)
         })
 
+        // @ts-ignore TODO: Fix react query result error generics
         await waitAndExpectError(() => result.current)
 
         expect(spy).toHaveBeenCalled()
