@@ -411,17 +411,16 @@ export const getRoutes = async (locals = {}, req = {}) => {
 
     // Call the `extendRoutes` function for all the Application Extensions.
     for (const applicationExtension of applicationExtensions) {
-        const applicationExtensionRoutes = await applicationExtension.extendRoutes(_routes, req)
-        const applicationExtensionName = applicationExtension.constructor.name
-        console.log('applicationExtensionName:',applicationExtensionName)
-        const applicationExtensionId = Object.getPrototypeOf(applicationExtension).constructor.id
-        console.log('applicationExtensionId:',applicationExtensionId)
-        applicationExtensionRoutes.forEach((route) => {
-            // Skip if component is already prefixed with the application extension ID
+        const routes = await applicationExtension.extendRoutes(_routes, req)
+        const extensionName = applicationExtension.constructor.name
+        
+        // Prefix each component displayName with the extension name so it can later be deserialized
+        routes.forEach((route) => {
+            // Skip if component is already prefixed with an application extension name
             if (route.component.displayName.includes(".") && route.component.displayName.match(/^[^.]+/)[0]) return
-            route.component.displayName = `${applicationExtensionId}.${route.component.displayName}`
+            route.component.displayName = `${extensionName}.${route.component.displayName}`
         })
-        _routes = [...applicationExtensionRoutes, ..._routes]
+        _routes = routes
     }
 
     const allRoutes = [

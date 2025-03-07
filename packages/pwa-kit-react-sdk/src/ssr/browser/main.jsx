@@ -135,7 +135,7 @@ export const start = async () => {
     })
 
     // Create the component map
-    const PWA_KIT_REACT_SDK = "pwa-kit-react-sdk"
+    const PWA_KIT_REACT_SDK = "PWAKitReactSdk"
     const componentMap = {
         [PWA_KIT_REACT_SDK]: {
             [Refresh.displayName]: Refresh,
@@ -143,8 +143,8 @@ export const start = async () => {
         }
     }
     for (const applicationExtension of applicationExtensions) {
-        const id = Object.getPrototypeOf(applicationExtension).constructor.id
-        componentMap[id] = await applicationExtension.getComponentMap()
+        const extensionName = applicationExtension.constructor.name
+        componentMap[extensionName] = await applicationExtension.getComponentMap()
     }
 
     // Deserialize routes
