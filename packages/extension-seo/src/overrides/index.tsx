@@ -34,23 +34,23 @@ import {sliceInitializer} from '../types'
  */
 interface NavigationGuardContextType {
     isBlocked: boolean;
-    yo: string;
+    message: string;
 }
 interface NavigationGuardProviderProps {
     callback: () => any,
     children: ReactNode
 }
-export const NavigationGuardContext = React.createContext<NavigationGuardContextType> ({isBlocked: true, yo: "heyo"})
+export const NavigationGuardContext = React.createContext<NavigationGuardContextType> ({isBlocked: true, message: "this context is from extension-seo!!!"})
 export const NavigationGuardProvider: React.FC<NavigationGuardProviderProps> = ({callback, children}) => {
     const isBlocked = useBlockNavigation(async () => {
         if (callback !== undefined) await callback()
         return false
     })
     const [isBlockedState, setIsBlockedState] = useState(isBlocked)
-    console.log("(JEREMY) NavigationGuardProvider in extension-seo isBlocked: ", isBlocked)
+    console.log("(JEREMY) Running NaviguationGuardProvider defined in extension-seo!!")
 
     return (
-        <NavigationGuardContext.Provider value={{isBlocked: isBlockedState, yo: "hey"}}>
+        <NavigationGuardContext.Provider value={{isBlocked: isBlockedState, message:  "this context is from extension-seo. in NaavigationGuardProvider"}}>
             <div>
                 isBlocked: {isBlocked.toString()}
             </div>
