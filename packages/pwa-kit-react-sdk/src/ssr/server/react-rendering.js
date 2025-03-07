@@ -151,12 +151,16 @@ export const render = async (req, res, next) => {
     }
 
     // Serialize the routes and add them to the config. We'll use this on the client-side later.
-    // TODO: Don't serialize all the routes (only the one route or only the non-localized routes before configurRoutes is run)
-    config.app.routes = routes.map((route) => ({
-        path: route.path,
-        componentName: route.component.displayName.match(/\((\w+)\)/)[1],
-        componentProps: route.props
-    }))
+    // TODO: we should not serialize the localized routes to reduce byte size
+    config.app.routes = routes.map((route) => {
+        const displayNameParts = route.component.displayName.match(/\(([^()]+)\)(?!.*\([^()]*\))/)[1].split('.')
+        return {
+            path: route.path,
+            extensionId: displayNameParts.length > 1 ? displayNameParts[0] : null,
+            componentName: displayNameParts.length > 1 ? displayNameParts[1]: displayNameParts[0],
+            componentProps: route.props
+        }
+    })
 
     // Step 1 - Find the match.
 

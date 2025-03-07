@@ -26,4 +26,6 @@ class Throw404 extends React.Component {
     }
 }
 
+Throw404.displayName = 'Throw404'
+
 export default Throw404
