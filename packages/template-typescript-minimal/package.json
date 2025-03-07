@@ -50,9 +50,6 @@
   "mobify": {
     "app": {
       "extensions": [
-        ["@salesforce/extension-seo", {
-
-        }],
         ["@salesforce/extension-chakra-storefront", {
           "enabled": true,
           "activeDataEnabled": false,
@@ -212,8 +209,10 @@
               "showDefaults": true,
               "interpretPlusSignAsSpace": false
           }
-      }
-      ]
+      }],
+      ["@salesforce/extension-seo", {
+          "enabled": true
+      }]
       ]
     },
     "ssrEnabled": true,

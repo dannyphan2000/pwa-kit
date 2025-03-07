@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, {useState, ReactNode} from 'react'
+import React, {useState, ReactNode, useContext} from 'react'
 import PropTypes from 'prop-types'
 import {useBlockNavigation} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 
@@ -39,17 +39,3 @@ interface NavigationGuardProviderProps {
     children: ReactNode
 }
 export const NavigationGuardContext = React.createContext<NavigationGuardContextType> ({isBlocked: false})
-export const NavigationGuardProvider: React.FC<NavigationGuardProviderProps> = ({callback, children}) => {
-
-    const isBlocked = useBlockNavigation(async () => {
-        if (callback !== undefined) callback()
-        return false
-    })
-
-    return (
-        <NavigationGuardContext.Provider value={{isBlocked: isBlocked}}>
-            {children}
-        </NavigationGuardContext.Provider>
-    )
-}
-

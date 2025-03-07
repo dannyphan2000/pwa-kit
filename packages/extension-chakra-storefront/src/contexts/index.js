@@ -90,3 +90,4 @@ CurrencyProvider.propTypes = {
     children: PropTypes.node.isRequired,
     currency: PropTypes.string
 }
+export {NavigationGuardContext} from 'overridable!./NavigationGuardContext'

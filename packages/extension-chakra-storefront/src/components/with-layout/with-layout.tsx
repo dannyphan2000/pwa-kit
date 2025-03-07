@@ -6,7 +6,7 @@
  */
 
 // Third-Party Imports
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import {useHistory, useLocation} from 'react-router-dom'
 import {Helmet} from 'react-helmet'
 
@@ -41,6 +41,7 @@ import ScrollToTop from '../scroll-to-top'
 import {AuthModal, useAuthModal} from '../../hooks/use-auth-modal'
 import {AddToCartModalProvider} from '../../hooks/use-add-to-cart-modal'
 import {useExtensionConfig, useCurrentCustomer, useCurrentBasket} from '../../hooks'
+import { NavigationGuardContext } from 'overridable!../../overrides'
 import {watchOnlineStatus, flatten} from '../../utils/utils'
 import useActiveData from '../../hooks/use-active-data'
 import useMultiSite from '../../hooks/use-multi-site'
@@ -105,6 +106,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 levels: CAT_MENU_DEFAULT_NAV_SSR_DEPTH
             }
         })
+        // const context = useContext(NavigationGuardContext)
         const categories = flatten(categoriesTree || {}, 'categories')
         const appOrigin = getAppOrigin()
         const activeData = useActiveData()
@@ -116,7 +118,8 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         const styles = useStyleConfig('App')
         const {colors} = useTheme()
         const {isOpen, onOpen, onClose} = useDisclosure()
-
+        const context = useContext(NavigationGuardContext)
+        console.log("(JEREMY) context: ", context)
         // Used to conditionally render header/footer for checkout page
         const isCheckout = /\/checkout$/.test(location?.pathname)
 
