@@ -8,7 +8,7 @@ import {useMemo} from 'react'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 import {initDataCloudSdk} from '@salesforce/cc-datacloud-typescript'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
-import {useUsid, useCustomerId, useCustomerType, useDNT} from '@salesforce/commerce-sdk-react'
+import {useUsid, useCustomerType, useDNT} from '@salesforce/commerce-sdk-react'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
 import {getCookie} from '@salesforce/retail-react-app/app/utils/utils'
@@ -145,7 +145,6 @@ export class DataCloudApi {
             events: [...(!this.dnt ? [identityProfile] : []), userEngagement]
         }
 
-        console.log(interaction)
         try {
             this.sdk.webEventsAppSourceIdPost(interaction)
         } catch (err) {
@@ -416,7 +415,6 @@ export class DataCloudApi {
 const useDataCloud = () => {
     const {getUsidWhenReady} = useUsid()
     const {isRegistered} = useCustomerType()
-    const customerId = useCustomerId()
     const {data: customer} = useCurrentCustomer()
     const {site} = useMultiSite()
     const {effectiveDnt} = useDNT()
@@ -427,7 +425,7 @@ const useDataCloud = () => {
         const usid = await getUsidWhenReady()
         return {
             isGuest: isRegistered ? 0 : 1,
-            customerId: effectiveDnt ? '__DNT__' : customerId,
+            customerId: effectiveDnt ? '__DNT__' : customer?.customerId,
             customerNo: effectiveDnt ? '__DNT__' : customer?.customerNo,
             guestId: effectiveDnt ? '__DNT__' : usid,
             deviceId: effectiveDnt ? '__DNT__' : usid,
