@@ -116,6 +116,15 @@ class ChakraStorefront extends ApplicationExtension<Config> {
             ignoredRoutes: ['/callback']
         })
     }
+
+    async getComponentMap() {
+        const modules = await import('./pages')
+        const componentMap = Object.keys(modules).reduce((acc, key) => {
+            acc[modules[key].displayName] = modules[key]
+            return acc
+        }, {})
+        return componentMap 
+    }
 }
 
 export default ChakraStorefront

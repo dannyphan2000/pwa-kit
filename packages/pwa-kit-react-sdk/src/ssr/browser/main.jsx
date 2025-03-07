@@ -19,6 +19,8 @@ import {ServerContext, CorrelationIdProvider} from '../universal/contexts'
 import App from '../universal/components/_app'
 import {getAppConfig} from '../universal/compatibility'
 import Switch from '../universal/components/switch'
+import Refresh from '../universal/components/refresh'
+import Throw404 from '../universal/components/throw-404'
 import {getRoutes, routeComponent} from '../universal/components/route-component'
 import {uuidv4} from '../../utils/uuidv4.client'
 import logger from '../../utils/logger-instance'
@@ -132,19 +134,27 @@ export const start = async () => {
         locals
     })
 
-    // Await the async getRoutes function
-    let routes = await getRoutes(locals)
+    // Create the component map
+    const PWA_KIT_REACT_SDK = "pwa-kit-react-sdk"
+    const componentMap = {
+        [PWA_KIT_REACT_SDK]: {
+            [Refresh.displayName]: Refresh,
+            [Throw404.displayName]: Throw404,
+        }
+    }
+    for (const applicationExtension of applicationExtensions) {
+        const id = Object.getPrototypeOf(applicationExtension).constructor.id
+        componentMap[id] = await applicationExtension.getComponentMap()
+    }
 
     // Deserialize routes
     let serializedRoutes = window.__CONFIG__.app.routes
     serializedRoutes = serializedRoutes.map(
-        ({path, componentName, componentProps}) => {
-            let component = routes.find((route) =>
-                route.component?.displayName?.includes(componentName)
-            )?.component
+        ({path, extensionId, componentName, componentProps}) => {
+            let component = componentMap[extensionId || PWA_KIT_REACT_SDK][componentName]
             if (!component) {
                 // TODO: Error handling if given component couldn't be found
-                console.error('Component', componentName, 'could not be deserialized for path', path)
+                console.error(`Component "${componentName}" could not be deserialized for path: ${path}`)
                 return
             }
 
