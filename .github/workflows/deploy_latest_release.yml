@@ -108,7 +108,7 @@ jobs:
         uses: "./.github/actions/push_to_mrt"
         with:
           CWD: "../generated-projects/retail-react-app-demo-site"
-          TARGET: staging
+          TARGET: production
           PROJECT: scaffold-pwa
           MESSAGE: "tag ${{ github.event.release.tag_name }}"
           FLAGS: --wait
