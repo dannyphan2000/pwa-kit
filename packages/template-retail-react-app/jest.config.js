@@ -18,7 +18,8 @@ module.exports = {
         '^@tanstack/react-query$':
             '<rootDir>/node_modules/@tanstack/react-query/build/lib/index.js',
         '^is-what$': '<rootDir>/node_modules/is-what/dist/cjs/index.cjs',
-        '^copy-anything$': '<rootDir>/node_modules/copy-anything/dist/cjs/index.cjs'
+        '^copy-anything$': '<rootDir>/node_modules/copy-anything/dist/cjs/index.cjs',
+        '^@chakra-ui/utils/context': '<rootDir>/node_modules/@chakra-ui/utils/dist/cjs/context.cjs'
     },
     setupFilesAfterEnv: [path.join(__dirname, 'jest-setup.js')],
     collectCoverageFrom: [

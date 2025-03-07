@@ -130,6 +130,9 @@ test('Provides navigation for subpages', async () => {
 
 describe('Render and logs out', function () {
     test('Renders account detail page by default for logged-in customer, and can log out', async () => {
+        // Mock the customer type to be registered
+        sdk.useCustomerType.mockReturnValue({isRegistered: true, isGuest: false})
+
         const {user} = renderWithProviders(<MockedComponent />)
 
         // Render user profile page
@@ -143,6 +146,9 @@ describe('Render and logs out', function () {
             expect(logOutIcons[0]).toHaveAttribute('aria-hidden', 'true')
             expect(logOutIcons[1]).toHaveAttribute('aria-hidden', 'true')
         })
+
+        // Mock the customer type to be guest
+        sdk.useCustomerType.mockReturnValue({isRegistered: false, isGuest: true})
 
         await user.click(screen.getAllByText(/Log Out/)[0])
         await waitFor(() => {

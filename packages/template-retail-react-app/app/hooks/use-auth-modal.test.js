@@ -143,6 +143,11 @@ test('Renders check email modal on email mode', async () => {
     // Store the original useForm function
     const originalUseForm = ReactHookForm.useForm
 
+    // BUG FIX: The underlying logic was fixed in Jest 27 and later, for now we can add this method directly
+    // to fix the issue.
+    // eslint-disable-next-line no-import-assign
+    ReactHookForm.hasOwnProperty = () => Object.hasOwnProperty
+
     // Spy on useForm
     const mockUseForm = jest.spyOn(ReactHookForm, 'useForm').mockImplementation((...args) => {
         // Call the original useForm
