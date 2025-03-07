@@ -217,14 +217,3 @@ export const buildRedirectURI = (appOrigin = '', redirectPath = '') => {
         return ''
     }
 }
-
-/**
- * Retrieves the value of a specified cookie.
- * @param {string} name - name of cookie to retrieve
- * @returns {string|null} cookie value if found, otherwise `null`
- */
-export const getCookie = (name) => {
-    if (typeof document === 'undefined') return null
-    const match = document.cookie.split('; ').find((row) => row.startsWith(name + '='))
-    return match ? match.split('=')[1] : null
-}

@@ -5,13 +5,13 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {useMemo} from 'react'
+import Cookies from 'js-cookie'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 import {initDataCloudSdk} from '@salesforce/cc-datacloud-typescript'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useUsid, useCustomerType, useDNT} from '@salesforce/commerce-sdk-react'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
-import {getCookie} from '@salesforce/retail-react-app/app/utils/utils'
 
 export class DataCloudApi {
     constructor({siteId, appSourceId, tenantId, dnt}) {
@@ -418,7 +418,7 @@ const useDataCloud = () => {
     const {data: customer} = useCurrentCustomer()
     const {site} = useMultiSite()
     const {effectiveDnt} = useDNT()
-    const sessionId = getCookie('sid')
+    const sessionId = Cookies.get('sid')
 
     // If Do Not Track is enabled, then the following fields are replaced with '__DNT__'
     const getEventUserParameters = async () => {

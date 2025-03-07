@@ -57,9 +57,6 @@ jest.mock('@salesforce/commerce-sdk-react', () => {
                 })
             }
         },
-        useCustomerId: jest.fn(() => {
-            return 1234567890
-        }),
         useCustomerType: jest.fn(() => {
             return {isRegistered: true}
         }),
@@ -73,6 +70,7 @@ jest.mock('@salesforce/retail-react-app/app/hooks/use-current-customer', () => (
     useCurrentCustomer: jest.fn(() => {
         return {
             data: {
+                customerId: 1234567890,
                 firstName: 'John',
                 lastName: 'Smith',
                 email: 'johnsmith@salesforce.com'
@@ -112,7 +110,7 @@ describe('useDataCloud', function () {
         })
     })
 
-    test('sendViewPage DNT', async () => {
+    test('sendViewPage does not send Profile event when DNT is enabled', async () => {
         useDNT.mockReturnValueOnce({
             effectiveDnt: true
         })
@@ -136,6 +134,7 @@ describe('useDataCloud', function () {
     test('sendViewCategory with no email', async () => {
         useCurrentCustomer.mockReturnValue({
             data: {
+                customerId: 1234567890,
                 firstName: 'John',
                 lastName: 'Smith'
             }
@@ -148,7 +147,7 @@ describe('useDataCloud', function () {
         })
     })
 
-    test('sendViewSearchResults', async () => {
+    test('sendViewSearchResults with no email', async () => {
         const {result} = renderHook(() => useDataCloud())
         expect(result.current).toBeDefined()
         result.current.sendViewSearchResults(mockSearchParam, mockGloveSearchResult)
@@ -157,7 +156,7 @@ describe('useDataCloud', function () {
         })
     })
 
-    test('sendViewRecommendations', async () => {
+    test('sendViewRecommendations with non email', async () => {
         const {result} = renderHook(() => useDataCloud())
         expect(result.current).toBeDefined()
         result.current.sendViewRecommendations(mockRecommenderDetails, mockRecommendationIds)
