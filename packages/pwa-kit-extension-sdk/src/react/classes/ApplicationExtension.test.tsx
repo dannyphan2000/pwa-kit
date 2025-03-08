@@ -53,7 +53,7 @@ describe('ApplicationExtension', () => {
             const extendRoutesSpy = jest
                 .spyOn(extension, 'extendRoutes')
                 .mockImplementation((baseRoutes) => {
-                    return [...baseRoutes, additionalRoute]
+                    return Promise.resolve([...baseRoutes, additionalRoute])
                 })
 
             const modifiedRoutes = extension.extendRoutes(routes)
