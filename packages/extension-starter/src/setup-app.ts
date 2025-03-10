@@ -78,6 +78,8 @@ class Sample extends ApplicationExtension<Config> {
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
+    // TODO: do we need to pass in additional params like request.path? Get familiar with the SEO API.
+    // TODO: how can developers call SCAPI? How can we pass in the api client (with the access token)?
     extendRoutes(routes: RouteProps[]): Promise<RouteProps[]> {
         return Promise.resolve([
             {
@@ -90,7 +92,7 @@ class Sample extends ApplicationExtension<Config> {
     }
 
     /**
-     * TODO: also called on the client side
+     * TODO: update comment to make it clearer that beforeRouteMatch is also called on the client side
      * This method is used on the server during the rendering pipeline. It's provided a list of all the routes that your application
      * is configured with, including those defined in the base application and those added by all the extensions. You can use this
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
