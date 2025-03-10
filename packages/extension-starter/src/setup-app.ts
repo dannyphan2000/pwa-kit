@@ -80,6 +80,7 @@ class Sample extends ApplicationExtension<Config> {
      */
     // TODO: do we need to pass in additional params like request.path? Get familiar with the SEO API.
     // TODO: how can developers call SCAPI? How can we pass in the api client (with the access token)?
+    // TODO: no more extending routes, but getRoutes? So for all extensions, we can call them in parallel.
     extendRoutes(routes: RouteProps[]): Promise<RouteProps[]> {
         return Promise.resolve([
             {

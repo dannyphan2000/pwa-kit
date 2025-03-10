@@ -19,7 +19,7 @@ import {ServerContext, CorrelationIdProvider} from '../universal/contexts'
 import App from '../universal/components/_app'
 import {getAppConfig} from '../universal/compatibility'
 import Switch from '../universal/components/switch'
-import {getRoutes, routeComponent} from '../universal/components/route-component'
+import {getAllRoutes, routeComponent} from '../universal/components/route-component'
 import {uuidv4} from '../../utils/uuidv4.client'
 import logger from '../../utils/logger-instance'
 
@@ -132,7 +132,7 @@ export const start = async () => {
         locals
     })
 
-    const routes = await getRoutes(locals)
+    const routes = await getAllRoutes(locals)
     const props = {
         error: window.__ERROR__,
         locals: locals,
