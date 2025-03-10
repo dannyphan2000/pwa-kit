@@ -292,7 +292,7 @@ const PRESETS = [
         },
         questions: [...EXTENSIBILITY_QUESTIONS, ...RETAIL_REACT_APP_QUESTIONS],
         answers: {
-            ['project.extend']: true,
+            ['project.extend']: false, // Intentionally not an extensible project so that the correct logos appear on demo site
             ['project.hybrid']: false,
             ['project.name']: 'demo-storefront',
             ['project.commerce.instanceUrl']: 'https://zzrf-001.dx.commercecloud.salesforce.com',
