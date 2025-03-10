@@ -11,7 +11,7 @@ import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
 
 // Types
-import {ApplicationExtensionConfig} from '../../types'
+import {ApplicationExtensionConfig, Module, Modules} from '../../types'
 
 export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 
@@ -65,4 +65,33 @@ export class ApplicationExtension<
     public beforeRouteMatch(routes: RouteProps[]): RouteProps[] {
         return routes
     }
+
+    /**
+     * Protected method to get the component map. This method should be called
+     * by subclasses to provide the correct path for importing modules.
+     *
+     * @protected
+     * @param path - The path to the modules directory that contains the page components.
+     * @returns A promise that resolves to the component map.
+     */
+    protected async generateComponentMapFromModules(modules: Modules): Promise<Modules> {
+        const componentMap = Object.keys(modules).reduce((acc: Modules, key: string) => {
+            const module = modules[key]
+            // TODO: will displayName always exist or do we need error handling?
+            acc[module.displayName] = module
+            return acc
+        }, {})
+        return componentMap 
+    }
+
+
+    // TODO: should we make an abstract class for getComponentMap to enforce 
+    // subclasses to implement it?
+    /**
+     * Default method to get the component map using the default path './pages'.
+     * Subclasses can override this method if they need to use a different path.
+     *
+     * @returns A promise that resolves to the component map.
+     */
+    // public abstract getComponentMap(): Promise<ComponentMap>
 }

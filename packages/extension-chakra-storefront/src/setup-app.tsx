@@ -119,11 +119,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
 
     async getComponentMap() {
         const modules = await import('./pages')
-        const componentMap = Object.keys(modules).reduce((acc, key) => {
-            acc[modules[key].displayName] = modules[key]
-            return acc
-        }, {})
-        return componentMap 
+        return this.generateComponentMapFromModules(modules)
     }
 }
 

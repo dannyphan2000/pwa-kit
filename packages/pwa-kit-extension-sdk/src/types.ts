@@ -36,3 +36,12 @@ export type BuildCandidatePathsOptions = {
     projectDir: string
     extensionEntries: ApplicationExtensionEntry[]
 }
+
+// TODO: jsdocs
+export type Module = {
+    displayName: string
+}
+
+export type Modules = {
+    [key: string]: Module
+}
