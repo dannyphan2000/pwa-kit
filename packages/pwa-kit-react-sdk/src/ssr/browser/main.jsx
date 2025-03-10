@@ -21,6 +21,7 @@ import {getAppConfig} from '../universal/compatibility'
 import Switch from '../universal/components/switch'
 import Refresh from '../universal/components/refresh'
 import Throw404 from '../universal/components/throw-404'
+import _routes from '../universal/routes'
 import {getRoutes, routeComponent} from '../universal/components/route-component'
 import {uuidv4} from '../../utils/uuidv4.client'
 import logger from '../../utils/logger-instance'
@@ -136,12 +137,19 @@ export const start = async () => {
 
     // Create the component map
     const PWA_KIT_REACT_SDK = "PWAKitReactSdk"
+    // Add the component mappings from pwa-kit-react-sdk
     const componentMap = {
         [PWA_KIT_REACT_SDK]: {
             [Refresh.displayName]: Refresh,
             [Throw404.displayName]: Throw404,
         }
     }
+    // Add component mappings from the base template
+    const BASE = "Base"
+    for (const route of _routes) {
+        componentMap[BASE] = {[route.component.displayName]: route.component}
+    }
+    // Add component mappings from the application extensions
     for (const applicationExtension of applicationExtensions) {
         const extensionName = applicationExtension.constructor.name
         componentMap[extensionName] = await applicationExtension.getComponentMap()
@@ -154,7 +162,7 @@ export const start = async () => {
             let component = componentMap[extensionId || PWA_KIT_REACT_SDK][componentName]
             if (!component) {
                 // TODO: Error handling if given component couldn't be found
-                console.error(`Component "${componentName}" could not be deserialized for path: ${path}`)
+                console.error(`Component "${extensionId}.${componentName}" could not be deserialized for path: ${path}`)
                 return
             }
 

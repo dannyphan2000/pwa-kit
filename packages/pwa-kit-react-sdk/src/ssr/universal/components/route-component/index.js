@@ -409,12 +409,20 @@ export const getRoutes = async (locals = {}, req = {}) => {
         _routes = await routes(locals)
     }
 
+    // Prefix components from the base template so it can later be deserialized on the client
+    const BASE = "Base"
+    _routes.forEach((route) => {
+        if (route.component.displayName.includes(".") && route.component.displayName.match(/^[^.]+/)[0]) return
+        route.component.displayName = `${BASE}.${route.component.displayName}`
+        console.log(route.component.displayName)
+    })
+
     // Call the `extendRoutes` function for all the Application Extensions.
     for (const applicationExtension of applicationExtensions) {
         const routes = await applicationExtension.extendRoutes(_routes, req)
         const extensionName = applicationExtension.constructor.name
         
-        // Prefix each component displayName with the extension name so it can later be deserialized
+        // Prefix each component displayName with the extension name so it can later be deserialized on the client
         routes.forEach((route) => {
             // Skip if component is already prefixed with an application extension name
             if (route.component.displayName.includes(".") && route.component.displayName.match(/^[^.]+/)[0]) return
