@@ -58,6 +58,10 @@ export class ApplicationExtension<
         return Promise.resolve(routes)
     }
 
+    public getRoutes(): Promise<RouteProps[]> {
+        return Promise.resolve([])
+    }
+
     /**
      * Called before route matching is evaluated. This method gives each extension the opportunity
      * to modify the routes knowing that the list of routes passed-in is complete.

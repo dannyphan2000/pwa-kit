@@ -49,7 +49,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         return applyHOCs(App, requiredHOCs)
     }
 
-    extendRoutes(routes: RouteProps[]): Promise<RouteProps[]> {
+    getRoutes(): Promise<RouteProps[]> {
         const config = this.getConfig()
 
         const extensionRoutes = [
@@ -105,8 +105,8 @@ class ChakraStorefront extends ApplicationExtension<Config> {
                 component: Pages.ProductList
             }
         ].filter((route) => route.path !== false)
-        // TODO: should extensionRoutes be on top of routes?
-        return Promise.resolve([...routes, ...(extensionRoutes as RouteProps[])])
+
+        return Promise.resolve(extensionRoutes as RouteProps[])
     }
 
     // Called before the route with all the routes
