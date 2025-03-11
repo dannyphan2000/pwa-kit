@@ -115,21 +115,14 @@ AppConfig.propTypes = {
     locals: PropTypes.object
 }
 
-const isServerSide = typeof window === 'undefined'
 // Recommended settings for PWA-Kit usages.
 // NOTE: they will be applied on both server and client side.
-// retry is always disabled on server side regardless of the value from the options
 const options = {
     queryClientConfig: {
         defaultOptions: {
             queries: {
-                retry: false,
                 refetchOnWindowFocus: false,
-                staleTime: 10 * 1000,
-                ...(isServerSide ? {retryOnMount: false} : {})
-            },
-            mutations: {
-                retry: false
+                staleTime: 10 * 1000
             }
         }
     },

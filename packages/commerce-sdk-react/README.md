@@ -70,23 +70,7 @@ const AppConfig = ({children}) => {
     )
 }
 
-// Set configuration options for react query.
-// NOTE: This configuration will be used both on the server-side and client-side.
-// retry is always disabled on server side regardless of the value from the options
-const options = {
-    queryClientConfig: {
-        defaultOptions: {
-            queries: {
-                retry: false
-            },
-            mutations: {
-                retry: false
-            }
-        }
-    }
-}
-
-export default withReactQuery(AppConfig, options)
+export default withReactQuery(AppConfig)
 ```
 
 ## ⚡️ Quickstart (Generic React App)

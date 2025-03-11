@@ -71,24 +71,31 @@ AppConfig.restore = () => {}
 AppConfig.extraGetPropsArgs = () => {}
 AppConfig.freeze = () => {}
 
-const isServerSide = typeof window === 'undefined'
-
 // Recommended settings for PWA-Kit usages.
 // NOTE: they will be applied on both server and client side.
 const options = {
     queryClientConfig: {
         defaultOptions: {
             queries: {
-                retry: false,
-                staleTime: 2 * 1000,
-                ...(isServerSide ? {retryOnMount: false} : {}),
-                // Option for debugging changes in cache with React Query Dev Tools
-                refetchOnWindowFocus: false
-            },
-            mutations: {
-                retry: false
+                refetchOnWindowFocus: false,
+                staleTime: 10 * 1000
             }
         }
+    },
+    beforeHydrate: (data: any) => {
+        const now = Date.now()
+
+        // Helper to reset the data timestamp to time of app load.
+        const updateQueryTimeStamp = ({state}: {state: any}) => {
+            state.dataUpdatedAt = now
+        }
+
+        // Update serialized mutations and queries to ensure that the cached data is
+        // considered fresh on first load.
+        data?.mutations?.forEach(updateQueryTimeStamp)
+        data?.queries?.forEach(updateQueryTimeStamp)
+
+        return data
     }
 }
 
