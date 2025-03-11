@@ -15,6 +15,7 @@ import routes from '../../routes'
 import {pages as pageEvents} from '../../events'
 import {withLegacyGetProps} from '../../components/with-legacy-get-props'
 import Refresh from '../refresh'
+import {BASE_TEMPLATE_PREFIX, prefixDisplayName} from '../../../../utils/components'
 
 const noop = () => undefined
 
@@ -410,11 +411,8 @@ export const getRoutes = async (locals = {}, req = {}) => {
     }
 
     // Prefix components from the base template so it can later be deserialized on the client
-    const BASE = "Base"
     _routes.forEach((route) => {
-        if (route.component.displayName.includes(".") && route.component.displayName.match(/^[^.]+/)[0]) return
-        route.component.displayName = `${BASE}.${route.component.displayName}`
-        console.log(route.component.displayName)
+        route.component.displayName = prefixDisplayName(route.component.displayName, BASE_TEMPLATE_PREFIX)
     })
 
     // Call the `extendRoutes` function for all the Application Extensions.
@@ -424,9 +422,7 @@ export const getRoutes = async (locals = {}, req = {}) => {
         
         // Prefix each component displayName with the extension name so it can later be deserialized on the client
         routes.forEach((route) => {
-            // Skip if component is already prefixed with an application extension name
-            if (route.component.displayName.includes(".") && route.component.displayName.match(/^[^.]+/)[0]) return
-            route.component.displayName = `${extensionName}.${route.component.displayName}`
+            route.component.displayName = prefixDisplayName(route.component.displayName, extensionName)
         })
         _routes = routes
     }

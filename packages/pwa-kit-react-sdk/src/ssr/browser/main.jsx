@@ -25,6 +25,7 @@ import _routes from '../universal/routes'
 import {getRoutes, routeComponent} from '../universal/components/route-component'
 import {uuidv4} from '../../utils/uuidv4.client'
 import logger from '../../utils/logger-instance'
+import {BASE_TEMPLATE_PREFIX} from '../../utils/components'
 
 /* istanbul ignore next */
 export const registerServiceWorker = (url) => {
@@ -145,9 +146,8 @@ export const start = async () => {
         }
     }
     // Add component mappings from the base template
-    const BASE = "Base"
     for (const route of _routes) {
-        componentMap[BASE] = {[route.component.displayName]: route.component}
+        componentMap[BASE_TEMPLATE_PREFIX] = {[route.component.displayName]: route.component}
     }
     // Add component mappings from the application extensions
     for (const applicationExtension of applicationExtensions) {
