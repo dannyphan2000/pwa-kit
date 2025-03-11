@@ -159,11 +159,9 @@ export const start = async () => {
     let serializedRoutes = window.__CONFIG__.app.routes
     serializedRoutes = serializedRoutes.map(
         ({path, extensionId, componentName, componentProps}) => {
-            let component = componentMap[extensionId || PWA_KIT_REACT_SDK][componentName]
+            let component = componentMap?.extensionId?.componentName
             if (!component) {
-                // TODO: Error handling if given component couldn't be found
-                console.error(`Component "${extensionId}.${componentName}" could not be deserialized for path: ${path}`)
-                return
+                throw new Error(`${componentName} component from ${extensionId} could not be deserialized for route with path: ${path}`)
             }
 
             if (componentProps) {
