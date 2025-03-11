@@ -34,7 +34,9 @@ jobs:
   deploy-bug-bounty:
     needs: check-latest-release
     runs-on: ubuntu-latest
-    if: needs.check-latest-release.outputs.IS_LATEST_RELEASE == 'true'
+    if: needs.check-latest-release.outputs.IS_LATEST_RELEASE != 'true'
+    env:
+      BUNDLE_NAME: "${{ github.event.release.tag_name }} && 'tag ${{ github.event.release.tag_name }}' || 'build ${{ github.run_id }} on ${{ github.ref }} (${{ github.sha }})' "
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -68,13 +70,15 @@ jobs:
           CWD: "../generated-projects/retail-react-app-bug-bounty"
           TARGET: testing
           PROJECT: pwa-kit
-          MESSAGE: "tag ${{ github.event.release.tag_name }}"
+          MESSAGE: $BUNDLE_NAME
           FLAGS: --cloud-origin https://cloud-testing.mobify-staging.com -c ~/.mobify --wait
 
   deploy-demo-site:
     needs: check-latest-release
     runs-on: ubuntu-latest
-    if: needs.check-latest-release.outputs.IS_LATEST_RELEASE == 'true'
+    if: needs.check-latest-release.outputs.IS_LATEST_RELEASE != 'true'
+    env:
+      BUNDLE_NAME: "${{ github.event.release.tag_name }} && 'tag ${{ github.event.release.tag_name }}' || 'build ${{ github.run_id }} on ${{ github.ref }} (${{ github.sha }})' "
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -106,7 +110,7 @@ jobs:
         uses: "./.github/actions/push_to_mrt"
         with:
           CWD: "../generated-projects/retail-react-app-demo-site"
-          TARGET: production
+          TARGET: staging
           PROJECT: scaffold-pwa
-          MESSAGE: "tag ${{ github.event.release.tag_name }}"
+          MESSAGE: $BUNDLE_NAME
           FLAGS: --wait
