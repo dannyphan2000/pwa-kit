@@ -59,10 +59,6 @@ sh.set('-e')
 // will ensure those escaped double quotes are still escaped after processing the template.
 Handlebars.registerHelper('script', (object) => object.replaceAll('"', '\\"'))
 
-Handlebars.registerHelper('ifEquals', function (arg1, arg2, options) {
-    return arg1 == arg2 ? options.fn(this) : options.inverse(this)
-})
-
 // Validations
 const validPreset = (preset) => {
     return ALL_PRESET_NAMES.includes(preset)
@@ -276,13 +272,15 @@ const PRESETS = [
         private: false
     },
     {
-        id: 'retail-react-app-demo-private',
-        name: 'Retail React App Demo Private Client',
+        id: 'retail-react-app-demo-site-internal',
+        name: 'Retail React App Demo Store',
         description: `
-            Generates a project using the settings for a special B2C Commerce
-            instance that is used for demo purposes and sets it up with a private SLAS client.
+            Generates a project using the settings for a special B2C Commerce instance that is used
+            for demo purposes. The demo site is accessible at https://pwa-kit.mobify-storefront.com/
 
-            This has social and passwordless login enabled but requires a client secret to run.
+            This environment uses a SLAS private client and has social and passwordless login enabled.
+            This environment is set up to use multiple locales.
+            Future features that are enabled for the demo environment may be added to this preset.
         `,
         shortDescription:
             'The Retail app with demo Commerce Cloud instance and a private SLAS client',
