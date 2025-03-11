@@ -421,17 +421,17 @@ export const getAllRoutes = async (locals = {}) => {
         await Promise.all(applicationExtensions.map((extension) => extension.getRoutes()))
     ).flat()
 
-    // Call the `extendRoutes` function for all the Application Extensions.
-    for (const applicationExtension of applicationExtensions) {
-        const routes = await applicationExtension.extendRoutes(_routes, req)
-        const extensionName = applicationExtension.constructor.name
+    // // Call the `extendRoutes` function for all the Application Extensions.
+    // for (const applicationExtension of applicationExtensions) {
+    //     const routes = await applicationExtension.extendRoutes(_routes, req)
+    //     const extensionName = applicationExtension.constructor.name
         
-        // Prefix each component displayName with the extension name so it can later be deserialized on the client
-        routes.forEach((route) => {
-            route.component.displayName = prefixDisplayName(route.component.displayName, extensionName)
-        })
-        _routes = routes
-    }
+    //     // Prefix each component displayName with the extension name so it can later be deserialized on the client
+    //     routes.forEach((route) => {
+    //         route.component.displayName = prefixDisplayName(route.component.displayName, extensionName)
+    //     })
+    //     _routes = routes
+    // }
 
     const allRoutes = [
         // NOTE: this route needs to be above _routes, in case _routes has a fallback route of `path: '*'`
