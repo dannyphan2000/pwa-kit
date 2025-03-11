@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@salesforce/commerce-sdk-react",
-  "version": "3.2.0-extensibility-preview.4",
+  "version": "4.0.0-extensibility-preview.0",
   "description": "A library that provides react hooks for fetching data from Commerce Cloud",
   "homepage": "https://github.com/SalesforceCommerceCloud/pwa-kit/tree/develop/packages/ecom-react-hooks#readme",
   "bugs": {
