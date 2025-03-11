@@ -22,7 +22,7 @@ import Switch from '../universal/components/switch'
 import Refresh from '../universal/components/refresh'
 import Throw404 from '../universal/components/throw-404'
 import _routes from '../universal/routes'
-import {getRoutes, routeComponent} from '../universal/components/route-component'
+import {getAllRoutes, routeComponent} from '../universal/components/route-component'
 import {uuidv4} from '../../utils/uuidv4.client'
 import logger from '../../utils/logger-instance'
 import {BASE_TEMPLATE_PREFIX} from '../../utils/components'
@@ -136,52 +136,53 @@ export const start = async () => {
         locals
     })
 
-    // Create the component map
-    const PWA_KIT_REACT_SDK = "PWAKitReactSdk"
-    // Add the component mappings from pwa-kit-react-sdk
-    const componentMap = {
-        [PWA_KIT_REACT_SDK]: {
-            [Refresh.displayName]: Refresh,
-            [Throw404.displayName]: Throw404,
-        }
-    }
-    // Add component mappings from the base template
-    for (const route of _routes) {
-        componentMap[BASE_TEMPLATE_PREFIX] = {[route.component.displayName]: route.component}
-    }
-    // Add component mappings from the application extensions
-    for (const applicationExtension of applicationExtensions) {
-        const extensionName = applicationExtension.constructor.name
-        componentMap[extensionName] = await applicationExtension.getComponentMap()
-    }
+    // // Create the component map
+    // const PWA_KIT_REACT_SDK = "PWAKitReactSdk"
+    // // Add the component mappings from pwa-kit-react-sdk
+    // const componentMap = {
+    //     [PWA_KIT_REACT_SDK]: {
+    //         [Refresh.displayName]: Refresh,
+    //         [Throw404.displayName]: Throw404,
+    //     }
+    // }
+    // // Add component mappings from the base template
+    // for (const route of _routes) {
+    //     componentMap[BASE_TEMPLATE_PREFIX] = {[route.component.displayName]: route.component}
+    // }
+    // // Add component mappings from the application extensions
+    // for (const applicationExtension of applicationExtensions) {
+    //     const extensionName = applicationExtension.constructor.name
+    //     componentMap[extensionName] = await applicationExtension.getComponentMap()
+    // }
 
-    // Deserialize routes
-    let serializedRoutes = window.__CONFIG__.app.routes
-    serializedRoutes = serializedRoutes.map(
-        ({path, extensionId, componentName, componentProps}) => {
-            let component = componentMap[extensionId || PWA_KIT_REACT_SDK][componentName]
-            if (!component) {
-                throw new Error(`${extensionId}.${componentName} component could not be deserialized for route with path: ${path}`)
-            }
+    // // Deserialize routes
+    // let serializedRoutes = window.__CONFIG__.app.routes
+    // serializedRoutes = serializedRoutes.map(
+    //     ({path, extensionId, componentName, componentProps}) => {
+    //         let component = componentMap[extensionId || PWA_KIT_REACT_SDK][componentName]
+    //         if (!component) {
+    //             throw new Error(`${extensionId}.${componentName} component could not be deserialized for route with path: ${path}`)
+    //         }
 
-            if (componentProps) {
-                const Component = component
-                component = () => <Component {...componentProps} />
-            }
-            return {
-                path,
-                exact: true,
-                component
-            }
-        }
-    )
-    serializedRoutes = serializedRoutes.filter((route) => !!route)
-    routes = serializedRoutes
+    //         if (componentProps) {
+    //             const Component = component
+    //             component = () => <Component {...componentProps} />
+    //         }
+    //         return {
+    //             path,
+    //             exact: true,
+    //             component
+    //         }
+    //     }
+    // )
+    // serializedRoutes = serializedRoutes.filter((route) => !!route)
+    // routes = serializedRoutes
 
+    const routes = await getAllRoutes(locals)
     const props = {
         error: window.__ERROR__,
         locals: locals,
-        routes: routes,
+        routes,
         extensions: applicationExtensions,
         WrappedApp
     }

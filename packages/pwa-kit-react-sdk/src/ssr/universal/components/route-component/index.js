@@ -11,7 +11,7 @@ import hoistNonReactStatic from 'hoist-non-react-statics'
 import {AppErrorContext} from '../../components/app-error-boundary'
 import Throw404 from '../../components/throw-404'
 import {getAppConfig} from '../../compatibility'
-import routes from '../../routes'
+import appRoutes from '../../routes'
 import {pages as pageEvents} from '../../events'
 import {withLegacyGetProps} from '../../components/with-legacy-get-props'
 import Refresh from '../refresh'
@@ -397,23 +397,29 @@ export const routeComponent = (Wrapped, isPage, locals) => {
 }
 
 /**
+ * TODO: update this comment
  * Wrap all the components found in the application's route config with the
  * route-component HOC so that they all support `getProps` methods server-side
  * and client-side in the same way.
  *
  * @private
  */
-export const getRoutes = async (locals = {}, req = {}) => {
-    let _routes = routes
-    const {applicationExtensions = []} = locals
-    if (typeof routes === 'function') {
-        _routes = await routes(locals)
-    }
+// export const getRoutes = async (locals = {}, req = {}) => {
+//     let _routes = routes
+//     const {applicationExtensions = []} = locals
+//     if (typeof routes === 'function') {
+//         _routes = await routes(locals)
+//     }
 
-    // Prefix components from the base template so it can later be deserialized on the client
-    _routes.forEach((route) => {
-        route.component.displayName = prefixDisplayName(route.component.displayName, BASE_TEMPLATE_PREFIX)
-    })
+//     // Prefix components from the base template so it can later be deserialized on the client
+//     _routes.forEach((route) => {
+//         route.component.displayName = prefixDisplayName(route.component.displayName, BASE_TEMPLATE_PREFIX)
+//     })
+export const getAllRoutes = async (locals = {}) => {
+    const {applicationExtensions = []} = locals
+    const extensionRoutes = (
+        await Promise.all(applicationExtensions.map((extension) => extension.getRoutes()))
+    ).flat()
 
     // Call the `extendRoutes` function for all the Application Extensions.
     for (const applicationExtension of applicationExtensions) {
@@ -430,9 +436,12 @@ export const getRoutes = async (locals = {}, req = {}) => {
     const allRoutes = [
         // NOTE: this route needs to be above _routes, in case _routes has a fallback route of `path: '*'`
         {path: '/__pwa-kit/refresh', component: Refresh},
-        ..._routes,
+        ...extensionRoutes,
+        ...(typeof appRoutes === 'function' ? appRoutes() : appRoutes),
         {path: '*', component: Throw404}
     ]
+    console.log('--- routes', allRoutes)
+
     return allRoutes.map(({component, ...rest}) => {
         return {
             component: component ? routeComponent(component, true, locals) : component,

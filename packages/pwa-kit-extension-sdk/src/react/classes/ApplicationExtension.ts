@@ -27,6 +27,10 @@ export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 export class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
+    constructor(config: Config) {
+        super(config)
+        this.extendRoutes = this.extendRoutes.bind(this)
+    }
     /**
      * Called during the rendering of the base application on the server and the client.
      * It is predominantly used to enhance the "base" application by wrapping it with React providers.
@@ -50,8 +54,12 @@ export class ApplicationExtension<
      * @param routes - The list application routes currently loaded.
      * @returns routes - The modified application routes.
      */
-    public extendRoutes(routes: RouteProps[]): RouteProps[] {
-        return routes
+    public extendRoutes(routes: RouteProps[]): Promise<RouteProps[]> {
+        return Promise.resolve(routes)
+    }
+
+    public getRoutes(): Promise<RouteProps[]> {
+        return Promise.resolve([])
     }
 
     /**

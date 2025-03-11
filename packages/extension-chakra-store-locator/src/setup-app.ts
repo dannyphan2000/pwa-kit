@@ -71,15 +71,15 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
         return applyHOCs(App, HOCs)
     }
 
-    extendRoutes(routes: RouteProps[]): RouteProps[] {
-        return [
+    extendRoutes(routes: RouteProps[]): Promise<RouteProps[]> {
+        return Promise.resolve([
             {
                 exact: true,
                 path: this.getConfig().path,
                 component: StoreLocatorPage
             },
             ...routes
-        ]
+        ])
     }
 }
 
