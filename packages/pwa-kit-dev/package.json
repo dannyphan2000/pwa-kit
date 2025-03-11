@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@salesforce/pwa-kit-dev",
   "version": "4.0.0-extensibility-preview.4",
   "description": "Build tools for pwa-kit",

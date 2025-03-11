@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@salesforce/extension-chakra-store-locator",
   "version": "0.1.0-extensibility-preview.4",
   "bugs": {
