@@ -16,7 +16,7 @@ import {DehydratedState} from '@tanstack/react-query'
  * @returns The updated data object with reset timestamps.
  * @since 4.0.0
  */
-export const resetQueryTimeStamp = (data: DehydratedState, timestamp: number) => {
+export const resetQueryTimeStamp = (data: DehydratedState, timestamp?: Date) => {
     const time = timestamp || Date.now()
 
     const updateQueryTimeStamp = (item: any) => ({
