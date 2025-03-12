@@ -150,17 +150,15 @@ export const render = async (req, res, next) => {
         })
     }
 
-    // Serialize the routes and add them to the config. We'll use this on the client-side later.
-    // TODO: we should not serialize the localized routes to reduce byte size
-    config.app.routes = routes.map((route) => {
-        const displayNameParts = route.component.displayName.match(/\(([^()]+)\)(?!.*\([^()]*\))/)[1].split('.')
-        return {
-            path: route.path,
-            extensionId: displayNameParts.length > 1 ? displayNameParts[0] : null,
-            componentName: displayNameParts.length > 1 ? displayNameParts[1]: displayNameParts[0],
-            componentProps: route.props
-        }
-    })
+    // TODO: How do we create a new field in config.app called serializedExtensions to store the routes?
+    config.app.routes = Object.fromEntries(
+        await Promise.all(
+            applicationExtensions.map(async (extension) => {
+                const serializedData = await extension.serialize()
+                return [extension.constructor.name, serializedData]
+            })
+        )
+    )
 
     // Step 1 - Find the match.
 

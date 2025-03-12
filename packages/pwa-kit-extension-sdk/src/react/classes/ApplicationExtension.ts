@@ -11,7 +11,7 @@ import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
 
 // Types
-import {ApplicationExtensionConfig, Module, Modules} from '../../types'
+import {ApplicationExtensionConfig, Modules, SerializedRoute} from '../../types'
 
 export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 
@@ -74,6 +74,44 @@ export class ApplicationExtension<
         return routes
     }
 
+    public async serialize(): Promise<SerializedRoute[]> {
+        const routes = await this.getRoutes()
+        return routes.map((route) => {
+            return {
+                path: route.path,
+                componentName: route?.component?.displayName,
+                // TODO: do we need to serialize props?
+                //componentProps: route.props
+            }
+        })
+    }
+
+    public deserialize(serializedRoutes: SerializedRoute[], componentMap: Modules): any[] {
+        console.log('in deserialize', serializedRoutes, componentMap)
+        return serializedRoutes.map(
+            ({path, componentName}) => {
+                if (!componentName) {
+                    throw new Error(`Component displayName is required for route with path: ${path}`)
+                }
+                let component = componentMap[componentName]
+                if (!component) {
+                    throw new Error(`${componentName} component could not be deserialized for route with path: ${path}`)
+                }
+
+                // if (componentProps) {
+                //     const Component = component
+                //     component = () => <Component {...componentProps} />
+                // }
+                return {
+                    path,
+                    exact: true,
+                    component
+                }
+            }
+        )
+        //serializedRoutes = serializedRoutes.filter((route) => !!route)
+    }
+
     /**
      * Protected method to get the component map. This method should be called
      * by subclasses to provide the correct path for importing modules.
@@ -101,5 +139,5 @@ export class ApplicationExtension<
      *
      * @returns A promise that resolves to the component map.
      */
-    // public abstract getComponentMap(): Promise<ComponentMap>
+    // public abstract getComponentMap(): Promise<Modules>
 }

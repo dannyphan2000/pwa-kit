@@ -45,3 +45,9 @@ export type Module = {
 export type Modules = {
     [key: string]: Module
 }
+
+export type SerializedRoute = {
+    path: string | readonly string[] | undefined,
+    componentName: string | undefined
+    //componentProps: RouteProps
+}

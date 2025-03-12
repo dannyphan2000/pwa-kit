@@ -404,34 +404,24 @@ export const routeComponent = (Wrapped, isPage, locals) => {
  *
  * @private
  */
-// export const getRoutes = async (locals = {}, req = {}) => {
-//     let _routes = routes
-//     const {applicationExtensions = []} = locals
-//     if (typeof routes === 'function') {
-//         _routes = await routes(locals)
-//     }
-
-//     // Prefix components from the base template so it can later be deserialized on the client
-//     _routes.forEach((route) => {
-//         route.component.displayName = prefixDisplayName(route.component.displayName, BASE_TEMPLATE_PREFIX)
-//     })
 export const getAllRoutes = async (locals = {}) => {
     const {applicationExtensions = []} = locals
-    const extensionRoutes = (
-        await Promise.all(applicationExtensions.map((extension) => extension.getRoutes()))
-    ).flat()
 
-    // // Call the `extendRoutes` function for all the Application Extensions.
-    // for (const applicationExtension of applicationExtensions) {
-    //     const routes = await applicationExtension.extendRoutes(_routes, req)
-    //     const extensionName = applicationExtension.constructor.name
-        
-    //     // Prefix each component displayName with the extension name so it can later be deserialized on the client
-    //     routes.forEach((route) => {
-    //         route.component.displayName = prefixDisplayName(route.component.displayName, extensionName)
-    //     })
-    //     _routes = routes
-    // }
+    let extensionRoutes = []
+    if (isServerSide){
+        extensionRoutes = (
+            await Promise.all(applicationExtensions.map((extension) => extension.getRoutes()))
+        ).flat()
+    } else {
+        // Deserialize the routes from the server
+        const serializedRoutes = window.__CONFIG__.app.routes
+        for (const applicationExtension of applicationExtensions) {
+            const extensionName = applicationExtension.constructor.name
+            const componentMap = await applicationExtension.getComponentMap()
+            const deserializedRoutes = applicationExtension.deserialize(serializedRoutes[extensionName], componentMap)
+            extensionRoutes = [...extensionRoutes, ...deserializedRoutes]
+        }
+    }
 
     const allRoutes = [
         // NOTE: this route needs to be above _routes, in case _routes has a fallback route of `path: '*'`
