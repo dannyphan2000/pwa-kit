@@ -31,7 +31,7 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {createUrlTemplate} from '@salesforce/retail-react-app/app/utils/url'
 import createLogger from '@salesforce/pwa-kit-runtime/utils/logger-factory'
 
-import {CommerceApiProvider} from '@salesforce/commerce-sdk-react'
+import {CommerceApiProvider, resetDehydratedStateTimeStamp} from '@salesforce/commerce-sdk-react'
 import {withReactQuery} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/with-react-query'
 import {useCorrelationId} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
@@ -115,39 +115,22 @@ AppConfig.propTypes = {
     locals: PropTypes.object
 }
 
-const isServerSide = typeof window === 'undefined'
 // Recommended settings for PWA-Kit usages.
 // NOTE: they will be applied on both server and client side.
-// retry is always disabled on server side regardless of the value from the options
 const options = {
     queryClientConfig: {
         defaultOptions: {
             queries: {
                 retry: false,
                 refetchOnWindowFocus: false,
-                staleTime: 10 * 1000,
-                ...(isServerSide ? {retryOnMount: false} : {})
+                staleTime: 10 * 1000
             },
             mutations: {
                 retry: false
             }
         }
     },
-    beforeHydrate: (data) => {
-        const now = Date.now()
-
-        // Helper to reset the data timestamp to time of app load.
-        const updateQueryTimeStamp = ({state}) => {
-            state.dataUpdatedAt = now
-        }
-
-        // Update serialized mutations and queries to ensure that the cached data is
-        // considered fresh on first load.
-        data?.mutations?.forEach(updateQueryTimeStamp)
-        data?.queries?.forEach(updateQueryTimeStamp)
-
-        return data
-    }
+    beforeHydrate: resetDehydratedStateTimeStamp
 }
 
 export default withReactQuery(AppConfig, options)
