@@ -36,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.check-latest-release.outputs.IS_LATEST_RELEASE != 'true'
     strategy:
+      fail-fast: false
       matrix:
         environment:
           - name: bug-bounty
@@ -44,12 +45,14 @@ jobs:
             project: pwa-kit
             mobify_user: MOBIFY_STG_CLIENT_USER
             mobify_api_key: MOBIFY_STG_CLIENT_API_KEY
+            flags: --cloud-origin https://cloud-testing.mobify-staging.com -c ~/.mobify --wait
           - name: demo-site
             project_key: retail-react-app-demo-site
             target: production
             project: scaffold-pwa
             mobify_user: MOBIFY_CLIENT_USER
             mobify_api_key: MOBIFY_CLIENT_API_KEY
+            flags: --wait
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -95,4 +98,4 @@ jobs:
           TARGET: ${{ matrix.environment.target }}
           PROJECT: ${{ matrix.environment.project }}
           MESSAGE: ${{ env.BUNDLE_NAME }})
-          FLAGS: --wait
+          FLAGS: ${{ matrix.environment.flags }}
