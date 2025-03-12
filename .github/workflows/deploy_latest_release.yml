@@ -85,7 +85,7 @@ jobs:
   deploy-demo-site:
     needs: check-latest-release
     runs-on: ubuntu-latest
-    if: needs.check-latest-release.outputs.IS_LATEST_RELEASE != 'true'
+    if: needs.check-latest-release.outputs.IS_LATEST_RELEASE == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -128,7 +128,7 @@ jobs:
         uses: "./.github/actions/push_to_mrt"
         with:
           CWD: "../generated-projects/retail-react-app-demo-site"
-          TARGET: staging
+          TARGET: production
           PROJECT: scaffold-pwa
           MESSAGE: ${{ env.BUNDLE_NAME }})
           FLAGS: --wait
