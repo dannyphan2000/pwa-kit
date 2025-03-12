@@ -75,7 +75,7 @@ jobs:
         uses: "./.github/actions/create_mrt"
         with:
           mobify_user: ${{ secrets[matrix.environment.mobify_user] }}
-          mobify_api_key: ${{ secrets[environment.mobify_api_key] }}
+          mobify_api_key: ${{ secrets[matrix.environment.mobify_api_key] }}
 
       - name: Set bundle name
         run: |-
