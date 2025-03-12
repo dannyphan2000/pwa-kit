@@ -31,10 +31,25 @@ jobs:
           fi
           echo "IS_LATEST_RELEASE=$IS_LATEST_RELEASE" >> "$GITHUB_OUTPUT"
 
-  deploy-bug-bounty:
+  deploy-sites:
     needs: check-latest-release
     runs-on: ubuntu-latest
-    if: needs.check-latest-release.outputs.IS_LATEST_RELEASE == 'true'
+    if: needs.check-latest-release.outputs.IS_LATEST_RELEASE != 'true'
+    strategy:
+      matrix:
+        environment:
+          - name: bug-bounty
+            project_key: retail-react-app-bug-bounty
+            target: testing
+            project: pwa-kit
+            mobify_user: ${{ secrets.MOBIFY_STG_CLIENT_USER }}
+            mobify_api_key: ${{ secrets.MOBIFY_STG_CLIENT_API_KEY }}
+          - name: demo-site
+            project_key: retail-react-app-demo-site
+            target: production
+            project: scaffold-pwa
+            mobify_user: ${{ secrets.MOBIFY_CLIENT_USER }}
+            mobify_api_key: ${{ secrets.MOBIFY_CLIENT_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,64 +69,13 @@ jobs:
       - name: Generate Retail App Demo
         uses: ./.github/actions/e2e_generate_app
         with:
-          PROJECT_KEY: "retail-react-app-bug-bounty"
+          PROJECT_KEY: ${{ matrix.environment.project_key }}
 
       - name: Create MRT credentials file
         uses: "./.github/actions/create_mrt"
         with:
-          mobify_user: ${{ secrets.MOBIFY_STG_CLIENT_USER }}
-          mobify_api_key: ${{ secrets.MOBIFY_STG_CLIENT_API_KEY }}
-      
-      - name: Set bundle name
-        run: |-
-          TAG_NAME=$(echo ${{ github.event.release.tag_name }})
-          if [ "$TAG_NAME" ]; then
-            BUNDLE_NAME="tag ${{ github.event.release.tag_name }}"
-          else
-            BUNDLE_NAME="build ${{ github.run_id }} on ${{ github.ref }} (${{ github.sha }})"
-          fi
-          echo "Setting bundle name as $BUNDLE_NAME"
-          echo "BUNDLE_NAME=$BUNDLE_NAME" >> $GITHUB_ENV
-
-      - name: Push Bundle to MRT (Bug Bounty)
-        uses: "./.github/actions/push_to_mrt"
-        with:
-          CWD: "../generated-projects/retail-react-app-bug-bounty"
-          TARGET: testing
-          PROJECT: pwa-kit
-          MESSAGE: ${{ env.BUNDLE_NAME }})
-          FLAGS: --cloud-origin https://cloud-testing.mobify-staging.com -c ~/.mobify --wait
-
-  deploy-demo-site:
-    needs: check-latest-release
-    runs-on: ubuntu-latest
-    if: needs.check-latest-release.outputs.IS_LATEST_RELEASE == 'true'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup node
-        id: setup_node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: "npm"
-
-      - name: Install Monorepo Dependencies
-        run: |-
-          # Install node dependencies
-          node ./scripts/gtime.js monorepo_install npm ci
-
-      - name: Generate Retail App Demo
-        uses: ./.github/actions/e2e_generate_app
-        with:
-          PROJECT_KEY: "retail-react-app-demo-site"
-
-      - name: Create MRT credentials file
-        uses: "./.github/actions/create_mrt"
-        with:
-          mobify_user: ${{ secrets.MOBIFY_CLIENT_USER }}
-          mobify_api_key: ${{ secrets.MOBIFY_CLIENT_API_KEY }}
+          mobify_user: ${{ matrix.environment.mobify_user }}
+          mobify_api_key: ${{ matrix.environment.mobify_api_key }}
 
       - name: Set bundle name
         run: |-
@@ -124,11 +88,11 @@ jobs:
           echo "Setting bundle name as $BUNDLE_NAME"
           echo "BUNDLE_NAME=$BUNDLE_NAME" >> $GITHUB_ENV
 
-      - name: Push Bundle to MRT (Demo Site)
+      - name: Push Bundle to MRT (${{matrix.environment.name}})
         uses: "./.github/actions/push_to_mrt"
         with:
-          CWD: "../generated-projects/retail-react-app-demo-site"
-          TARGET: production
-          PROJECT: scaffold-pwa
+          CWD: "../generated-projects/${{ matrix.environment.project_key }}"
+          TARGET: ${{ matrix.environment.target }}
+          PROJECT: ${{ matrix.environment.project }}
           MESSAGE: ${{ env.BUNDLE_NAME }})
           FLAGS: --wait
