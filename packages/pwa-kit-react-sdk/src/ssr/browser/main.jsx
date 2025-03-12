@@ -19,13 +19,9 @@ import {ServerContext, CorrelationIdProvider} from '../universal/contexts'
 import App from '../universal/components/_app'
 import {getAppConfig} from '../universal/compatibility'
 import Switch from '../universal/components/switch'
-import Refresh from '../universal/components/refresh'
-import Throw404 from '../universal/components/throw-404'
-import _routes from '../universal/routes'
 import {getAllRoutes, routeComponent} from '../universal/components/route-component'
 import {uuidv4} from '../../utils/uuidv4.client'
 import logger from '../../utils/logger-instance'
-import {BASE_TEMPLATE_PREFIX} from '../../utils/components'
 
 /* istanbul ignore next */
 export const registerServiceWorker = (url) => {

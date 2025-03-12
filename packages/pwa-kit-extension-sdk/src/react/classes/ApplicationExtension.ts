@@ -77,9 +77,12 @@ export class ApplicationExtension<
     public async serialize(): Promise<SerializedRoute[]> {
         const routes = await this.getRoutes()
         return routes.map((route) => {
+            if (!route.component?.displayName) {
+                throw new Error(`Component for route with path "${route.path}" is missing a displayName`)
+            }
             return {
                 path: route.path,
-                componentName: route?.component?.displayName,
+                componentName: route.component?.displayName,
                 // TODO: do we need to serialize props?
                 //componentProps: route.props
             }
@@ -87,12 +90,8 @@ export class ApplicationExtension<
     }
 
     public deserialize(serializedRoutes: SerializedRoute[], componentMap: Modules): any[] {
-        console.log('in deserialize', serializedRoutes, componentMap)
         return serializedRoutes.map(
             ({path, componentName}) => {
-                if (!componentName) {
-                    throw new Error(`Component displayName is required for route with path: ${path}`)
-                }
                 let component = componentMap[componentName]
                 if (!component) {
                     throw new Error(`${componentName} component could not be deserialized for route with path: ${path}`)
@@ -109,7 +108,6 @@ export class ApplicationExtension<
                 }
             }
         )
-        //serializedRoutes = serializedRoutes.filter((route) => !!route)
     }
 
     /**

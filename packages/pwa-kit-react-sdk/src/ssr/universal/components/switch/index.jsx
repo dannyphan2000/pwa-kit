@@ -10,7 +10,6 @@ import {Switch as RouterSwitch, Route} from 'react-router-dom'
 import AppErrorBoundary from '../app-error-boundary'
 import {UIDReset, UIDFork} from 'react-uid'
 
-// TODO: can the context be moved to a HOC so routes don't always have to be serialized
 const RoutesContext = React.createContext({})
 export const useRoutesContext = () => useContext(RoutesContext)
 

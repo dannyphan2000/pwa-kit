@@ -15,7 +15,6 @@ import appRoutes from '../../routes'
 import {pages as pageEvents} from '../../events'
 import {withLegacyGetProps} from '../../components/with-legacy-get-props'
 import Refresh from '../refresh'
-import {BASE_TEMPLATE_PREFIX, prefixDisplayName} from '../../../../utils/components'
 
 const noop = () => undefined
 
