@@ -42,7 +42,7 @@ jobs:
           if [ "$TAG_NAME"  ]; then
             BUNDLE_NAME="tag ${{ github.event.release.tag_name }}"
           else
-            BUNDLE_NAME="build ${{ github.run_id }} on ${{ github.ref }} (${{ github.sha }})""
+            BUNDLE_NAME="build ${{ github.run_id }} on ${{ github.ref }} (${{ github.sha }})"
           fi
           echo "Setting bundle name as $BUNDLE_NAME"
           echo "BUNDLE_NAME=$BUNDLE_NAME" >> $GITHUB_ENV
