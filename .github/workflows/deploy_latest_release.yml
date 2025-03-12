@@ -35,12 +35,17 @@ jobs:
     needs: check-latest-release
     runs-on: ubuntu-latest
     if: needs.check-latest-release.outputs.IS_LATEST_RELEASE != 'true'
-    env:
-      BUNDLE_NAME: "${{ github.event.release.tag_name }} && 'tag ${{ github.event.release.tag_name }}' || 'build ${{ github.run_id }} on ${{ github.ref }} (${{ github.sha }})' "
     steps:
-      - name: Print bundle name
+      - name: Set bundle name
         run: |-
-          echo $BUNDLE_NAME
+          TAG_NAME=$(echo ${{ github.event.release.tag_name }})
+          if [ "$TAG_NAME"  ]; then
+            BUNDLE_NAME="tag ${{ github.event.release.tag_name }}"
+          else
+            BUNDLE_NAME="build ${{ github.run_id }} on ${{ github.ref }} (${{ github.sha }})""
+          fi
+          echo "Setting bundle name as $BUNDLE_NAME"
+          echo "BUNDLE_NAME=$BUNDLE_NAME" >> $GITHUB_ENV
 
       # - name: Checkout
       #   uses: actions/checkout@v4
@@ -81,8 +86,6 @@ jobs:
     needs: check-latest-release
     runs-on: ubuntu-latest
     if: needs.check-latest-release.outputs.IS_LATEST_RELEASE == 'true'
-    env:
-      BUNDLE_NAME: "${{ $github.event.release.tag_name && 'tag $github.event.release.tag_name ' || 'build $github.run_id on github.ref ( github.sha )'}} "
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -109,6 +112,8 @@ jobs:
         with:
           mobify_user: ${{ secrets.MOBIFY_CLIENT_USER }}
           mobify_api_key: ${{ secrets.MOBIFY_CLIENT_API_KEY }}
+
+      
 
       - name: Push Bundle to MRT (Demo Site)
         uses: "./.github/actions/push_to_mrt"
