@@ -36,10 +36,36 @@ jobs:
     runs-on: ubuntu-latest
     if: needs.check-latest-release.outputs.IS_LATEST_RELEASE != 'true'
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        id: setup_node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "npm"
+
+      - name: Install Monorepo Dependencies
+        run: |-
+          # Install node dependencies
+          node ./scripts/gtime.js monorepo_install npm ci
+
+      - name: Generate Retail App Demo
+        uses: ./.github/actions/e2e_generate_app
+        with:
+          PROJECT_KEY: "retail-react-app-bug-bounty"
+
+      - name: Create MRT credentials file
+        uses: "./.github/actions/create_mrt"
+        with:
+          mobify_user: ${{ secrets.MOBIFY_STG_CLIENT_USER }}
+          mobify_api_key: ${{ secrets.MOBIFY_STG_CLIENT_API_KEY }}
+      
       - name: Set bundle name
         run: |-
           TAG_NAME=$(echo ${{ github.event.release.tag_name }})
-          if [ "$TAG_NAME"  ]; then
+          if [ "$TAG_NAME" ]; then
             BUNDLE_NAME="tag ${{ github.event.release.tag_name }}"
           else
             BUNDLE_NAME="build ${{ github.run_id }} on ${{ github.ref }} (${{ github.sha }})"
@@ -47,40 +73,14 @@ jobs:
           echo "Setting bundle name as $BUNDLE_NAME"
           echo "BUNDLE_NAME=$BUNDLE_NAME" >> $GITHUB_ENV
 
-      # - name: Checkout
-      #   uses: actions/checkout@v4
-
-      # - name: Setup node
-      #   id: setup_node
-      #   uses: actions/setup-node@v4
-      #   with:
-      #     node-version: 22
-      #     cache: "npm"
-
-      # - name: Install Monorepo Dependencies
-      #   run: |-
-      #     # Install node dependencies
-      #     node ./scripts/gtime.js monorepo_install npm ci
-
-      # - name: Generate Retail App Demo
-      #   uses: ./.github/actions/e2e_generate_app
-      #   with:
-      #     PROJECT_KEY: "retail-react-app-bug-bounty"
-
-      # - name: Create MRT credentials file
-      #   uses: "./.github/actions/create_mrt"
-      #   with:
-      #     mobify_user: ${{ secrets.MOBIFY_STG_CLIENT_USER }}
-      #     mobify_api_key: ${{ secrets.MOBIFY_STG_CLIENT_API_KEY }}
-
-      # - name: Push Bundle to MRT (Bug Bounty)
-      #   uses: "./.github/actions/push_to_mrt"
-      #   with:
-      #     CWD: "../generated-projects/retail-react-app-bug-bounty"
-      #     TARGET: testing
-      #     PROJECT: pwa-kit
-      #     MESSAGE: $BUNDLE_NAME
-      #     FLAGS: --cloud-origin https://cloud-testing.mobify-staging.com -c ~/.mobify --wait
+      - name: Push Bundle to MRT (Bug Bounty)
+        uses: "./.github/actions/push_to_mrt"
+        with:
+          CWD: "../generated-projects/retail-react-app-bug-bounty"
+          TARGET: testing
+          PROJECT: pwa-kit
+          MESSAGE: ${{ env.BUNDLE_NAME }})
+          FLAGS: --cloud-origin https://cloud-testing.mobify-staging.com -c ~/.mobify --wait
 
   deploy-demo-site:
     needs: check-latest-release
@@ -113,7 +113,16 @@ jobs:
           mobify_user: ${{ secrets.MOBIFY_CLIENT_USER }}
           mobify_api_key: ${{ secrets.MOBIFY_CLIENT_API_KEY }}
 
-      
+      - name: Set bundle name
+        run: |-
+          TAG_NAME=$(echo ${{ github.event.release.tag_name }})
+          if [ "$TAG_NAME" ]; then
+            BUNDLE_NAME="tag ${{ github.event.release.tag_name }}"
+          else
+            BUNDLE_NAME="build ${{ github.run_id }} on ${{ github.ref }} (${{ github.sha }})"
+          fi
+          echo "Setting bundle name as $BUNDLE_NAME"
+          echo "BUNDLE_NAME=$BUNDLE_NAME" >> $GITHUB_ENV
 
       - name: Push Bundle to MRT (Demo Site)
         uses: "./.github/actions/push_to_mrt"
@@ -121,5 +130,5 @@ jobs:
           CWD: "../generated-projects/retail-react-app-demo-site"
           TARGET: staging
           PROJECT: scaffold-pwa
-          MESSAGE: $BUNDLE_NAME
+          MESSAGE: ${{ env.BUNDLE_NAME }})
           FLAGS: --wait
