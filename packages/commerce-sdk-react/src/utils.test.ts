@@ -54,8 +54,8 @@ describe('resetDehydratedStateTimeStamp', () => {
         const specificTime = new Date(2023, 5, 15)
         const result = resetDehydratedStateTimeStamp(mockDehydratedState, specificTime)
 
-        expect(result.queries[0].state.dataUpdatedAt).toBe(specificTime.getTime())
-        expect(result.queries[1].state.dataUpdatedAt).toBe(specificTime.getTime())
+        expect(result.queries[0].state.dataUpdatedAt).toBe(specificTime)
+        expect(result.queries[1].state.dataUpdatedAt).toBe(specificTime)
     })
 
     it('should use current time when no timestamp is provided', () => {
