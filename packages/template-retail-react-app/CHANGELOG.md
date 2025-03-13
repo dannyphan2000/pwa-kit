@@ -1,3 +1,6 @@
+## v6.1.0-dev
+- Send PWA Kit events to Data Cloud [#2229] (https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2229)
+
 ## v6.0.0
 - DNT Consent Banner: [#2203](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2203)
 - Implemented opt-in Social & Passwordless Login features and fixed the Reset Password flow which now leverages SLAS APIs [#2079] (https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2079)

@@ -219,7 +219,7 @@ const RETAIL_REACT_APP_QUESTIONS = [
     }
 ]
 
-// Project dictionary describing details and how the gerator should ask questions etc.
+// Project dictionary describing details and how the generator should ask questions etc.
 const PRESETS = [
     {
         id: 'retail-react-app',
@@ -265,7 +265,9 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: '10a761d0-5d19-41fa-8681-0591d5884e27',
+            ['project.dataCloud.tenantId']: 'g43g8zrvh1ytcztdmmzg8m3dh1'
         },
         assets: ['translations'],
         private: false
@@ -290,7 +292,9 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: '10a761d0-5d19-41fa-8681-0591d5884e27',
+            ['project.dataCloud.tenantId']: 'g43g8zrvh1ytcztdmmzg8m3dh1'
         },
         assets: ['translations'],
         private: true
@@ -315,7 +319,9 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: true,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: '10a761d0-5d19-41fa-8681-0591d5884e27',
+            ['project.dataCloud.tenantId']: 'g43g8zrvh1ytcztdmmzg8m3dh1'
         },
         assets: ['translations'],
         private: true
@@ -340,7 +346,9 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'xitgmcd3',
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.commerce.isSlasPrivate']: true
+            ['project.commerce.isSlasPrivate']: true,
+            ['project.dataCloud.appSourceId']: '10a761d0-5d19-41fa-8681-0591d5884e27',
+            ['project.dataCloud.tenantId']: 'g43g8zrvh1ytcztdmmzg8m3dh1'
         },
         assets: ['translations'],
         private: true
@@ -365,7 +373,9 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'performance-001',
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.commerce.isSlasPrivate']: false
+            ['project.commerce.isSlasPrivate']: false,
+            ['project.dataCloud.appSourceId']: '10a761d0-5d19-41fa-8681-0591d5884e27',
+            ['project.dataCloud.tenantId']: 'g43g8zrvh1ytcztdmmzg8m3dh1'
         },
         assets: ['translations'],
         private: true

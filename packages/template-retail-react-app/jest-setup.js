@@ -86,6 +86,10 @@ export const setupMockServer = () => {
         }),
         rest.post('*/v3/personalization/recs/EinsteinTestSite/*', (req, res, ctx) => {
             return res(ctx.delay(0), ctx.status(200), ctx.json({}))
+        }),
+        // Mock Data Cloud API
+        rest.post('*.pc-rnd.c360a.salesforce.com/web/events/*', (req, res, ctx) => {
+            return res(ctx.delay(0), ctx.status(204), ctx.json({}))
         })
     )
 }
