@@ -23,6 +23,7 @@ import {withLayout} from './components/with-layout'
 import {withMultiSite} from './components/with-multi-site'
 import {withReactIntl} from './components/with-react-intl'
 import {withStorefrontPreview} from './components/with-storefront-preview'
+import * as modules from './pages'
 
 // Pages
 import * as Pages from './pages'
@@ -118,8 +119,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         })
     }
 
-    async getComponentMap() {
-        const modules = await import('./pages')
+    getComponentMap() {
         return this.generateComponentMapFromModules(modules)
     }
 }

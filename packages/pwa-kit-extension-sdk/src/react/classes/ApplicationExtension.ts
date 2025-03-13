@@ -27,9 +27,12 @@ export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 export class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
+    private routes: RouteProps[] | null
+
     constructor(config: Config) {
         super(config)
         this.extendRoutes = this.extendRoutes.bind(this)
+        this.routes = null
     }
     /**
      * Called during the rendering of the base application on the server and the client.
@@ -74,9 +77,15 @@ export class ApplicationExtension<
         return routes
     }
 
-    public async serialize(): Promise<SerializedRoute[]> {
-        const routes = await this.getRoutes()
-        return routes.map((route) => {
+    public async loadRoutes(){
+        this.routes = await this.getRoutes()
+    }
+
+    public serialize(): SerializedRoute[] {
+        if (this.routes === null) {
+            throw new Error('Routes have not been loaded. Call loadRoutes() before serializing')
+        }
+        const serializedRoutes = this.routes.map((route) => {
             if (!route.component?.displayName) {
                 throw new Error(`Component for route with path "${route.path}" is missing a displayName`)
             }
@@ -87,6 +96,7 @@ export class ApplicationExtension<
                 //componentProps: route.props
             }
         })
+        return serializedRoutes
     }
 
     public deserialize(serializedRoutes: SerializedRoute[], componentMap: Modules): any[] {
@@ -118,7 +128,7 @@ export class ApplicationExtension<
      * @param path - The path to the modules directory that contains the page components.
      * @returns A promise that resolves to the component map.
      */
-    protected async generateComponentMapFromModules(modules: Modules): Promise<Modules> {
+    protected generateComponentMapFromModules(modules: Modules): Modules {
         const componentMap = Object.keys(modules).reduce((acc: Modules, key: string) => {
             const module = modules[key]
             // TODO: will displayName always exist or do we need error handling?

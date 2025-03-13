@@ -154,8 +154,9 @@ export const render = async (req, res, next) => {
     config.app.routes = Object.fromEntries(
         await Promise.all(
             applicationExtensions.map(async (extension) => {
-                const serializedData = await extension.serialize()
-                return [extension.constructor.name, serializedData]
+                await extension.loadRoutes()
+                const serializedData = extension.serialize()
+                return [extension.getName(), serializedData]
             })
         )
     )

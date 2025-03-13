@@ -415,7 +415,7 @@ export const getAllRoutes = async (locals = {}) => {
         // Deserialize the routes from the server
         const serializedRoutes = window.__CONFIG__.app.routes
         for (const applicationExtension of applicationExtensions) {
-            const extensionName = applicationExtension.constructor.name
+            const extensionName = applicationExtension.getName()
             const componentMap = await applicationExtension.getComponentMap()
             const deserializedRoutes = applicationExtension.deserialize(serializedRoutes[extensionName], componentMap)
             extensionRoutes = [...extensionRoutes, ...deserializedRoutes]
