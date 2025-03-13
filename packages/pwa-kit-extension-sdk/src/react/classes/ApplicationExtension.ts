@@ -11,7 +11,7 @@ import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
 
 // Types
-import {ApplicationExtensionConfig} from '../../types'
+import {ApplicationExtensionConfig, GetRoutesParams} from '../../types'
 
 export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 
@@ -58,7 +58,7 @@ export class ApplicationExtension<
         return Promise.resolve(routes)
     }
 
-    public getRoutes(): Promise<RouteProps[]> {
+    public getRoutes(params: GetRoutesParams): Promise<RouteProps[]> {
         return Promise.resolve([])
     }
 

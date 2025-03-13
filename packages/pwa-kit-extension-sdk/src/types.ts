@@ -36,3 +36,7 @@ export type BuildCandidatePathsOptions = {
     projectDir: string
     extensionEntries: ApplicationExtensionEntry[]
 }
+
+export interface GetRoutesParams {
+    originalUrl: string
+}
