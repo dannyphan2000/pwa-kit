@@ -266,11 +266,49 @@ const PRESETS = [
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.dataCloud.appSourceId']: '10a761d0-5d19-41fa-8681-0591d5884e27',
-            ['project.dataCloud.tenantId']: 'g43g8zrvh1ytcztdmmzg8m3dh1'
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: false
+    },
+    {
+        id: 'retail-react-app-demo-site-internal',
+        name: 'Retail React App Demo Store',
+        description: `
+            Generates a project using the settings for a special B2C Commerce instance that is used
+            for demo purposes. The demo site is accessible at https://pwa-kit.mobify-storefront.com/
+
+            This environment uses a SLAS private client and has social and passwordless login enabled.
+            This environment is set up to use multiple locales.
+            Future features that are enabled for the demo environment may be added to this preset.
+        `,
+        shortDescription:
+            'The Retail app with demo Commerce Cloud instance and a private SLAS client',
+        templateSource: {
+            type: TEMPLATE_SOURCE_NPM,
+            id: '@salesforce/retail-react-app'
+        },
+        questions: [...EXTENSIBILITY_QUESTIONS, ...RETAIL_REACT_APP_QUESTIONS],
+        answers: {
+            ['project.extend']: false, // Intentionally not an extensible project so that the correct logos appear on demo site
+            ['project.hybrid']: false,
+            ['project.name']: 'demo-storefront',
+            ['project.commerce.instanceUrl']: 'https://zzrf-001.dx.commercecloud.salesforce.com',
+            ['project.commerce.clientId']: '083859f2-5d93-4209-b999-a112266d63a0',
+            ['project.commerce.siteId']: 'RefArchGlobal',
+            ['project.commerce.organizationId']: 'f_ecom_zzrf_001',
+            ['project.commerce.shortCode']: 'kv7kzm78',
+            ['project.commerce.isSlasPrivate']: true,
+            ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: true // True only for presets deployed to demo environments like pwa-kit.mobify-storefront.com
+        },
+        assets: ['translations'],
+        private: true
     },
     {
         id: 'retail-react-app-test-project',
@@ -293,8 +331,9 @@ const PRESETS = [
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.dataCloud.appSourceId']: '10a761d0-5d19-41fa-8681-0591d5884e27',
-            ['project.dataCloud.tenantId']: 'g43g8zrvh1ytcztdmmzg8m3dh1'
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -320,8 +359,37 @@ const PRESETS = [
             ['project.commerce.isSlasPrivate']: true,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.dataCloud.appSourceId']: '10a761d0-5d19-41fa-8681-0591d5884e27',
-            ['project.dataCloud.tenantId']: 'g43g8zrvh1ytcztdmmzg8m3dh1'
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
+        },
+        assets: ['translations'],
+        private: true
+    },
+    {
+        id: 'retail-react-app-bug-bounty',
+        name: 'Retail React App Bug Bounty Project',
+        description: '',
+        templateSource: {
+            type: TEMPLATE_SOURCE_NPM,
+            id: '@salesforce/retail-react-app'
+        },
+        questions: [...EXTENSIBILITY_QUESTIONS, ...RETAIL_REACT_APP_QUESTIONS],
+        answers: {
+            ['project.extend']: true,
+            ['project.hybrid']: false,
+            ['project.name']: 'retail-react-app',
+            ['project.commerce.instanceUrl']: 'https://zzec-006.dx.commercecloud.salesforce.com',
+            ['project.commerce.clientId']: 'b56e7ad3-2237-42c9-8f55-41e63ebca420',
+            ['project.commerce.siteId']: 'RefArch',
+            ['project.commerce.organizationId']: 'f_ecom_zzec_006',
+            ['project.commerce.shortCode']: 'staging-001',
+            ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.commerce.isSlasPrivate']: true,
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -347,8 +415,9 @@ const PRESETS = [
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
             ['project.commerce.isSlasPrivate']: true,
-            ['project.dataCloud.appSourceId']: '10a761d0-5d19-41fa-8681-0591d5884e27',
-            ['project.dataCloud.tenantId']: 'g43g8zrvh1ytcztdmmzg8m3dh1'
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -374,8 +443,9 @@ const PRESETS = [
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
             ['project.commerce.isSlasPrivate']: false,
-            ['project.dataCloud.appSourceId']: '10a761d0-5d19-41fa-8681-0591d5884e27',
-            ['project.dataCloud.tenantId']: 'g43g8zrvh1ytcztdmmzg8m3dh1'
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -793,6 +863,11 @@ const main = async (opts) => {
 
     // Add the preset to the context.
     context.preset = selectedPreset
+
+    // If using the preset, output the preset name
+    if (presetId) {
+        console.log(`Using preset "${selectedPreset.name}"`)
+    }
 
     if (!OUTPUT_DIR_FLAG_ACTIVE) {
         outputDir = p.join(process.cwd(), selectedPreset.id)
