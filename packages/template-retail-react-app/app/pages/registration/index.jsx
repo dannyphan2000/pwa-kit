@@ -16,7 +16,7 @@ import Seo from '@salesforce/retail-react-app/app/components/seo'
 import RegisterForm from '@salesforce/retail-react-app/app/components/register'
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
-import useDatacloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
+import useDataCloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
 import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
 
 const Registration = () => {
@@ -25,7 +25,7 @@ const Registration = () => {
     const {isRegistered} = useCustomerType()
     const form = useForm()
     const einstein = useEinstein()
-    const datacloud = useDatacloud()
+    const dataCloud = useDataCloud()
     const {pathname} = useLocation()
     const register = useAuthHelper(AuthHelpers.Register)
 
@@ -56,7 +56,7 @@ const Registration = () => {
     /**************** Einstein ****************/
     useEffect(() => {
         einstein.sendViewPage(pathname)
-        datacloud.sendViewPage(pathname)
+        dataCloud.sendViewPage(pathname)
     }, [])
 
     return (

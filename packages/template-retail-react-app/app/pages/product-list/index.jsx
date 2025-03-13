@@ -72,7 +72,7 @@ import {
 } from '@salesforce/retail-react-app/app/hooks'
 import {useToast} from '@salesforce/retail-react-app/app/hooks/use-toast'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
-import useDatacloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
+import useDataCloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
 import useActiveData from '@salesforce/retail-react-app/app/hooks/use-active-data'
 
 // Others
@@ -118,7 +118,7 @@ const ProductList = (props) => {
     const location = useLocation()
     const toast = useToast()
     const einstein = useEinstein()
-    const datacloud = useDatacloud()
+    const dataCloud = useDataCloud()
     const activeData = useActiveData()
     const {res} = useServerContext()
     const customerId = useCustomerId()
@@ -393,7 +393,7 @@ const ProductList = (props) => {
                         additionalProperties: {error: err, searchQuery}
                     })
                 }
-                datacloud.sendViewSearchResults(searchParams, productSearchResult)
+                dataCloud.sendViewSearchResults(searchParams, productSearchResult)
                 activeData.sendViewSearch(searchParams, productSearchResult)
             } else {
                 try {
@@ -404,7 +404,7 @@ const ProductList = (props) => {
                         additionalProperties: {error: err, category}
                     })
                 }
-                datacloud.sendViewCategory(searchParams, category, productSearchResult)
+                dataCloud.sendViewCategory(searchParams, category, productSearchResult)
                 activeData.sendViewCategory(searchParams, category, productSearchResult)
             }
         }

@@ -23,7 +23,7 @@ import {useForm} from 'react-hook-form'
 import {useRouteMatch} from 'react-router'
 import {useLocation} from 'react-router-dom'
 import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
-import useDatacloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
+import useDataCloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
 import PasswordlessEmailConfirmation from '@salesforce/retail-react-app/app/components/email-confirmation/index'
 import {
@@ -57,7 +57,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const queryParams = new URLSearchParams(location.search)
     const {path} = useRouteMatch()
     const einstein = useEinstein()
-    const datacloud = useDatacloud()
+    const dataCloud = useDataCloud()
     const {isRegistered, customerType} = useCustomerType()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const loginPasswordless = useAuthHelper(AuthHelpers.LoginPasswordlessUser)
@@ -186,7 +186,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     /**************** Einstein ****************/
     useEffect(() => {
         einstein.sendViewPage(location.pathname)
-        datacloud.sendViewPage(location.pathname)
+        dataCloud.sendViewPage(location.pathname)
     }, [])
 
     return (
