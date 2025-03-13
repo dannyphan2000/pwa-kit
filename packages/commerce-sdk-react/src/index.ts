@@ -7,6 +7,5 @@
 import CommerceApiProvider from './provider'
 export * from './hooks/types'
 export * from './hooks'
-export * from './public-utils'
-
+export {resetDehydratedStateTimeStamp} from './utils'
 export {CommerceApiProvider}
