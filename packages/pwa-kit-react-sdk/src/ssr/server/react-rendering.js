@@ -150,12 +150,11 @@ export const render = async (req, res, next) => {
         })
     }
 
+    // Serialize the application extensions where the key is the name of the extension
+    // and the value is the serialized extension data.
     const serializedExtensions = Object.fromEntries(
         await Promise.all(
-            applicationExtensions.map(async (extension) => {
-                const serializedData = extension.serialize()
-                return [extension.getName(), serializedData]
-            })
+            applicationExtensions.map(async (extension) => [extension.getName(), extension.serialize()])
         )
     )
 
