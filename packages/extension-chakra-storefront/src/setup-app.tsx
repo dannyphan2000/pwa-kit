@@ -122,7 +122,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
     }
 
     getComponentMap() {
-        return this.generateComponentMapFromModules(modules)
+        return modules
     }
 }
 

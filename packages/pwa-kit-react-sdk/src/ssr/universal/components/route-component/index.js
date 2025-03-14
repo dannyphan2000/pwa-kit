@@ -406,22 +406,9 @@ export const routeComponent = (Wrapped, isPage, locals) => {
 export const getAllRoutes = async (locals = {}) => {
     const {applicationExtensions = []} = locals
 
-    let extensionRoutes = []
-    if (isServerSide){
-        extensionRoutes = (
-            await Promise.all(applicationExtensions.map((extension) => extension.getRoutes()))
-        ).flat()
-    } else {
-        // Deserialize the routes from the server
-        const serializedRoutes = window.__CONFIG__.app.routes
-        console.log('--- serializedRoutes:', serializedRoutes)
-        for (const applicationExtension of applicationExtensions) {
-            const extensionName = applicationExtension.getName()
-            const componentMap = await applicationExtension.getComponentMap()
-            const deserializedRoutes = applicationExtension.deserialize(serializedRoutes[extensionName], componentMap)
-            extensionRoutes = [...extensionRoutes, ...deserializedRoutes]
-        }
-    }
+    const extensionRoutes = (
+        await Promise.all(applicationExtensions.map((extension) => extension.getRoutes()))
+    ).flat()
 
     const allRoutes = [
         // NOTE: this route needs to be above _routes, in case _routes has a fallback route of `path: '*'`

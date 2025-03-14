@@ -81,6 +81,7 @@ class Sample extends ApplicationExtension<Config> {
      */
     // TODO: do we need to pass in additional params like request.path? Get familiar with the SEO API.
     // TODO: how can developers call SCAPI? How can we pass in the api client (with the access token)?
+    // TODO: update .hbs template to add @CacheResult decorator
     @CacheResult('_cachedRoutes')
     getRoutes(): Promise<RouteProps[]> {
         return Promise.resolve([
@@ -102,8 +103,9 @@ class Sample extends ApplicationExtension<Config> {
         return allRoutes
     }
 
+    // TODO: update .hbs template to add this function
     getComponentMap() {
-        return this.generateComponentMapFromModules({SamplePage})
+        return {'Sample': SamplePage}
     }
 }
 

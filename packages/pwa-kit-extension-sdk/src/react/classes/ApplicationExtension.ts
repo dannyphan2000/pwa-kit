@@ -12,7 +12,7 @@ import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/cla
 import { CacheResult } from '../decorators/cacheResult'
 
 // Types
-import {ApplicationExtensionConfig, Modules, SerializedRoute} from '../../types'
+import {ApplicationExtensionConfig, Modules, SerializedExtension} from '../../types'
 
 const isServerSide = typeof window === 'undefined'
 
@@ -30,13 +30,13 @@ export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 export class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
-    public _cachedRoutes: RouteProps[] | null = null
+    protected _cachedRoutes: RouteProps[] | null = null
 
     constructor(config: Config) {
         super(config)
         this.extendRoutes = this.extendRoutes.bind(this)
         if (!isServerSide) {
-            //this._cachedRoutes = this.deserialize() 
+            this._cachedRoutes = this.deserialize(window.__EXTENSIONS__[this.getName()], this.getComponentMap())
         }
     }
     /**
@@ -83,7 +83,7 @@ export class ApplicationExtension<
         return routes
     }
 
-    public serialize(): SerializedRoute[] {
+    public serialize(): SerializedExtension {
         if (this._cachedRoutes === null) {
             throw new Error('Routes have not been loaded. Call getRoutes() before serializing')
         }
@@ -94,25 +94,22 @@ export class ApplicationExtension<
             return {
                 path: route.path,
                 componentName: route.component?.displayName,
-                // TODO: do we need to serialize props?
-                //componentProps: route.props
             }
         })
-        return serializedRoutes
+        return {
+            routes: serializedRoutes
+        }
     }
 
-    public deserialize(serializedRoutes: SerializedRoute[], componentMap: Modules): any[] {
-        return serializedRoutes.map(
+    public deserialize(serializedExtension: SerializedExtension, componentMap: Modules): any[] {
+        return serializedExtension.routes.map(
             ({path, componentName}) => {
                 let component = componentMap[componentName]
+
                 if (!component) {
                     throw new Error(`${componentName} component could not be deserialized for route with path: ${path}`)
                 }
 
-                // if (componentProps) {
-                //     const Component = component
-                //     component = () => <Component {...componentProps} />
-                // }
                 return {
                     path,
                     exact: true,
@@ -122,25 +119,6 @@ export class ApplicationExtension<
         )
     }
 
-    /**
-     * Protected method to get the component map. This method should be called
-     * by subclasses to provide the correct path for importing modules.
-     *
-     * @protected
-     * @param path - The path to the modules directory that contains the page components.
-     * @returns A promise that resolves to the component map.
-     */
-    protected generateComponentMapFromModules(modules: Modules): Modules {
-        const componentMap = Object.keys(modules).reduce((acc: Modules, key: string) => {
-            const module = modules[key]
-            // TODO: will displayName always exist or do we need error handling?
-            acc[module.displayName] = module
-            return acc
-        }, {})
-        return componentMap 
-    }
-
-
     // TODO: should we make an abstract class for getComponentMap to enforce 
     // subclasses to implement it?
     /**
@@ -149,5 +127,7 @@ export class ApplicationExtension<
      *
      * @returns A promise that resolves to the component map.
      */
-    // public abstract getComponentMap(): Promise<Modules>
+    public getComponentMap(): Modules {
+        return {}
+    }
 }

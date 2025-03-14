@@ -150,7 +150,7 @@ export const render = async (req, res, next) => {
         })
     }
 
-    config.app.routes = Object.fromEntries(
+    const serializedExtensions = Object.fromEntries(
         await Promise.all(
             applicationExtensions.map(async (extension) => {
                 const serializedData = extension.serialize()
@@ -237,7 +237,8 @@ export const render = async (req, res, next) => {
             res,
             location,
             config,
-            appJSX
+            appJSX,
+            serializedExtensions,
         })
     } catch (e) {
         // This is an unrecoverable error.
@@ -302,7 +303,7 @@ const renderToString = (jsx, extractor) =>
     ReactDOMServer.renderToString(extractor.collectChunks(jsx))
 
 const renderApp = (args) => {
-    const {req, res, appStateError, appJSX, appState, config} = args
+    const {req, res, appStateError, appJSX, appState, config, serializedExtensions} = args
     const extractor = new ChunkExtractor({statsFile: BUNDLES_PATH, publicPath: getAssetUrl()})
 
     const ssrOnly = 'mobify_server_only' in req.query || '__server_only' in req.query
@@ -366,6 +367,7 @@ const renderApp = (args) => {
         __CONFIG__: config,
         __PRELOADED_STATE__: appState,
         __ERROR__: error,
+        __EXTENSIONS__: serializedExtensions,
         // `window.Progressive` has a long history at Mobify and some
         // client-side code depends on it. Maintain its name out of tradition.
         Progressive: getWindowProgressive(req, res)
