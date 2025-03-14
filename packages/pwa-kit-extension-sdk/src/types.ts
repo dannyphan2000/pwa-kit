@@ -37,15 +37,6 @@ export type BuildCandidatePathsOptions = {
     extensionEntries: ApplicationExtensionEntry[]
 }
 
-// TODO: jsdocs
-export type Module = {
-    displayName: string
-}
-
-export type Modules = {
-    [key: string]: Module
-}
-
 export type SerializedRoute = {
     path: string | readonly string[] | undefined,
     componentName: string

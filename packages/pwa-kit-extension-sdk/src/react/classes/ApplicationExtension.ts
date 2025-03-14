@@ -12,7 +12,7 @@ import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/cla
 import { CacheResult } from '../decorators/cacheResult'
 
 // Types
-import {ApplicationExtensionConfig, Modules, SerializedExtension} from '../../types'
+import {ApplicationExtensionConfig, SerializedExtension} from '../../types'
 
 const isServerSide = typeof window === 'undefined'
 
@@ -36,7 +36,7 @@ export class ApplicationExtension<
         super(config)
         this.extendRoutes = this.extendRoutes.bind(this)
         if (!isServerSide) {
-            this._cachedRoutes = this.deserialize(window.__EXTENSIONS__[this.getName()], this.getComponentMap())
+            this._cachedRoutes = this.deserialize(window.__EXTENSIONS__[this.getName()]).routes
         }
     }
     /**
@@ -101,8 +101,10 @@ export class ApplicationExtension<
         }
     }
 
-    public deserialize(serializedExtension: SerializedExtension, componentMap: Modules): any[] {
-        return serializedExtension.routes.map(
+    // TODO: fix typing for return
+    public deserialize(serializedExtension: SerializedExtension): {routes: RouteProps[]} {
+        const componentMap = this.getComponentMap()
+        const routes = serializedExtension.routes.map(
             ({path, componentName}) => {
                 let component = componentMap[componentName]
 
@@ -117,6 +119,7 @@ export class ApplicationExtension<
                 }
             }
         )
+        return {routes}
     }
 
     // TODO: should we make an abstract class for getComponentMap to enforce 
@@ -127,7 +130,7 @@ export class ApplicationExtension<
      *
      * @returns A promise that resolves to the component map.
      */
-    public getComponentMap(): Modules {
+    public getComponentMap(): {[key:string]: React.ComponentType<any>} {
         return {}
     }
 }
