@@ -38,5 +38,5 @@ export type BuildCandidatePathsOptions = {
 }
 
 export interface GetRoutesParams {
-    originalUrl: string
+    locals: Record<string, any>
 }

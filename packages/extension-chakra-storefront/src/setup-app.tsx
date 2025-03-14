@@ -12,6 +12,10 @@ import {RouteProps} from 'react-router-dom'
 // Platform Imports
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
+import {GetRoutesParams} from '@salesforce/pwa-kit-extension-sdk/types'
+import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
+import Auth from '@salesforce/commerce-sdk-react/auth'
+import {ShopperSeo} from 'commerce-sdk-isomorphic'
 
 // Local Imports
 import {Config} from './types'
@@ -49,8 +53,16 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         return applyHOCs(App, requiredHOCs)
     }
 
-    getRoutes(): Promise<RouteProps[]> {
+    async getRoutes({locals}: GetRoutesParams): Promise<RouteProps[]> {
         const config = this.getConfig()
+
+        if (locals.originalUrl) {
+            const shopperSeo = await getShopperSeoClient(locals, config.commerceAPI)
+            const urlMapping = await shopperSeo.getUrlMapping({
+                parameters: {urlSegment: locals.originalUrl}
+            })
+            console.log('--- url mapping', urlMapping)
+        }
 
         const extensionRoutes = [
             {
@@ -120,3 +132,30 @@ class ChakraStorefront extends ApplicationExtension<Config> {
 }
 
 export default ChakraStorefront
+
+const getShopperSeoClient = async (
+    locals: Record<string, any>,
+    commerceAPIConfig: Config['commerceAPI']
+) => {
+    locals.auth =
+        locals.auth ??
+        new Auth({
+            ...commerceAPIConfig.parameters,
+            proxy: `${getAppOrigin()}${commerceAPIConfig.proxyPath}`,
+            redirectURI: `${getAppOrigin()}/callback`,
+            logger: console
+        })
+
+    const auth: Auth = locals.auth
+    const {access_token} = await auth.ready()
+
+    const config = {
+        ...commerceAPIConfig,
+        proxy: `${getAppOrigin()}${commerceAPIConfig.proxyPath}`
+    }
+
+    return new ShopperSeo({
+        ...config,
+        headers: {authorization: `Bearer ${access_token}`}
+    })
+}
