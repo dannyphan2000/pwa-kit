@@ -16,6 +16,7 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
+import {CacheResult} from '@salesforce/pwa-kit-extension-sdk/react/decorators/cacheResult'
 
 // Local Imports
 import {Config} from './types'
@@ -80,6 +81,7 @@ class Sample extends ApplicationExtension<Config> {
      */
     // TODO: do we need to pass in additional params like request.path? Get familiar with the SEO API.
     // TODO: how can developers call SCAPI? How can we pass in the api client (with the access token)?
+    @CacheResult('_cachedRoutes')
     getRoutes(): Promise<RouteProps[]> {
         return Promise.resolve([
             {
@@ -98,6 +100,10 @@ class Sample extends ApplicationExtension<Config> {
      */
     beforeRouteMatch(allRoutes: RouteProps[]): RouteProps[] {
         return allRoutes
+    }
+
+    getComponentMap() {
+        return this.generateComponentMapFromModules({SamplePage})
     }
 }
 

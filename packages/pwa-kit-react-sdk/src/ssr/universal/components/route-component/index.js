@@ -414,6 +414,7 @@ export const getAllRoutes = async (locals = {}) => {
     } else {
         // Deserialize the routes from the server
         const serializedRoutes = window.__CONFIG__.app.routes
+        console.log('--- serializedRoutes:', serializedRoutes)
         for (const applicationExtension of applicationExtensions) {
             const extensionName = applicationExtension.getName()
             const componentMap = await applicationExtension.getComponentMap()
@@ -429,7 +430,7 @@ export const getAllRoutes = async (locals = {}) => {
         ...(typeof appRoutes === 'function' ? appRoutes() : appRoutes),
         {path: '*', component: Throw404}
     ]
-    console.log('--- routes', allRoutes)
+    console.log('--- allRoutes', allRoutes)
 
     return allRoutes.map(({component, ...rest}) => {
         return {

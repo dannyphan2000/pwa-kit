@@ -150,11 +150,9 @@ export const render = async (req, res, next) => {
         })
     }
 
-    // TODO: How do we create a new field in config.app called serializedExtensions to store the routes?
     config.app.routes = Object.fromEntries(
         await Promise.all(
             applicationExtensions.map(async (extension) => {
-                await extension.loadRoutes()
                 const serializedData = extension.serialize()
                 return [extension.getName(), serializedData]
             })

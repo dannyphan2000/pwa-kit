@@ -9,9 +9,12 @@ import {RouteProps} from 'react-router-dom'
 
 // Local
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
+import { CacheResult } from '../decorators/cacheResult'
 
 // Types
 import {ApplicationExtensionConfig, Modules, SerializedRoute} from '../../types'
+
+const isServerSide = typeof window === 'undefined'
 
 export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 
@@ -27,12 +30,14 @@ export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 export class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
-    private routes: RouteProps[] | null
+    public _cachedRoutes: RouteProps[] | null = null
 
     constructor(config: Config) {
         super(config)
         this.extendRoutes = this.extendRoutes.bind(this)
-        this.routes = null
+        if (!isServerSide) {
+            //this._cachedRoutes = this.deserialize() 
+        }
     }
     /**
      * Called during the rendering of the base application on the server and the client.
@@ -61,6 +66,7 @@ export class ApplicationExtension<
         return Promise.resolve(routes)
     }
 
+    @CacheResult('_cachedRoutes')
     public getRoutes(): Promise<RouteProps[]> {
         return Promise.resolve([])
     }
@@ -77,17 +83,13 @@ export class ApplicationExtension<
         return routes
     }
 
-    public async loadRoutes(){
-        this.routes = await this.getRoutes()
-    }
-
     public serialize(): SerializedRoute[] {
-        if (this.routes === null) {
-            throw new Error('Routes have not been loaded. Call loadRoutes() before serializing')
+        if (this._cachedRoutes === null) {
+            throw new Error('Routes have not been loaded. Call getRoutes() before serializing')
         }
-        const serializedRoutes = this.routes.map((route) => {
+        const serializedRoutes = this._cachedRoutes.map((route) => {
             if (!route.component?.displayName) {
-                throw new Error(`Component for route with path "${route.path}" is missing a displayName`)
+                throw new Error(`Component for route with path "${route.path}" is missing a displayName in ${this.getName()} extension`)
             }
             return {
                 path: route.path,

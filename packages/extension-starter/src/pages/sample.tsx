@@ -28,5 +28,7 @@ const Sample = () => {
 }
 
 Sample.getTemplateName = () => 'sample'
+// TODO: Need to update extension creation to set displayName. Or should weuse getTemplateName?
+Sample.displayName = 'Sample'
 
 export default Sample
