@@ -26,6 +26,7 @@ import {Config} from './types'
 import StoreLocatorPage from './pages/store-locator'
 import {logger} from './logger'
 import extensionMeta from '../extension-meta.json'
+import {GetRoutesParams} from '@salesforce/pwa-kit-extension-sdk/types'
 
 interface StoreSlice {
     isModalOpen: boolean
@@ -71,14 +72,13 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
         return applyHOCs(App, HOCs)
     }
 
-    extendRoutes(routes: RouteProps[]): Promise<RouteProps[]> {
+    getRoutes(params: GetRoutesParams): Promise<RouteProps[]> {
         return Promise.resolve([
             {
                 exact: true,
                 path: this.getConfig().path,
                 component: StoreLocatorPage
-            },
-            ...routes
+            }
         ])
     }
 }

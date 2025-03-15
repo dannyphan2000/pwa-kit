@@ -29,6 +29,7 @@ import sampleHOC from 'overridable!./components/sample-hoc'
 
 // Others
 import extensionMeta from '../extension-meta.json'
+import {GetRoutesParams} from '@salesforce/pwa-kit-extension-sdk/types'
 
 interface StoreSlice {
     count: number
@@ -72,15 +73,14 @@ class Sample extends ApplicationExtension<Config> {
     }
 
     /**
+     * TODO: update this comment
      * This method is used to make changes to the PWA-Kit application routes. If your extension adds a new page to the application
      * then you can add it to the router here. The routes passed to this method is an accrued list of routes that have been added
      * from extensions applied before it. It is called during the `getRoutes` phase on both the server and the client.
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
-    // TODO: do we need to pass in additional params like request.path? Get familiar with the SEO API.
-    // TODO: how can developers call SCAPI? How can we pass in the api client (with the access token)?
-    getRoutes(): Promise<RouteProps[]> {
+    getRoutes(params: GetRoutesParams): Promise<RouteProps[]> {
         return Promise.resolve([
             {
                 exact: true,
