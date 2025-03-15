@@ -93,6 +93,9 @@ type PageConfigs = {
 export interface UserConfig extends BaseApplicationExtensionConfig {
     activeDataEnabled?: boolean // default = false
     commerceAPI: CommerceAPIConfig
+    commerceAPIAuth: {
+        propertyNameInLocals: string
+    }
     categoryNav: {
         defaultNavSsrDepth: number
         defaultRootCategory: string | number

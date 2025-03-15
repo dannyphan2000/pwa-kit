@@ -57,7 +57,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         const config = this.getConfig()
 
         if (locals.originalUrl) {
-            const shopperSeo = await getShopperSeoClient(locals, config.commerceAPI)
+            const shopperSeo = await getShopperSeoClient(locals, config)
             const urlMapping = await shopperSeo.getUrlMapping({
                 parameters: {urlSegment: locals.originalUrl}
             })
@@ -133,29 +133,31 @@ class ChakraStorefront extends ApplicationExtension<Config> {
 
 export default ChakraStorefront
 
-const getShopperSeoClient = async (
-    locals: Record<string, any>,
-    commerceAPIConfig: Config['commerceAPI']
-) => {
-    locals.auth =
-        locals.auth ??
+const getShopperSeoClient = async (locals: Record<string, any>, config: Config) => {
+    const {
+        commerceAPI,
+        commerceAPIAuth: {propertyNameInLocals: authProperty}
+    } = config
+
+    locals[authProperty] =
+        locals[authProperty] ??
         new Auth({
-            ...commerceAPIConfig.parameters,
-            proxy: `${getAppOrigin()}${commerceAPIConfig.proxyPath}`,
+            ...commerceAPI.parameters,
+            proxy: `${getAppOrigin()}${commerceAPI.proxyPath}`,
             redirectURI: `${getAppOrigin()}/callback`,
             logger: console
         })
 
-    const auth: Auth = locals.auth
+    const auth: Auth = locals[authProperty]
     const {access_token} = await auth.ready()
 
-    const config = {
-        ...commerceAPIConfig,
-        proxy: `${getAppOrigin()}${commerceAPIConfig.proxyPath}`
+    const clientConfig = {
+        ...commerceAPI,
+        proxy: `${getAppOrigin()}${commerceAPI.proxyPath}`
     }
 
     return new ShopperSeo({
-        ...config,
+        ...clientConfig,
         headers: {authorization: `Bearer ${access_token}`}
     })
 }
