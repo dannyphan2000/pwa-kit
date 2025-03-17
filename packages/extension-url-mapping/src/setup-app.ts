@@ -122,6 +122,12 @@ const getShopperSeoClient = async (locals: Record<string, any>, config: Config) 
         commerceAPIAuth: {propertyNameInLocals: authProperty}
     } = config
 
+    if (locals[authProperty]) {
+        console.log('--- auth already exists in locals', locals)
+    } else {
+        console.log('--- creating a new Auth')
+    }
+
     locals[authProperty] =
         locals[authProperty] ??
         new Auth({
