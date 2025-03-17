@@ -12,11 +12,11 @@
  */
 export function CacheResult(cacheProperty: string): MethodDecorator {
     return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-      const originalMethod = descriptor.value as (...args: any[]) => any;
+      const originalMethod = descriptor.value as (...args: any[]) => Promise<any>;
   
-      descriptor.value = function (this: any, ...args: any[]) {
+      descriptor.value = async function (this: any, ...args: any[]) {
         if (!this[cacheProperty]) {
-          this[cacheProperty] = originalMethod.apply(this, args);
+          this[cacheProperty] = await originalMethod.apply(this, args);
         }
         return this[cacheProperty];
       };

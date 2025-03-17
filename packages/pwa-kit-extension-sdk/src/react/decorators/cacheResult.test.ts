@@ -3,10 +3,10 @@ import {CacheResult} from './cacheResult'
 class TestClass {
   public _cachedValue: any
 
-  @CacheResult('_cachedValue')
-getValue(): string {
-    return 'value'
-  }
+    @CacheResult('_cachedValue')
+    getValue(): string {
+        return 'value'
+    }
 }
 
 describe('CacheResult', () => {
@@ -16,19 +16,19 @@ describe('CacheResult', () => {
     testInstance = new TestClass()
   })
 
-  it('should cache the result of the method call', () => {
-    const result1 = testInstance.getValue()
-    const result2 = testInstance.getValue()
+  it('should cache the result of the method call', async () => {
+    const result1 = await testInstance.getValue()
+    const result2 = await testInstance.getValue()
 
     expect(result1).toBe('value')
     expect(result2).toBe('value')
     expect(testInstance['_cachedValue']).toBe('value')
   })
 
-  it('should return the cached result on subsequent calls', () => {
+  it('should return the cached result on subsequent calls', async () => {
     testInstance['_cachedValue'] = 'cached value'
 
-    const result = testInstance.getValue()
+    const result = await testInstance.getValue()
 
     expect(result).toBe('cached value')
   })
