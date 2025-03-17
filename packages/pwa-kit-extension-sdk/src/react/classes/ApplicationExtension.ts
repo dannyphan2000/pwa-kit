@@ -12,7 +12,7 @@ import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/cla
 import { CacheResult } from '../decorators/cacheResult'
 
 // Types
-import {ApplicationExtensionConfig, DeserializedExtension, SerializedExtension} from '../../types'
+import {ApplicationExtensionConfig, ComponentMap, DeserializedExtension, SerializedExtension} from '../../types'
 
 const isServerSide = typeof window === 'undefined'
 
@@ -27,7 +27,7 @@ export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
  *
  * @abstract
  */
-export class ApplicationExtension<
+export abstract class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
     protected _cachedRoutes: RouteProps[] | null = null
@@ -136,15 +136,11 @@ export class ApplicationExtension<
         return {routes}
     }
 
-    // TODO: should we make an abstract class for getComponentMap to enforce 
-    // subclasses to implement it?
     /**
-     * Default method to get the component map using the default path './pages'.
-     * Subclasses can override this method if they need to use a different path.
-     *
-     * @returns A promise that resolves to the component map.
+     * Returns a map of component names to components that are used to deserialize the extension data.
+     * 
+     * @protected
+     * @returns ComponentMap - The map of component names to components.
      */
-    public getComponentMap(): {[key:string]: React.ComponentType<any>} {
-        return {}
-    }
+    protected abstract getComponentMap(): ComponentMap
 }

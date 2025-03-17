@@ -6,7 +6,7 @@
  */
 import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension} from './ApplicationExtension'
-import {ApplicationExtensionConfig} from '../../types'
+import {ApplicationExtensionConfig, ComponentMap} from '../../types'
 import React from 'react'
 
 class TestConfig implements ApplicationExtensionConfig {
@@ -16,6 +16,9 @@ class TestConfig implements ApplicationExtensionConfig {
 
 class TestExtension extends ApplicationExtension<TestConfig> {
     static readonly id = 'test-extension'
+    getComponentMap(): ComponentMap {
+        return {}
+    }
 }
 
 describe('ApplicationExtension', () => {

@@ -22,7 +22,7 @@ import {applyHOCs} from '../utils'
 import {ApplicationExtension} from '../classes/ApplicationExtension'
 
 // Types
-import {ApplicationExtensionConfig as ApplicationExtensionConfigBase} from '../../types'
+import {ApplicationExtensionConfig as ApplicationExtensionConfigBase, ComponentMap} from '../../types'
 
 // Mock getApplicationExtensions
 jest.mock('../placeholders/application-extensions', () => ({
@@ -47,6 +47,10 @@ class MockExtension extends ApplicationExtension<ApplicationExtensionConfigBase>
             </div>
         )
         return EnhancedComponent
+    }
+
+    getComponentMap(): ComponentMap {
+        return {}
     }
 }
 

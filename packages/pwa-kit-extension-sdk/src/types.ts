@@ -39,6 +39,22 @@ export type BuildCandidatePathsOptions = {
 }
 
 /**
+ * This type is used in getComponentMap() to map the component name to the component itself
+ * when deserializing an extension.
+ */
+export type ComponentMap = {
+    [key: string]: React.ComponentType<any>
+}
+
+/**
+ * This type is used in the deserialize() method of an Application Extension to represent
+ * the data from an extension after it has been deserialized on the client.
+ */
+export type DeserializedExtension = {
+    routes: RouteProps[]
+}
+
+/**
  * This type is used in the serialize() method of an Application Extension to represent
  * the routes added to the application.
  */
@@ -54,12 +70,4 @@ export type SerializedRoute = {
  */
 export type SerializedExtension = {
     routes: SerializedRoute[]
-}
-
-/**
- * This type is used in the deserialize() method of an Application Extension to represent
- * the data from an extension after it has been deserialized on the client.
- */
-export type DeserializedExtension = {
-    routes: RouteProps[]
 }
