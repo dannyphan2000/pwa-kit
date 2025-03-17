@@ -116,6 +116,10 @@ jest.mock('@salesforce/pwa-kit-runtime/utils/ssr-config', () => {
     }
 })
 
+jest.mock('@salesforce/cc-datacloud-typescript', () => ({
+    initDataCloudSdk: jest.fn()
+}))
+
 // TextEncoder is a web API, need to import it
 // from nodejs util in testing environment.
 global.TextEncoder = require('util').TextEncoder
