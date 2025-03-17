@@ -27,6 +27,7 @@
     "@salesforce/pwa-kit-react-sdk": "4.0.0-extensibility-preview.4",
     "@salesforce/pwa-kit-runtime": "4.0.0-extensibility-preview.4",
     "@salesforce/extension-chakra-storefront": "0.1.0-extensibility-preview.4",
+    "@salesforce/extension-chakra-store-locator": "0.1.0-extensibility-preview.4",
     "@salesforce/extension-starter": "0.1.0-extensibility-preview.4",
     "@tanstack/react-query": "^4.28.0",
     "@types/loadable__component": "~5.13.4",
@@ -68,6 +69,9 @@
       "extensions": [
         [
           "@salesforce/extension-starter"
+        ],
+        [
+          "@salesforce/extension-chakra-store-locator"
         ],
         [
           "@salesforce/extension-chakra-storefront",

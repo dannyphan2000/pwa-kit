@@ -16,6 +16,7 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
+import {ComponentMap} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
 import {withOptionalChakra} from './components/with-optional-chakra-provider'
@@ -80,6 +81,10 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
             },
             ...routes
         ])
+    }
+
+    getComponentMap(): ComponentMap {
+        return {StoreLocatorPage}
     }
 }
 

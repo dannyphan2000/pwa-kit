@@ -106,7 +106,7 @@ class Sample extends ApplicationExtension<Config> {
 
     // TODO: update .hbs template to add this function
     getComponentMap(): ComponentMap {
-        return {'Sample': SamplePage}
+        return {[SamplePage.displayName]: SamplePage}
     }
 }
 

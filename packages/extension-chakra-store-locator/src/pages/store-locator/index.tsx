@@ -31,6 +31,8 @@ const StoreLocatorPage = () => {
 
 StoreLocatorPage.getTemplateName = () => 'store-locator'
 
+StoreLocatorPage.displayName = 'StoreLocatorPage'
+
 StoreLocatorPage.propTypes = {}
 
 export default StoreLocatorPage
