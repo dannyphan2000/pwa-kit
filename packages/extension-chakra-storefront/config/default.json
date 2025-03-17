@@ -15,7 +15,7 @@
         }
     },
     "commerceAPIAuth": {
-        "propertyNameInLocals": "auth"
+        "propertyNameInLocals": "commerceAPIAuth"
     },
     "defaultSite": "RefArchGlobal",
     "defaultAppLocale": "en-US",
