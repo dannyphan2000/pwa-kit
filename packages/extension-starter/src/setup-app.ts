@@ -17,6 +17,7 @@ import {
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {CacheResult} from '@salesforce/pwa-kit-extension-sdk/react/decorators/cacheResult'
+import {ComponentMap} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
 import {Config} from './types'
@@ -104,7 +105,7 @@ class Sample extends ApplicationExtension<Config> {
     }
 
     // TODO: update .hbs template to add this function
-    getComponentMap() {
+    getComponentMap(): ComponentMap {
         return {'Sample': SamplePage}
     }
 }

@@ -13,6 +13,7 @@ import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {CacheResult} from '@salesforce/pwa-kit-extension-sdk/react/decorators/cacheResult'
+import {ComponentMap} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
 import {Config} from './types'
@@ -121,7 +122,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         })
     }
 
-    getComponentMap() {
+    getComponentMap(): ComponentMap {
         return modules
     }
 }
