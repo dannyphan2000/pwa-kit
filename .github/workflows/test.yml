@@ -191,6 +191,9 @@ jobs:
       IS_TEMPLATE_FROM_RETAIL_REACT_APP: ${{ matrix.template == 'retail-react-app-test-project' }}
       PROJECT_DIR: generated-${{ matrix.template }}
     steps:
+      - name: Start tmate session
+        if: failure()
+        uses: mxschmitt/action-tmate@v3
       - name: Checkout
         uses: actions/checkout@v4
 
