@@ -13,9 +13,6 @@ import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {GetRoutesParams} from '@salesforce/pwa-kit-extension-sdk/types'
-import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
-import Auth from '@salesforce/commerce-sdk-react/auth'
-import {ShopperSeo} from 'commerce-sdk-isomorphic'
 
 // Local Imports
 import {Config} from './types'
@@ -27,11 +24,10 @@ import {withLayout} from './components/with-layout'
 import {withMultiSite} from './components/with-multi-site'
 import {withReactIntl} from './components/with-react-intl'
 import {withStorefrontPreview} from './components/with-storefront-preview'
+import extensionMeta from '../extension-meta.json'
 
 // Pages
 import * as Pages from './pages'
-
-import extensionMeta from '../extension-meta.json'
 
 class ChakraStorefront extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
@@ -53,16 +49,8 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         return applyHOCs(App, requiredHOCs)
     }
 
-    async getRoutes({locals}: GetRoutesParams): Promise<RouteProps[]> {
+    getRoutes(params: GetRoutesParams): Promise<RouteProps[]> {
         const config = this.getConfig()
-
-        if (locals.originalUrl) {
-            const shopperSeo = await getShopperSeoClient(locals, config)
-            const urlMapping = await shopperSeo.getUrlMapping({
-                parameters: {urlSegment: locals.originalUrl}
-            })
-            console.log('--- url mapping', urlMapping)
-        }
 
         const extensionRoutes = [
             {
@@ -132,32 +120,3 @@ class ChakraStorefront extends ApplicationExtension<Config> {
 }
 
 export default ChakraStorefront
-
-const getShopperSeoClient = async (locals: Record<string, any>, config: Config) => {
-    const {
-        commerceAPI,
-        commerceAPIAuth: {propertyNameInLocals: authProperty}
-    } = config
-
-    locals[authProperty] =
-        locals[authProperty] ??
-        new Auth({
-            ...commerceAPI.parameters,
-            proxy: `${getAppOrigin()}${commerceAPI.proxyPath}`,
-            redirectURI: `${getAppOrigin()}/callback`,
-            logger: console
-        })
-
-    const auth: Auth = locals[authProperty]
-    const {access_token} = await auth.ready()
-
-    const clientConfig = {
-        ...commerceAPI,
-        proxy: `${getAppOrigin()}${commerceAPI.proxyPath}`
-    }
-
-    return new ShopperSeo({
-        ...clientConfig,
-        headers: {authorization: `Bearer ${access_token}`}
-    })
-}

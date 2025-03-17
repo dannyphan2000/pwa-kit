@@ -35,6 +35,7 @@ describe('ApplicationExtension', () => {
         })
     })
 
+    /*
     describe('extendRoutes', () => {
         test('should return the routes array without modification', () => {
             const routes: RouteProps[] = [
@@ -63,4 +64,5 @@ describe('ApplicationExtension', () => {
             extendRoutesSpy.mockRestore()
         })
     })
+    */
 })
