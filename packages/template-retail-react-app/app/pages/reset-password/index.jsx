@@ -8,7 +8,7 @@
 import React, {useEffect} from 'react'
 import {useIntl} from 'react-intl'
 import PropTypes from 'prop-types'
-import {Box, Container} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {Box, Container} from '@chakra-ui/react'
 import {useForm} from 'react-hook-form'
 import Seo from '@salesforce/retail-react-app/app/components/seo'
 import ResetPasswordForm from '@salesforce/retail-react-app/app/components/reset-password'

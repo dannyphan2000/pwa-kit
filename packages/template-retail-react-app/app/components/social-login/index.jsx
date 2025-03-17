@@ -8,7 +8,7 @@
 import React, {useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {defineMessage, useIntl} from 'react-intl'
-import {Button} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {Button} from '@chakra-ui/react'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 import {useAuthHelper, AuthHelpers} from '@salesforce/commerce-sdk-react'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'

@@ -14,7 +14,7 @@ import {
     Stack,
     Text,
     Spinner
-} from '@salesforce/retail-react-app/app/components/shared/ui'
+} from '@chakra-ui/react'
 import {AlertIcon} from '@salesforce/retail-react-app/app/components/icons'
 
 // Hooks

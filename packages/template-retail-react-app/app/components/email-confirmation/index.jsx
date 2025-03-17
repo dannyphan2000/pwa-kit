@@ -8,7 +8,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {FormattedMessage} from 'react-intl'
-import {Button, Stack, Text} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {Button, Stack, Text} from '@chakra-ui/react'
 import {BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 
 const PasswordlessEmailConfirmation = ({form, submitForm, email = ''}) => {

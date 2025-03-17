@@ -8,7 +8,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {FormattedMessage} from 'react-intl'
-import {Button, Divider, Stack, Text} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {Button, Divider, Stack, Text} from '@chakra-ui/react'
 import LoginFields from '@salesforce/retail-react-app/app/components/forms/login-fields'
 import SocialLogin from '@salesforce/retail-react-app/app/components/social-login'
 

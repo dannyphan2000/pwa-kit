@@ -16,7 +16,7 @@ import {
     Container,
     Stack,
     Text
-} from '@salesforce/retail-react-app/app/components/shared/ui'
+} from '@chakra-ui/react'
 import {AlertIcon, BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import Field from '@salesforce/retail-react-app/app/components/field'
 import PasswordRequirements from '@salesforce/retail-react-app/app/components/forms/password-requirements'
