@@ -4,14 +4,12 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import React, {useContext, useState} from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import {Switch as RouterSwitch, Route} from 'react-router-dom'
 import AppErrorBoundary from '../app-error-boundary'
 import {UIDReset, UIDFork} from 'react-uid'
-
-const RoutesContext = React.createContext({})
-export const useRoutesContext = () => useContext(RoutesContext)
+import {RoutesProvider, useRoutes} from '../../contexts'
 
 /**
  * The Switch component packages up the bits of rendering that are shared between
@@ -24,30 +22,15 @@ export const useRoutesContext = () => useContext(RoutesContext)
  */
 const Switch = (props) => {
     const {error, appState, routes, App} = props
-    const [_routes, setRoutes] = useState(routes)
     return (
         <UIDReset>
             <AppErrorBoundary error={error}>
                 {!error && (
-                    <RoutesContext.Provider value={{
-                        routes: _routes,
-                        setRoutes
-                    }}>
+                    <RoutesProvider routes={routes}>
                         <App preloadedProps={appState.appProps}>
-                            <RouterSwitch>
-                                {_routes.map((route, i) => {
-                                    const {component: Component, ...routeProps} = route
-                                    return (
-                                        <Route key={i} {...routeProps}>
-                                            <UIDFork>
-                                                <Component preloadedProps={appState.pageProps} />
-                                            </UIDFork>
-                                        </Route>
-                                    )
-                                })}
-                            </RouterSwitch>
+                            <RoutesConsumer appState={appState} />
                         </App>
-                    </RoutesContext.Provider>
+                    </RoutesProvider>
                 )}
             </AppErrorBoundary>
         </UIDReset>
@@ -60,6 +43,29 @@ Switch.propTypes = {
     routes: PropTypes.array,
     App: PropTypes.func,
     preloadedProps: PropTypes.object
+}
+
+const RoutesConsumer = ({appState}) => {
+    const {routes} = useRoutes()
+
+    return (
+        <RouterSwitch>
+            {routes.map((route, i) => {
+                const {component: Component, ...routeProps} = route
+                return (
+                    <Route key={i} {...routeProps}>
+                        <UIDFork>
+                            <Component preloadedProps={appState.pageProps} />
+                        </UIDFork>
+                    </Route>
+                )
+            })}
+        </RouterSwitch>
+    )
+}
+
+RoutesConsumer.propTypes = {
+    appState: PropTypes.object.isRequired
 }
 
 export default Switch
