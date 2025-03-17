@@ -6,7 +6,7 @@
  */
 import {defineRecipe} from '@chakra-ui/react'
 
-const mdSize = {height: 11, borderRadius: 'base'}
+const mdSize = {height: 11, borderRadius: 'sm'}
 
 export default defineRecipe({
     base: {
@@ -19,22 +19,24 @@ export default defineRecipe({
     variants: {
         variant: {
             outline: {
-                field: {
-                    borderColor: 'gray.500'
-                }
+                borderColor: 'gray.500'
             },
             filled: {
                 // we use filled variant for
                 // search input
                 borderColor: 'gray.600',
                 backgroundColor: 'gray.100',
+                border: '2px solid',
+                fontSize: 'md',
                 _focus: {
-                    backgroundColor: 'white'
+                    backgroundColor: 'white',
+                    borderColor: 'blue.600'
                 },
                 _hover: {
                     backgroundColor: 'gray.100',
                     _focus: {
-                        backgroundColor: 'white'
+                        backgroundColor: 'white',
+                        borderColor: 'blue.600'
                     }
                 },
                 _placeholder: {
@@ -47,8 +49,8 @@ export default defineRecipe({
         },
         size: {
             md: {
-                field: {...mdSize, px: 3},
-                addon: mdSize
+                ...mdSize,
+                px: 3
             }
         }
     }

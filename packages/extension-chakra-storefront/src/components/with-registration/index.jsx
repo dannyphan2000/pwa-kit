@@ -5,13 +5,13 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React from 'react'
-import {AuthModal, useAuthModal} from '../../hooks/use-auth-modal'
+// import {AuthModal, useAuthModal} from '../../hooks/use-auth-modal'
 import PropTypes from 'prop-types'
 import {noop} from '../../utils/utils'
 import {useIntl} from 'react-intl'
 import {useLocation} from 'react-router-dom'
-import {useToast} from '../../hooks/use-toast'
-import {useCurrentCustomer} from '../../hooks/use-current-customer'
+import {Toaster, toaster} from '../../hooks/use-toast'
+import {useCurrentCustomer} from '../../hooks'
 
 /**
  * Higher-order component that modifies the given component's `onClick` to show the login form if
@@ -28,35 +28,51 @@ const withRegistration = (
 ) => {
     const WrappedComponent = ({onClick = noop, ...passThroughProps}) => {
         const {data: customer} = useCurrentCustomer()
-        const authModal = useAuthModal()
-        const showToast = useToast()
+        // const authModal = useAuthModal()
+        // const showToast = useToast()
         const location = useLocation()
         const {formatMessage, locale} = useIntl()
 
-        const handleClick = (e) => {
-            e.preventDefault()
-            if (!customer.isRegistered) {
-                // Do not show auth modal if users is already on the login page
-                if (isLoginPage(location, locale)) {
-                    showToast({
-                        title: formatMessage({
-                            defaultMessage: 'Please sign in to continue!',
-                            id: 'with_registration.info.please_sign_in'
-                        }),
-                        status: 'info'
-                    })
-                } else {
-                    authModal.onOpen()
-                }
-            } else {
-                onClick()
-            }
-        }
+        // const handleClick = (e) => {
+        //     e.preventDefault()
+        //     if (!customer.isRegistered) {
+        //         // Do not show auth modal if users is already on the login page
+        //         if (isLoginPage(location, locale)) {
+        //             showToast({
+        //                 title: formatMessage({
+        //                     defaultMessage: 'Please sign in to continue!',
+        //                     id: 'with_registration.info.please_sign_in'
+        //                 }),
+        //                 status: 'info'
+        //             })
+        //         } else {
+        //             authModal.onOpen()
+        //         }
+        //     } else {
+        //         onClick()
+        //     }
+        // }
 
         return (
             <React.Fragment>
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                        toaster.success({
+                            title: 'Update successful',
+                            description: 'File saved successfully to the server',
+                            action: {
+                                label: 'Undo',
+                                onClick: () => console.log('Undo')
+                            }
+                        })
+                    }
+                >
+                    Click me
+                </Button>
                 <Component {...passThroughProps} onClick={handleClick} />
-                <AuthModal {...authModal} onLoginSuccess={onClick} />
+                {/*<AuthModal {...authModal} onLoginSuccess={onClick} />*/}
             </React.Fragment>
         )
     }

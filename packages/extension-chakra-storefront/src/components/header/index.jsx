@@ -78,12 +78,7 @@ const SearchBar = (props) => {
     })
     return (
         <Box css={styles.searchContainer}>
-            <Search
-                aria-label={placeholder}
-                placeholder={placeholder}
-                {...styles.search}
-                {...props}
-            />
+            <Search aria-label={placeholder} placeholder={placeholder} {...props} />
         </Box>
     )
 }
@@ -181,23 +176,25 @@ const Header = ({
                             id: 'header.button.assistive_msg.menu.open_dialog',
                             defaultMessage: 'Opens a dialog'
                         })}
-                        icon={<HamburgerIcon />}
                         variant="unstyled"
                         display={{lg: 'none'}}
-                        {...styles.icons}
+                        css={styles.icons}
                         onClick={onMenuClick}
-                    />
+                    >
+                        <HamburgerIcon />
+                    </IconButton>
                     <IconButton
                         aria-label={intl.formatMessage({
                             id: 'header.button.assistive_msg.logo',
                             defaultMessage: 'Logo'
                         })}
-                        icon={<BrandLogo {...styles.logo} />}
-                        {...styles.icons}
+                        css={styles.icons}
                         variant="unstyled"
                         onClick={onLogoClick}
-                    />
-                    <Box {...styles.bodyContainer}>{children}</Box>
+                    >
+                        <BrandLogo css={styles.logo} />
+                    </IconButton>
+                    <Box css={styles.bodyContainer}>{children}</Box>
                     <HideOnMobile>
                         <SearchBar />
                     </HideOnMobile>
@@ -318,40 +315,97 @@ const Header = ({
                     {/*    {...styles.wishlistIcon}*/}
                     {/*    onClick={onWishlistClick}*/}
                     {/*/>*/}
-                    {/*{isStoreLocatorEnabled && (*/}
-                    {/*    <IconButton*/}
-                    {/*        aria-label={intl.formatMessage({*/}
-                    {/*            defaultMessage: 'Store Locator',*/}
-                    {/*            id: 'header.button.assistive_msg.store_locator'*/}
-                    {/*        })}*/}
-                    {/*        icon={<StoreIcon />}*/}
-                    {/*        {...styles.icons}*/}
-                    {/*        variant="unstyled"*/}
-                    {/*        onClick={() => {*/}
-                    {/*            openModal()*/}
-                    {/*        }}*/}
-                    {/*    />*/}
-                    {/*)}*/}
-                    {/*<IconButton*/}
-                    {/*    aria-label={intl.formatMessage(*/}
-                    {/*        {*/}
-                    {/*            id: 'header.button.assistive_msg.my_cart_with_num_items',*/}
-                    {/*            defaultMessage: 'My cart, number of items: {numItems}'*/}
-                    {/*        },*/}
-                    {/*        {numItems: totalItems}*/}
-                    {/*    )}*/}
-                    {/*    icon={*/}
-                    {/*        <>*/}
-                    {/*            <BasketIcon />*/}
-                    {/*            {basket && totalItems > 0 && (*/}
-                    {/*                <Badge variant="notification">{totalItems}</Badge>*/}
-                    {/*            )}*/}
-                    {/*        </>*/}
-                    {/*    }*/}
-                    {/*    variant="unstyled"*/}
-                    {/*    {...styles.icons}*/}
-                    {/*    onClick={onMyCartClick}*/}
-                    {/*/>*/}
+                    {isStoreLocatorEnabled && (
+                        <IconButton
+                            aria-label={intl.formatMessage({
+                                defaultMessage: 'Store Locator',
+                                id: 'header.button.assistive_msg.store_locator'
+                            })}
+                            css={styles.icons}
+                            variant="unstyled"
+                            onClick={() => {
+                                openModal()
+                            }}
+                        >
+                            <StoreIcon />
+                        </IconButton>
+                    )}
+                    <IconButton
+                        aria-label={intl.formatMessage(
+                            {
+                                id: 'header.button.assistive_msg.my_cart_with_num_items',
+                                defaultMessage: 'My cart, number of items: {numItems}'
+                            },
+                            {numItems: totalItems}
+                        )}
+                        variant="unstyled"
+                        css={styles.icons}
+                        onClick={onMyCartClick}
+                    >
+                        <>
+                            <BasketIcon />
+                            {basket && totalItems > 0 && (
+                                <Badge variant="notification">{totalItems}</Badge>
+                            )}
+                        </>
+                    </IconButton>
+                    <IconButton
+                        aria-label={intl.formatMessage(
+                            {
+                                id: 'header.button.assistive_msg.my_cart_with_num_items',
+                                defaultMessage: 'My cart, number of items: {numItems}'
+                            },
+                            {numItems: totalItems}
+                        )}
+                        variant="unstyled"
+                        css={styles.icons}
+                        onClick={onMyCartClick}
+                    >
+                        <>
+                            <BasketIcon />
+                            {basket && totalItems > 0 && (
+                                <Badge variant="notification">{totalItems}</Badge>
+                            )}
+                        </>
+                    </IconButton>
+                    <IconButton
+                        aria-label={intl.formatMessage(
+                            {
+                                id: 'header.button.assistive_msg.my_cart_with_num_items',
+                                defaultMessage: 'My cart, number of items: {numItems}'
+                            },
+                            {numItems: totalItems}
+                        )}
+                        variant="unstyled"
+                        css={styles.icons}
+                        onClick={onMyCartClick}
+                    >
+                        <>
+                            <BasketIcon />
+                            {basket && totalItems > 0 && (
+                                <Badge variant="notification">{totalItems}</Badge>
+                            )}
+                        </>
+                    </IconButton>
+                    <IconButton
+                        aria-label={intl.formatMessage(
+                            {
+                                id: 'header.button.assistive_msg.my_cart_with_num_items',
+                                defaultMessage: 'My cart, number of items: {numItems}'
+                            },
+                            {numItems: totalItems}
+                        )}
+                        variant="unstyled"
+                        css={styles.icons}
+                        onClick={onMyCartClick}
+                    >
+                        <>
+                            <BasketIcon />
+                            {basket && totalItems > 0 && (
+                                <Badge variant="notification">{totalItems}</Badge>
+                            )}
+                        </>
+                    </IconButton>
                     <HideOnDesktop display={{base: 'contents', lg: 'none'}}>
                         <SearchBar />
                     </HideOnDesktop>

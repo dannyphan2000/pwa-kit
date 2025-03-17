@@ -183,10 +183,10 @@ const Search = (props) => {
 
     return (
         <Box>
-            <PopoverRoot isOpen={isOpen} isLazy initialFocusRef={searchInputRef}>
+            <PopoverRoot open={isOpen} isLazy initialFocusRef={searchInputRef}>
                 <PopoverTrigger>
                     <form onSubmit={onSubmitSearch}>
-                        <HStack>
+                        <Box>
                             <InputGroup startElement={<SearchIcon />}>
                                 <Input
                                     autoComplete="off"
@@ -196,36 +196,36 @@ const Search = (props) => {
                                     onBlur={() => setIsOpen(false)}
                                     type="search"
                                     ref={searchInputRef}
-                                    {...props}
                                     variant="filled"
+                                    {...props}
                                 />
                             </InputGroup>
-                            {/*<HideOnDesktop>*/}
-                            {/*    <Button*/}
-                            {/*        display={isOpen ? 'block' : 'none'}*/}
-                            {/*        variant="link"*/}
-                            {/*        size="sm"*/}
-                            {/*        onMouseDown={() => closeAndNavigate(false)}*/}
-                            {/*    >*/}
-                            {/*        <FormattedMessage*/}
-                            {/*            defaultMessage="Cancel"*/}
-                            {/*            id="search.action.cancel"*/}
-                            {/*        />*/}
-                            {/*    </Button>*/}
-                            {/*</HideOnDesktop>*/}
-                        </HStack>
+                            <HideOnDesktop>
+                                <Box
+                                    display={isOpen ? 'block' : 'none'}
+                                    variant="link"
+                                    size="sm"
+                                    onMouseDown={() => closeAndNavigate(false)}
+                                >
+                                    <FormattedMessage
+                                        defaultMessage="Cancel"
+                                        id="search.action.cancel"
+                                    />
+                                </Box>
+                            </HideOnDesktop>
+                        </Box>
                     </form>
                 </PopoverTrigger>
 
-                {/*<HideOnMobile>*/}
-                {/*    <PopoverContent data-testid="sf-suggestion-popover">*/}
-                {/*        <SearchSuggestions*/}
-                {/*            closeAndNavigate={closeAndNavigate}*/}
-                {/*            recentSearches={recentSearches}*/}
-                {/*            searchSuggestions={searchSuggestions}*/}
-                {/*        />*/}
-                {/*    </PopoverContent>*/}
-                {/*</HideOnMobile>*/}
+                <HideOnMobile>
+                    <PopoverContent data-testid="sf-suggestion-popover">
+                        <SearchSuggestions
+                            closeAndNavigate={closeAndNavigate}
+                            recentSearches={recentSearches}
+                            searchSuggestions={searchSuggestions}
+                        />
+                    </PopoverContent>
+                </HideOnMobile>
             </PopoverRoot>
             {/*<HideOnDesktop>*/}
             {/*    <Flex*/}

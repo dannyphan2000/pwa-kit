@@ -8,12 +8,14 @@ import React from 'react'
 import {noop} from '../../utils/utils'
 import {
     Button,
-    AlertDialog,
-    AlertDialogBody,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogContent,
-    AlertDialogOverlay,
+    DialogBody,
+    DialogCloseTrigger,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogRoot,
+    DialogTitle,
+    DialogTrigger,
     Text
 } from '@chakra-ui/react'
 
@@ -45,20 +47,21 @@ const ConfirmationModal = ({
     }
 
     return (
-        <AlertDialog
+        <DialogRoot
+            role="alertdialog"
             isOpen={props.isOpen}
             isCentered
             onClose={handleAlternateActionClick}
             {...props}
         >
-            <AlertDialogOverlay />
-            <AlertDialogContent>
-                <AlertDialogHeader>{formatMessage(dialogTitle)}</AlertDialogHeader>
-                <AlertDialogBody>
+            {/*<AlertDialogOverlay />*/}
+            <DialogContent>
+                <DialogHeader>{formatMessage(dialogTitle)}</DialogHeader>
+                <DialogBody>
                     <Text>{formatMessage(confirmationMessage)}</Text>
-                </AlertDialogBody>
+                </DialogBody>
 
-                <AlertDialogFooter>
+                <DialogFooter>
                     {!hideAlternateAction ? (
                         <Button
                             variant="ghost"
@@ -76,9 +79,9 @@ const ConfirmationModal = ({
                     >
                         {formatMessage(primaryActionLabel)}
                     </Button>
-                </AlertDialogFooter>
-            </AlertDialogContent>
-        </AlertDialog>
+                </DialogFooter>
+            </DialogContent>
+        </DialogRoot>
     )
 }
 

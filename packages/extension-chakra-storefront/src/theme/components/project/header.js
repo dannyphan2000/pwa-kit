@@ -30,6 +30,7 @@ export default defineRecipe({
             marginRight: [0, 0, 0, 4],
             marginBottom: [1, 1, 2, 0]
         },
+
         bodyContainer: {
             flex: '1'
         },

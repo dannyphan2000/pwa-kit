@@ -26,11 +26,10 @@ const InputGroup = React.forwardRef<HTMLDivElement, InputGroupProps>(function In
         endOffset = '6px',
         ...rest
     } = props
-
     const child = React.Children.only<React.ReactElement<InputElementProps>>(children)
 
     return (
-        <Group ref={ref} {...rest}>
+        <Group ref={ref} {...rest} grow>
             {startElement && (
                 <InputElement pointerEvents="none" {...startElementProps}>
                     {startElement}

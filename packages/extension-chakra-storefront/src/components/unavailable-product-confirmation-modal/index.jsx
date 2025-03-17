@@ -70,6 +70,7 @@ const UnavailableProductConfirmationModal = ({
         }
     )
     const unavailableProductsModalProps = useDisclosure()
+    console.log('unavailableProductsModalProps', unavailableProductsModalProps)
     useEffect(() => {
         if (unavailableProductIdsRef.current?.length > 0) {
             unavailableProductsModalProps.onOpen()

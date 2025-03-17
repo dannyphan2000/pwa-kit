@@ -14,7 +14,7 @@ import sizes from './foundations/sizes'
 import space from './foundations/space'
 import layerStyles from './foundations/layerStyles'
 import shadows from './foundations/shadows'
-console.log('shadows', shadows)
+
 // Base component style overrides
 import alert from './components/base/alert'
 import accordion from './components/base/accordion'
