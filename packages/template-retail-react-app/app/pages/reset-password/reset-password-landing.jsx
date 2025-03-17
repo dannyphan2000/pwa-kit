@@ -10,13 +10,7 @@ import PropTypes from 'prop-types'
 import {useForm} from 'react-hook-form'
 import {useLocation} from 'react-router-dom'
 import {useIntl, FormattedMessage} from 'react-intl'
-import {
-    Alert,
-    Button,
-    Container,
-    Stack,
-    Text
-} from '@chakra-ui/react'
+import {Alert, Button, Container, Stack, Text} from '@chakra-ui/react'
 import {AlertIcon, BrandLogo} from '@salesforce/retail-react-app/app/components/icons'
 import Field from '@salesforce/retail-react-app/app/components/field'
 import PasswordRequirements from '@salesforce/retail-react-app/app/components/forms/password-requirements'

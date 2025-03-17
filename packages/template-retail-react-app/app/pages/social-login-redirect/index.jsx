@@ -7,14 +7,7 @@
 
 import React, {useEffect, useState} from 'react'
 import {FormattedMessage, useIntl} from 'react-intl'
-import {
-    Alert,
-    Box,
-    Container,
-    Stack,
-    Text,
-    Spinner
-} from '@chakra-ui/react'
+import {Alert, Box, Container, Stack, Text, Spinner} from '@chakra-ui/react'
 import {AlertIcon} from '@salesforce/retail-react-app/app/components/icons'
 
 // Hooks
