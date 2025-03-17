@@ -12,7 +12,7 @@ import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/cla
 import { CacheResult } from '../decorators/cacheResult'
 
 // Types
-import {ApplicationExtensionConfig, SerializedExtension} from '../../types'
+import {ApplicationExtensionConfig, DeserializedExtension, SerializedExtension} from '../../types'
 
 const isServerSide = typeof window === 'undefined'
 
@@ -36,6 +36,8 @@ export class ApplicationExtension<
         super(config)
         this.extendRoutes = this.extendRoutes.bind(this)
         if (!isServerSide) {
+            // On the client, we deserialize the routes serialized from the server to ensure
+            // we have the latest routes available.
             this._cachedRoutes = this.deserialize(window.__EXTENSIONS__[this.getName()]).routes
         }
     }
@@ -83,6 +85,12 @@ export class ApplicationExtension<
         return routes
     }
 
+    /**
+     * Called on the server to serialize the extension data that will be sent to the client.
+     * 
+     * @returns SerializedExtension - The serialized extension data.
+     * @throws Error if the routes have not been loaded.
+     */
     public serialize(): SerializedExtension {
         if (this._cachedRoutes === null) {
             throw new Error('Routes have not been loaded. Call getRoutes() before serializing')
@@ -101,8 +109,14 @@ export class ApplicationExtension<
         }
     }
 
-    // TODO: fix typing for return
-    public deserialize(serializedExtension: SerializedExtension): {routes: RouteProps[]} {
+    /**
+     * Called on the client to deserialize the extension data that was serialized on the server.
+     * 
+     * @param serializedExtension - The serialized extension data.
+     * @returns DeserializedExtension - The deserialized extension data.
+     * @throws Error if the deserialized component cannot be found in the component map.
+     */
+    public deserialize(serializedExtension: SerializedExtension): DeserializedExtension {
         const componentMap = this.getComponentMap()
         const routes = serializedExtension.routes.map(
             ({path, componentName}) => {

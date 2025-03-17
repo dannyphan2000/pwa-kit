@@ -5,6 +5,11 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+/**
+ * This decorator caches the result of a method call in the property specified by `cacheProperty`.
+ * @param cacheProperty The property to cache the result in.
+ * @returns A method decorator.
+ */
 export function CacheResult(cacheProperty: string): MethodDecorator {
     return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
       const originalMethod = descriptor.value as (...args: any[]) => Promise<any>;
