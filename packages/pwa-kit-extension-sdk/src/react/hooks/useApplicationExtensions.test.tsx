@@ -15,7 +15,6 @@ import {renderHook} from '@testing-library/react'
 import {useApplicationExtensions, useApplicationExtension} from './useApplicationExtensions'
 import {ApplicationExtensionsContext} from '../contexts'
 import {ApplicationExtension} from '../classes/ApplicationExtension'
-import {ComponentMap} from '../../types'
 
 class TestExtension1 extends ApplicationExtension<any> {
     static id = 'test-extension-1'

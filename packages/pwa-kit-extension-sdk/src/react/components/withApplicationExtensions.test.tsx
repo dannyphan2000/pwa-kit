@@ -22,7 +22,7 @@ import {applyHOCs} from '../utils'
 import {ApplicationExtension} from '../classes/ApplicationExtension'
 
 // Types
-import {ApplicationExtensionConfig as ApplicationExtensionConfigBase, ComponentMap} from '../../types'
+import {ApplicationExtensionConfig as ApplicationExtensionConfigBase} from '../../types'
 
 // Mock getApplicationExtensions
 jest.mock('../placeholders/application-extensions', () => ({
