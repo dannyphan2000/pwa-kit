@@ -150,12 +150,12 @@ export const render = async (req, res, next) => {
         })
     }
 
-    // Serialize the application extensions where the key is the name of the extension
+        // Serialize the application extensions that have an async getRoutes where the key is the name of the extension
     // and the value is the serialized extension data.
     const serializedExtensions = Object.fromEntries(
-        await Promise.all(
-            applicationExtensions.map(async (extension) => [extension.getName(), extension.serialize()])
-        )
+        applicationExtensions
+            .filter((extension) => extension.isRoutesAsync)
+            .map((extension) => [extension.getName(), extension.serialize()])
     )
 
     // Step 1 - Find the match.

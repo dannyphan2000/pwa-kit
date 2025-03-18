@@ -31,11 +31,13 @@ export abstract class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
     protected _cachedRoutes: RouteProps[] | null = null
+    public isRoutesAsync: boolean;
 
     constructor(config: Config) {
         super(config)
         this.extendRoutes = this.extendRoutes.bind(this)
-        if (!isServerSide) {
+        this.isRoutesAsync = this.isGetRoutesAsync()
+        if (!isServerSide && window.__EXTENSIONS__[this.getName()]) {
             // On the client, we deserialize the routes serialized from the server to ensure
             // we have the latest routes available.
             this._cachedRoutes = this.deserialize(window.__EXTENSIONS__[this.getName()]).routes
@@ -69,8 +71,8 @@ export abstract class ApplicationExtension<
     }
 
     @CacheResult('_cachedRoutes')
-    public getRoutes(): Promise<RouteProps[]> {
-        return Promise.resolve([])
+    public getRoutes(): RouteProps[] | Promise<RouteProps[]> {
+        return []
     }
 
     /**
@@ -143,4 +145,9 @@ export abstract class ApplicationExtension<
      * @returns ComponentMap - The map of component names to components.
      */
     protected abstract getComponentMap(): ComponentMap
+
+    private isGetRoutesAsync(): boolean {
+        const routes = this.getRoutes();
+        return routes instanceof Promise;
+    }
 }

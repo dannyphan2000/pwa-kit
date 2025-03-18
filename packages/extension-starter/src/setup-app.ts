@@ -84,14 +84,14 @@ class Sample extends ApplicationExtension<Config> {
     // TODO: how can developers call SCAPI? How can we pass in the api client (with the access token)?
     // TODO: update .hbs template to add @CacheResult decorator
     @CacheResult('_cachedRoutes')
-    getRoutes(): Promise<RouteProps[]> {
-        return Promise.resolve([
+    getRoutes(): RouteProps[] {
+        return [
             {
                 exact: true,
                 path: this.getConfig().path,
                 component: SamplePage
             }
-        ])
+        ]
     }
 
     /**

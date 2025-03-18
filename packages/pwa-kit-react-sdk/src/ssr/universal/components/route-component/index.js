@@ -406,7 +406,9 @@ export const routeComponent = (Wrapped, isPage, locals) => {
 export const getAllRoutes = async (locals = {}) => {
     const {applicationExtensions = []} = locals
     const extensionRoutes = (
-        await Promise.all(applicationExtensions.map((extension) => extension.getRoutes()))
+        await Promise.all(applicationExtensions.map(async (extension) => 
+            extension.getRoutes()
+        ))
     ).flat()
 
     const allRoutes = [
