@@ -851,6 +851,7 @@ const processAppExtensions = (
     appExtensionsDir
 ) => {
     if (appExtensions.length > 0 && extractAppExtensions) {
+        console.log('why am I here?')
         appExtensions.forEach((appExtensionName) => {
             // Create the full path for the temporary directory, preserving the namespace
             const appExtensionTmp = p.join(os.tmpdir(), `extract-${appExtensionName}`)
@@ -1051,6 +1052,7 @@ const runGenerator = async (
     } else {
         console.log('processing app extensions')
         processAppExtensions(selectedAppExtensions, extractAppExtensions, appExtensionsDir)
+        console.log('after process app extensions')
     }
 
     // Prepare updates for package.json
