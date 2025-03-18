@@ -6,19 +6,31 @@
  */
 
 /**
- * This decorator caches the result of a method call in the property specified by `cacheProperty`.
+ * Caches the result of a method in the specified `cacheProperty`.
+ * On the first call, the method's result is stored and returned on subsequent calls.
+ * If the result is a Promise, the property stores the resolved value; otherwise, it stores the raw value.
+ *
  * @param cacheProperty The property to cache the result in.
  * @returns A method decorator.
  */
 export function CacheResult(cacheProperty: string): MethodDecorator {
-    return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
-      const originalMethod = descriptor.value as (...args: any[]) => Promise<any>;
-  
-      descriptor.value = async function (this: any, ...args: any[]) {
-        if (!this[cacheProperty]) {
-          this[cacheProperty] = await originalMethod.apply(this, args);
-        }
+  return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    const originalMethod = descriptor.value;
+
+    descriptor.value = function (this: any, ...args: any[]) {
+      if (this[cacheProperty] !== null) {
         return this[cacheProperty];
-      };
+      }
+
+      const result = originalMethod.apply(this, args);
+
+      if (result instanceof Promise) {
+        const promise = result.then((resolved) => (this[cacheProperty] = resolved));
+        this[cacheProperty] = promise;
+        return promise;
+      } else {
+        return (this[cacheProperty] = result);
+      }
     };
-  }
+  };
+}
