@@ -862,9 +862,10 @@ const processAppExtensions = (
             console.log('successfully created appExtensionTmp')
             const appExtensionTarFile = sh
                 .exec(`npm pack ${appExtensionName} --pack-destination="${appExtensionTmp}"`, {
-                    silent: true
+                    silent: false
                 })
                 .stdout.trim()
+            console.log('successfully created appExtensionTarFile: ', appExtensionTarFile)
 
             const appExtensionTarPath = p.join(appExtensionTmp, appExtensionTarFile)
             console.log('appExtensionTarPath: ', appExtensionTarPath)
