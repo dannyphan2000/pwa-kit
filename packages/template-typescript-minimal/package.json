@@ -44,8 +44,8 @@
     "zustand": "5.0.3"
   },
   "engines": {
-    "node": "^16.11.0 || ^18.0.0 || ^20.0.0",
-    "npm": "^8.0.0 || ^9.0.0 || ^10.0.0"
+    "node": "^16.11.0 || ^18.0.0 || ^20.0.0 || ^22.0.0",
+    "npm": "^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0"
   },
   "mobify": {
     "app": {
@@ -65,7 +65,7 @@
       "**/*.json"
     ],
     "ssrParameters": {
-      "ssrFunctionNodeVersion": "20.x",
+      "ssrFunctionNodeVersion": "22.x",
       "proxyConfigs": [
         {
           "host": "kv7kzm78.api.commercecloud.salesforce.com",
