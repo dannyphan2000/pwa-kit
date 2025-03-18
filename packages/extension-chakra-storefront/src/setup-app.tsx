@@ -53,7 +53,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
     }
 
     @CacheResult('_cachedRoutes')
-    getRoutes(): Promise<RouteProps[]> {
+    async getRoutes(): Promise<RouteProps[]> {
         const config = this.getConfig()
 
         const extensionRoutes = [

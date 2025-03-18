@@ -103,11 +103,6 @@ class Sample extends ApplicationExtension<Config> {
     beforeRouteMatch(allRoutes: RouteProps[]): RouteProps[] {
         return allRoutes
     }
-
-    // TODO: update .hbs template to add this function
-    getComponentMap(): ComponentMap {
-        return {[SamplePage.displayName]: SamplePage}
-    }
 }
 
 export default Sample

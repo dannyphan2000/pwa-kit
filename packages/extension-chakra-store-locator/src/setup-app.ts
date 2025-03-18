@@ -82,10 +82,6 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
             ...routes
         ])
     }
-
-    getComponentMap(): ComponentMap {
-        return {StoreLocatorPage}
-    }
 }
 
 export default StoreLocatorExtension

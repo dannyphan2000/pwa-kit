@@ -37,10 +37,18 @@ export abstract class ApplicationExtension<
         super(config)
         this.extendRoutes = this.extendRoutes.bind(this)
         this.isRoutesAsync = this.isGetRoutesAsync()
+        
         if (!isServerSide && window.__EXTENSIONS__[this.getName()]) {
             // On the client, we deserialize the routes serialized from the server to ensure
             // we have the latest routes available.
             this._cachedRoutes = this.deserialize(window.__EXTENSIONS__[this.getName()]).routes
+        }
+
+        // Enforce getComponentMap() if getRoutes is async
+        if (this.isRoutesAsync && !this.getComponentMap) {
+            throw new Error(
+                `${this.getName()} is async but does not define getComponentMap()`
+            )
         }
     }
     /**
