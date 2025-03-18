@@ -127,12 +127,13 @@ class UrlMapping extends ApplicationExtension<Config> {
         const routes = allRoutes.slice()
         const [myRoute] = routes.splice(index, 1)
         console.log('--- myRoute should not have a component yet', myRoute.component, myRoute)
+
+        // TODO: why Sample page is rendered only for a split second (before another page is rendered)?
         myRoute.component = routeComponent(SamplePage, true, locals)
 
         const result = [myRoute, ...routes]
         console.log('--- beforeRouteMatch result', result)
         return result
-        // TODO: why SamplePage is NOT rendered?
     }
 }
 

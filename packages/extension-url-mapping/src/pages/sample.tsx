@@ -9,6 +9,7 @@ import {getStaticAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/uti
 import extensionMeta from '../../extension-meta.json'
 
 const Sample = () => {
+    console.log('--- printing from Sample page in extension-url-mapping')
     const logoUrl = getStaticAssetUrl('salesforce-logo.svg', {
         appExtensionPackageName: extensionMeta.id
     })
