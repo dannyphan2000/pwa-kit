@@ -9,7 +9,6 @@ import {RouteProps} from 'react-router-dom'
 
 // Local
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
-import { CacheResult } from '../decorators/cacheResult'
 
 // Types
 import {ApplicationExtensionConfig, ComponentMap, DeserializedExtension, SerializedExtension} from '../../types'
@@ -115,7 +114,7 @@ export abstract class ApplicationExtension<
      * @protected
      * @returns ComponentMap - The map of component names to components.
      */
-    protected abstract getComponentMap?(): ComponentMap
+    protected getComponentMap?(): ComponentMap
 
     /**
      * Called on the client to deserialize the extension data that was serialized on the server.

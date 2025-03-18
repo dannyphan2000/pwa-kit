@@ -48,10 +48,6 @@ class MockExtension extends ApplicationExtension<ApplicationExtensionConfigBase>
         )
         return EnhancedComponent
     }
-
-    getComponentMap(): ComponentMap {
-        return {}
-    }
 }
 
 // Sample WrappedComponent for testing

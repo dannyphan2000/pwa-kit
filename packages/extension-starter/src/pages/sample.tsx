@@ -28,8 +28,5 @@ const Sample = () => {
 }
 
 Sample.getTemplateName = () => 'sample'
-// TODO: When a sample extension is created a displayName is not set for the Sample page. 
-// Should we update the extension creation script/template to set it? Or should we use the existing getTemplateName() for the key in the componentMap?
-Sample.displayName = 'Sample'
 
 export default Sample

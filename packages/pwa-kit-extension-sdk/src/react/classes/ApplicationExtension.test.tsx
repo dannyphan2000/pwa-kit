@@ -16,9 +16,6 @@ class TestConfig implements ApplicationExtensionConfig {
 
 class TestExtension extends ApplicationExtension<TestConfig> {
     static readonly id = 'test-extension'
-    getComponentMap(): ComponentMap {
-        return {}
-    }
 }
 
 describe('ApplicationExtension', () => {

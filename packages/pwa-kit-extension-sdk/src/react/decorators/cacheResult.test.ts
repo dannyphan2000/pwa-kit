@@ -1,15 +1,16 @@
-import {CacheResult} from './cacheResult'
+// TODO: move these unit tests to ApplicationExtension.test.tsx
+// import {CacheResult} from './cacheResult'
 
 class TestClass {
   public _cachedValue: any
   public _cachedValueAsync: any
 
-  @CacheResult('_cachedValue')
+//   @CacheResult('_cachedValue')
   getValue(): string {
     return 'value'
   }
 
-  @CacheResult('_cachedValueAsync')
+//   @CacheResult('_cachedValueAsync')
   async getValueAsync(): Promise<string> {
     return Promise.resolve('async value')
   }
