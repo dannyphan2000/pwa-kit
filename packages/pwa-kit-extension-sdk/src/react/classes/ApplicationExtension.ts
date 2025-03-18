@@ -30,25 +30,16 @@ export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 export abstract class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
+    public isRoutesAsync: boolean
     protected _cachedRoutes: RouteProps[] | null = null
-    public isRoutesAsync: boolean;
 
     constructor(config: Config) {
         super(config)
         this.extendRoutes = this.extendRoutes.bind(this)
         this.isRoutesAsync = this.isGetRoutesAsync()
-        
-        if (!isServerSide && window.__EXTENSIONS__[this.getName()]) {
-            // On the client, we deserialize the routes serialized from the server to ensure
-            // we have the latest routes available.
-            this._cachedRoutes = this.deserialize(window.__EXTENSIONS__[this.getName()]).routes
-        }
 
-        // Enforce getComponentMap() if getRoutes is async
-        if (this.isRoutesAsync && !this.getComponentMap) {
-            throw new Error(
-                `${this.getName()} is async but does not define getComponentMap()`
-            )
+        if (this.isRoutesAsync) {
+            this.handleAsyncRoutes()
         }
     }
     /**
@@ -78,7 +69,6 @@ export abstract class ApplicationExtension<
         return Promise.resolve(routes)
     }
 
-    @CacheResult('_cachedRoutes')
     public getRoutes(): RouteProps[] | Promise<RouteProps[]> {
         return []
     }
@@ -120,13 +110,26 @@ export abstract class ApplicationExtension<
     }
 
     /**
+     * Returns a map of component names to components that are used to deserialize the extension data.
+     * 
+     * @protected
+     * @returns ComponentMap - The map of component names to components.
+     */
+    protected abstract getComponentMap?(): ComponentMap
+
+    /**
      * Called on the client to deserialize the extension data that was serialized on the server.
      * 
      * @param serializedExtension - The serialized extension data.
      * @returns DeserializedExtension - The deserialized extension data.
+     * @throws Error if getComponentMap() is not defined.
      * @throws Error if the deserialized component cannot be found in the component map.
      */
-    public deserialize(serializedExtension: SerializedExtension): DeserializedExtension {
+    private deserialize(serializedExtension: SerializedExtension): DeserializedExtension {
+        if (!this.getComponentMap) {
+            throw new Error(`${this.getName()}.getRoutes() is async but does not define getComponentMap()`);
+        }
+
         const componentMap = this.getComponentMap()
         const routes = serializedExtension.routes.map(
             ({path, componentName}) => {
@@ -146,16 +149,25 @@ export abstract class ApplicationExtension<
         return {routes}
     }
 
-    /**
-     * Returns a map of component names to components that are used to deserialize the extension data.
-     * 
-     * @protected
-     * @returns ComponentMap - The map of component names to components.
-     */
-    protected abstract getComponentMap(): ComponentMap
+    private handleAsyncRoutes() {
+        if (!isServerSide) {
+            // Deserialize the routes on the client to ensure the latest routes are loaded on the client
+            this._cachedRoutes = this.deserialize(window.__EXTENSIONS__[this.getName()]).routes;
+        }
+    
+        // Apply caching for the getRoutes method
+        this.applyCacheForMethod('getRoutes', '_cachedRoutes');
+    }
 
     private isGetRoutesAsync(): boolean {
         const routes = this.getRoutes();
         return routes instanceof Promise;
+    }
+
+    private applyCacheForMethod(methodName: string, propertyName: string) {
+        const methodDescriptor = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(this), methodName);
+        if (methodDescriptor && typeof methodDescriptor.value === 'function') {
+            CacheResult(propertyName)(this, methodName, methodDescriptor);
+        }
     }
 }
