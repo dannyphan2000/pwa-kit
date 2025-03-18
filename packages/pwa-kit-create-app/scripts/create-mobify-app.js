@@ -861,7 +861,7 @@ const processAppExtensions = (
             fs.mkdirSync(appExtensionTmp, {recursive: true})
             console.log('successfully created appExtensionTmp')
             const appExtensionTarFile = sh
-                .exec(`npm pack ${appExtensionName} --pack-destination="${appExtensionTmp}"`, {
+                .exec(`npm pack ${appExtensionName}@latest --pack-destination="${appExtensionTmp}"`, {
                     silent: false
                 })
                 .stdout.trim()
