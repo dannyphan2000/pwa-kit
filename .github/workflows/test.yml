@@ -209,6 +209,9 @@ jobs:
           GENERATOR_PRESET: ${{ matrix.template }}
         timeout-minutes: 8
 
+      - name: Check installed binaries
+        run: ls -la .
+
       - name: Lint the generated project
         if: env.IS_TEMPLATE_FROM_RETAIL_REACT_APP == 'true'
         uses: "./.github/actions/linting"
