@@ -144,6 +144,8 @@ const getShopperSeoClient = async (locals: Record<string, any>, config: Config) 
         commerceAPIAuth: {propertyNameInLocals: authProperty}
     } = config
 
+    const appOrigin = getAppOrigin(locals, true)
+
     if (locals[authProperty]) {
         console.log('--- auth already exists in locals', locals)
     } else {
@@ -154,8 +156,8 @@ const getShopperSeoClient = async (locals: Record<string, any>, config: Config) 
         locals[authProperty] ??
         new Auth({
             ...commerceAPI.parameters,
-            proxy: `${getAppOrigin()}${commerceAPI.proxyPath}`,
-            redirectURI: `${getAppOrigin()}/callback`,
+            proxy: `${appOrigin}${commerceAPI.proxyPath}`,
+            redirectURI: `${appOrigin}/callback`,
             logger: console
         })
 
@@ -164,11 +166,26 @@ const getShopperSeoClient = async (locals: Record<string, any>, config: Config) 
 
     const clientConfig = {
         ...commerceAPI,
-        proxy: `${getAppOrigin()}${commerceAPI.proxyPath}`
+        proxy: `${appOrigin}${commerceAPI.proxyPath}`
     }
 
     return new ShopperSeo({
         ...clientConfig,
         headers: {authorization: `Bearer ${access_token}`}
     })
+}
+
+// TODO: move to somewhere in SDK
+const getAppOrigin = (locals: Record<string, any> = {}, fromXForwardedHeader = false): string => {
+    if (typeof window !== 'undefined') {
+        return window.location.origin
+    }
+
+    const {APP_ORIGIN = ''} = process.env
+
+    const xForwardedOrigin = locals.xForwardedOrigin
+    if (fromXForwardedHeader && xForwardedOrigin) {
+        return xForwardedOrigin
+    }
+    return APP_ORIGIN
 }
