@@ -56,8 +56,6 @@ class Sample extends ApplicationExtension<Config> {
     extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
-        // DEBUG
-        console.log(this.getConfig().path)
         const HOCs = [
             // Example higher-order component, this can be safely removed.
             sampleHOC,

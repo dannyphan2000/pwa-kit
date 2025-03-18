@@ -17,7 +17,6 @@ import {
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {GetRoutesParams, BeforeRouteMatchParams} from '@salesforce/pwa-kit-extension-sdk/types'
-// import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
 import Auth from '@salesforce/commerce-sdk-react/auth'
 import {ShopperSeo} from 'commerce-sdk-isomorphic'
 import {routeComponent} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/route-component'
@@ -60,8 +59,6 @@ class UrlMapping extends ApplicationExtension<Config> {
     extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
-        // DEBUG
-        console.log(this.getConfig().path)
         const HOCs = [
             // Example higher-order component, this can be safely removed.
             sampleHOC,
@@ -113,7 +110,7 @@ class UrlMapping extends ApplicationExtension<Config> {
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
     beforeRouteMatch(allRoutes: RouteProps[], {locals}: BeforeRouteMatchParams): RouteProps[] {
-        console.log('--- beforeRouteMatch initially', allRoutes)
+        console.log('--- beforeRouteMatch: initial routes', allRoutes)
         const index = allRoutes.findIndex(
             (route) =>
                 // @ts-ignore
@@ -126,13 +123,12 @@ class UrlMapping extends ApplicationExtension<Config> {
         // Complete the partial route
         const routes = allRoutes.slice()
         const [myRoute] = routes.splice(index, 1)
-        console.log('--- myRoute should not have a component yet', myRoute.component, myRoute)
 
         // TODO: why Sample page is rendered only for a split second (before another page is rendered)?
         myRoute.component = routeComponent(SamplePage, true, locals)
 
         const result = [myRoute, ...routes]
-        console.log('--- beforeRouteMatch result', result)
+        console.log('--- beforeRouteMatch: resulting routes', result)
         return result
     }
 }
@@ -145,13 +141,7 @@ const getShopperSeoClient = async (locals: Record<string, any>, config: Config) 
         commerceAPIAuth: {propertyNameInLocals: authProperty}
     } = config
 
-    const appOrigin = getAppOrigin(locals, true)
-
-    if (locals[authProperty]) {
-        console.log('--- auth already exists in locals', locals)
-    } else {
-        console.log('--- creating a new Auth')
-    }
+    const appOrigin = getAppOrigin(locals)
 
     locals[authProperty] =
         locals[authProperty] ??
@@ -159,7 +149,7 @@ const getShopperSeoClient = async (locals: Record<string, any>, config: Config) 
             ...commerceAPI.parameters,
             proxy: `${appOrigin}${commerceAPI.proxyPath}`,
             redirectURI: `${appOrigin}/callback`,
-            logger: console
+            logger: console // TODO: proper logger
         })
 
     const auth: Auth = locals[authProperty]
@@ -176,17 +166,18 @@ const getShopperSeoClient = async (locals: Record<string, any>, config: Config) 
     })
 }
 
+// getAppOrigin is going to be deprecated in PWA Kit v4. Currently we have a replacement (useOrigin) but it's a React hook. So we still need a non-hook version.
 // TODO: move to somewhere in SDK
 const getAppOrigin = (locals: Record<string, any> = {}, fromXForwardedHeader = false): string => {
     if (typeof window !== 'undefined') {
         return window.location.origin
     }
 
-    const {APP_ORIGIN = ''} = process.env
-
     const xForwardedOrigin = locals.xForwardedOrigin
     if (fromXForwardedHeader && xForwardedOrigin) {
         return xForwardedOrigin
     }
+
+    const {APP_ORIGIN = ''} = process.env
     return APP_ORIGIN
 }
