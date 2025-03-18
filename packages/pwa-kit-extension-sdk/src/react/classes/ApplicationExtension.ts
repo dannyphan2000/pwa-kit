@@ -164,10 +164,26 @@ export abstract class ApplicationExtension<
         return routes instanceof Promise;
     }
 
-    private applyCacheForMethod(methodName: string, propertyName: string) {
-        const methodDescriptor = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(this), methodName);
-        if (methodDescriptor && typeof methodDescriptor.value === 'function') {
-            CacheResult(propertyName)(this, methodName, methodDescriptor);
+    private applyCacheForMethod(methodName: string, cacheProperty: string) {
+        const originalMethod = (this as any)[methodName];
+
+        if (typeof originalMethod === 'function') {
+            (this as any)[methodName] = function (this: any, ...args: any[]) {
+                if (this[cacheProperty] !== null) {
+                    return this[cacheProperty];
+                }
+
+                const result = originalMethod.apply(this, args);
+
+                if (result instanceof Promise) {
+                    const promise = result.then((resolved) => (this[cacheProperty] = resolved));
+                    this[cacheProperty] = promise;
+                    return promise;
+                } else {
+                    return (this[cacheProperty] = result);
+                }
+            };
         }
     }
+
 }

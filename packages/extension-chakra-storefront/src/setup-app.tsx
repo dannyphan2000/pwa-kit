@@ -12,7 +12,6 @@ import {RouteProps} from 'react-router-dom'
 // Platform Imports
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {CacheResult} from '@salesforce/pwa-kit-extension-sdk/react/decorators/cacheResult'
 import {ComponentMap} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
@@ -52,7 +51,6 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         return applyHOCs(App, requiredHOCs)
     }
 
-    @CacheResult('_cachedRoutes')
     async getRoutes(): Promise<RouteProps[]> {
         const config = this.getConfig()
 

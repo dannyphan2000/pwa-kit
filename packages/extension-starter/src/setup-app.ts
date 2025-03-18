@@ -16,8 +16,6 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {CacheResult} from '@salesforce/pwa-kit-extension-sdk/react/decorators/cacheResult'
-import {ComponentMap} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
 import {Config} from './types'
@@ -82,8 +80,6 @@ class Sample extends ApplicationExtension<Config> {
      */
     // TODO: do we need to pass in additional params like request.path? Get familiar with the SEO API.
     // TODO: how can developers call SCAPI? How can we pass in the api client (with the access token)?
-    // TODO: update .hbs template to add @CacheResult decorator
-    @CacheResult('_cachedRoutes')
     getRoutes(): RouteProps[] {
         return [
             {
