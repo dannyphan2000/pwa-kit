@@ -16,9 +16,11 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
+import {GetRoutesParams, BeforeRouteMatchParams} from '@salesforce/pwa-kit-extension-sdk/types'
+// import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
 import Auth from '@salesforce/commerce-sdk-react/auth'
 import {ShopperSeo} from 'commerce-sdk-isomorphic'
+import {routeComponent} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/route-component'
 
 // Local Imports
 import {Config} from './types'
@@ -32,7 +34,6 @@ import sampleHOC from 'overridable!./components/sample-hoc'
 
 // Others
 import extensionMeta from '../extension-meta.json'
-import {GetRoutesParams} from '@salesforce/pwa-kit-extension-sdk/types'
 
 interface StoreSlice {
     count: number
@@ -84,21 +85,23 @@ class UrlMapping extends ApplicationExtension<Config> {
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
     async getRoutes({locals}: GetRoutesParams): Promise<RouteProps[]> {
-        const config = this.getConfig()
-
-        if (locals.originalUrl) {
-            const shopperSeo = await getShopperSeoClient(locals, config)
-            const urlMapping = await shopperSeo.getUrlMapping({
-                parameters: {urlSegment: locals.originalUrl}
-            })
-            console.log('--- url mapping', urlMapping)
+        if (!locals.originalUrl) {
+            return Promise.resolve([])
         }
 
+        const config = this.getConfig()
+        const shopperSeo = await getShopperSeoClient(locals, config)
+        const urlMapping = await shopperSeo.getUrlMapping({
+            parameters: {urlSegment: locals.originalUrl}
+        })
+        console.log('--- url mapping', urlMapping)
+
+        // Returns a partial route
         return Promise.resolve([
             {
-                exact: true,
-                path: this.getConfig().path,
-                component: SamplePage
+                path: locals.originalUrl,
+                componentName: 'Foo'
+                // component: SamplePage
             }
         ])
     }
@@ -109,8 +112,27 @@ class UrlMapping extends ApplicationExtension<Config> {
      * is configured with, including those defined in the base application and those added by all the extensions. You can use this
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
-    beforeRouteMatch(allRoutes: RouteProps[]): RouteProps[] {
-        return allRoutes
+    beforeRouteMatch(allRoutes: RouteProps[], {locals}: BeforeRouteMatchParams): RouteProps[] {
+        console.log('--- beforeRouteMatch initially', allRoutes)
+        const index = allRoutes.findIndex(
+            (route) =>
+                // @ts-ignore
+                route.componentName === 'Foo'
+        )
+        if (index === -1) {
+            return allRoutes
+        }
+
+        // Complete the partial route
+        const routes = allRoutes.slice()
+        const [myRoute] = routes.splice(index, 1)
+        console.log('--- myRoute should not have a component yet', myRoute.component, myRoute)
+        myRoute.component = routeComponent(SamplePage, true, locals)
+
+        const result = [myRoute, ...routes]
+        console.log('--- beforeRouteMatch result', result)
+        return result
+        // TODO: why SamplePage is NOT rendered?
     }
 }
 

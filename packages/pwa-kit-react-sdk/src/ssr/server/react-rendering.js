@@ -154,14 +154,17 @@ export const render = async (req, res, next) => {
 
     // Call `beforeRouteMatch` application extension hook.
     applicationExtensions.forEach((applicationExtension) => {
-        routes = applicationExtension.beforeRouteMatch(routes)
+        routes = applicationExtension.beforeRouteMatch(routes, res.locals)
     })
+
+    console.log('--- routes after ALL the extensions and beforeRouteMatch', routes)
 
     res.__performanceTimer.mark(PERFORMANCE_MARKS.routeMatching, 'start')
     let route
     let match
 
     routes.some((_route) => {
+        console.log('--- iterating routes at:', _route)
         const _match = matchPath(req.path, _route)
         if (_match) {
             match = _match
@@ -169,6 +172,7 @@ export const render = async (req, res, next) => {
         }
         return !!match
     })
+    console.log('--- matched with route', route, match)
     res.__performanceTimer.mark(PERFORMANCE_MARKS.routeMatching, 'end')
 
     // Step 2 - Get the component

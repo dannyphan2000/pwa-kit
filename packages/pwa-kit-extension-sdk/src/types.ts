@@ -40,3 +40,7 @@ export type BuildCandidatePathsOptions = {
 export interface GetRoutesParams {
     locals: Record<string, any>
 }
+
+export interface BeforeRouteMatchParams {
+    locals: Record<string, any>
+}

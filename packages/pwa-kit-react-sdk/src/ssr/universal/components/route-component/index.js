@@ -423,7 +423,7 @@ export const getAllRoutes = async (locals = {}) => {
         ...(typeof appRoutes === 'function' ? appRoutes() : appRoutes),
         {path: '*', component: Throw404}
     ]
-    console.log('--- routes', allRoutes)
+    // console.log('--- routes', allRoutes)
 
     return allRoutes.map(({component, ...rest}) => {
         return {

@@ -11,7 +11,7 @@ import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
 
 // Types
-import {ApplicationExtensionConfig, GetRoutesParams} from '../../types'
+import {ApplicationExtensionConfig, BeforeRouteMatchParams, GetRoutesParams} from '../../types'
 
 export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 
@@ -60,7 +60,7 @@ export class ApplicationExtension<
      * @param routes - All the application routes from both extensions and base application.
      * @returns routes - The modified application routes.
      */
-    public beforeRouteMatch(routes: RouteProps[]): RouteProps[] {
+    public beforeRouteMatch(routes: RouteProps[], params: BeforeRouteMatchParams): RouteProps[] {
         return routes
     }
 }
