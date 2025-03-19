@@ -6,7 +6,7 @@
  */
 
 // Third-Party Imports
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect} from 'react'
 import {useHistory, useLocation} from 'react-router-dom'
 import {Helmet} from 'react-helmet'
 
@@ -20,7 +20,7 @@ import {useCategory, useShopperBasketsMutation} from '@salesforce/commerce-sdk-r
 
 // Chakra
 import {Box, Center, Fade, Spinner, useDisclosure, useStyleConfig} from '@chakra-ui/react'
-import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
+// import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
 
 // Local Project Components
 import {DrawerMenu} from '../drawer-menu'
@@ -41,14 +41,17 @@ import ScrollToTop from '../scroll-to-top'
 import {AuthModal, useAuthModal} from '../../hooks/use-auth-modal'
 import {AddToCartModalProvider} from '../../hooks/use-add-to-cart-modal'
 import {useExtensionConfig, useCurrentCustomer, useCurrentBasket} from '../../hooks'
-import { NavigationGuardContext } from 'overridable!../../overrides'
+import {
+    useApplicationExtension,
+    useApplicationExtensionsStore
+} from '@salesforce/pwa-kit-extension-sdk/react'
 import {watchOnlineStatus, flatten} from '../../utils/utils'
 import useActiveData from '../../hooks/use-active-data'
 import useMultiSite from '../../hooks/use-multi-site'
 import {useTheme} from '@chakra-ui/react'
 
 import {UserConfig} from '../../types/config'
-
+import {noop} from '../../utils/utils'
 // Define a type for the HOC props
 type WithAppLayoutProps = React.ComponentPropsWithoutRef<any>
 
@@ -106,20 +109,27 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 levels: CAT_MENU_DEFAULT_NAV_SSR_DEPTH
             }
         })
-        // const context = useContext(NavigationGuardContext)
         const categories = flatten(categoriesTree || {}, 'categories')
         const appOrigin = getAppOrigin()
         const activeData = useActiveData()
         const history = useHistory()
         const location = useLocation()
         const authModal = useAuthModal()
+        const seoExtension = useApplicationExtension(
+            '@salesforce/extension-seo'
+        )
+        const isSeoEnabled = !!seoExtension && seoExtension.isEnabled()
+        console.log("(JEREMY) with-layout, isSeoEnabled: ", isSeoEnabled)
+        const isBlocked = useApplicationExtensionsStore((state) => {
+            return state.state['@salesforce/extension-seo']?.isBlocked
+        })
+        console.log("(JEREMY) with-layout, after useApplicationExtensionStore. isBlocked: ", isBlocked)
+        
         const {site, locale, buildUrl} = useMultiSite()
         const [isOnline, setIsOnline] = useState<boolean>(true)
         const styles = useStyleConfig('App')
         const {colors} = useTheme()
         const {isOpen, onOpen, onClose} = useDisclosure()
-        const context = useContext(NavigationGuardContext)
-        console.log("(JEREMY) context: ", context)
         // Used to conditionally render header/footer for checkout page
         const isCheckout = /\/checkout$/.test(location?.pathname)
 
@@ -265,7 +275,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 <ScrollToTop />
 
                 <Box id="app" display="flex" flexDirection="column" flex={1}>
-                    <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>
+                    {/* <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink> */}
                     <Box {...headerWrapperStyles}>
                         {!isCheckout ? (
                             <>
@@ -305,14 +315,14 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     </Box>
                     {!isOnline && <OfflineBanner />}
                     <AddToCartModalProvider>
-                        <SkipNavContent
+                        {/* <SkipNavContent
                             style={{
                                 display: 'flex',
                                 flexDirection: 'column',
                                 flex: 1,
                                 outline: 0
                             }}
-                        >
+                        > */}
                             <Box
                                 as="main"
                                 id="app-main"
@@ -325,7 +335,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                                     <WrappedComponent {...(props as P)} />
                                 </OfflineBoundary>
                             </Box>
-                        </SkipNavContent>
+                        {/* </SkipNavContent> */}
 
                         {!isCheckout ? <Footer /> : <CheckoutFooter />}
 

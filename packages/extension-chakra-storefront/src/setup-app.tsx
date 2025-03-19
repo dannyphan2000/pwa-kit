@@ -23,7 +23,7 @@ import {withLayout} from './components/with-layout'
 import {withMultiSite} from './components/with-multi-site'
 import {withReactIntl} from './components/with-react-intl'
 import {withStorefrontPreview} from './components/with-storefront-preview'
-
+// import {withNavigationGuardContext} from 'overridable!./contexts'
 // Pages
 import * as Pages from './pages'
 

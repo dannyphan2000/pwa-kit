@@ -1,16 +1,9 @@
-/*
- * Copyright (c) 2025, salesforce.com, inc.
- * All rights reserved.
- * SPDX-License-Identifier: BSD-3-Clause
- * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
- */
-
 import React from 'react'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useBlockNavigation} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {
     useApplicationExtension,
-    useApplicationExtensionsStore
+    useApplicationExtensionsStore,
 } from '@salesforce/pwa-kit-extension-sdk/react'
 // Define a type for the HOC props
 type SampleHOCProps = React.ComponentPropsWithoutRef<any>
@@ -43,7 +36,7 @@ const sampleHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) =
         setIsBlocked(isBlocked)
         
         return (
-            <WrappedComponent {...(props as P)}/>
+                <WrappedComponent {...(props as P)}/>
         )
     }
     
