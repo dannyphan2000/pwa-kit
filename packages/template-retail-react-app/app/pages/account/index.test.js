@@ -148,6 +148,7 @@ describe('Render and logs out', function () {
         await user.click(screen.getAllByText(/Log Out/)[0])
         await waitFor(
             () => {
+                screen.logTestingPlaygroundURL()
                 expect(screen.getByTestId('login-page')).toBeInTheDocument()
             },
             {timeout: 60000}
