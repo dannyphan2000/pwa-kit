@@ -17,6 +17,7 @@ import {
     DeserializedExtension,
     SerializedExtension
 } from '../../types'
+import {applyCacheForMethod} from '../utils/helpers'
 
 const isServerSide = typeof window === 'undefined'
 
@@ -43,8 +44,11 @@ export class ApplicationExtension<
         this.isRoutesAsync = this.isGetRoutesAsync()
 
         if (this.isRoutesAsync) {
-            this.handleAsyncRoutes()
-        }
+            // Deserialize the routes on the client to ensure the latest routes are loaded on the client
+            this._cachedRoutes = this.deserialize()?.routes ?? null
+            // Apply caching for the getRoutes method
+            applyCacheForMethod(this, 'getRoutes', '_cachedRoutes')
+        }    
     }
     /**
      * Called during the rendering of the base application on the server and the client.
@@ -118,7 +122,12 @@ export class ApplicationExtension<
     }
 
     /**
-     * Returns a map of component names to components that are used to deserialize the extension data.
+     * Returns a map of component names to components used for deserializing extension data 
+     * when `getRoutes()` is asynchronous.
+     * 
+     * This method is required only if `getRoutes()` is asynchronous.
+     * 
+     * It is recommended to use loadable components whenever possible to reduce bundle size.
      *
      * @protected
      * @returns ComponentMap - The map of component names to components.
@@ -133,7 +142,11 @@ export class ApplicationExtension<
      * @throws Error if getComponentMap() is not defined.
      * @throws Error if the deserialized component cannot be found in the component map.
      */
-    private deserialize(serializedExtension: SerializedExtension): DeserializedExtension {
+    private deserialize(): DeserializedExtension | null {
+        if (isServerSide) {
+            return null
+        }
+
         if (!this.getComponentMap) {
             throw new Error(
                 `${this.getName()}.getRoutes() is async but does not define getComponentMap()`
@@ -141,6 +154,7 @@ export class ApplicationExtension<
         }
 
         const componentMap = this.getComponentMap()
+        const serializedExtension = window.__EXTENSIONS__[this.getName()]
         const routes = serializedExtension.routes.map(({path, componentName}) => {
             const component = componentMap[componentName]
 
@@ -159,40 +173,8 @@ export class ApplicationExtension<
         return {routes}
     }
 
-    private handleAsyncRoutes() {
-        if (!isServerSide) {
-            // Deserialize the routes on the client to ensure the latest routes are loaded on the client
-            this._cachedRoutes = this.deserialize(window.__EXTENSIONS__[this.getName()]).routes
-        }
-
-        // Apply caching for the getRoutes method
-        this.applyCacheForMethod('getRoutes', '_cachedRoutes')
-    }
-
     private isGetRoutesAsync(): boolean {
         const routes = this.getRoutes()
         return routes instanceof Promise
-    }
-
-    private applyCacheForMethod(methodName: string, cacheProperty: string) {
-        const originalMethod = (this as any)[methodName]
-
-        if (typeof originalMethod === 'function') {
-            ;(this as any)[methodName] = function (this: any, ...args: any[]) {
-                if (this[cacheProperty] !== null) {
-                    return this[cacheProperty]
-                }
-
-                const result = originalMethod.apply(this, args)
-
-                if (result instanceof Promise) {
-                    const promise = result.then((resolved) => (this[cacheProperty] = resolved))
-                    this[cacheProperty] = promise
-                    return promise
-                } else {
-                    return (this[cacheProperty] = result)
-                }
-            }
-        }
     }
 }

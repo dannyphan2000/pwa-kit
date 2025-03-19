@@ -23,3 +23,32 @@ export const applyHOCs = <T extends React.ComponentType<any>>(Component: T, hocs
         return hoistNonReactStatics(WrappedComponent, AccumulatedComponent) as T
     }, Component)
 }
+
+/**
+ * Applies a cache to a method on an instance.
+ * 
+ * @param instance - The instance on which to apply the cache.
+ * @param methodName - The name of the method to cache.
+ * @param cacheProperty - The name of the property to use for caching.
+ */
+export function applyCacheForMethod(instance: any, methodName: string, cacheProperty: string) {
+    const originalMethod = instance[methodName]
+
+    if (typeof originalMethod === 'function') {
+        instance[methodName] = function (this: any, ...args: any[]) {
+            if (this[cacheProperty] !== null) {
+                return this[cacheProperty]
+            }
+
+            const result = originalMethod.apply(this, args)
+
+            if (result instanceof Promise) {
+                const promise = result.then((resolved) => (this[cacheProperty] = resolved))
+                this[cacheProperty] = promise
+                return promise
+            } else {
+                return (this[cacheProperty] = result)
+            }
+        }
+    }
+}
