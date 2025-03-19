@@ -14,9 +14,6 @@
             "siteId": "RefArchGlobal"
         }
     },
-    "commerceAPIAuth": {
-        "propertyNameInLocals": "commerceAPIAuth"
-    },
     "defaultSite": "RefArchGlobal",
     "defaultAppLocale": "en-US",
     "defaultSiteTitle": "Retail React App",
