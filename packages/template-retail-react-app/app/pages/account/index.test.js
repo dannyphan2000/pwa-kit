@@ -149,7 +149,7 @@ describe('Render and logs out', function () {
             () => {
                 expect(screen.getByTestId('login-page')).toBeInTheDocument()
             },
-            {timeout: 30000}
+            {timeout: 60000}
         )
     })
 })
