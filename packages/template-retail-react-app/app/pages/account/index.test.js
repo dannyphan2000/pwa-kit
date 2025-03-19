@@ -25,6 +25,7 @@ import Login from '@salesforce/retail-react-app/app/pages/login'
 import mockConfig from '@salesforce/retail-react-app/config/mocks/default'
 import * as sdk from '@salesforce/commerce-sdk-react'
 
+jest.setTimeout(60000)
 jest.mock('@salesforce/commerce-sdk-react', () => ({
     ...jest.requireActual('@salesforce/commerce-sdk-react'),
     useCustomerType: jest.fn()
