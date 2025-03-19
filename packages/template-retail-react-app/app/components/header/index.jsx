@@ -137,6 +137,7 @@ const Header = ({
         setShowLoading(true)
         await logout.mutateAsync()
         navigate('/login')
+        console.log('test------', )
         setShowLoading(false)
     }
 
