@@ -12,7 +12,7 @@ import {RouteProps} from 'react-router-dom'
 // Platform Imports
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {GetRoutesParams} from '@salesforce/pwa-kit-extension-sdk/types'
+import {BeforeRouteMatchParams, GetRoutesParams} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
 import {Config} from './types'
@@ -110,7 +110,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
     }
 
     // Called before the route with all the routes
-    beforeRouteMatch(allRoutes: RouteProps[]): RouteProps[] {
+    beforeRouteMatch({allRoutes}: BeforeRouteMatchParams): RouteProps[] {
         const config = this.getConfig()
 
         return configureRoutes(allRoutes, config, {

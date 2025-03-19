@@ -16,6 +16,7 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
+import {BeforeRouteMatchParams, GetRoutesParams} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
 import {Config} from './types'
@@ -29,7 +30,6 @@ import sampleHOC from 'overridable!./components/sample-hoc'
 
 // Others
 import extensionMeta from '../extension-meta.json'
-import {GetRoutesParams} from '@salesforce/pwa-kit-extension-sdk/types'
 
 interface StoreSlice {
     count: number
@@ -94,7 +94,7 @@ class Sample extends ApplicationExtension<Config> {
      * is configured with, including those defined in the base application and those added by all the extensions. You can use this
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
-    beforeRouteMatch(allRoutes: RouteProps[]): RouteProps[] {
+    beforeRouteMatch({allRoutes}: BeforeRouteMatchParams): RouteProps[] {
         return allRoutes
     }
 }

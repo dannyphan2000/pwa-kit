@@ -113,7 +113,7 @@ class UrlMapping extends ApplicationExtension<Config> {
      * is configured with, including those defined in the base application and those added by all the extensions. You can use this
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
-    beforeRouteMatch(allRoutes: RouteProps[], {locals}: BeforeRouteMatchParams): RouteProps[] {
+    beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
         console.log('--- beforeRouteMatch: initial routes', allRoutes)
         const index = allRoutes.findIndex(
             (route) =>

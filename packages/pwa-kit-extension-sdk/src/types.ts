@@ -5,6 +5,8 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import {RouteProps} from 'react-router-dom'
+
 /**
  * This is the base configuration type for all Application Extensions. Modify this
  * type if you are adding new configurations that are general to all extensions.
@@ -42,5 +44,6 @@ export interface GetRoutesParams {
 }
 
 export interface BeforeRouteMatchParams {
+    allRoutes: RouteProps[]
     locals: Record<string, any>
 }

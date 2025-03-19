@@ -154,7 +154,7 @@ export const render = async (req, res, next) => {
 
     // Call `beforeRouteMatch` application extension hook.
     applicationExtensions.forEach((applicationExtension) => {
-        routes = applicationExtension.beforeRouteMatch(routes, res.locals)
+        routes = applicationExtension.beforeRouteMatch({allRoutes: routes, locals: res.locals})
     })
 
     console.log('--- routes after ALL the extensions and beforeRouteMatch', routes)
@@ -265,6 +265,7 @@ export const render = async (req, res, next) => {
 }
 
 const OuterApp = ({req, res, error, App, appState, routes, routerContext, location}) => {
+    console.log('--- OuterApp routes', routes)
     const AppConfig = getAppConfig()
     return (
         <ServerContext.Provider value={{req, res}}>

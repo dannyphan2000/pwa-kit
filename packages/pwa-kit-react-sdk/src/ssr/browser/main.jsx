@@ -53,7 +53,7 @@ export const OuterApp = ({routes, error, extensions, WrappedApp, locals, onHydra
     // Invoke the Application Extensions 'beforeRouteMatch' hook. This hook accepts ALL the routes for the current
     // application including all routes added from the configured extensions.
     extensions.forEach((applicationExtension) => {
-        routes = applicationExtension.beforeRouteMatch(routes, locals)
+        routes = applicationExtension.beforeRouteMatch({allRoutes: routes, locals})
     })
 
     return (
