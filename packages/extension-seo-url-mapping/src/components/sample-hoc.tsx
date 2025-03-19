@@ -28,10 +28,10 @@ const sampleHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) =
             return false
         })
         useApplicationExtension(
-            '@salesforce/extension-seo'
+            '@salesforce/extension-seo-url-mapping'
         )
         const setIsBlocked = useApplicationExtensionsStore((state) => {
-            return state.state['@salesforce/extension-seo']?.setIsBlocked
+            return state.state['@salesforce/extension-seo-url-mapping']?.setIsBlocked
         })
         setIsBlocked(isBlocked)
         

@@ -116,12 +116,12 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         const location = useLocation()
         const authModal = useAuthModal()
         const seoExtension = useApplicationExtension(
-            '@salesforce/extension-seo'
+            '@salesforce/extension-seo-url-mapping'
         )
         const isSeoEnabled = !!seoExtension && seoExtension.isEnabled()
         console.log("(JEREMY) with-layout, isSeoEnabled: ", isSeoEnabled)
         const isBlocked = useApplicationExtensionsStore((state) => {
-            return state.state['@salesforce/extension-seo']?.isBlocked
+            return state.state['@salesforce/extension-seo-url-mapping']?.isBlocked
         })
         console.log("(JEREMY) with-layout, after useApplicationExtensionStore. isBlocked: ", isBlocked)
         

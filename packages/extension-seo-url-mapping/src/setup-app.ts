@@ -12,7 +12,8 @@ import {RouteProps} from 'react-router-dom'
 // Platform Imports
 import {
     ApplicationExtension,
-    withApplicationExtensionStore
+    withApplicationExtensionStore,
+    withApplicationExtensions
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 
@@ -40,6 +41,7 @@ class Sample extends ApplicationExtension<Config> {
     extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
+        console.log("(JEREMY) sliceInitializer: ", sliceInitializer)
         const HOCs = [
             // Example higher-order component, this can be safely removed.
             sampleHOC,
