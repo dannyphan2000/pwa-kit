@@ -6,7 +6,7 @@
  */
 import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension} from './ApplicationExtension'
-import {ApplicationExtensionConfig, ComponentMap} from '../../types'
+import {ApplicationExtensionConfig} from '../../types'
 import React from 'react'
 
 class TestConfig implements ApplicationExtensionConfig {

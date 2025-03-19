@@ -150,7 +150,7 @@ export const render = async (req, res, next) => {
         })
     }
 
-        // Serialize the application extensions that have an async getRoutes where the key is the name of the extension
+    // Serialize the application extensions that have an async getRoutes where the key is the name of the extension
     // and the value is the serialized extension data.
     const serializedExtensions = Object.fromEntries(
         applicationExtensions
@@ -237,7 +237,7 @@ export const render = async (req, res, next) => {
             location,
             config,
             appJSX,
-            serializedExtensions,
+            serializedExtensions
         })
     } catch (e) {
         // This is an unrecoverable error.

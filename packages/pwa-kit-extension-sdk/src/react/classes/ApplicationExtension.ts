@@ -11,7 +11,12 @@ import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
 
 // Types
-import {ApplicationExtensionConfig, ComponentMap, DeserializedExtension, SerializedExtension} from '../../types'
+import {
+    ApplicationExtensionConfig,
+    ComponentMap,
+    DeserializedExtension,
+    SerializedExtension
+} from '../../types'
 
 const isServerSide = typeof window === 'undefined'
 
@@ -26,7 +31,7 @@ export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
  *
  * @abstract
  */
-export abstract class ApplicationExtension<
+export class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
     public isRoutesAsync: boolean
@@ -86,7 +91,7 @@ export abstract class ApplicationExtension<
 
     /**
      * Called on the server to serialize the extension data that will be sent to the client.
-     * 
+     *
      * @returns SerializedExtension - The serialized extension data.
      * @throws Error if the routes have not been loaded.
      */
@@ -96,11 +101,15 @@ export abstract class ApplicationExtension<
         }
         const serializedRoutes = this._cachedRoutes.map((route) => {
             if (!route.component?.displayName) {
-                throw new Error(`Component for route with path "${route.path}" is missing a displayName in ${this.getName()} extension`)
+                throw new Error(
+                    `Component for route with path "${
+                        route.path
+                    }" is missing a displayName in ${this.getName()} extension`
+                )
             }
             return {
                 path: route.path,
-                componentName: route.component?.displayName,
+                componentName: route.component?.displayName
             }
         })
         return {
@@ -110,7 +119,7 @@ export abstract class ApplicationExtension<
 
     /**
      * Returns a map of component names to components that are used to deserialize the extension data.
-     * 
+     *
      * @protected
      * @returns ComponentMap - The map of component names to components.
      */
@@ -118,7 +127,7 @@ export abstract class ApplicationExtension<
 
     /**
      * Called on the client to deserialize the extension data that was serialized on the server.
-     * 
+     *
      * @param serializedExtension - The serialized extension data.
      * @returns DeserializedExtension - The deserialized extension data.
      * @throws Error if getComponentMap() is not defined.
@@ -126,63 +135,64 @@ export abstract class ApplicationExtension<
      */
     private deserialize(serializedExtension: SerializedExtension): DeserializedExtension {
         if (!this.getComponentMap) {
-            throw new Error(`${this.getName()}.getRoutes() is async but does not define getComponentMap()`);
+            throw new Error(
+                `${this.getName()}.getRoutes() is async but does not define getComponentMap()`
+            )
         }
 
         const componentMap = this.getComponentMap()
-        const routes = serializedExtension.routes.map(
-            ({path, componentName}) => {
-                let component = componentMap[componentName]
+        const routes = serializedExtension.routes.map(({path, componentName}) => {
+            const component = componentMap[componentName]
 
-                if (!component) {
-                    throw new Error(`${componentName} component could not be deserialized for route with path: ${path}`)
-                }
-
-                return {
-                    path,
-                    exact: true,
-                    component
-                }
+            if (!component) {
+                throw new Error(
+                    `${componentName} component could not be deserialized for route with path: ${path}`
+                )
             }
-        )
+
+            return {
+                path,
+                exact: true,
+                component
+            }
+        })
         return {routes}
     }
 
     private handleAsyncRoutes() {
         if (!isServerSide) {
             // Deserialize the routes on the client to ensure the latest routes are loaded on the client
-            this._cachedRoutes = this.deserialize(window.__EXTENSIONS__[this.getName()]).routes;
+            this._cachedRoutes = this.deserialize(window.__EXTENSIONS__[this.getName()]).routes
         }
-    
+
         // Apply caching for the getRoutes method
-        this.applyCacheForMethod('getRoutes', '_cachedRoutes');
+        this.applyCacheForMethod('getRoutes', '_cachedRoutes')
     }
 
     private isGetRoutesAsync(): boolean {
-        const routes = this.getRoutes();
-        return routes instanceof Promise;
+        const routes = this.getRoutes()
+        return routes instanceof Promise
     }
 
     private applyCacheForMethod(methodName: string, cacheProperty: string) {
-        const originalMethod = (this as any)[methodName];
+        const originalMethod = (this as any)[methodName]
 
         if (typeof originalMethod === 'function') {
-            (this as any)[methodName] = function (this: any, ...args: any[]) {
+            ;(this as any)[methodName] = function (this: any, ...args: any[]) {
                 if (this[cacheProperty] !== null) {
-                    return this[cacheProperty];
+                    return this[cacheProperty]
                 }
 
-                const result = originalMethod.apply(this, args);
+                const result = originalMethod.apply(this, args)
 
                 if (result instanceof Promise) {
-                    const promise = result.then((resolved) => (this[cacheProperty] = resolved));
-                    this[cacheProperty] = promise;
-                    return promise;
+                    const promise = result.then((resolved) => (this[cacheProperty] = resolved))
+                    this[cacheProperty] = promise
+                    return promise
                 } else {
-                    return (this[cacheProperty] = result);
+                    return (this[cacheProperty] = result)
                 }
-            };
+            }
         }
     }
-
 }

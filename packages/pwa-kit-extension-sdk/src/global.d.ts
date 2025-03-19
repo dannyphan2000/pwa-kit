@@ -10,13 +10,11 @@ import {SerializedExtension} from './types'
 // TODO fix typing of fields
 declare global {
     interface Window {
-        __INITIAL_CORRELATION_ID__: string,
-        __CONFIG__: object,
-        __PRELOADED_STATE__: string,
-        __ERROR__: object,
-        __EXTENSIONS__: {[key: string]: SerializedExtension},
-        // `window.Progressive` has a long history at Mobify and some
-        // client-side code depends on it. Maintain its name out of tradition.
+        __INITIAL_CORRELATION_ID__: string
+        __CONFIG__: object
+        __PRELOADED_STATE__: string
+        __ERROR__: object
+        __EXTENSIONS__: {[key: string]: SerializedExtension}
         Progressive: object
     }
 }
