@@ -147,6 +147,7 @@ const getShopperSeoClient = async (locals: Record<string, any>, config: Config) 
 
     const appOrigin = getAppOrigin(locals)
 
+    // Saving/reusing the commerce api auth (so all extensions have access to it)
     locals[authProperty] =
         locals[authProperty] ??
         new Auth({
