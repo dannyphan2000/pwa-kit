@@ -265,7 +265,6 @@ export const render = async (req, res, next) => {
 }
 
 const OuterApp = ({req, res, error, App, appState, routes, routerContext, location}) => {
-    console.log('--- OuterApp routes', routes)
     const AppConfig = getAppConfig()
     return (
         <ServerContext.Provider value={{req, res}}>
