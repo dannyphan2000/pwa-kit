@@ -35,19 +35,17 @@ export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 export class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
-    public isRoutesAsync: boolean
     protected _cachedRoutes: RouteProps[] | null = null
 
     constructor(config: Config) {
         super(config)
         this.extendRoutes = this.extendRoutes.bind(this)
-        this.isRoutesAsync = this.isGetRoutesAsync()
 
-        if (this.isRoutesAsync) {
+        if (this.getRoutesAsync) {
             // Deserialize the routes on the client to ensure the latest routes are loaded on the client
-            this._cachedRoutes = this.deserialize()?.routes ?? null
+            this._cachedRoutes = this.deserialize()?.routes || null
             // Apply caching for the getRoutes method
-            applyCacheForMethod(this, 'getRoutes', '_cachedRoutes')
+            applyCacheForMethod(this, 'getRoutesAsync', '_cachedRoutes')
         }    
     }
     /**
@@ -77,9 +75,15 @@ export class ApplicationExtension<
         return Promise.resolve(routes)
     }
 
-    public getRoutes(): RouteProps[] | Promise<RouteProps[]> {
+    public getRoutes(): RouteProps[] {
         return []
     }
+
+    /**
+     * Returns routes asynchronously.
+     * Only needed for async route loading.
+     */
+    public async getRoutesAsync?(): Promise<RouteProps[]>
 
     /**
      * Called before route matching is evaluated. This method gives each extension the opportunity

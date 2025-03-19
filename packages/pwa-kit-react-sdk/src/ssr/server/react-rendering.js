@@ -154,7 +154,7 @@ export const render = async (req, res, next) => {
     // and the value is the serialized extension data.
     const serializedExtensions = Object.fromEntries(
         applicationExtensions
-            .filter((extension) => extension.isRoutesAsync)
+            .filter((extension) => extension.getRoutesAsync)
             .map((extension) => [extension.getName(), extension.serialize()])
     )
 

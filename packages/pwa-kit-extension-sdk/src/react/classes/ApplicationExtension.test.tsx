@@ -28,7 +28,7 @@ class TestExtension extends ApplicationExtension<TestConfig> {
 
 class TestExtensionAsyncRoutes extends ApplicationExtension<TestConfig> {
     static readonly id = 'test-extension'
-    public async getRoutes(): Promise<RouteProps[]> {
+    public async getRoutesAsync(): Promise<RouteProps[]> {
         return Promise.resolve([
             {
                 path: '/test',
@@ -49,16 +49,6 @@ describe('ApplicationExtension', () => {
         extension = new TestExtension(config)
         extensionAsyncRoutes = new TestExtensionAsyncRoutes(config)
         mockComponent = jest.fn(() => <div>Test Component</div>)
-    })
-
-    describe('isRoutesAsync', () => {
-        it('should return false if getRoutes() is not async', () => {
-            expect(extension.isRoutesAsync).toBe(false)
-        })
-
-        it('should return true if getRoutes() is async', () => {
-            expect(extensionAsyncRoutes.isRoutesAsync).toBe(true)
-        })
     })
 
     describe('extendApp', () => {

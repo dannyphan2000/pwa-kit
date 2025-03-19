@@ -51,7 +51,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         return applyHOCs(App, requiredHOCs)
     }
 
-    async getRoutes(): Promise<RouteProps[]> {
+    async getRoutesAsync(): Promise<RouteProps[]> {
         const config = this.getConfig()
 
         const extensionRoutes = [
