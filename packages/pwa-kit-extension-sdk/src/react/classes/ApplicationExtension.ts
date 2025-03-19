@@ -176,9 +176,4 @@ export class ApplicationExtension<
         })
         return {routes}
     }
-
-    private isGetRoutesAsync(): boolean {
-        const routes = this.getRoutes()
-        return routes instanceof Promise
-    }
 }
