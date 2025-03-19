@@ -17,7 +17,8 @@ import {
     mockOrderHistory,
     mockedGuestCustomer,
     mockedRegisteredCustomer,
-    mockOrderProducts
+    mockOrderProducts,
+    mockPasswordUpdateFalure
 } from '@salesforce/retail-react-app/app/mocks/mock-data'
 import {useCustomerType} from '@salesforce/commerce-sdk-react'
 import Account from '@salesforce/retail-react-app/app/pages/account/index'
