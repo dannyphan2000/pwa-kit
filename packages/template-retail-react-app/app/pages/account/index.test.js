@@ -73,7 +73,8 @@ beforeEach(() => {
     window.history.pushState({}, 'Account', createPathWithDefaults('/account'))
 })
 afterEach(() => {
-    jest.resetAllMocks()
+    jest.resetModules()
+    jest.restoreAllMocks()
 })
 
 const expectedBasePath = '/uk/en-GB'
