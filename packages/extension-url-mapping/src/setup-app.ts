@@ -86,6 +86,7 @@ class UrlMapping extends ApplicationExtension<Config> {
             return Promise.resolve([])
         }
 
+        // Example of API call to get url mapping
         const config = this.getConfig()
         const shopperSeo = await getShopperSeoClient(locals, config)
         const urlMapping = await shopperSeo.getUrlMapping({
@@ -93,11 +94,14 @@ class UrlMapping extends ApplicationExtension<Config> {
         })
         console.log('--- url mapping', urlMapping)
 
+        const requestURL = new URL(locals.originalUrl, getAppOrigin(locals))
+
         // Returns a partial route
         return Promise.resolve([
             {
-                path: locals.originalUrl,
-                componentName: 'Foo'
+                path: requestURL.pathname,
+                componentName: 'Foo',
+                exact: true
                 // component: SamplePage
             }
         ])
@@ -123,9 +127,9 @@ class UrlMapping extends ApplicationExtension<Config> {
         // Complete the partial route
         const routes = allRoutes.slice()
         const [myRoute] = routes.splice(index, 1)
-
-        // TODO: why Sample page is rendered only for a split second (before another page is rendered)?
         myRoute.component = routeComponent(SamplePage, true, locals)
+        // NOTE: to be expected: the Sample page will be rendered on the server side, while a different page is then rendered on the client side.
+        // Jinsu's work on serialization will make sure that the same page will be rendered on both server and client sides.
 
         const result = [myRoute, ...routes]
         console.log('--- beforeRouteMatch: resulting routes', result)
