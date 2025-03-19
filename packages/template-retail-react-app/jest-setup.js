@@ -77,6 +77,13 @@ export const setupMockServer = () => {
         rest.get('*/categories/:categoryId', (req, res, ctx) =>
             res(ctx.delay(0), ctx.status(200), ctx.json(mockCategory))
         ),
+
+        rest.get('*/shopper-context/:usid', (req, res, ctx) =>
+            res(ctx.delay(0), ctx.status(200), ctx.json({}))
+        ),
+        rest.get('*/shopper-experience/*', (req, res, ctx) =>
+            res(ctx.delay(0), ctx.status(200), ctx.json({}))
+        ),
         rest.post('*/baskets/actions/merge', (req, res, ctx) => res(ctx.delay(0), ctx.status(200))),
         rest.post('*/v3/activities/EinsteinTestSite/*', (req, res, ctx) => {
             return res(ctx.delay(0), ctx.status(200), ctx.json({}))
