@@ -12,6 +12,7 @@ import {RouteProps} from 'react-router-dom'
 // Platform Imports
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
+import {BeforeRouteMatchParams, GetRoutesParams} from '@salesforce/pwa-kit-extension-sdk/types'
 import {ComponentMap} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
@@ -24,12 +25,11 @@ import {withLayout} from './components/with-layout'
 import {withMultiSite} from './components/with-multi-site'
 import {withReactIntl} from './components/with-react-intl'
 import {withStorefrontPreview} from './components/with-storefront-preview'
+import extensionMeta from '../extension-meta.json'
 import * as modules from './pages'
 
 // Pages
 import * as Pages from './pages'
-
-import extensionMeta from '../extension-meta.json'
 
 class ChakraStorefront extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
@@ -51,7 +51,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         return applyHOCs(App, requiredHOCs)
     }
 
-    async getRoutesAsync(): Promise<RouteProps[]> {
+    getRoutes(params: GetRoutesParams): RouteProps[] {
         const config = this.getConfig()
 
         const extensionRoutes = [
@@ -108,11 +108,11 @@ class ChakraStorefront extends ApplicationExtension<Config> {
             }
         ].filter((route) => route.path !== false)
 
-        return Promise.resolve(extensionRoutes as RouteProps[])
+        return extensionRoutes as RouteProps[]
     }
 
     // Called before the route with all the routes
-    beforeRouteMatch(allRoutes: RouteProps[]): RouteProps[] {
+    beforeRouteMatch({allRoutes}: BeforeRouteMatchParams): RouteProps[] {
         const config = this.getConfig()
 
         return configureRoutes(allRoutes, config, {

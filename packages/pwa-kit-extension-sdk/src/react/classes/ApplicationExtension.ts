@@ -9,19 +9,14 @@ import {RouteProps} from 'react-router-dom'
 
 // Local
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
-
-// Types
-import {
-    ApplicationExtensionConfig,
-    ComponentMap,
-    DeserializedExtension,
-    SerializedExtension
-} from '../../types'
 import {applyCacheForMethod} from '../utils/helpers'
 
-const isServerSide = typeof window === 'undefined'
+// Types
+import {ApplicationExtensionConfig, BeforeRouteMatchParams, GetRoutesParams, ComponentMap, DeserializedExtension, SerializedExtension} from '../../types'
 
 export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
+
+const isServerSide = typeof window === 'undefined'
 
 /**
  * An abstract class representing an Application Extension. This class provides
@@ -48,6 +43,7 @@ export class ApplicationExtension<
             applyCacheForMethod(this, 'getRoutesAsync', '_cachedRoutes')
         }    
     }
+
     /**
      * Called during the rendering of the base application on the server and the client.
      * It is predominantly used to enhance the "base" application by wrapping it with React providers.
@@ -64,20 +60,25 @@ export class ApplicationExtension<
 
     /**
      * Called during server rendering and client application initialization. This method allows
-     * you to modify the routes of the base application, typically used to add new routes pointing
-     * at page components added by your application extension.
+     * you to add new routes, typically routes pointing at page components added by your application extension.
      *
      * @protected
-     * @param routes - The list application routes currently loaded.
-     * @returns routes - The modified application routes.
+     * @returns new routes to be added
      */
-    public extendRoutes(routes: RouteProps[]): Promise<RouteProps[]> {
-        return Promise.resolve(routes)
-    }
-
-    public getRoutes(): RouteProps[] {
+    public getRoutes(params: GetRoutesParams): RouteProps[] {
         return []
     }
+
+    /**
+     * Called during server rendering and client application initialization. This method allows
+     * you to add new routes, typically routes pointing at page components added by your application extension.
+     *
+     * If you wish to add new routes asynchronously (e.g. via API call), please implement this method.
+     *
+     * @protected
+     * @returns a promise resolving to new routes to be added
+     */
+    public getRoutesAsync?(params: GetRoutesParams): Promise<RouteProps[]>
 
     /**
      * Returns routes asynchronously.
@@ -93,8 +94,9 @@ export class ApplicationExtension<
      * @param routes - All the application routes from both extensions and base application.
      * @returns routes - The modified application routes.
      */
-    public beforeRouteMatch(routes: RouteProps[]): RouteProps[] {
-        return routes
+    public beforeRouteMatch(params: BeforeRouteMatchParams): RouteProps[] {
+        const {allRoutes} = params
+        return allRoutes
     }
 
     /**

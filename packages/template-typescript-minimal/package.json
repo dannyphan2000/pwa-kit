@@ -29,6 +29,7 @@
     "@salesforce/extension-chakra-storefront": "0.1.0-extensibility-preview.4",
     "@salesforce/extension-chakra-store-locator": "0.1.0-extensibility-preview.4",
     "@salesforce/extension-starter": "0.1.0-extensibility-preview.4",
+    "@salesforce/extension-url-mapping": "0.1.0-extensibility-preview.4",
     "@tanstack/react-query": "^4.28.0",
     "@types/loadable__component": "~5.13.4",
     "@types/react": "~18.2.0",
@@ -67,6 +68,9 @@
   "mobify": {
     "app": {
       "extensions": [
+        [
+          "@salesforce/extension-url-mapping"
+        ],
         [
           "@salesforce/extension-starter"
         ],

@@ -6,6 +6,8 @@
  */
 import {RouteProps} from 'react-router-dom'
 
+import {RouteProps} from 'react-router-dom'
+
 /**
  * This is the base configuration type for all Application Extensions. Modify this
  * type if you are adding new configurations that are general to all extensions.
@@ -36,6 +38,15 @@ export type BuildCandidatePathsOptions = {
     canonicalSource: string
     projectDir: string
     extensionEntries: ApplicationExtensionEntry[]
+}
+
+export interface GetRoutesParams {
+    locals: Record<string, any>
+}
+
+export interface BeforeRouteMatchParams {
+    allRoutes: RouteProps[]
+    locals: Record<string, any>
 }
 
 /**

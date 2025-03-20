@@ -58,6 +58,7 @@ describe('ApplicationExtension', () => {
         })
     })
 
+    /*
     describe('extendRoutes', () => {
         test('should return the routes array without modification', () => {
             const routes: RouteProps[] = [
@@ -121,6 +122,7 @@ describe('ApplicationExtension', () => {
             )
         })
     })
+    */
 
     describe('handle async routes', () => {
         it('should not cache getRoutes result when it is sync', async () => {

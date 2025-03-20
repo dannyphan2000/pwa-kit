@@ -406,12 +406,13 @@ export const routeComponent = (Wrapped, isPage, locals) => {
 export const getAllRoutes = async (locals = {}) => {
     const {applicationExtensions = []} = locals
     const extensionRoutes = (
-        await Promise.all(applicationExtensions.map((extension) => {
-            if (extension.getRoutesAsync) {
-                return extension.getRoutesAsync()
-            }
-            return extension.getRoutes()
-        }))
+        await Promise.all(
+            applicationExtensions.map((extension) =>
+                extension.getRoutesAsync
+                    ? extension.getRoutesAsync({locals})
+                    : extension.getRoutes({locals})
+            )
+        )
     ).flat()
 
     const allRoutes = [
@@ -421,7 +422,6 @@ export const getAllRoutes = async (locals = {}) => {
         ...(typeof appRoutes === 'function' ? appRoutes() : appRoutes),
         {path: '*', component: Throw404}
     ]
-    console.log('--- routes', allRoutes)
 
     return allRoutes.map(({component, ...rest}) => {
         return {
