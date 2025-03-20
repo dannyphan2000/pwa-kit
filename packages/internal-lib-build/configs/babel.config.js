@@ -23,7 +23,6 @@ const config = {
         require('@babel/plugin-transform-object-assign'),
         require('@babel/plugin-syntax-dynamic-import'),
         require('@babel/plugin-proposal-optional-chaining'),
-        [require('@babel/plugin-proposal-decorators'), { "legacy": true}],
         [
             require('babel-plugin-formatjs'),
             {

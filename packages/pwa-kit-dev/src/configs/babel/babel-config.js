@@ -33,7 +33,6 @@ export default {
             }
         ],
         require('@babel/plugin-transform-async-to-generator'),
-        [require('@babel/plugin-proposal-decorators'), {legacy: true}],
         require('@babel/plugin-proposal-object-rest-spread'),
         require('@babel/plugin-transform-object-assign'),
         [

@@ -13,7 +13,6 @@ import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {BeforeRouteMatchParams, GetRoutesParams} from '@salesforce/pwa-kit-extension-sdk/types'
-import {ComponentMap} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
 import {Config} from './types'
@@ -26,7 +25,6 @@ import {withMultiSite} from './components/with-multi-site'
 import {withReactIntl} from './components/with-react-intl'
 import {withStorefrontPreview} from './components/with-storefront-preview'
 import extensionMeta from '../extension-meta.json'
-import * as modules from './pages'
 
 // Pages
 import * as Pages from './pages'
@@ -118,10 +116,6 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         return configureRoutes(allRoutes, config, {
             ignoredRoutes: ['/callback']
         })
-    }
-
-    getComponentMap(): ComponentMap {
-        return modules
     }
 }
 
