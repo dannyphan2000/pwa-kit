@@ -51,7 +51,7 @@ export type RouteProps = _RouteProps & {
 }
 
 export interface BeforeRouteMatchParams {
-    allRoutes: (RouteProps | SerializedRoute)[]
+    allRoutes: RouteProps[]
     locals: Record<string, any>
 }
 
@@ -87,5 +87,5 @@ export type SerializedRoute = {
  * on the client.
  */
 export type SerializedExtension = {
-    routes: SerializedRoute[]
+    routes: RouteProps[]
 }

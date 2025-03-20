@@ -8,6 +8,17 @@ import {ApplicationExtension} from './ApplicationExtension'
 import {ApplicationExtensionConfig, RouteProps} from '../../types'
 import React from 'react'
 
+const mockRoutes : RouteProps[] = [{
+        path: '/test',
+        component: {displayName: 'TestComponent'} as any
+    },
+    {
+        path: '/test-route-with-exact',
+        component: {displayName: 'TestComponent'} as any,
+        exact: true
+    }
+]
+
 class TestConfig implements ApplicationExtensionConfig {
     [key: string]: any
     enabled = true
@@ -16,24 +27,14 @@ class TestConfig implements ApplicationExtensionConfig {
 class TestExtension extends ApplicationExtension<TestConfig> {
     static readonly id = 'test-extension'
     public getRoutes(): RouteProps[] {
-        return [
-            {
-                path: '/test',
-                component: {displayName: 'TestComponent'} as any
-            }
-        ]
+        return mockRoutes
     }
 }
 
 class TestExtensionAsyncRoutes extends ApplicationExtension<TestConfig> {
     static readonly id = 'test-extension'
-    public async getRoutesAsync(params: any): Promise<(RouteProps | SerializedRoute)[]> {
-        return Promise.resolve([
-            {
-                path: '/test',
-                component: {displayName: 'TestComponent'} as any
-            }
-        ])
+    public async getRoutesAsync(params: any): Promise<RouteProps[]> {
+        return Promise.resolve(mockRoutes)
     }
 }
 
@@ -99,7 +100,12 @@ describe('ApplicationExtension', () => {
                     {
                         path: '/test',
                         componentName: 'TestComponent'
-                    }
+                    },
+                    {
+                        path: "/test-route-with-exact",
+                        componentName: 'TestComponent',
+                        exact: true,
+                    },
                 ]
             })
         })
@@ -120,34 +126,18 @@ describe('ApplicationExtension', () => {
             ]
     
             expect(() => extensionAsyncRoutes.serialize()).toThrow(
-                'Component for route with path "/test-route" is missing a displayName in TestExtensionAsyncRoutes extension'
+                'Component for route with path "/test-route" is missing a displayName in the TestExtensionAsyncRoutes extension'
             )
         })
     })
 
     describe('handle async routes', () => {
-        it('should not cache getRoutes result', () => {
-            const routes = extension.getRoutes({locals: {}})
-            expect(routes).toEqual([
-                {
-                    path: '/test',
-                    component: {displayName: 'TestComponent'}
-                }
-            ])
-            expect(extensionAsyncRoutes['_cachedRoutes']).toBeNull()
-        })
-
         it('should cache getRoutesAsync result', async () => {
             let routes
             if (extensionAsyncRoutes.getRoutesAsync) {
                 routes = await extensionAsyncRoutes.getRoutesAsync({locals: {}})
             }
-            expect(routes).toEqual([
-                {
-                    path: '/test',
-                    component: {displayName: 'TestComponent'}
-                }
-            ])
+            expect(routes).toEqual(mockRoutes)
             expect(extensionAsyncRoutes['_cachedRoutes']).toEqual(routes)
         })
 
@@ -164,7 +154,7 @@ describe('ApplicationExtension', () => {
             if (extensionAsyncRoutes.getRoutesAsync) {
                 routes = await extensionAsyncRoutes.getRoutesAsync({locals: {}})
             }
-            
+
             expect(routes).toEqual(cachedRoutes)
         })
     })

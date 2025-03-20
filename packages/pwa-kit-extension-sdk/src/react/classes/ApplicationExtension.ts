@@ -36,7 +36,7 @@ const isServerSide = typeof window === 'undefined'
 export class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
-    protected _cachedRoutes: (RouteProps | SerializedRoute)[] | null = null
+    protected _cachedRoutes: RouteProps[] | null = null
 
     constructor(config: Config) {
         super(config)
@@ -83,7 +83,7 @@ export class ApplicationExtension<
      * @protected
      * @returns a promise resolving to new routes to be added
      */
-    public getRoutesAsync?(params: GetRoutesParams): Promise<(RouteProps | SerializedRoute)[]>
+    public getRoutesAsync?(params: GetRoutesParams): Promise<RouteProps[]>
 
     /**
      * Called before route matching is evaluated. This method gives each extension the opportunity
@@ -119,20 +119,15 @@ export class ApplicationExtension<
                 throw new Error(
                     `Component for route with path "${
                         route.path
-                    }" is missing a displayName in ${this.getName()} extension`
+                    }" is missing a displayName in the ${this.getName()} extension`
                 )
             }
 
-            const serializedRoute: SerializedRoute = {
+            return {
                 path: route.path,
-                componentName: route.component.displayName
+                componentName: route.component.displayName,
+                ...(route.exact && { exact: true })
             }
-
-            if (route.exact !== undefined) {
-                serializedRoute.exact = route.exact
-            }
-
-            return serializedRoute
         })
 
         return {
@@ -168,7 +163,7 @@ export class ApplicationExtension<
 
         if (!this.getComponentMap) {
             throw new Error(
-                `${this.getName()}.getRoutes() is async but does not define getComponentMap()`
+                `getComponentMap() must be defined when getRoutesAsync() is defined in the ${this.getName()} extension`
             )
         }
 
@@ -176,11 +171,15 @@ export class ApplicationExtension<
         const componentMap = this.getComponentMap()
         const serializedExtension = window.__EXTENSIONS__[this.getName()]
         const routes = serializedExtension.routes.map(({componentName, ...route}) => {
+            if (!componentName) {
+                throw new Error(`Missing componentName for the route with path: "${route.path}". Ensure that ${this.serialize.name}() correctly assigns a componentName to the serialized route in the ${this.getName()} extension`)
+            }
+
             const component = componentMap[componentName]
 
             if (!component) {
                 throw new Error(
-                    `${componentName} component could not be deserialized for route with path: ${route.path}`
+                   `"${componentName}" was not found in the component map. Ensure that getComponentMap() includes a mapping for it in the ${this.getName()} extension`
                 )
             }
 
