@@ -15,7 +15,7 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {RouteProps} from '@salesforce/pwa-kit-extension-sdk/types'
+import {GetRoutesParams, RouteProps} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
 import {withOptionalChakra} from './components/with-optional-chakra-provider'
@@ -71,7 +71,7 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
         return applyHOCs(App, HOCs)
     }
 
-    getRoutes(): RouteProps[] {
+    getRoutes(params: GetRoutesParams): RouteProps[] {
         return [
             {
                 exact: true,

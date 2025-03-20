@@ -12,7 +12,7 @@ import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/cla
 import {
     ApplicationExtensionConfig,
     BeforeRouteMatchParams,
-    GetRoutesAsyncParams,
+    GetRoutesParams,
     RouteProps
 } from '../../types'
 
@@ -51,7 +51,7 @@ export class ApplicationExtension<
      * @protected
      * @returns new routes to be added
      */
-    public getRoutes(): RouteProps[] {
+    public getRoutes(params: GetRoutesParams): RouteProps[] {
         return []
     }
 
@@ -64,7 +64,7 @@ export class ApplicationExtension<
      * @protected
      * @returns a promise resolving to new routes to be added
      */
-    public getRoutesAsync?(params: GetRoutesAsyncParams): Promise<RouteProps[]>
+    public getRoutesAsync?(params: GetRoutesParams): Promise<RouteProps[]>
 
     /**
      * Called before route matching is evaluated. This method gives each extension the opportunity

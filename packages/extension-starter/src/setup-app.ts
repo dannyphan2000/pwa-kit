@@ -15,7 +15,11 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {BeforeRouteMatchParams, RouteProps} from '@salesforce/pwa-kit-extension-sdk/types'
+import {
+    BeforeRouteMatchParams,
+    GetRoutesParams,
+    RouteProps
+} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
 import {Config} from './types'
@@ -77,7 +81,7 @@ class Sample extends ApplicationExtension<Config> {
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
-    getRoutes(): RouteProps[] {
+    getRoutes(params: GetRoutesParams): RouteProps[] {
         return [
             {
                 exact: true,
