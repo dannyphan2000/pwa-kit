@@ -110,6 +110,18 @@ describe('ApplicationExtension', () => {
             })
         })
 
+        it('should return routes that have a componentName instead of component', async () => {
+            const mockRoutes = [
+                {
+                    path: '/test-route',
+                    componentName: 'Foo'
+                }
+            ]
+            extensionAsyncRoutes['_cachedRoutes'] = mockRoutes
+            const serialized = extensionAsyncRoutes.serialize()
+            expect(serialized).toEqual({routes: mockRoutes})
+        })
+
         it('should throw an error if getRoutesAsync() is not called before serializing', () => {
             expect(() => extensionAsyncRoutes.serialize()).toThrow(
                 'Routes have not been loaded. Call getRoutesAsync() before serializing'
@@ -131,7 +143,7 @@ describe('ApplicationExtension', () => {
         })
     })
 
-    describe('handle async routes', () => {
+    describe('handle when getRoutesAsync is implemented', () => {
         it('should cache getRoutesAsync result', async () => {
             let routes
             if (extensionAsyncRoutes.getRoutesAsync) {
@@ -157,5 +169,7 @@ describe('ApplicationExtension', () => {
 
             expect(routes).toEqual(cachedRoutes)
         })
+
+        // TODO deserialize tests (figure out how to set isServerSide in unit test)
     })
 })

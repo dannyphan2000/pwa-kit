@@ -108,7 +108,7 @@ export class ApplicationExtension<
         if (this._cachedRoutes === null) {
             throw new Error(`Routes have not been loaded. Call getRoutesAsync() before serializing`)
         }
-        console.log('--- serializing routes for extension', this.getName())
+        console.log('--- serializing routes for extension', this.getName(), this._cachedRoutes)
         const serializedRoutes = this._cachedRoutes.map((route) => {
             // Check if the route is already serialized
             if ('componentName' in route) {
