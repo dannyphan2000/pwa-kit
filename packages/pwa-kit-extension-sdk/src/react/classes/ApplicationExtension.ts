@@ -77,13 +77,7 @@ export class ApplicationExtension<
      * @protected
      * @returns a promise resolving to new routes to be added
      */
-    public getRoutesAsync?(params: GetRoutesParams): Promise<RouteProps[]>
-
-    /**
-     * Returns routes asynchronously.
-     * Only needed for async route loading.
-     */
-    public async getRoutesAsync?(): Promise<(RouteProps | SerializedRoute)[]>
+    public getRoutesAsync?(params: GetRoutesParams): Promise<(RouteProps | SerializedRoute)[]>
 
     /**
      * Called before route matching is evaluated. This method gives each extension the opportunity
@@ -106,14 +100,15 @@ export class ApplicationExtension<
      */
     public serialize(): SerializedExtension {
         if (this._cachedRoutes === null) {
-            throw new Error('Routes have not been loaded. Call getRoutes() before serializing')
+            throw new Error(`Routes have not been loaded. Call getRoutesAsync() before serializing`)
         }
         console.log('--- serializing routes for extension', this.getName())
         const serializedRoutes = this._cachedRoutes.map((route) => {
-            // Check if it is already serialized
+            // Check if the route is already serialized
             if ('componentName' in route) {
                 return route
             }
+    
             if (!route.component?.displayName) {
                 throw new Error(
                     `Component for route with path "${
@@ -121,12 +116,19 @@ export class ApplicationExtension<
                     }" is missing a displayName in ${this.getName()} extension`
                 )
             }
-            return {
+
+            const serializedRoute: SerializedRoute = {
                 path: route.path,
-                componentName: route.component?.displayName,
-                exact: true
+                componentName: route.component.displayName
             }
+
+            if (route.exact !== undefined) {
+                serializedRoute.exact = route.exact
+            }
+
+            return serializedRoute
         })
+
         return {
             routes: serializedRoutes
         }

@@ -6,7 +6,7 @@
  */
 import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension} from './ApplicationExtension'
-import {ApplicationExtensionConfig} from '../../types'
+import {ApplicationExtensionConfig, SerializedRoute} from '../../types'
 import React from 'react'
 
 class TestConfig implements ApplicationExtensionConfig {
@@ -28,7 +28,7 @@ class TestExtension extends ApplicationExtension<TestConfig> {
 
 class TestExtensionAsyncRoutes extends ApplicationExtension<TestConfig> {
     static readonly id = 'test-extension'
-    public async getRoutesAsync(): Promise<RouteProps[]> {
+    public async getRoutesAsync(params: any): Promise<(RouteProps | SerializedRoute)[]> {
         return Promise.resolve([
             {
                 path: '/test',
@@ -87,10 +87,13 @@ describe('ApplicationExtension', () => {
             extendRoutesSpy.mockRestore()
         })
     })
+    */
 
     describe('serialize', () => {
         it('should serialize routes correctly', async () => {
-            await extensionAsyncRoutes.getRoutes()
+            if (extensionAsyncRoutes.getRoutesAsync) {
+                await extensionAsyncRoutes.getRoutesAsync({locals: {}})
+            }
             const serialized = extensionAsyncRoutes.serialize()
             expect(serialized).toEqual({
                 routes: [
@@ -102,9 +105,9 @@ describe('ApplicationExtension', () => {
             })
         })
 
-        it('should throw an error if getRoutes() is not called before serializing', () => {
+        it('should throw an error if getRoutesAsync() is not called before serializing', () => {
             expect(() => extensionAsyncRoutes.serialize()).toThrow(
-                'Routes have not been loaded. Call getRoutes() before serializing'
+                'Routes have not been loaded. Call getRoutesAsync() before serializing'
             )
         })
 
@@ -124,8 +127,8 @@ describe('ApplicationExtension', () => {
     })
 
     describe('handle async routes', () => {
-        it('should not cache getRoutes result when it is sync', async () => {
-            const routes = extension.getRoutes()
+        it('should not cache getRoutes result', () => {
+            const routes = extension.getRoutes({locals: {}})
             expect(routes).toEqual([
                 {
                     path: '/test',
@@ -135,8 +138,11 @@ describe('ApplicationExtension', () => {
             expect(extensionAsyncRoutes['_cachedRoutes']).toBeNull()
         })
 
-        it('should cache getRoutes result when it is async', async () => {
-            const routes = await extensionAsyncRoutes.getRoutes()
+        it('should cache getRoutesAsync result', async () => {
+            let routes
+            if (extensionAsyncRoutes.getRoutesAsync) {
+                routes = await extensionAsyncRoutes.getRoutesAsync({locals: {}})
+            }
             expect(routes).toEqual([
                 {
                     path: '/test',
@@ -146,7 +152,7 @@ describe('ApplicationExtension', () => {
             expect(extensionAsyncRoutes['_cachedRoutes']).toEqual(routes)
         })
 
-        it('should return the cached result on subsequent calls', async () => {
+        it('should return the cached result on subsequent getRoutesAsync calls', async () => {
             const cachedRoutes = [
                 {
                     path: '/cached-route',
@@ -154,9 +160,13 @@ describe('ApplicationExtension', () => {
                 }
             ]
             extensionAsyncRoutes['_cachedRoutes'] = cachedRoutes
-            const routes = await extensionAsyncRoutes.getRoutes()
+
+            let routes
+            if (extensionAsyncRoutes.getRoutesAsync) {
+                routes = await extensionAsyncRoutes.getRoutesAsync({locals: {}})
+            }
+            
             expect(routes).toEqual(cachedRoutes)
         })
     })
-    */
 })
