@@ -52,6 +52,9 @@ export class ApplicationExtension<
         return []
     }
 
+    /*
+     * If you wish to add new routes asynchronously (e.g. via API call), please implement this method.
+     */
     public getRoutesAsync?(params: GetRoutesParams): Promise<RouteProps[]>
 
     /**
