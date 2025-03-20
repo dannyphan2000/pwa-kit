@@ -410,7 +410,7 @@ export const getAllRoutes = async (locals = {}) => {
             applicationExtensions.map((extension) =>
                 extension.getRoutesAsync
                     ? extension.getRoutesAsync({locals})
-                    : extension.getRoutes({locals})
+                    : extension.getRoutes()
             )
         )
     ).flat()
