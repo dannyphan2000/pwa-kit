@@ -170,7 +170,7 @@ export class ApplicationExtension<
 
             if (!component) {
                 throw new Error(
-                    `${componentName} component could not be deserialized for route with path: ${path}`
+                    `${componentName} component could not be deserialized for route with path: ${route.path}`
                 )
             }
 
