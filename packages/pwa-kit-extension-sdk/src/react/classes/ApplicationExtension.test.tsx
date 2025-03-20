@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {RouteProps} from 'react-router-dom'
 import {ApplicationExtension} from './ApplicationExtension'
-import {ApplicationExtensionConfig, SerializedRoute} from '../../types'
+import {ApplicationExtensionConfig, RouteProps} from '../../types'
 import React from 'react'
 
 class TestConfig implements ApplicationExtensionConfig {

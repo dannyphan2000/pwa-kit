@@ -7,7 +7,6 @@
 
 // Third-Party
 import React from 'react'
-import {RouteProps} from 'react-router-dom'
 
 // Platform Imports
 import {
@@ -16,6 +15,7 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
+import {GetRoutesParams, RouteProps} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
 import {withOptionalChakra} from './components/with-optional-chakra-provider'
@@ -26,7 +26,6 @@ import {Config} from './types'
 import StoreLocatorPage from './pages/store-locator'
 import {logger} from './logger'
 import extensionMeta from '../extension-meta.json'
-import {GetRoutesParams} from '@salesforce/pwa-kit-extension-sdk/types'
 
 interface StoreSlice {
     isModalOpen: boolean

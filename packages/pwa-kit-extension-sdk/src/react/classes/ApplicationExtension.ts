@@ -4,15 +4,21 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-// Third-Party
-import {RouteProps} from 'react-router-dom'
 
 // Local
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
 import {cacheMethodResult} from '../utils/helpers'
 
 // Types
-import {ApplicationExtensionConfig, BeforeRouteMatchParams, GetRoutesParams, ComponentMap, DeserializedExtension, SerializedExtension, SerializedRoute} from '../../types'
+import {
+    ApplicationExtensionConfig,
+    BeforeRouteMatchParams,
+    ComponentMap,
+    DeserializedExtension,
+    GetRoutesParams,
+    RouteProps,
+    SerializedExtension,
+} from '../../types'
 
 export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 
