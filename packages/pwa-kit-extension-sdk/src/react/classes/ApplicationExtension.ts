@@ -15,7 +15,7 @@ import {
     BeforeRouteMatchParams,
     ComponentMap,
     DeserializedExtension,
-    GetRoutesParams,
+    GetRoutesAsyncParams,
     RouteProps,
     SerializedExtension,
 } from '../../types'
