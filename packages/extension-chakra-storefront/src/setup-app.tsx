@@ -49,7 +49,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         return applyHOCs(App, requiredHOCs)
     }
 
-    getRoutes(params: GetRoutesParams): Promise<RouteProps[]> {
+    getRoutes(params: GetRoutesParams): RouteProps[] {
         const config = this.getConfig()
 
         const extensionRoutes = [
@@ -106,7 +106,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
             }
         ].filter((route) => route.path !== false)
 
-        return Promise.resolve(extensionRoutes as RouteProps[])
+        return extensionRoutes as RouteProps[]
     }
 
     // Called before the route with all the routes

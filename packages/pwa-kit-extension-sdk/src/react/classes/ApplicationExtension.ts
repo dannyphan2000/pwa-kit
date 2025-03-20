@@ -48,9 +48,11 @@ export class ApplicationExtension<
      * @protected
      * @returns new routes to be added
      */
-    public getRoutes(params: GetRoutesParams): Promise<RouteProps[]> {
-        return Promise.resolve([])
+    public getRoutes(params: GetRoutesParams): RouteProps[] {
+        return []
     }
+
+    public getRoutesAsync?(params: GetRoutesParams): Promise<RouteProps[]>
 
     /**
      * Called before route matching is evaluated. This method gives each extension the opportunity
