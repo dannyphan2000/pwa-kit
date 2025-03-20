@@ -52,8 +52,14 @@ export class ApplicationExtension<
         return []
     }
 
-    /*
+    /**
+     * Called during server rendering and client application initialization. This method allows
+     * you to add new routes, typically routes pointing at page components added by your application extension.
+     *
      * If you wish to add new routes asynchronously (e.g. via API call), please implement this method.
+     *
+     * @protected
+     * @returns a promise resolving to new routes to be added
      */
     public getRoutesAsync?(params: GetRoutesParams): Promise<RouteProps[]>
 
