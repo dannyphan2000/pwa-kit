@@ -9,7 +9,7 @@ import {RouteProps} from 'react-router-dom'
 
 // Local
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
-import {applyCacheForMethod} from '../utils/helpers'
+import {cacheMethodResult} from '../utils/helpers'
 
 // Types
 import {ApplicationExtensionConfig, BeforeRouteMatchParams, GetRoutesParams, ComponentMap, DeserializedExtension, SerializedExtension, SerializedRoute} from '../../types'
@@ -39,7 +39,7 @@ export class ApplicationExtension<
             // Deserialize the routes on the client to ensure the latest routes are loaded on the client
             this._cachedRoutes = this.deserialize()?.routes || null
             // Apply caching for the getRoutes method
-            applyCacheForMethod(this, 'getRoutesAsync', '_cachedRoutes')
+            cacheMethodResult(this, 'getRoutesAsync', '_cachedRoutes')
         }    
     }
 
@@ -108,6 +108,7 @@ export class ApplicationExtension<
         if (this._cachedRoutes === null) {
             throw new Error('Routes have not been loaded. Call getRoutes() before serializing')
         }
+        console.log('--- serializing routes for extension', this.getName())
         const serializedRoutes = this._cachedRoutes.map((route) => {
             // Check if it is already serialized
             if ('componentName' in route) {
@@ -163,6 +164,7 @@ export class ApplicationExtension<
             )
         }
 
+        console.log('--- deserializing routes for extension', this.getName())
         const componentMap = this.getComponentMap()
         const serializedExtension = window.__EXTENSIONS__[this.getName()]
         const routes = serializedExtension.routes.map(({componentName, ...route}) => {

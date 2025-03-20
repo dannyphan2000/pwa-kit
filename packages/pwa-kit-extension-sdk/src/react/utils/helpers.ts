@@ -25,30 +25,31 @@ export const applyHOCs = <T extends React.ComponentType<any>>(Component: T, hocs
 }
 
 /**
- * Applies a cache to a method on an instance.
+ * Applies a cache to a method on an instance. The cache is stored in a property on the instance.
  * 
  * @param instance - The instance on which to apply the cache.
  * @param methodName - The name of the method to cache.
  * @param cacheProperty - The name of the property to use for caching.
  */
-export function applyCacheForMethod(instance: any, methodName: string, cacheProperty: string) {
+export function cacheMethodResult(instance: any, methodName: string, cacheProperty: string) {
     const originalMethod = instance[methodName]
 
     if (typeof originalMethod === 'function') {
-        instance[methodName] = function (this: any, ...args: any[]) {
-            if (this[cacheProperty] !== null) {
-                return this[cacheProperty]
+        instance[methodName] = function (...args: any[]) {
+            if (instance[cacheProperty] !== undefined && instance[cacheProperty] !== null) {
+                return instance[cacheProperty]
             }
 
-            const result = originalMethod.apply(this, args)
+            const result = originalMethod.apply(instance, args)
 
             if (result instanceof Promise) {
-                const promise = result.then((resolved) => (this[cacheProperty] = resolved))
-                this[cacheProperty] = promise
-                return promise
-            } else {
-                return (this[cacheProperty] = result)
+                return (instance[cacheProperty] = result.then((resolved) => {
+                    instance[cacheProperty] = resolved
+                    return resolved
+                }))
             }
+
+            return (instance[cacheProperty] = result)
         }
     }
 }
