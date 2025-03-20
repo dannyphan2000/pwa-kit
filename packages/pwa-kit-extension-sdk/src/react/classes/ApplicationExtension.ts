@@ -12,7 +12,7 @@ import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/cla
 import {applyCacheForMethod} from '../utils/helpers'
 
 // Types
-import {ApplicationExtensionConfig, BeforeRouteMatchParams, GetRoutesParams, ComponentMap, DeserializedExtension, SerializedExtension} from '../../types'
+import {ApplicationExtensionConfig, BeforeRouteMatchParams, GetRoutesParams, ComponentMap, DeserializedExtension, SerializedExtension, SerializedRoute} from '../../types'
 
 export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 
@@ -30,11 +30,10 @@ const isServerSide = typeof window === 'undefined'
 export class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
-    protected _cachedRoutes: RouteProps[] | null = null
+    protected _cachedRoutes: (RouteProps | SerializedRoute)[] | null = null
 
     constructor(config: Config) {
         super(config)
-        this.extendRoutes = this.extendRoutes.bind(this)
 
         if (this.getRoutesAsync) {
             // Deserialize the routes on the client to ensure the latest routes are loaded on the client
@@ -84,7 +83,7 @@ export class ApplicationExtension<
      * Returns routes asynchronously.
      * Only needed for async route loading.
      */
-    public async getRoutesAsync?(): Promise<RouteProps[]>
+    public async getRoutesAsync?(): Promise<(RouteProps | SerializedRoute)[]>
 
     /**
      * Called before route matching is evaluated. This method gives each extension the opportunity
@@ -110,6 +109,10 @@ export class ApplicationExtension<
             throw new Error('Routes have not been loaded. Call getRoutes() before serializing')
         }
         const serializedRoutes = this._cachedRoutes.map((route) => {
+            // Check if it is already serialized
+            if ('componentName' in route) {
+                return route
+            }
             if (!route.component?.displayName) {
                 throw new Error(
                     `Component for route with path "${

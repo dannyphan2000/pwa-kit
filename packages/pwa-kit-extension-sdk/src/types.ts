@@ -6,8 +6,6 @@
  */
 import {RouteProps} from 'react-router-dom'
 
-import {RouteProps} from 'react-router-dom'
-
 /**
  * This is the base configuration type for all Application Extensions. Modify this
  * type if you are adding new configurations that are general to all extensions.

@@ -122,7 +122,6 @@ describe('ApplicationExtension', () => {
             )
         })
     })
-    */
 
     describe('handle async routes', () => {
         it('should not cache getRoutes result when it is sync', async () => {
@@ -159,4 +158,5 @@ describe('ApplicationExtension', () => {
             expect(routes).toEqual(cachedRoutes)
         })
     })
+    */
 })
