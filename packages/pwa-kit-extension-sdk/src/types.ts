@@ -70,6 +70,7 @@ export type DeserializedExtension = {
 export type SerializedRoute = {
     path: string | readonly string[] | undefined
     componentName: string
+    exact?: boolean | undefined
 }
 
 /**

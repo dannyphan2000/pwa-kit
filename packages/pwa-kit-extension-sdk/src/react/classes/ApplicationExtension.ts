@@ -122,7 +122,8 @@ export class ApplicationExtension<
             }
             return {
                 path: route.path,
-                componentName: route.component?.displayName
+                componentName: route.component?.displayName,
+                exact: true
             }
         })
         return {
@@ -164,7 +165,7 @@ export class ApplicationExtension<
 
         const componentMap = this.getComponentMap()
         const serializedExtension = window.__EXTENSIONS__[this.getName()]
-        const routes = serializedExtension.routes.map(({path, componentName}) => {
+        const routes = serializedExtension.routes.map(({componentName, ...route}) => {
             const component = componentMap[componentName]
 
             if (!component) {
@@ -174,8 +175,7 @@ export class ApplicationExtension<
             }
 
             return {
-                path,
-                exact: true,
+                ...route,
                 component
             }
         })
