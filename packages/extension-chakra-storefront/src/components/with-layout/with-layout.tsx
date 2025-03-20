@@ -20,7 +20,7 @@ import {useCategory, useShopperBasketsMutation} from '@salesforce/commerce-sdk-r
 
 // Chakra
 import {Box, Center, Fade, Spinner, useDisclosure, useStyleConfig} from '@chakra-ui/react'
-// import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
+import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
 
 // Local Project Components
 import {DrawerMenu} from '../drawer-menu'
@@ -119,7 +119,6 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
             '@salesforce/extension-seo-url-mapping'
         )
         const isSeoEnabled = !!seoExtension && seoExtension.isEnabled()
-        console.log("(JEREMY) with-layout, isSeoEnabled: ", isSeoEnabled)
         const isBlocked = useApplicationExtensionsStore((state) => {
             return state.state['@salesforce/extension-seo-url-mapping']?.isBlocked
         })
@@ -275,7 +274,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 <ScrollToTop />
 
                 <Box id="app" display="flex" flexDirection="column" flex={1}>
-                    {/* <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink> */}
+                    <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>
                     <Box {...headerWrapperStyles}>
                         {!isCheckout ? (
                             <>
@@ -315,15 +314,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     </Box>
                     {!isOnline && <OfflineBanner />}
                     <AddToCartModalProvider>
-                        {/* <SkipNavContent
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                flex: 1,
-                                outline: 0
-                            }}
-                        > */}
-                            <Box
+                    <Box
                                 as="main"
                                 id="app-main"
                                 role="main"
@@ -335,8 +326,32 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                                     <WrappedComponent {...(props as P)} />
                                 </OfflineBoundary>
                             </Box>
-                        {/* </SkipNavContent> */}
-
+                    {/* {!isBlocked ? (
+                        <Box
+                            as="main"
+                            id="app-main"
+                            role="main"
+                            display="flex"
+                            flexDirection="column"
+                            flex="1"
+                        >
+                            <OfflineBoundary isOnline={false}>
+                                <WrappedComponent {...(props as P)} />
+                            </OfflineBoundary>
+                        </Box>
+                    )
+                    : (
+                        <Box
+                            height="700px"
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <PlaceholderComponent></PlaceholderComponent>
+                        </Box>
+                    )} */}
                         {!isCheckout ? <Footer /> : <CheckoutFooter />}
 
                         <AuthModal {...(authModal as any)} />
