@@ -7,7 +7,6 @@
 
 // Third-Party
 import React from 'react'
-import {RouteProps} from 'react-router-dom'
 
 // Platform Imports
 import {
@@ -16,7 +15,11 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {GetRoutesParams, BeforeRouteMatchParams} from '@salesforce/pwa-kit-extension-sdk/types'
+import {
+    GetRoutesParams,
+    BeforeRouteMatchParams,
+    RouteProps
+} from '@salesforce/pwa-kit-extension-sdk/types'
 import Auth from '@salesforce/commerce-sdk-react/auth'
 import {ShopperSeo} from 'commerce-sdk-isomorphic'
 import {routeComponent} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/route-component'
@@ -115,11 +118,7 @@ class UrlMapping extends ApplicationExtension<Config> {
      */
     beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
         console.log('--- beforeRouteMatch: initial routes', allRoutes)
-        const index = allRoutes.findIndex(
-            (route) =>
-                // @ts-ignore
-                route.componentName === 'Foo'
-        )
+        const index = allRoutes.findIndex((route) => route.componentName === 'Foo')
         if (index === -1) {
             return allRoutes
         }
