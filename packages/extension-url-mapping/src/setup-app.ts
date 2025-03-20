@@ -16,7 +16,7 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {GetRoutesParams, BeforeRouteMatchParams, ComponentMap} from '@salesforce/pwa-kit-extension-sdk/types'
+import {GetRoutesParams, BeforeRouteMatchParams, ComponentMap, SerializedRoute} from '@salesforce/pwa-kit-extension-sdk/types'
 import Auth from '@salesforce/commerce-sdk-react/auth'
 import {ShopperSeo} from 'commerce-sdk-isomorphic'
 import {routeComponent} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/route-component'
@@ -81,7 +81,7 @@ class UrlMapping extends ApplicationExtension<Config> {
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
-    async getRoutesAsync({locals}: GetRoutesParams): Promise<RouteProps[]> {
+    async getRoutesAsync({locals}: GetRoutesParams): Promise<(RouteProps | SerializedRoute)[]> {
         if (!locals.originalUrl) {
             return Promise.resolve([])
         }

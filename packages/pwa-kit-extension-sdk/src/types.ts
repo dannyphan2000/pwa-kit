@@ -43,7 +43,7 @@ export interface GetRoutesParams {
 }
 
 export interface BeforeRouteMatchParams {
-    allRoutes: RouteProps[]
+    allRoutes: (RouteProps | SerializedRoute)[]
     locals: Record<string, any>
 }
 
