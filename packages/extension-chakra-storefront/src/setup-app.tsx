@@ -11,11 +11,7 @@ import React from 'react'
 // Platform Imports
 import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {
-    BeforeRouteMatchParams,
-    GetRoutesParams,
-    RouteProps
-} from '@salesforce/pwa-kit-extension-sdk/types'
+import {BeforeRouteMatchParams, RouteProps} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
 import {Config} from './types'
@@ -52,7 +48,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
         return applyHOCs(App, requiredHOCs)
     }
 
-    getRoutes(params: GetRoutesParams): RouteProps[] {
+    getRoutes(): RouteProps[] {
         const config = this.getConfig()
 
         const extensionRoutes = [

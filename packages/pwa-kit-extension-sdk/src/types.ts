@@ -39,7 +39,7 @@ export type BuildCandidatePathsOptions = {
     extensionEntries: ApplicationExtensionEntry[]
 }
 
-export interface GetRoutesParams {
+export interface GetRoutesAsyncParams {
     locals: Record<string, any>
 }
 
