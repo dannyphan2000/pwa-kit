@@ -33,24 +33,21 @@ export const applyHOCs = <T extends React.ComponentType<any>>(Component: T, hocs
  */
 export function cacheMethodResult(instance: any, methodName: string, cacheProperty: string) {
     const originalMethod = instance[methodName]
+    if (typeof originalMethod !== 'function') return
 
-    if (typeof originalMethod === 'function') {
-        instance[methodName] = function (...args: any[]) {
-            if (instance[cacheProperty] !== undefined && instance[cacheProperty] !== null) {
-                return instance[cacheProperty]
-            }
-
-            const result = originalMethod.apply(instance, args)
-
-            if (result instanceof Promise) {
-                return (instance[cacheProperty] = result.then((resolved) => {
-                    instance[cacheProperty] = resolved
-                    return resolved
-                }))
-            }
-
-            return (instance[cacheProperty] = result)
+    instance[methodName] = function (...args: any[]) {
+        if (instance[cacheProperty] !== undefined && instance[cacheProperty] !== null) {
+            return instance[cacheProperty]
         }
+
+        const result = originalMethod.apply(instance, args)
+        if (result instanceof Promise) {
+            void result.then((resolved) => {
+                instance[cacheProperty] = resolved
+            })
+        }
+
+        return result
     }
 }
 

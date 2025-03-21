@@ -39,12 +39,12 @@ export class ApplicationExtension<
     constructor(config: Config) {
         super(config)
 
-        if (this.getRoutesAsync) {
+        if (!isServerSide()) {
             // Deserialize the routes on the client to ensure the latest routes are loaded on the client
             this._cachedRoutes = this.deserialize()?.routes || null
-            // Apply caching for the getRoutes method
-            cacheMethodResult(this, 'getRoutesAsync', '_cachedRoutes')
         }
+
+        cacheMethodResult(this, 'getRoutesAsync', '_cachedRoutes')
     }
 
     /**
@@ -100,16 +100,24 @@ export class ApplicationExtension<
      * Called on the server to serialize the extension data that will be sent to the client.
      *
      * @returns SerializedExtension - The serialized extension data.
+     * @returns null if there's no asynchronous state that needs to be serialized
      * @throws Error if the routes have not been loaded.
      */
-    public serialize(): SerializedExtension {
+    public serialize(): SerializedExtension | null {
+        if (typeof this.getRoutesAsync === 'undefined') return null
+
         if (this._cachedRoutes === null) {
             throw new Error(`Routes have not been loaded. Call getRoutesAsync() before serializing`)
         }
-        console.log('--- serializing routes for extension', this.getName(), 'cachedRoutes:', this._cachedRoutes)
+        console.log(
+            '--- serializing routes for extension',
+            this.getName(),
+            'cachedRoutes:',
+            this._cachedRoutes
+        )
         const serializedRoutes = this._cachedRoutes.map((route) => {
             // Check if the route is already serialized
-            if ('componentName' in route) {
+            if (route.componentName) {
                 return route
             }
 
@@ -139,9 +147,9 @@ export class ApplicationExtension<
 
     /**
      * Returns a map of component names to components used for deserializing extension data
-     * when `getRoutes()` is asynchronous.
+     * when `getRoutesAsync()` is asynchronous.
      *
-     * This method is required only if `getRoutes()` is asynchronous.
+     * This method is required only if `getRoutesAsync()` is asynchronous.
      *
      * It is recommended to use loadable components whenever possible to reduce bundle size.
      *
@@ -159,7 +167,7 @@ export class ApplicationExtension<
      * @throws Error if the deserialized component cannot be found in the component map.
      */
     private deserialize(): DeserializedExtension | null {
-        if (isServerSide()) {
+        if (isServerSide() || typeof this.getRoutesAsync === 'undefined') {
             return null
         }
 
@@ -169,10 +177,16 @@ export class ApplicationExtension<
             )
         }
 
-        console.log('--- deserializing routes for extension', this.getName(), '- window.__EXTENSIONS__:', window.__EXTENSIONS__)
+        console.log(
+            '--- deserializing routes for extension',
+            this.getName(),
+            '- window.__EXTENSIONS__:',
+            window.__EXTENSIONS__
+        )
         console.log('ComponentMap:', this.getComponentMap())
         const componentMap = this.getComponentMap()
         const serializedExtension = window.__EXTENSIONS__[this.getName()]
+
         const routes = serializedExtension.routes.map(({componentName, ...route}) => {
             if (!componentName) {
                 throw new Error(
