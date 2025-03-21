@@ -7,15 +7,9 @@
 
 import {SerializedExtension} from './types'
 
-// TODO fix typing of fields
 declare global {
     interface Window {
-        __INITIAL_CORRELATION_ID__: string
-        __CONFIG__: object
-        __PRELOADED_STATE__: string
-        __ERROR__: object
         __EXTENSIONS__: {[key: string]: SerializedExtension}
-        Progressive: object
     }
 }
 
