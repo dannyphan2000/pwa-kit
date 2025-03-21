@@ -118,7 +118,7 @@ class UrlMapping extends ApplicationExtension<Config> {
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
     beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
-        console.log('--- beforeRouteMatch: initial routes', allRoutes)
+        // console.log('--- beforeRouteMatch: initial routes', allRoutes)
         const index = allRoutes.findIndex((route) => route.componentName === 'Foo')
         if (index === -1) {
             return allRoutes
@@ -132,7 +132,7 @@ class UrlMapping extends ApplicationExtension<Config> {
         // Jinsu's work on serialization will make sure that the same page will be rendered on both server and client sides.
 
         const result = [myRoute, ...routes]
-        console.log('--- beforeRouteMatch: resulting routes', result)
+        // console.log('--- beforeRouteMatch: resulting routes', result)
         return result
     }
 
