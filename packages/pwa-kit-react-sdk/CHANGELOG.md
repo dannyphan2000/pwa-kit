@@ -1,3 +1,6 @@
+## TBD
+- Enhanced SSR rendering by serializing application extensions with async routes [#2300](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2300)
+
 ## v4.0.0-extensibility-preview.4 (Feb 12, 2025)
 - Replace `event-emitter` in favor of the native `EventTarget` [#2289](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2289)
 
