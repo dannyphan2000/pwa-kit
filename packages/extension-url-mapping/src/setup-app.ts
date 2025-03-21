@@ -16,7 +16,7 @@ import {
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {
-    GetRoutesAsyncParams,
+    GetRoutesParams,
     BeforeRouteMatchParams,
     RouteProps,
     ComponentMap
@@ -85,7 +85,7 @@ class UrlMapping extends ApplicationExtension<Config> {
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
-    async getRoutesAsync({locals}: GetRoutesAsyncParams): Promise<RouteProps[]> {
+    async getRoutesAsync({locals}: GetRoutesParams): Promise<RouteProps[]> {
         if (!locals.originalUrl) {
             return Promise.resolve([])
         }
