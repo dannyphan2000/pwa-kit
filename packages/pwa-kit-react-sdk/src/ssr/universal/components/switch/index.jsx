@@ -9,7 +9,8 @@ import PropTypes from 'prop-types'
 import {Switch as RouterSwitch, Route} from 'react-router-dom'
 import AppErrorBoundary from '../app-error-boundary'
 import {UIDReset, UIDFork} from 'react-uid'
-import {RoutesProvider, useRoutes} from '../../contexts'
+import {RoutesProvider} from '../../contexts'
+import {useRoutes} from '../../hooks'
 
 /**
  * The Switch component packages up the bits of rendering that are shared between

@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, {useContext, useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import PropTypes from 'prop-types'
 import {useLocation} from 'react-router-dom'
 import logger from '../../../utils/logger-instance'
@@ -63,7 +63,7 @@ CorrelationIdProvider.propTypes = {
     location: PropTypes.object
 }
 
-const RoutesContext = React.createContext({})
+const RoutesContext = React.createContext()
 
 /**
  * This provider initializes the routes
@@ -85,12 +85,4 @@ RoutesProvider.propTypes = {
     children: PropTypes.node.isRequired
 }
 
-const useRoutes = () => {
-    const context = useContext(RoutesContext)
-    if (!context) {
-        throw new Error('useRoutes must be used within a RoutesProvider')
-    }
-    return context
-}
-
-export {CorrelationIdContext, CorrelationIdProvider, ServerContext, RoutesProvider, useRoutes}
+export {CorrelationIdContext, CorrelationIdProvider, ServerContext, RoutesContext, RoutesProvider}
