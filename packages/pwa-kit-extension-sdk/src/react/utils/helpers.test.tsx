@@ -16,7 +16,7 @@ import React from 'react'
 import {render, screen} from '@testing-library/react'
 
 // Local
-import {applyHOCs, cacheMethodResult} from './helpers'
+import {applyHOCs, cacheMethodResult, isServerSide} from './helpers'
 
 // Mock HOC functions
 const withExtraProp = (Component: React.ComponentType<any>) => {
@@ -137,5 +137,21 @@ describe('cacheMethodResult', () => {
         (instance as any).methodName = 'not a function'
         cacheMethodResult(instance, 'methodName', '_cache')
         expect(instance.methodName).toBe('not a function') // Should remain unchanged
+    })
+})
+
+describe('isServerSide', () => {
+    afterEach(() => {
+        delete (global as any).window
+    })
+
+    it('should return true when window is undefined (server-side)', () => {
+      delete (global as any).window
+      expect(isServerSide()).toBe(true)
+    })
+  
+    it('should return false when window is defined (client-side)', () => {
+      (global as any).window = {}
+      expect(isServerSide()).toBe(false)
     })
 })

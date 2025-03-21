@@ -7,7 +7,7 @@
 
 // Local
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
-import {cacheMethodResult} from '../utils/helpers'
+import {cacheMethodResult, isServerSide} from '../utils/helpers'
 
 // Types
 import {
@@ -21,8 +21,6 @@ import {
 } from '../../types'
 
 export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
-
-const isServerSide = typeof window === 'undefined'
 
 /**
  * An abstract class representing an Application Extension. This class provides
@@ -108,7 +106,6 @@ export class ApplicationExtension<
         if (this._cachedRoutes === null) {
             throw new Error(`Routes have not been loaded. Call getRoutesAsync() before serializing`)
         }
-        console.log('--- serializing routes for extension', this.getName(), this._cachedRoutes)
         const serializedRoutes = this._cachedRoutes.map((route) => {
             // Check if the route is already serialized
             if ('componentName' in route) {
@@ -157,7 +154,7 @@ export class ApplicationExtension<
      * @throws Error if the deserialized component cannot be found in the component map.
      */
     private deserialize(): DeserializedExtension | null {
-        if (isServerSide) {
+        if (isServerSide()) {
             return null
         }
 
@@ -167,7 +164,6 @@ export class ApplicationExtension<
             )
         }
 
-        console.log('--- deserializing routes for extension', this.getName())
         const componentMap = this.getComponentMap()
         const serializedExtension = window.__EXTENSIONS__[this.getName()]
         const routes = serializedExtension.routes.map(({componentName, ...route}) => {

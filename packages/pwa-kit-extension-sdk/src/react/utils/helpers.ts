@@ -53,3 +53,10 @@ export function cacheMethodResult(instance: any, methodName: string, cacheProper
         }
     }
 }
+
+/**
+ * Checks if the code is running on the server side.
+ *
+ * @returns {boolean} `true` if running on the server, `false` if running on the client.
+ */
+export const isServerSide = () => typeof window === 'undefined'

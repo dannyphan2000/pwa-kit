@@ -5,18 +5,35 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {ApplicationExtension} from './ApplicationExtension'
-import {ApplicationExtensionConfig, RouteProps} from '../../types'
+import {ApplicationExtensionConfig, ComponentMap, RouteProps} from '../../types'
 import React from 'react'
+
+const MockComponent: React.ComponentType<any> = () => {
+    return <div>{MockComponent.displayName}</div>
+}
+MockComponent.displayName = 'MockComponent'
 
 const mockRoutes : RouteProps[] = [{
         path: '/test',
-        component: {displayName: 'TestComponent'} as any
+        component: MockComponent
     },
     {
         path: '/test-route-with-exact',
-        component: {displayName: 'TestComponent'} as any,
+        component: MockComponent,
         exact: true
     }
+]
+
+const mockSerializedRoutes: RouteProps[] = [
+    {
+        path: '/test',
+        componentName: 'MockComponent'
+    },
+    {
+        path: "/test-route-with-exact",
+        componentName: 'MockComponent',
+        exact: true,
+    },
 ]
 
 class TestConfig implements ApplicationExtensionConfig {
@@ -26,6 +43,7 @@ class TestConfig implements ApplicationExtensionConfig {
 
 class TestExtension extends ApplicationExtension<TestConfig> {
     static readonly id = 'test-extension'
+
     public getRoutes(): RouteProps[] {
         return mockRoutes
     }
@@ -33,28 +51,42 @@ class TestExtension extends ApplicationExtension<TestConfig> {
 
 class TestExtensionAsyncRoutes extends ApplicationExtension<TestConfig> {
     static readonly id = 'test-extension'
+
+    public async getRoutesAsync(params: any): Promise<RouteProps[]> {
+        return Promise.resolve(mockRoutes)
+    }
+
+    public getComponentMap(): ComponentMap {
+        return {MockComponent: MockComponent as any}
+    }
+}
+
+class TestExtensionAsyncRoutesNoComponentMap extends ApplicationExtension<TestConfig> {
+    static readonly id = 'test-extension'
+
     public async getRoutesAsync(params: any): Promise<RouteProps[]> {
         return Promise.resolve(mockRoutes)
     }
 }
 
-
 describe('ApplicationExtension', () => {
     let extension: ApplicationExtension<TestConfig>
     let extensionAsyncRoutes: ApplicationExtension<TestConfig>
-    let mockComponent: React.ComponentType<any>
 
     beforeEach(() => {
         const config = new TestConfig()
         extension = new TestExtension(config)
         extensionAsyncRoutes = new TestExtensionAsyncRoutes(config)
-        mockComponent = jest.fn(() => <div>Test Component</div>)
+    })
+
+    afterEach(() => {
+        delete (global as any).window
     })
 
     describe('extendApp', () => {
         test('should return the provided component without modification', () => {
-            const result = extension.extendApp(mockComponent)
-            expect(result).toBe(mockComponent)
+            const result = extension.extendApp(MockComponent)
+            expect(result).toBe(MockComponent)
         })
     })
 
@@ -62,8 +94,8 @@ describe('ApplicationExtension', () => {
     describe('extendRoutes', () => {
         test('should return the routes array without modification', () => {
             const routes: RouteProps[] = [
-                {path: '/home', component: mockComponent},
-                {path: '/about', component: mockComponent}
+                {path: '/home', component: MockComponent},
+                {path: '/about', component: MockComponent}
             ]
 
             const result = extension.extendRoutes(routes)
@@ -71,8 +103,8 @@ describe('ApplicationExtension', () => {
         })
 
         test('should allow for modification of routes', () => {
-            const routes: RouteProps[] = [{path: '/home', component: mockComponent}]
-            const additionalRoute: RouteProps = {path: '/new', component: mockComponent}
+            const routes: RouteProps[] = [{path: '/home', component: MockComponent}]
+            const additionalRoute: RouteProps = {path: '/new', component: MockComponent}
 
             const extendRoutesSpy = jest
                 .spyOn(extension, 'extendRoutes')
@@ -95,19 +127,7 @@ describe('ApplicationExtension', () => {
                 await extensionAsyncRoutes.getRoutesAsync({locals: {}})
             }
             const serialized = extensionAsyncRoutes.serialize()
-            expect(serialized).toEqual({
-                routes: [
-                    {
-                        path: '/test',
-                        componentName: 'TestComponent'
-                    },
-                    {
-                        path: "/test-route-with-exact",
-                        componentName: 'TestComponent',
-                        exact: true,
-                    },
-                ]
-            })
+            expect(serialized).toEqual({routes: mockSerializedRoutes})
         })
 
         it('should return routes that have a componentName instead of component', async () => {
@@ -133,7 +153,7 @@ describe('ApplicationExtension', () => {
             extensionAsyncRoutes['_cachedRoutes'] = [
                 {
                     path: '/test-route',
-                    component: {} as any // Missing displayName
+                    component: {} as React.ComponentType<any> // Missing displayName
                 }
             ]
     
@@ -143,7 +163,7 @@ describe('ApplicationExtension', () => {
         })
     })
 
-    describe('handle when getRoutesAsync is implemented', () => {
+    describe('handle when implementation of getRoutesAsync exists', () => {
         it('should cache getRoutesAsync result', async () => {
             let routes
             if (extensionAsyncRoutes.getRoutesAsync) {
@@ -170,6 +190,53 @@ describe('ApplicationExtension', () => {
             expect(routes).toEqual(cachedRoutes)
         })
 
-        // TODO deserialize tests (figure out how to set isServerSide in unit test)
+        it('should not deserialize when server-side', async () => {
+            // Simulate server-side
+            (global as any).window = undefined
+            extension = new TestExtensionAsyncRoutes(new TestConfig())
+            expect(extension['_cachedRoutes']).toBeNull()
+        })
+
+        it('should deserialize when client-side', async () => {
+            // Simulate client-side with serialized routes in the window global variable
+            (global as any).window = {__EXTENSIONS__: {TestExtensionAsyncRoutes: {routes: mockSerializedRoutes}}}
+            extension = new TestExtensionAsyncRoutes(new TestConfig())
+            expect(extension['_cachedRoutes']).toEqual(mockRoutes)
+        })
+
+        it('should throw an error when getComponentMap is not implemented', async () => {
+            // Simulate client-side with serialized routes in the window global variable
+            (global as any).window = {__EXTENSIONS__: {TestExtensionAsyncRoutes: {routes: mockSerializedRoutes}}}
+            expect(() => new TestExtensionAsyncRoutesNoComponentMap(new TestConfig())).toThrow(
+                 `getComponentMap() must be defined when getRoutesAsync() is defined in the TestExtensionAsyncRoutesNoComponentMap extension`
+            )
+        })
+
+        it('should throw an error when serialized route is missing componentName', async () => {
+            // Simulate client-side with serialized routes in the window global variable
+            (global as any).window = {__EXTENSIONS__: {TestExtensionAsyncRoutes: {routes: [
+                // Route with no component name
+            {
+                path: '/test', 
+            }
+        ]}}}
+            expect(() => new TestExtensionAsyncRoutes(new TestConfig())).toThrow(
+                'Missing componentName for the route with path: \"/test\". Ensure that serialize() correctly assigns a componentName to the serialized route in the TestExtensionAsyncRoutes extension'
+            )
+        })
+
+        it('should throw an error when componentName is not in getComponentMap()', async () => {
+            // Simulate client-side with serialized routes in the window global variable
+            (global as any).window = {__EXTENSIONS__: {TestExtensionAsyncRoutes: {routes: [
+                // Route with componentName not in componentMap
+            {
+                path: '/test', 
+                componentName: 'Foo'
+            }
+        ]}}}
+            expect(() => new TestExtensionAsyncRoutes(new TestConfig())).toThrow(
+                "\"Foo\" was not found in the component map. Ensure that getComponentMap() includes a mapping for it in the TestExtensionAsyncRoutes extension"
+            )
+        })
     })
 })
