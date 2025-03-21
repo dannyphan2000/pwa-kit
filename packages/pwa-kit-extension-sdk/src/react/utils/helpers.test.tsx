@@ -134,7 +134,7 @@ describe('cacheMethodResult', () => {
     })
 
     it('should not override the method if it is not a function', () => {
-        (instance as any).methodName = 'not a function'
+        ;(instance as any).methodName = 'not a function'
         cacheMethodResult(instance, 'methodName', '_cache')
         expect(instance.methodName).toBe('not a function') // Should remain unchanged
     })
@@ -146,12 +146,12 @@ describe('isServerSide', () => {
     })
 
     it('should return true when window is undefined (server-side)', () => {
-      delete (global as any).window
-      expect(isServerSide()).toBe(true)
+        delete (global as any).window
+        expect(isServerSide()).toBe(true)
     })
-  
+
     it('should return false when window is defined (client-side)', () => {
-      (global as any).window = {}
-      expect(isServerSide()).toBe(false)
+        ;(global as any).window = {}
+        expect(isServerSide()).toBe(false)
     })
 })

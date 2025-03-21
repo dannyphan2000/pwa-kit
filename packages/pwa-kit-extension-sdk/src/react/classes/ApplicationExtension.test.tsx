@@ -13,7 +13,8 @@ const MockComponent: React.ComponentType<any> = () => {
 }
 MockComponent.displayName = 'MockComponent'
 
-const mockRoutes : RouteProps[] = [{
+const mockRoutes: RouteProps[] = [
+    {
         path: '/test',
         component: MockComponent
     },
@@ -30,10 +31,10 @@ const mockSerializedRoutes: RouteProps[] = [
         componentName: 'MockComponent'
     },
     {
-        path: "/test-route-with-exact",
+        path: '/test-route-with-exact',
         componentName: 'MockComponent',
-        exact: true,
-    },
+        exact: true
+    }
 ]
 
 class TestConfig implements ApplicationExtensionConfig {
@@ -130,7 +131,7 @@ describe('ApplicationExtension', () => {
             expect(serialized).toEqual({routes: mockSerializedRoutes})
         })
 
-        it('should return routes that have a componentName instead of component', async () => {
+        it('should return routes that have a componentName instead of component', () => {
             const mockRoutes = [
                 {
                     path: '/test-route',
@@ -156,7 +157,7 @@ describe('ApplicationExtension', () => {
                     component: {} as React.ComponentType<any> // Missing displayName
                 }
             ]
-    
+
             expect(() => extensionAsyncRoutes.serialize()).toThrow(
                 'Component for route with path "/test-route" is missing a displayName in the TestExtensionAsyncRoutes extension'
             )
@@ -190,52 +191,68 @@ describe('ApplicationExtension', () => {
             expect(routes).toEqual(cachedRoutes)
         })
 
-        it('should not deserialize when server-side', async () => {
+        it('should not deserialize when server-side', () => {
             // Simulate server-side
-            (global as any).window = undefined
+            ;(global as any).window = undefined
             extension = new TestExtensionAsyncRoutes(new TestConfig())
             expect(extension['_cachedRoutes']).toBeNull()
         })
 
-        it('should deserialize when client-side', async () => {
+        it('should deserialize when client-side', () => {
             // Simulate client-side with serialized routes in the window global variable
-            (global as any).window = {__EXTENSIONS__: {TestExtensionAsyncRoutes: {routes: mockSerializedRoutes}}}
+            ;(global as any).window = {
+                __EXTENSIONS__: {TestExtensionAsyncRoutes: {routes: mockSerializedRoutes}}
+            }
             extension = new TestExtensionAsyncRoutes(new TestConfig())
             expect(extension['_cachedRoutes']).toEqual(mockRoutes)
         })
 
-        it('should throw an error when getComponentMap is not implemented', async () => {
+        it('should throw an error when getComponentMap is not implemented', () => {
             // Simulate client-side with serialized routes in the window global variable
-            (global as any).window = {__EXTENSIONS__: {TestExtensionAsyncRoutes: {routes: mockSerializedRoutes}}}
+            ;(global as any).window = {
+                __EXTENSIONS__: {TestExtensionAsyncRoutes: {routes: mockSerializedRoutes}}
+            }
             expect(() => new TestExtensionAsyncRoutesNoComponentMap(new TestConfig())).toThrow(
-                 `getComponentMap() must be defined when getRoutesAsync() is defined in the TestExtensionAsyncRoutesNoComponentMap extension`
+                `getComponentMap() must be defined when getRoutesAsync() is defined in the TestExtensionAsyncRoutesNoComponentMap extension`
             )
         })
 
-        it('should throw an error when serialized route is missing componentName', async () => {
+        it('should throw an error when serialized route is missing componentName', () => {
             // Simulate client-side with serialized routes in the window global variable
-            (global as any).window = {__EXTENSIONS__: {TestExtensionAsyncRoutes: {routes: [
-                // Route with no component name
-            {
-                path: '/test', 
+            ;(global as any).window = {
+                __EXTENSIONS__: {
+                    TestExtensionAsyncRoutes: {
+                        routes: [
+                            // Route with no component name
+                            {
+                                path: '/test'
+                            }
+                        ]
+                    }
+                }
             }
-        ]}}}
             expect(() => new TestExtensionAsyncRoutes(new TestConfig())).toThrow(
-                'Missing componentName for the route with path: \"/test\". Ensure that serialize() correctly assigns a componentName to the serialized route in the TestExtensionAsyncRoutes extension'
+                'Missing componentName for the route with path: "/test". Ensure that serialize() correctly assigns a componentName to the serialized route in the TestExtensionAsyncRoutes extension'
             )
         })
 
-        it('should throw an error when componentName is not in getComponentMap()', async () => {
+        it('should throw an error when componentName is not in getComponentMap()', () => {
             // Simulate client-side with serialized routes in the window global variable
-            (global as any).window = {__EXTENSIONS__: {TestExtensionAsyncRoutes: {routes: [
-                // Route with componentName not in componentMap
-            {
-                path: '/test', 
-                componentName: 'Foo'
+            ;(global as any).window = {
+                __EXTENSIONS__: {
+                    TestExtensionAsyncRoutes: {
+                        routes: [
+                            // Route with componentName not in componentMap
+                            {
+                                path: '/test',
+                                componentName: 'Foo'
+                            }
+                        ]
+                    }
+                }
             }
-        ]}}}
             expect(() => new TestExtensionAsyncRoutes(new TestConfig())).toThrow(
-                "\"Foo\" was not found in the component map. Ensure that getComponentMap() includes a mapping for it in the TestExtensionAsyncRoutes extension"
+                '"Foo" was not found in the component map. Ensure that getComponentMap() includes a mapping for it in the TestExtensionAsyncRoutes extension'
             )
         })
     })

@@ -17,7 +17,7 @@ import {
     DeserializedExtension,
     GetRoutesParams,
     RouteProps,
-    SerializedExtension,
+    SerializedExtension
 } from '../../types'
 
 export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
@@ -44,7 +44,7 @@ export class ApplicationExtension<
             this._cachedRoutes = this.deserialize()?.routes || null
             // Apply caching for the getRoutes method
             cacheMethodResult(this, 'getRoutesAsync', '_cachedRoutes')
-        }    
+        }
     }
 
     /**
@@ -111,7 +111,7 @@ export class ApplicationExtension<
             if ('componentName' in route) {
                 return route
             }
-    
+
             if (!route.component?.displayName) {
                 throw new Error(
                     `Component for route with path "${
@@ -123,7 +123,7 @@ export class ApplicationExtension<
             return {
                 path: route.path,
                 componentName: route.component.displayName,
-                ...(route.exact && { exact: true })
+                ...(route.exact && {exact: true})
             }
         })
 
@@ -133,11 +133,11 @@ export class ApplicationExtension<
     }
 
     /**
-     * Returns a map of component names to components used for deserializing extension data 
+     * Returns a map of component names to components used for deserializing extension data
      * when `getRoutes()` is asynchronous.
-     * 
+     *
      * This method is required only if `getRoutes()` is asynchronous.
-     * 
+     *
      * It is recommended to use loadable components whenever possible to reduce bundle size.
      *
      * @protected
@@ -168,14 +168,18 @@ export class ApplicationExtension<
         const serializedExtension = window.__EXTENSIONS__[this.getName()]
         const routes = serializedExtension.routes.map(({componentName, ...route}) => {
             if (!componentName) {
-                throw new Error(`Missing componentName for the route with path: "${route.path}". Ensure that ${this.serialize.name}() correctly assigns a componentName to the serialized route in the ${this.getName()} extension`)
+                throw new Error(
+                    `Missing componentName for the route with path: "${route.path}". Ensure that ${
+                        this.serialize.name
+                    }() correctly assigns a componentName to the serialized route in the ${this.getName()} extension`
+                )
             }
 
             const component = componentMap[componentName]
 
             if (!component) {
                 throw new Error(
-                   `"${componentName}" was not found in the component map. Ensure that getComponentMap() includes a mapping for it in the ${this.getName()} extension`
+                    `"${componentName}" was not found in the component map. Ensure that getComponentMap() includes a mapping for it in the ${this.getName()} extension`
                 )
             }
 

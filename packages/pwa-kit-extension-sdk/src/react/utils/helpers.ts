@@ -26,7 +26,7 @@ export const applyHOCs = <T extends React.ComponentType<any>>(Component: T, hocs
 
 /**
  * Applies a cache to a method on an instance. The cache is stored in a property on the instance.
- * 
+ *
  * @param instance - The instance on which to apply the cache.
  * @param methodName - The name of the method to cache.
  * @param cacheProperty - The name of the property to use for caching.
