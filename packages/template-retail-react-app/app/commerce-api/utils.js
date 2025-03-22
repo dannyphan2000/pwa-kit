@@ -336,6 +336,10 @@ export function detectCookiesAvailable(options) {
  * @returns {Object} Parsed JWT data
  */
 export function parseSlasJWT(jwt) {
+    if (!jwt) {
+        throw new Error('Unable to parse access token payload: missing jwt.')
+    }
+
     const payload = jwtDecode(jwt)
     const {sub, isb, dnt} = payload
 
@@ -352,9 +356,6 @@ export function parseSlasJWT(jwt) {
 
     const loginId = isGuest ? 'guest' : isbParts[1].replace('upn:', '')
 
-    const isAgent = Boolean(isbParts?.[isGuest ? 5 : 6]?.startsWith('agent:'))
-    const agentId = isAgent ? isbParts?.[isGuest ? 5 : 6]?.replace('agent:', '') : null
-
     // SUB format
     // cc-slas::zzrf_001::scid:c9c45bfd-0ed3-4aa2-xxxx-40f88962b836::usid:b4865233-de92-4039-xxxx-aa2dfc8c1ea5
     const usid = sub.split('::')[3].replace('usid:', '')
@@ -365,8 +366,6 @@ export function parseSlasJWT(jwt) {
         usid,
         dnt,
         loginId,
-        isAgent,
-        agentId,
         uido
     }
 }

@@ -24,6 +24,21 @@ jest.mock('@chakra-ui/react', () => {
     }
 })
 
+jest.mock('../../commerce-api/utils', () => {
+    const originalModule = jest.requireActual('../../commerce-api/utils')
+    return {
+        ...originalModule,
+        isTokenExpired: jest.fn().mockReturnValue(false),
+        parseSlasJWT: jest.fn().mockReturnValue({
+            isGuest: false,
+            customerId: 'customerid',
+            usid: 'usid',
+            dnt: 'dnt',
+            loginId: 'loginid',
+        })
+    }
+})
+
 const MockedComponent = ({history}) => {
     const customer = useCustomer()
     useEffect(() => {
@@ -142,6 +157,7 @@ test('route to account page when an authenticated users click on account icon', 
     const history = createMemoryHistory()
     // mock push function
     history.push = jest.fn()
+
     renderWithProviders(<MockedComponent history={history} />)
 
     await waitFor(() => {

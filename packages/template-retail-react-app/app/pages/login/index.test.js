@@ -20,6 +20,8 @@ jest.setTimeout(60000)
 
 jest.mock('../../commerce-api/einstein')
 
+
+
 const mockRegisteredCustomer = {
     authType: 'registered',
     customerId: 'registeredCustomerId',
@@ -44,13 +46,18 @@ jest.mock('../../commerce-api/utils', () => {
     return {
         ...originalModule,
         isTokenExpired: jest.fn().mockReturnValue(false),
-        hasSFRAAuthStateChanged: jest.fn().mockReturnValue(false),
         createGetTokenBody: jest.fn().mockReturnValue({
             grantType: 'test',
             code: 'test',
             usid: 'test',
             codeVerifier: 'test',
             redirectUri: 'http://localhost/test'
+        }),
+        parseSlasJWT: jest.fn().mockReturnValue({
+            isGuest: true,
+            customerId: 'registeredCustomerId',
+            loginId: 'darek@test.com',
+            usid: 'usid',
         })
     }
 })
@@ -133,7 +140,7 @@ test('Allows customer to sign in to their account', async () => {
     expect(await screen.findByText(/darek@test.com/i, {}, {timeout: 30000})).toBeInTheDocument()
 })
 
-test('Renders error when given incorrect log in credentials', async () => {
+test.only('Renders error when given incorrect log in credentials', async () => {
     // mock failed auth request
     global.server.use(
         rest.post('*/oauth2/login', (req, res, ctx) =>

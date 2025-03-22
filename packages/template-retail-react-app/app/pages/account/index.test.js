@@ -22,6 +22,21 @@ import mockConfig from '../../../config/mocks/default'
 
 jest.mock('../../commerce-api/einstein')
 
+jest.mock('../../commerce-api/utils', () => {
+    const originalModule = jest.requireActual('../../commerce-api/utils')
+    return {
+        ...originalModule,
+        isTokenExpired: jest.fn().mockReturnValue(false),
+        parseSlasJWT: jest.fn().mockReturnValue({
+            isGuest: false,
+            customerId: 'customerid',
+            usid: 'usid',
+            dnt: 'dnt',
+            loginId: 'loginid'
+        })
+    }
+})
+
 const MockedComponent = () => {
     const customer = useCustomer()
 

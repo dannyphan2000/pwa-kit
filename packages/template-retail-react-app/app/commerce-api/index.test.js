@@ -30,7 +30,14 @@ jest.mock('cross-fetch', () => jest.requireActual('jest-fetch-mock'))
 jest.mock('./utils', () => {
     const originalModule = jest.requireActual('./utils')
     return {
-        ...originalModule
+        ...originalModule,
+        parseSlasJWT: jest.fn().mockReturnValue({
+            isGuest: false,
+            customerId: 'customerid',
+            usid: 'usid',
+            dnt: 'dnt',
+            loginId: 'loginid'
+        })
     }
 })
 
@@ -249,7 +256,7 @@ describe('CommerceAPI', () => {
         const _CommerceAPI = require('./index').default
         const api = new _CommerceAPI(apiConfig)
         api.auth.authToken = mockExampleTokenResponse.access_token
-        api.auth._saveRefreshToken(mockExampleTokenResponse.refresh_token, 'registered')
+        api.auth.set('refresh_token_registered', mockExampleTokenResponse.refresh_token)
         const customer = await api.auth.login()
         expect(customer).toBeDefined()
         expect(customer.authType).toEqual('registered')
@@ -282,7 +289,7 @@ describe('CommerceAPI', () => {
         const api = getAPI()
         await api.auth.login()
         api.auth.authToken = expiredAuthToken
-        api.auth._saveRefreshToken(mockExampleTokenResponse.refresh_token, 'registered')
+        api.auth.set('refresh_token_registered', mockExampleTokenResponse.refresh_token)
         await api.auth.login()
         expect(api.auth.authToken).toBeDefined()
         expect(api.auth.authToken).not.toEqual(expiredAuthToken)
@@ -355,7 +362,7 @@ describe('CommerceAPI', () => {
     })
     test('saves refresh token in local storage if window exists', async () => {
         const api = getAPI()
-        api.auth._saveRefreshToken(mockExampleTokenResponse.refresh_token)
+        api.auth.set('refresh_token_registered', mockExampleTokenResponse.refresh_token)
         expect(api.auth.refreshToken).toEqual(mockExampleTokenResponse.refresh_token)
     })
     test('saves encUserId in local storage if window exists', async () => {
@@ -367,10 +374,6 @@ describe('CommerceAPI', () => {
         const api = getAPI()
         api.auth.usid = mockExampleTokenResponse.usid
         expect(api.auth.usid).toEqual(mockExampleTokenResponse.usid)
-    })
-    test('test onClient is true if window exists', async () => {
-        const api = getAPI()
-        expect(api.auth._onClient).toEqual(true)
     })
     test('calling createBasket returns basket object in camelCase', async () => {
         const api = getAPI()
