@@ -10,7 +10,7 @@ import {
     isTokenExpired,
     keysToCamel,
     convertSnakeCaseToSentenceCase,
-    handleAsyncError,
+    handleAsyncError
 } from './utils'
 
 const createJwt = (secondsToExp) => {
