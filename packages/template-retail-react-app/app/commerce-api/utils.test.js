@@ -10,7 +10,8 @@ import {
     isTokenExpired,
     keysToCamel,
     convertSnakeCaseToSentenceCase,
-    handleAsyncError
+    handleAsyncError,
+    onClient
 } from './utils'
 
 const createJwt = (secondsToExp) => {
@@ -40,6 +41,10 @@ describe('isTokenExpired', () => {
 
     test('returns true if token expires within 60 econds', () => {
         expect(isTokenExpired(createJwt(59))).toBe(true)
+    })
+
+    test('test onClient is true if window exists', async () => {
+        expect(onClient()).toEqual(true)
     })
 })
 
