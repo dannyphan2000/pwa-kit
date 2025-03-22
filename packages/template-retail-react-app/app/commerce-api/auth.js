@@ -229,20 +229,20 @@ class Auth {
         this.set('enc_user_id', encUserId)
     }
 
-    get idToken() {
-        return this.get('id_token')
-    }
-
-    set idToken(idToken) {
-        this.set('id_token', idToken)
-    }
-
     get oid() {
         return this.get('oid')
     }
 
     set oid(oid) {
         this.set('oid', oid)
+    }
+
+    get idToken() {
+        return this.get('id_token')
+    }
+
+    set idToken(idToken) {
+        this.set('id_token', idToken)
     }
 
     /**
