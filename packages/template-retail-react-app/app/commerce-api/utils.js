@@ -10,6 +10,7 @@ import {HTTPError} from 'pwa-kit-react-sdk/ssr/universal/errors'
 import {refreshTokenGuestStorageKey, refreshTokenRegisteredStorageKey} from './constants'
 import fetch from 'cross-fetch'
 import Cookies from 'js-cookie'
+import {SLAS_REFRESH_TOKEN_COOKIE_TTL_OVERRIDE_MSG} from './constants'
 
 /**
  * Compares the token age against the issued and expiry times. If the token's age is
@@ -274,32 +275,6 @@ export const convertSnakeCaseToSentenceCase = (text) => {
  */
 export const noop = () => {}
 
-/**
- * WARNING: This function is relevant to be used in Hybrid deployments only.
- * Compares the refresh_token keys for guest('cc-nx-g') and registered('cc-nx') login from the cookie received from SFRA with the copy stored in localstorage on PWA Kit
- * to determine if the login state of the shopper on SFRA site has changed. If the keys are different we return true considering the login state did change. If the keys are same,
- * we compare the values of the refresh_token to cover an edge case where the login state might have changed multiple times on SFRA and the eventual refresh_token key might be same
- * as that on PWA Kit which would incorrectly show both keys to be the same even though the sessions are different.
- * @param {Storage} storage Cookie storage on PWA Kit in hybrid deployment.
- * @param {LocalStorage} storageCopy Local storage holding the copy of the refresh_token in hybrid deployment.
- * @returns {boolean} true if the keys do not match (login state changed), false otherwise.
- */
-export function hasSFRAAuthStateChanged(storage, storageCopy) {
-    let refreshTokenKey =
-        (storage.get(refreshTokenGuestStorageKey) && refreshTokenGuestStorageKey) ||
-        (storage.get(refreshTokenRegisteredStorageKey) && refreshTokenRegisteredStorageKey)
-
-    let refreshTokenCopyKey =
-        (storageCopy.get(refreshTokenGuestStorageKey) && refreshTokenGuestStorageKey) ||
-        (storageCopy.get(refreshTokenRegisteredStorageKey) && refreshTokenRegisteredStorageKey)
-
-    if (refreshTokenKey !== refreshTokenCopyKey) {
-        return true
-    }
-
-    return storage.get(refreshTokenKey) !== storageCopy.get(refreshTokenCopyKey)
-}
-
 /** Utility to determine if you are on the browser (client) or not. */
 export const onClient = () => typeof window !== 'undefined'
 
@@ -354,4 +329,61 @@ export function detectCookiesAvailable(options) {
     } catch {
         return false
     }
+}
+
+/**
+ * Decode SLAS JWT and extract information such as customer id, usid, etc.
+ *
+ * @param {string} jwt - The JWT token to parse
+ * @returns {Object} Parsed JWT data
+ */
+export function parseSlasJWT(jwt) {
+    const payload = jwtDecode(jwt)
+    const {sub, isb, dnt} = payload
+
+    if (!sub || !isb) {
+        throw new Error('Unable to parse access token payload: missing sub and isb.')
+    }
+
+    // ISB format
+    // 'uido:ecom::upn:Guest||xxxEmailxxx::uidn:FirstName LastName::gcid:xxxGuestCustomerIdxxx::rcid:xxxRegisteredCustomerIdxxx::chid:xxxSiteIdxxx',
+    const isbParts = isb.split('::')
+    const uido = isbParts[0].split('uido:')[1]
+    const isGuest = isbParts[1] === 'upn:Guest'
+    const customerId = isGuest ? isbParts[3].replace('gcid:', '') : isbParts[4].replace('rcid:', '')
+
+    const loginId = isGuest ? 'guest' : isbParts[1].replace('upn:', '')
+
+    const isAgent = Boolean(isbParts?.[isGuest ? 5 : 6]?.startsWith('agent:'))
+    const agentId = isAgent ? isbParts?.[isGuest ? 5 : 6]?.replace('agent:', '') : null
+
+    // SUB format
+    // cc-slas::zzrf_001::scid:c9c45bfd-0ed3-4aa2-xxxx-40f88962b836::usid:b4865233-de92-4039-xxxx-aa2dfc8c1ea5
+    const usid = sub.split('::')[3].replace('usid:', '')
+
+    return {
+        isGuest,
+        customerId,
+        usid,
+        dnt,
+        loginId,
+        isAgent,
+        agentId,
+        uido
+    }
+}
+
+/**
+ * Converts a duration in seconds to a Date object.
+ * This function takes a number representing seconds and returns a Date object
+ * for the current time plus the given duration.
+ *
+ * @param {number} seconds - The number of seconds to add to the current time.
+ * @returns {Date} A Date object for the expiration time.
+ */
+export function convertSecondsToDate(seconds) {
+    if (typeof seconds !== 'number') {
+        throw new Error('The refresh_token_expires_in seconds parameter must be a number.')
+    }
+    return new Date(Date.now() + seconds * 1000)
 }
