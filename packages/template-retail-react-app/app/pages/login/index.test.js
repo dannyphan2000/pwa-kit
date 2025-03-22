@@ -55,9 +55,10 @@ jest.mock('../../commerce-api/utils', () => {
         }),
         parseSlasJWT: jest.fn().mockReturnValue({
             isGuest: true,
-            customerId: 'registeredCustomerId',
+            customerId: 'customerId',
             loginId: 'darek@test.com',
             usid: 'usid',
+            dnt: 'dnt',
         })
     }
 })
@@ -140,7 +141,7 @@ test('Allows customer to sign in to their account', async () => {
     expect(await screen.findByText(/darek@test.com/i, {}, {timeout: 30000})).toBeInTheDocument()
 })
 
-test.only('Renders error when given incorrect log in credentials', async () => {
+test('Renders error when given incorrect log in credentials', async () => {
     // mock failed auth request
     global.server.use(
         rest.post('*/oauth2/login', (req, res, ctx) =>

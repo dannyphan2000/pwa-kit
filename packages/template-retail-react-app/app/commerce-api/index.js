@@ -15,6 +15,7 @@ import {isError} from './utils'
 import Auth from './auth'
 import EinsteinAPI from './einstein'
 import {DWSID_HEADER_KEY} from './constants'
+import {isTokenExpired} from './utils'
 
 /**
  * The configuration details for the connecting to the API.
@@ -203,7 +204,7 @@ class CommerceAPI {
         // If the token is invalid (missing, past/nearing expiration), we issue
         //  a login call, which will attempt to refresh the token or get a new
         //  guest token. Once login is complete, we can proceed.
-        if (!this.auth.isTokenValid) {
+        if (isTokenExpired(this.auth.authToken)) {
             // NOTE: Login will update `this.auth.authToken` with a fresh token
             await this.auth.login()
         }

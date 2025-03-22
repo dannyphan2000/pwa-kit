@@ -39,7 +39,7 @@ jest.mock('../commerce-api/auth', () => {
     return jest.fn().mockImplementation(() => {
         return {
             login: mockLogin,
-            isTokenValid: true
+            isTokenExpired: jest.fn().mockReturnValue(false)
         }
     })
 })
