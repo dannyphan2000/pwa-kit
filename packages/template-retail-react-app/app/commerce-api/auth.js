@@ -17,17 +17,15 @@ import {
     convertSecondsToDate
 } from './utils'
 import {
-    refreshTokenRegisteredStorageKey,
-    refreshTokenGuestStorageKey,
     oidStorageKey,
     EXPIRED_TOKEN,
     INVALID_TOKEN,
     DEFAULT_SLAS_REFRESH_TOKEN_GUEST_TTL,
     DEFAULT_SLAS_REFRESH_TOKEN_REGISTERED_TTL,
-    DATA_MAP
+    DATA_MAP,
+    DWSID_COOKIE_NAME
 } from './constants'
 import {LocalStorage, CookieStorage, MemoryStorage} from './storage'
-import fetch from 'cross-fetch'
 
 /**
  * An object containing the customer's login credentials.
@@ -243,6 +241,10 @@ class Auth {
 
     set idToken(idToken) {
         this.set('id_token', idToken)
+    }
+
+    get dwsid() {
+        return this.get(DWSID_COOKIE_NAME)
     }
 
     /**

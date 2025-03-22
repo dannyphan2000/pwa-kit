@@ -43,7 +43,7 @@ export const EXCLUDE_COOKIE_SUFFIX = [DWSID_COOKIE_NAME]
  *
  * Use the header key below to send dwsid value with SCAPI/OCAPI requests.
  */
-export const SERVER_AFFINITY_HEADER_KEY = 'sfdc_dwsid'
+export const DWSID_HEADER_KEY = 'sfdc_dwsid'
 
 export const DEFAULT_SLAS_REFRESH_TOKEN_REGISTERED_TTL = 90 * 24 * 60 * 60
 export const DEFAULT_SLAS_REFRESH_TOKEN_GUEST_TTL = 30 * 24 * 60 * 60

@@ -14,6 +14,7 @@ import OcapiShopperOrders from './ocapi-shopper-orders'
 import {isError} from './utils'
 import Auth from './auth'
 import EinsteinAPI from './einstein'
+import {DWSID_HEADER_KEY} from './constants'
 
 /**
  * The configuration details for the connecting to the API.
@@ -209,6 +210,16 @@ class CommerceAPI {
 
         // Apply the appropriate auth headers and return new options
         const [fetchOptions, ...restParams] = params
+
+        // For hybrid stability improvements, we need to send the dwsid cookie with each request
+        // using the `sfdc_dwsid` header if the dwsid cookie is present.
+        if (this.auth.dwsid) {
+            fetchOptions.headers = {
+                ...fetchOptions.headers,
+                [DWSID_HEADER_KEY]: this.auth.dwsid
+            }
+        }
+
         const newFetchOptions = {
             ...fetchOptions,
             headers: {...fetchOptions.headers, Authorization: this.auth.authToken},
