@@ -125,6 +125,22 @@ class CommerceAPI {
                                     return obj[prop](...args)
                                 }
 
+                                // We need to set credentials to 'same-origin' to allow cookies to be set.
+                                // This is required as SLAS calls return a dwsid cookie for hybrid sites.
+                                // The dwsid value is then passed to OCAPI/SCAPI as a header maintain the server affinity.
+                                if (SdkClass === sdk.ShopperLogin) {
+                                    fetchOptions['credentials'] = 'same-origin'
+                                }
+
+                                // For hybrid stability improvements, we need to send the dwsid cookie with each request
+                                // using the `sfdc_dwsid` header if the dwsid cookie is present.
+                                if (this.auth.dwsid) {
+                                    fetchOptions.headers = {
+                                        ...fetchOptions.headers,
+                                        [DWSID_HEADER_KEY]: this.auth.dwsid
+                                    }
+                                }
+
                                 // Inject the locale and currency to the API call via its parameters.
                                 //
                                 // NOTE: The commerce sdk isomorphic will complain if you pass parameters to
@@ -186,15 +202,6 @@ class CommerceAPI {
      * @returns {Promise<Array>} - Updated arguments that will be passed to the SDK method
      */
     async willSendRequest(methodName, ...params) {
-        // We never need to modify auth request headers for these methods
-        if (
-            methodName === 'authenticateCustomer' ||
-            methodName === 'authorizeCustomer' ||
-            methodName === 'getAccessToken'
-        ) {
-            return params
-        }
-
         // If a login promise exists, we don't proceed unless it is resolved.
         const pendingLogin = this.auth.pendingLogin
         if (pendingLogin) {
@@ -211,15 +218,6 @@ class CommerceAPI {
 
         // Apply the appropriate auth headers and return new options
         const [fetchOptions, ...restParams] = params
-
-        // For hybrid stability improvements, we need to send the dwsid cookie with each request
-        // using the `sfdc_dwsid` header if the dwsid cookie is present.
-        if (this.auth.dwsid) {
-            fetchOptions.headers = {
-                ...fetchOptions.headers,
-                [DWSID_HEADER_KEY]: this.auth.dwsid
-            }
-        }
 
         const newFetchOptions = {
             ...fetchOptions,
