@@ -48,9 +48,6 @@ export const SERVER_AFFINITY_HEADER_KEY = 'sfdc_dwsid'
 export const DEFAULT_SLAS_REFRESH_TOKEN_REGISTERED_TTL = 90 * 24 * 60 * 60
 export const DEFAULT_SLAS_REFRESH_TOKEN_GUEST_TTL = 30 * 24 * 60 * 60
 
-export const SLAS_REFRESH_TOKEN_COOKIE_TTL_OVERRIDE_MSG =
-    'You are attempting to use an invalid refresh token TTL value.'
-
 /**
  * A map of the data that this auth module stores. This maps the name of the property to
  * the storage type and the key when stored in that storage. You can also pass in a "callback"

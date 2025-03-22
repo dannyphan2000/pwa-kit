@@ -7,10 +7,8 @@
 import jwtDecode from 'jwt-decode'
 import {getAppOrigin} from 'pwa-kit-react-sdk/utils/url'
 import {HTTPError} from 'pwa-kit-react-sdk/ssr/universal/errors'
-import {refreshTokenGuestStorageKey, refreshTokenRegisteredStorageKey} from './constants'
 import fetch from 'cross-fetch'
 import Cookies from 'js-cookie'
-import {SLAS_REFRESH_TOKEN_COOKIE_TTL_OVERRIDE_MSG} from './constants'
 
 /**
  * Compares the token age against the issued and expiry times. If the token's age is
