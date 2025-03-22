@@ -440,6 +440,7 @@ class Auth {
             authType: Auth.USER_TYPE.REGISTERED
         }
 
+        this.clearECOMSession()
         return customer
     }
 

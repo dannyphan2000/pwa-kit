@@ -80,9 +80,8 @@ class CommerceAPI {
                 sendLocale: false
             },
             shopperBaskets: {
-                api: ShopperBaskets,
+                api: sdk.ShopperBaskets,
                 sendLocale: false,
-                sendCurrency: ['createBasket']
             },
             shopperExperience: {
                 api: sdk.ShopperExperience
