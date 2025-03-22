@@ -11,7 +11,6 @@ import {
     keysToCamel,
     convertSnakeCaseToSentenceCase,
     handleAsyncError,
-    hasSFRAAuthStateChanged
 } from './utils'
 
 const createJwt = (secondsToExp) => {

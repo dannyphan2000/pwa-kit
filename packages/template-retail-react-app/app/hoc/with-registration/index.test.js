@@ -28,7 +28,7 @@ jest.mock('../../commerce-api/utils', () => {
             customerId: 'customerid',
             usid: 'usid',
             dnt: 'dnt',
-            loginId: 'loginid',
+            loginId: 'loginid'
         })
     }
 })

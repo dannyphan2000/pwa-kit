@@ -286,11 +286,6 @@ export const getDefaultCookieAttributes = () => {
         // Ideally, this would be `secure: true`, because Chrome and Firefox both treat
         // localhost as a Secure context. But Safari doesn't, so here we are.
         secure: !onClient() || window.location.protocol === 'https:',
-        // By default, Chrome does not allow cookies to be sent/read when the code is loaded in
-        // an iframe (e.g storefront preview). Setting sameSite to "none" loosens that
-        // restriction, but we only want to do so when when the iframe parent is in our allow
-        // list. Outside of iframe, we want to keep most browser default value (Chrome or Firefox uses Lax)
-        // https://web.dev/samesite-cookie-recipes/
         sameSite: 'Lax'
     }
 }

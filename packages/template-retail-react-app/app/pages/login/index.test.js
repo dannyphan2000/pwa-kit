@@ -20,8 +20,6 @@ jest.setTimeout(60000)
 
 jest.mock('../../commerce-api/einstein')
 
-
-
 const mockRegisteredCustomer = {
     authType: 'registered',
     customerId: 'registeredCustomerId',
@@ -58,7 +56,7 @@ jest.mock('../../commerce-api/utils', () => {
             customerId: 'customerId',
             loginId: 'darek@test.com',
             usid: 'usid',
-            dnt: 'dnt',
+            dnt: 'dnt'
         })
     }
 })
@@ -113,6 +111,7 @@ beforeEach(() => {
         })
     )
 })
+
 afterEach(() => {
     localStorage.clear()
 })
