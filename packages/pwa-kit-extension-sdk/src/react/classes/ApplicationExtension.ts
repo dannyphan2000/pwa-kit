@@ -109,7 +109,7 @@ export class ApplicationExtension<
         console.log('--- serializing routes for extension', this.getName(), 'cachedRoutes:', this._cachedRoutes)
         const serializedRoutes = this._cachedRoutes.map((route) => {
             // Check if the route is already serialized
-            if ('componentName' in route) {
+            if (route.componentName) {
                 return route
             }
 
