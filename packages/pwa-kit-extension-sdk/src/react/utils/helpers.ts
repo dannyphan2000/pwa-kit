@@ -41,10 +41,13 @@ export function cacheMethodResult(instance: any, methodName: string, cacheProper
         }
 
         const result = originalMethod.apply(instance, args)
+
         if (result instanceof Promise) {
-            void result.then((resolved) => {
+            result.then((resolved) => {
                 instance[cacheProperty] = resolved
             })
+        } else {
+            instance[cacheProperty] = result
         }
 
         return result

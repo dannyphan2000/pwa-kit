@@ -143,6 +143,18 @@ describe('ApplicationExtension', () => {
             expect(serialized).toEqual({routes: mockRoutes})
         })
 
+        it.each([
+            {path: '/test-route',},
+            {path: '/test-route', componentName: undefined},
+            {path: '/test-route', componentName: null},
+            {path: '/test-route', component: undefined},
+            {path: '/test-route', component: null},
+        ])('should throw error if route does not have either a componentName or component', (route) => {
+            // Mock `_cachedRoutes` to contain a route with an undefined componentName
+            extensionAsyncRoutes['_cachedRoutes'] = [route as RouteProps]
+            expect(() => extensionAsyncRoutes.serialize()).toThrow('Route with path "/test-route" must contain either a componentName or component to be serializable in in the TestExtensionAsyncRoutes extension')
+        })
+
         it('should throw an error if getRoutesAsync() is not called before serializing', () => {
             expect(() => extensionAsyncRoutes.serialize()).toThrow(
                 'Routes have not been loaded. Call getRoutesAsync() before serializing'
@@ -164,7 +176,7 @@ describe('ApplicationExtension', () => {
         })
     })
 
-    describe('handle when implementation of getRoutesAsync exists', () => {
+    describe('constructor', () => {
         it('should cache getRoutesAsync result', async () => {
             let routes
             if (extensionAsyncRoutes.getRoutesAsync) {

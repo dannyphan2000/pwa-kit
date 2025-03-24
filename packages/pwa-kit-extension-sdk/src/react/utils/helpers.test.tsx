@@ -103,6 +103,15 @@ describe('cacheMethodResult', () => {
         instance = new TestClass(methodMock)
     })
 
+    it('should not cache if method does not exist', () => {
+        cacheMethodResult(instance, 'nonExistentMethod', '_cache')
+        expect(instance._cache).toBeUndefined()
+
+        const uncachedMethodCall = instance.methodName()
+        expect(uncachedMethodCall).toBe('result')
+        expect(instance._cache).toBeUndefined()
+    })
+
     it('should cache the result of a sync method', () => {
         cacheMethodResult(instance, 'methodName', '_cache')
         expect(instance._cache).toBeUndefined()

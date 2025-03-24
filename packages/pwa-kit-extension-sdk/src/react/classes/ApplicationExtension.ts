@@ -116,6 +116,10 @@ export class ApplicationExtension<
             this._cachedRoutes
         )
         const serializedRoutes = this._cachedRoutes.map((route) => {
+            if (!route.componentName && !route.component) {
+                throw new Error(`Route with path "${route.path}" must contain either a componentName or component to be serializable in in the ${this.getName()} extension`)
+            }
+
             // Check if the route is already serialized
             if (route.componentName) {
                 return route
