@@ -396,10 +396,11 @@ export const routeComponent = (Wrapped, isPage, locals) => {
 }
 
 /**
- * TODO: update this comment
- * Wrap all the components found in the application's route config with the
- * route-component HOC so that they all support `getProps` methods server-side
- * and client-side in the same way.
+ * Get all of the routes, including those from the app itself, the app
+ * extensions, and the SDK's internal routes.
+ *
+ * Also, wrap each route's component with the route-component HOC so that
+ * they all support `getProps` methods server-side and client-side in the same way.
  *
  * @private
  */
