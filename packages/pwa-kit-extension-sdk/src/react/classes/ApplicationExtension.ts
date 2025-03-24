@@ -118,9 +118,9 @@ export class ApplicationExtension<
         const serializedRoutes = this._cachedRoutes.map((route) => {
             if (!route.componentName && !route.component) {
                 throw new Error(
-                    `Route with path "${
+                    `Route with path "${String(
                         route.path
-                    }" must contain either a componentName or component to be serializable in in the ${this.getName()} extension`
+                    )}" must contain either a componentName or component to be serializable in in the ${this.getName()} extension`
                 )
             }
 
@@ -131,9 +131,9 @@ export class ApplicationExtension<
 
             if (!route.component?.displayName) {
                 throw new Error(
-                    `Component for route with path "${
+                    `Component for route with path "${String(
                         route.path
-                    }" is missing a displayName in the ${this.getName()} extension`
+                    )}" is missing a displayName in the ${this.getName()} extension`
                 )
             }
 
@@ -198,7 +198,9 @@ export class ApplicationExtension<
         const routes = serializedExtension.routes.map(({componentName, ...route}) => {
             if (!componentName) {
                 throw new Error(
-                    `Missing componentName for the route with path: "${route.path}". Ensure that ${
+                    `Missing componentName for the route with path: "${String(
+                        route.path
+                    )}". Ensure that ${
                         this.serialize.name
                     }() correctly assigns a componentName to the serialized route in the ${this.getName()} extension`
                 )
