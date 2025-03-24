@@ -34,7 +34,7 @@ import Document from '../universal/components/_document'
 import Throw404 from '../universal/components/throw-404'
 import {getAppConfig} from '../universal/compatibility'
 import Switch from '../universal/components/switch'
-import {getRoutes, routeComponent} from '../universal/components/route-component'
+import {getAllRoutes, routeComponent} from '../universal/components/route-component'
 import * as errors from '../universal/errors'
 import logger from '../../utils/logger-instance'
 import PerformanceTimer, {PERFORMANCE_MARKS} from '../../utils/performance'
@@ -139,7 +139,7 @@ export const render = async (req, res, next) => {
         locals: res.locals
     })
 
-    let routes = await getRoutes(res.locals, req)
+    let routes = await getAllRoutes(res.locals)
 
     const [pathname] = req.originalUrl.split('?')
 
@@ -150,30 +150,31 @@ export const render = async (req, res, next) => {
         })
     }
 
-    // Serialize the routes and add them to the config. We'll use this on the client-side later.
-    // TODO: we should not serialize the localized routes to reduce byte size
-    config.app.routes = routes.map((route) => {
-        const displayNameParts = route.component.displayName.match(/\(([^()]+)\)(?!.*\([^()]*\))/)[1].split('.')
-        return {
-            path: route.path,
-            extensionId: displayNameParts.length > 1 ? displayNameParts[0] : null,
-            componentName: displayNameParts.length > 1 ? displayNameParts[1]: displayNameParts[0],
-            componentProps: route.props
-        }
-    })
+    // Some application extensions need to be serialized because they have asynchronous state
+    const serializedExtensions = Object.fromEntries(
+        applicationExtensions
+            // TODO: I think react sdk should not be aware to filter by getRoutesAsync.
+            // .filter((extension) => extension.getRoutesAsync)
+            .map((extension) => [extension.getName(), extension.serialize()])
+            .filter((entry) => Boolean(entry[1]))
+    )
+    console.log('--- serialized extensions in react-rendering', serializedExtensions)
 
     // Step 1 - Find the match.
 
     // Call `beforeRouteMatch` application extension hook.
     applicationExtensions.forEach((applicationExtension) => {
-        routes = applicationExtension.beforeRouteMatch(routes)
+        routes = applicationExtension.beforeRouteMatch({allRoutes: routes, locals: res.locals})
     })
+
+    // console.log('--- routes after ALL the extensions and beforeRouteMatch', routes)
 
     res.__performanceTimer.mark(PERFORMANCE_MARKS.routeMatching, 'start')
     let route
     let match
 
     routes.some((_route) => {
+        // console.log('--- iterating routes at:', _route)
         const _match = matchPath(req.path, _route)
         if (_match) {
             match = _match
@@ -181,6 +182,7 @@ export const render = async (req, res, next) => {
         }
         return !!match
     })
+    // console.log('--- matched with route', route, match)
     res.__performanceTimer.mark(PERFORMANCE_MARKS.routeMatching, 'end')
 
     // Step 2 - Get the component
@@ -240,7 +242,8 @@ export const render = async (req, res, next) => {
             res,
             location,
             config,
-            appJSX
+            appJSX,
+            serializedExtensions
         })
     } catch (e) {
         // This is an unrecoverable error.
@@ -305,7 +308,7 @@ const renderToString = (jsx, extractor) =>
     ReactDOMServer.renderToString(extractor.collectChunks(jsx))
 
 const renderApp = (args) => {
-    const {req, res, appStateError, appJSX, appState, config} = args
+    const {req, res, appStateError, appJSX, appState, config, serializedExtensions} = args
     const extractor = new ChunkExtractor({statsFile: BUNDLES_PATH, publicPath: getAssetUrl()})
 
     const ssrOnly = 'mobify_server_only' in req.query || '__server_only' in req.query
@@ -369,6 +372,7 @@ const renderApp = (args) => {
         __CONFIG__: config,
         __PRELOADED_STATE__: appState,
         __ERROR__: error,
+        __EXTENSIONS__: serializedExtensions,
         // `window.Progressive` has a long history at Mobify and some
         // client-side code depends on it. Maintain its name out of tradition.
         Progressive: getWindowProgressive(req, res)

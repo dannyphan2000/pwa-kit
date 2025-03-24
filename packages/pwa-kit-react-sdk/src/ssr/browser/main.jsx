@@ -19,9 +19,7 @@ import {ServerContext, CorrelationIdProvider} from '../universal/contexts'
 import App from '../universal/components/_app'
 import {getAppConfig} from '../universal/compatibility'
 import Switch from '../universal/components/switch'
-import Refresh from '../universal/components/refresh'
-import Throw404 from '../universal/components/throw-404'
-import {getRoutes, routeComponent} from '../universal/components/route-component'
+import {getAllRoutes, routeComponent} from '../universal/components/route-component'
 import {uuidv4} from '../../utils/uuidv4.client'
 import logger from '../../utils/logger-instance'
 
@@ -55,7 +53,7 @@ export const OuterApp = ({routes, error, extensions, WrappedApp, locals, onHydra
     // Invoke the Application Extensions 'beforeRouteMatch' hook. This hook accepts ALL the routes for the current
     // application including all routes added from the configured extensions.
     extensions.forEach((applicationExtension) => {
-        routes = applicationExtension.beforeRouteMatch(routes)
+        routes = applicationExtension.beforeRouteMatch({allRoutes: routes, locals})
     })
 
     return (
@@ -134,48 +132,12 @@ export const start = async () => {
         locals
     })
 
-    // Create the component map
-    const PWA_KIT_REACT_SDK = "pwa-kit-react-sdk"
-    const componentMap = {
-        [PWA_KIT_REACT_SDK]: {
-            [Refresh.displayName]: Refresh,
-            [Throw404.displayName]: Throw404,
-        }
-    }
-    for (const applicationExtension of applicationExtensions) {
-        const id = Object.getPrototypeOf(applicationExtension).constructor.id
-        componentMap[id] = await applicationExtension.getComponentMap()
-    }
-
-    // Deserialize routes
-    let serializedRoutes = window.__CONFIG__.app.routes
-    serializedRoutes = serializedRoutes.map(
-        ({path, extensionId, componentName, componentProps}) => {
-            let component = componentMap[extensionId || PWA_KIT_REACT_SDK][componentName]
-            if (!component) {
-                // TODO: Error handling if given component couldn't be found
-                console.error(`Component "${componentName}" could not be deserialized for path: ${path}`)
-                return
-            }
-
-            if (componentProps) {
-                const Component = component
-                component = () => <Component {...componentProps} />
-            }
-            return {
-                path,
-                exact: true,
-                component
-            }
-        }
-    )
-    serializedRoutes = serializedRoutes.filter((route) => !!route)
-    routes = serializedRoutes
-
+    const routes = await getAllRoutes(locals)
+    console.log('allRoutes', routes)
     const props = {
         error: window.__ERROR__,
         locals: locals,
-        routes: routes,
+        routes,
         extensions: applicationExtensions,
         WrappedApp
     }

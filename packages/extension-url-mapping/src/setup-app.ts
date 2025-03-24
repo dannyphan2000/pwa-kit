@@ -16,10 +16,14 @@ import {
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {
-    BeforeRouteMatchParams,
     GetRoutesParams,
-    RouteProps
+    BeforeRouteMatchParams,
+    RouteProps,
+    ComponentMap
 } from '@salesforce/pwa-kit-extension-sdk/types'
+import Auth from '@salesforce/commerce-sdk-react/auth'
+import {ShopperSeo} from 'commerce-sdk-isomorphic'
+import {routeComponent} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/route-component'
 
 // Local Imports
 import {Config} from './types'
@@ -48,7 +52,7 @@ const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
     decrement: () => set((state) => ({count: state.count - 1}))
 })
 
-class Sample extends ApplicationExtension<Config> {
+class UrlMapping extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 
     /**
@@ -81,14 +85,30 @@ class Sample extends ApplicationExtension<Config> {
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
-    getRoutes(params: GetRoutesParams): RouteProps[] {
-        return [
+    async getRoutesAsync({locals}: GetRoutesParams): Promise<RouteProps[]> {
+        if (!locals.originalUrl) {
+            return Promise.resolve([])
+        }
+
+        // Example of API call to get url mapping
+        const config = this.getConfig()
+        const shopperSeo = await getShopperSeoClient(locals, config)
+        const urlMapping = await shopperSeo.getUrlMapping({
+            parameters: {urlSegment: locals.originalUrl}
+        })
+        console.log('--- url mapping', urlMapping)
+
+        const requestURL = new URL(locals.originalUrl, getAppOrigin(locals))
+
+        // Returns a partial route
+        return Promise.resolve([
             {
-                exact: true,
-                path: this.getConfig().path,
-                component: SamplePage
+                path: requestURL.pathname,
+                componentName: 'Foo',
+                exact: true
+                // component: SamplePage
             }
-        ]
+        ])
     }
 
     /**
@@ -97,9 +117,78 @@ class Sample extends ApplicationExtension<Config> {
      * is configured with, including those defined in the base application and those added by all the extensions. You can use this
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
-    beforeRouteMatch({allRoutes}: BeforeRouteMatchParams): RouteProps[] {
-        return allRoutes
+    beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
+        // console.log('--- beforeRouteMatch: initial routes', allRoutes)
+        const index = allRoutes.findIndex((route) => route.componentName === 'Foo')
+        if (index === -1) {
+            return allRoutes
+        }
+
+        // Complete the partial route
+        const routes = allRoutes.slice()
+        const [myRoute] = routes.splice(index, 1)
+        myRoute.component = routeComponent(SamplePage, true, locals)
+        // NOTE: to be expected: the Sample page will be rendered on the server side, while a different page is then rendered on the client side.
+        // Jinsu's work on serialization will make sure that the same page will be rendered on both server and client sides.
+
+        const result = [myRoute, ...routes]
+        // console.log('--- beforeRouteMatch: resulting routes', result)
+        return result
+    }
+
+    getComponentMap(): ComponentMap {
+        return {
+            Foo: SamplePage
+        }
     }
 }
 
-export default Sample
+export default UrlMapping
+
+const getShopperSeoClient = async (locals: Record<string, any>, config: Config) => {
+    const {
+        commerceAPI,
+        commerceAPIAuth: {propertyNameInLocals: authProperty}
+    } = config
+
+    const appOrigin = getAppOrigin(locals)
+
+    // Saving/reusing the commerce api auth (so all extensions have access to it)
+    locals[authProperty] =
+        locals[authProperty] ??
+        new Auth({
+            ...commerceAPI.parameters,
+            proxy: `${appOrigin}${commerceAPI.proxyPath}`,
+            redirectURI: `${appOrigin}/callback`,
+            logger: console // TODO: proper logger
+        })
+
+    const auth: Auth = locals[authProperty]
+    const {access_token} = await auth.ready()
+
+    const clientConfig = {
+        ...commerceAPI,
+        proxy: `${appOrigin}${commerceAPI.proxyPath}`
+    }
+
+    return new ShopperSeo({
+        ...clientConfig,
+        headers: {authorization: `Bearer ${access_token}`}
+    })
+}
+
+// getAppOrigin is going to be deprecated in PWA Kit v4. Currently we have a replacement (useOrigin) but it's a React hook. So we still need a non-hook version.
+// TODO: move to somewhere in SDK
+const getAppOrigin = (locals: Record<string, any> = {}, fromXForwardedHeader = false): string => {
+    if (typeof window !== 'undefined') {
+        return window.location.origin
+    }
+
+    const xForwardedOrigin = locals.xForwardedOrigin
+    if (fromXForwardedHeader && xForwardedOrigin) {
+        return xForwardedOrigin
+    }
+
+    const {APP_ORIGIN = ''} = process.env
+    return APP_ORIGIN
+}
