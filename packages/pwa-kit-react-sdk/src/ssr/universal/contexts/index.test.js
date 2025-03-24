@@ -108,14 +108,13 @@ describe('CorrelationIdProvider', function () {
     })
 })
 
-
 describe('RoutesProvider', () => {
     it('provides routes via context', () => {
-        const testRoutes = [{ path: '/home' }, { path: '/about' }]
+        const testRoutes = [{path: '/home'}, {path: '/about'}]
 
         const TestComponent = () => {
             const {routes} = useRoutes()
-            return <div>{routes.map(route => route.path).join(', ')}</div>
+            return <div>{routes.map((route) => route.path).join(', ')}</div>
         }
 
         render(
