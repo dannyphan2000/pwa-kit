@@ -314,7 +314,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     </Box>
                     {!isOnline && <OfflineBanner />}
                     <AddToCartModalProvider>
-                    <Box
+                    {/* <Box
                                 as="main"
                                 id="app-main"
                                 role="main"
@@ -325,8 +325,8 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                                 <OfflineBoundary isOnline={false}>
                                     <WrappedComponent {...(props as P)} />
                                 </OfflineBoundary>
-                            </Box>
-                    {/* {!isBlocked ? (
+                            </Box> */}
+                    {!isBlocked ? (
                         <Box
                             as="main"
                             id="app-main"
@@ -351,7 +351,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                         >
                             <PlaceholderComponent></PlaceholderComponent>
                         </Box>
-                    )} */}
+                    )}
                         {!isCheckout ? <Footer /> : <CheckoutFooter />}
 
                         <AuthModal {...(authModal as any)} />
