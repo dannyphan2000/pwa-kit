@@ -52,7 +52,7 @@ const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
     decrement: () => set((state) => ({count: state.count - 1}))
 })
 
-class UrlMapping extends ApplicationExtension<Config> {
+class CommerceBmSeo extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 
     /**
@@ -100,6 +100,13 @@ class UrlMapping extends ApplicationExtension<Config> {
 
         const requestURL = new URL(locals.originalUrl, getAppOrigin(locals))
 
+        console.log('--- getRoutesAsync:',
+            {
+                path: requestURL.pathname,
+                componentName: 'Foo',
+                exact: true
+                // component: SamplePage
+            })
         // Returns a partial route
         return Promise.resolve([
             {
@@ -128,6 +135,7 @@ class UrlMapping extends ApplicationExtension<Config> {
         const routes = allRoutes.slice()
         const [myRoute] = routes.splice(index, 1)
         myRoute.component = routeComponent(SamplePage, true, locals)
+        console.log('JINSU beforeRouteMatch', myRoute)
         // NOTE: to be expected: the Sample page will be rendered on the server side, while a different page is then rendered on the client side.
         // Jinsu's work on serialization will make sure that the same page will be rendered on both server and client sides.
 
@@ -143,7 +151,7 @@ class UrlMapping extends ApplicationExtension<Config> {
     }
 }
 
-export default UrlMapping
+export default CommerceBmSeo
 
 const getShopperSeoClient = async (locals: Record<string, any>, config: Config) => {
     const {

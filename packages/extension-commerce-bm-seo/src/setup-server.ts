@@ -15,7 +15,7 @@ import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/express'
 import {Config} from './types'
 import extensionMeta from '../extension-meta.json'
 
-class UrlMappingExtension extends ApplicationExtension<Config> {
+class CommerceBmSeoExtension extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 
     /**
@@ -23,9 +23,9 @@ class UrlMappingExtension extends ApplicationExtension<Config> {
      */
     extendApp(app: Application): Application {
         app.get('/sample', (req, res) => {
-            console.log('UrlMappingExtension extendApp GET /sample')
+            console.log('CommerceBmSeoExtension extendApp GET /sample')
             res.send(
-                `<p>Hello UrlMapping extension!</p>
+                `<p>Hello CommerceBmSeo extension!</p>
                 <pre>extensionConfig = ${JSON.stringify(this.getConfig())}</pre>`
             )
         })
@@ -34,4 +34,4 @@ class UrlMappingExtension extends ApplicationExtension<Config> {
     }
 }
 
-export default UrlMappingExtension
+export default CommerceBmSeoExtension
