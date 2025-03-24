@@ -285,7 +285,7 @@ describe('The routeComponent component', () => {
     })
 })
 
-describe('getRoutes', () => {
+describe('getAllRoutes', () => {
     test('wraps components with the routeComponent HOC', async () => {
         const mappedRoutes = await getAllRoutes()
         expect(mappedRoutes).toHaveLength(3)

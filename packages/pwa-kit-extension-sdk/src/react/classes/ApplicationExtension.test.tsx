@@ -42,7 +42,7 @@ describe('ApplicationExtension', () => {
 
         test('should allow adding a new route', () => {
             const additionalRoute: RouteProps = {path: '/new', component: mockComponent}
-            const extendRoutesSpy = jest.spyOn(extension, 'getRoutes').mockImplementation(() => {
+            const getRoutesSpy = jest.spyOn(extension, 'getRoutes').mockImplementation(() => {
                 return [additionalRoute]
             })
 
@@ -50,7 +50,7 @@ describe('ApplicationExtension', () => {
             expect(routes).toContainEqual(additionalRoute)
             expect(routes).toHaveLength(1)
 
-            extendRoutesSpy.mockRestore()
+            getRoutesSpy.mockRestore()
         })
     })
 
