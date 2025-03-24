@@ -136,7 +136,7 @@ class UrlMapping extends ApplicationExtension<Config> {
         return result
     }
 
-    getComponentMap() : ComponentMap {
+    getComponentMap(): ComponentMap {
         return {
             Foo: SamplePage
         }
