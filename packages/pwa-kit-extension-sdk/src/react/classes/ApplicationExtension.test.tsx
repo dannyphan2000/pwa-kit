@@ -44,10 +44,6 @@ class TestConfig implements ApplicationExtensionConfig {
 
 class TestExtension extends ApplicationExtension<TestConfig> {
     static readonly id = 'test-extension'
-
-    public getRoutes(): RouteProps[] {
-        return mockRoutes
-    }
 }
 
 class TestExtensionAsyncRoutes extends ApplicationExtension<TestConfig> {
