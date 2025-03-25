@@ -28,6 +28,7 @@ import {
 } from '@salesforce/retail-react-app/app/constants'
 import {useToast} from '@salesforce/retail-react-app/app/hooks/use-toast'
 import LoadingSpinner from '@salesforce/retail-react-app/app/components/loading-spinner'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const Checkout = () => {
     const {formatMessage} = useIntl()
@@ -37,6 +38,10 @@ const Checkout = () => {
     const {data: basket} = useCurrentBasket()
     const [isLoading, setIsLoading] = useState(false)
     const {mutateAsync: createOrder} = useShopperOrdersMutation('createOrder')
+    const {passwordless = {}, social = {}} = getConfig().app.login || {}
+    const idps = social?.idps
+    const isSocialEnabled = !!social?.enabled
+    const isPasswordlessEnabled = !!passwordless?.enabled
 
     useEffect(() => {
         if (error || step === 4) {
@@ -80,7 +85,11 @@ const Checkout = () => {
                                 </Alert>
                             )}
 
-                            <ContactInfo />
+                            <ContactInfo
+                                isSocialEnabled={isSocialEnabled}
+                                isPasswordlessEnabled={isPasswordlessEnabled}
+                                idps={idps}
+                            />
                             <ShippingAddress />
                             <ShippingOptions />
                             <Payment />

@@ -140,17 +140,10 @@ const INITIAL_QUESTION = [
 const askApplicationExtensibilityQuestions = (availableAppExtensions) => {
     return [
         {
-            name: 'project.useAppExtensibility',
-            message: 'Do you want to use Application Extensibility?',
-            type: 'confirm',
-            default: true
-        },
-        {
             name: 'project.selectedAppExtensions',
             message: 'Which Application Extensions do you want to install?',
             type: 'checkbox',
-            choices: availableAppExtensions,
-            when: (answers) => answers.project.useAppExtensibility === true
+            choices: availableAppExtensions
         },
         {
             name: 'project.extractAppExtensions',
@@ -161,8 +154,7 @@ const askApplicationExtensibilityQuestions = (availableAppExtensions) => {
                 '\n' +
                 'Do you want to proceed with extracting the Application Extensions code?',
             type: 'confirm',
-            default: false,
-            when: (answers) => answers.project.useAppExtensibility === true
+            default: false
         }
     ]
 }
@@ -267,7 +259,7 @@ const RETAIL_REACT_APP_QUESTIONS = [
     }
 ]
 
-// Project dictionary describing details and how the gerator should ask questions etc.
+// Project dictionary describing details and how the generator should ask questions etc.
 const PRESETS = [
     {
         id: 'retail-react-app',
@@ -312,10 +304,50 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: false
+    },
+    {
+        id: 'retail-react-app-demo-site-internal',
+        name: 'Retail React App Demo Store',
+        description: `
+            Generates a project using the settings for a special B2C Commerce instance that is used
+            for demo purposes. The demo site is accessible at https://pwa-kit.mobify-storefront.com/
+
+            This environment uses a SLAS private client and has social and passwordless login enabled.
+            This environment is set up to use multiple locales.
+            Future features that are enabled for the demo environment may be added to this preset.
+        `,
+        shortDescription:
+            'The Retail app with demo Commerce Cloud instance and a private SLAS client',
+        templateSource: {
+            type: TEMPLATE_SOURCE_NPM,
+            id: '@salesforce/retail-react-app'
+        },
+        questions: [...RETAIL_REACT_APP_QUESTIONS],
+        answers: {
+            ['project.extend']: false, // Intentionally not an extensible project so that the correct logos appear on demo site
+            ['project.hybrid']: false,
+            ['project.name']: 'demo-storefront',
+            ['project.commerce.instanceUrl']: 'https://zzrf-001.dx.commercecloud.salesforce.com',
+            ['project.commerce.clientId']: '083859f2-5d93-4209-b999-a112266d63a0',
+            ['project.commerce.siteId']: 'RefArchGlobal',
+            ['project.commerce.organizationId']: 'f_ecom_zzrf_001',
+            ['project.commerce.shortCode']: 'kv7kzm78',
+            ['project.commerce.isSlasPrivate']: true,
+            ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: true // True only for presets deployed to demo environments like pwa-kit.mobify-storefront.com
+        },
+        assets: ['translations'],
+        private: true
     },
     {
         id: 'retail-react-app-test-project',
@@ -343,7 +375,10 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -367,7 +402,38 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: true,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
+        },
+        assets: ['translations'],
+        private: true
+    },
+    {
+        id: 'retail-react-app-bug-bounty',
+        name: 'Retail React App Bug Bounty Project',
+        description: '',
+        templateSource: {
+            type: TEMPLATE_SOURCE_NPM,
+            id: '@salesforce/retail-react-app'
+        },
+        questions: [...RETAIL_REACT_APP_QUESTIONS],
+        answers: {
+            ['project.extend']: true,
+            ['project.hybrid']: false,
+            ['project.name']: 'retail-react-app',
+            ['project.commerce.instanceUrl']: 'https://zzec-006.dx.commercecloud.salesforce.com',
+            ['project.commerce.clientId']: 'b56e7ad3-2237-42c9-8f55-41e63ebca420',
+            ['project.commerce.siteId']: 'RefArch',
+            ['project.commerce.organizationId']: 'f_ecom_zzec_006',
+            ['project.commerce.shortCode']: 'staging-001',
+            ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.commerce.isSlasPrivate']: true,
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -391,7 +457,10 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'xitgmcd3',
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.commerce.isSlasPrivate']: true
+            ['project.commerce.isSlasPrivate']: true,
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -415,7 +484,10 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'performance-001',
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.commerce.isSlasPrivate']: false
+            ['project.commerce.isSlasPrivate']: false,
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -539,18 +611,6 @@ const PRESETS = [
             ['project.extractAppExtensions']: false
         },
         private: true
-    }
-]
-
-const PRESET_QUESTIONS = [
-    {
-        name: 'general.presetId',
-        message: 'Choose a project preset to get started:',
-        type: 'list',
-        choices: PRESETS.filter(({private}) => !private).map(({shortDescription, id}) => ({
-            name: shortDescription,
-            value: id
-        }))
     }
 ]
 
@@ -796,9 +856,12 @@ const processAppExtensions = (
             const appExtensionTmp = p.join(os.tmpdir(), `extract-${appExtensionName}`)
             fs.mkdirSync(appExtensionTmp, {recursive: true})
             const appExtensionTarFile = sh
-                .exec(`npm pack ${appExtensionName} --pack-destination="${appExtensionTmp}"`, {
-                    silent: true
-                })
+                .exec(
+                    `npm pack ${appExtensionName}@latest --pack-destination="${appExtensionTmp}"`,
+                    {
+                        silent: true
+                    }
+                )
                 .stdout.trim()
 
             const appExtensionTarPath = p.join(appExtensionTmp, appExtensionTarFile)
@@ -1112,8 +1175,17 @@ const main = async (opts) => {
         if (initialAnswers.project.type === 'PWAKitAppExtensionProject') {
             // Ask for extension name if Application Extension is selected
             const extensionNameAnswers = await inquirer.prompt(APPLICATION_EXTENSION_QUESTIONS)
-            context.answers.project.name = extensionNameAnswers.project.extensionName
-            context.preset = PRESETS.find(({id}) => id === 'extension-starter')
+            const extensionName = extensionNameAnswers.project.extensionName
+
+            // Get the preset and set extension name in all required places
+            context.preset = {
+                ...PRESETS.find(({id}) => id === 'extension-starter'),
+                answers: {
+                    'project.type': 'PWAKitAppExtensionProject',
+                    'project.name': extensionName,
+                    'project.extensionName': extensionName
+                }
+            }
         } else {
             const availableAppExtensions = fetchAvailableAppExtensions()
 
@@ -1125,26 +1197,35 @@ const main = async (opts) => {
             )
             context = merge(context, {answers: expandObject(generationAnswers)})
 
-            if (context.answers.project.useAppExtensibility) {
-                // Add the 'typescript-minimal' preset for Application Extension
-                context.preset = PRESETS.find(({id}) => id === 'typescript-minimal')
-            }
+            // Default to 'typescript-minimal' preset when no preset is specified
+            context.preset = PRESETS.find(({id}) => id === 'typescript-minimal')
         }
     }
 
-    // If no preset is provided, prompt the user with available preset options
-    if (!presetId && !context.preset) {
-        context.answers = await prompt(PRESET_QUESTIONS)
+    // Set the preset based on presetId if provided
+    if (presetId && !context.preset) {
+        context.preset = PRESETS.find(({id}) => id === presetId)
     }
 
-    // Set the preset to the selected preset or based on presetId
-    const selectedPreset =
-        context.preset ||
-        PRESETS.find(({id}) => id === (presetId || context.answers.general.presetId))
+    // Add the selected preset to the context object.
+    const selectedPreset = PRESETS.find(
+        ({id}) => id === (presetId || context.answers.general.presetId)
+    )
+
+    // Add the preset to the context.
     context.preset = selectedPreset
 
+    // If using the preset, output the preset name
+    if (presetId) {
+        console.log(`Using preset "${selectedPreset.name}"`)
+    }
+
+    if (!OUTPUT_DIR_FLAG_ACTIVE) {
+        outputDir = p.join(process.cwd(), selectedPreset.id)
+    }
+
     // Ask preset specific questions and merge into the current context.
-    const {questions = {}, answers = {}} = selectedPreset
+    const {questions = {}, answers = {}} = context.preset
     if (questions) {
         const projectAnswers = await prompt(questions, answers)
 
@@ -1154,7 +1235,21 @@ const main = async (opts) => {
     }
 
     if (!OUTPUT_DIR_FLAG_ACTIVE) {
-        outputDir = p.join(process.cwd(), context.answers.project.name || selectedPreset.id)
+        // For extension projects, use the extension name as the output directory
+        if (
+            context.answers.project.type === 'PWAKitAppExtensionProject' &&
+            context.answers.project.extensionName
+        ) {
+            // Extract the package name part without the namespace for the directory name
+            const extensionName = context.answers.project.extensionName
+            const packageNamePart = extensionName.includes('/')
+                ? extensionName.split('/')[1]
+                : extensionName
+
+            outputDir = p.join(process.cwd(), packageNamePart)
+        } else {
+            outputDir = p.join(process.cwd(), context.answers.project.name || context.preset.id)
+        }
     }
 
     if (context.answers.project.commerce?.instanceUrl) {

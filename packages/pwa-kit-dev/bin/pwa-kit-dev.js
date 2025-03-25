@@ -473,6 +473,13 @@ const main = async () => {
             )
         })
 
+    program
+        .command('list-overrides')
+        .description('List all overridable files in the project')
+        .action(() => {
+            execSync(p.join('node_modules', '.bin', 'pwa-kit-extension-sdk'))
+        })
+
     managedRuntimeCommand('tail-logs')
         .description(`continuously stream environment logs`)
         .addOption(
