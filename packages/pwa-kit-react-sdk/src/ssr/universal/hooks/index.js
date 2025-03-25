@@ -75,7 +75,7 @@ export const useOrigin = ({fromXForwardedHeader = false}) => {
 
 /**
  * Blocks the navigation to run a provided function whenever there is a new page being navigated to
- * The function must return false to unblock, otherwise it will continue to block
+ * The function must return false to unblock the navigation
  *
  * @param {function} func
  * @returns {boolean} State that is set to true during blocking, false otherwise.
@@ -94,7 +94,6 @@ export const useBlockNavigation = (func) => {
             const unblock = block((location, action) => {
                 abortControllerRef.current.abort()
                 abortControllerRef.current = new AbortController()
-                // It is necessary to wrap this block in an async function to ensure the callback itself is not async, otherwise it will mess up order of execution
                 ;(async () => {
                     setIsBlocked(true)
                     if (!(await funcRef.current(location, action, abortControllerRef.current.signal))) {
@@ -107,5 +106,6 @@ export const useBlockNavigation = (func) => {
             })
         }
     }, [location])
+    
     return isBlocked
 }
