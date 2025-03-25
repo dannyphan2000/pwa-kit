@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React, {useEffect, useState} from 'react'
-import {useQuery} from '@tanstack/react-query'
+// import {useQuery} from '@tanstack/react-query'
 
 import HelloTS from '../components/hello-typescript'
 import HelloJS from '../components/hello-javascript'
@@ -91,15 +91,15 @@ const Home = ({value}: Props) => {
         return () => clearInterval(interval)
     }, [counter, setCounter])
 
-    const query = useQuery(
-        ['example-data'],
-        () =>
-            new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve('This came from react-query')
-                }, 1000)
-            })
-    )
+    // const query = useQuery(
+    //     ['example-data'],
+    //     () =>
+    //         new Promise((resolve) => {
+    //             setTimeout(() => {
+    //                 resolve('This came from react-query')
+    //             }, 1000)
+    //         })
+    // )
 
     return (
         <div>

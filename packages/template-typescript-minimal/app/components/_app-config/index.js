@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {withLegacyGetProps} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/with-legacy-get-props'
-import {withReactQuery} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/with-react-query'
+// import {withReactQuery} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/with-react-query'
 import AppConfig from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/_app-config'
 
 const isServerSide = typeof window === 'undefined'
@@ -27,4 +27,5 @@ const options = {
     }
 }
 
-export default withReactQuery(withLegacyGetProps(AppConfig), options)
+// export default withReactQuery(withLegacyGetProps(AppConfig), options)
+export default withLegacyGetProps(AppConfig)

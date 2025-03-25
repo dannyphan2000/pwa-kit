@@ -17,17 +17,13 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@loadable/component": "^5.15.3",
     "@salesforce/pwa-kit-dev": "3.9.0-dev",
     "@salesforce/pwa-kit-react-sdk": "3.9.0-dev",
     "@salesforce/pwa-kit-runtime": "3.9.0-dev",
-    "@tanstack/react-query": "^5.62.11",
-    "@types/loadable__component": "~5.13.4",
     "@types/react": "~18.2.0",
     "@types/react-dom": "~18.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-helmet": "^6.1.0",
     "react-router-dom": "^5.3.4",
     "typescript": "4.9.5"
   },
@@ -62,5 +58,8 @@
         }
       ]
     }
+  },
+  "dependencies": {
+    "@tanstack/react-start": "^1.114.27"
   }
 }
