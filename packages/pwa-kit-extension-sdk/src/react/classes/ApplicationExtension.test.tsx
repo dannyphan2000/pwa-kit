@@ -54,7 +54,7 @@ class TestExtensionAsyncRoutes extends ApplicationExtension<TestConfig> {
     }
 
     public getComponentMap(): ComponentMap {
-        return {MockComponent: MockComponent}
+        return {MockComponent: MockComponent as React.ComponentType<any>}
     }
 }
 
