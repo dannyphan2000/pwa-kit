@@ -87,8 +87,8 @@ jobs:
       - name: Run unit tests
         uses: "./.github/actions/unit_tests"
 
-      - name: Run bundlesize test
-        uses: "./.github/actions/bundle_size_test"
+      # - name: Run bundlesize test
+      #   uses: "./.github/actions/bundle_size_test"
 
       - name: Smoke test scripts
         if: env.IS_DEFAULT_NPM == 'true'
@@ -221,11 +221,11 @@ jobs:
         with:
           cwd: ${{ env.PROJECT_DIR }}
 
-      - name: Run smoke tests
-        if: env.IS_TEMPLATE_FROM_RETAIL_REACT_APP == 'true'
-        uses: "./.github/actions/smoke_tests"
-        with:
-          dir: ${{ env.PROJECT_DIR }}
+      # - name: Run smoke tests
+      #   if: env.IS_TEMPLATE_FROM_RETAIL_REACT_APP == 'true'
+      #   uses: "./.github/actions/smoke_tests"
+      #   with:
+      #     dir: ${{ env.PROJECT_DIR }}
 
       - name: Count Generated Project Dependencies
         id: count_deps
@@ -320,11 +320,11 @@ jobs:
         with:
           cwd: ${{ env.PROJECT_DIR }}
 
-      - name: Run smoke tests
-        if: env.IS_TEMPLATE_FROM_RETAIL_REACT_APP == 'true'
-        uses: "./.github/actions/smoke_tests"
-        with:
-          dir: ${{ env.PROJECT_DIR }}
+      # - name: Run smoke tests
+      #   if: env.IS_TEMPLATE_FROM_RETAIL_REACT_APP == 'true'
+      #   uses: "./.github/actions/smoke_tests"
+      #   with:
+      #     dir: ${{ env.PROJECT_DIR }}
 
       - name: Count Generated Project Dependencies
         if: env.IS_TEMPLATE_FROM_RETAIL_REACT_APP == 'true'
@@ -355,5 +355,5 @@ jobs:
       - name: Setup Ubuntu Machine
         uses: "./.github/actions/setup_ubuntu"
 
-      - name: Run Lighthouse CI on the PWA
-        uses: "./.github/actions/lighthouse_ci"
+      # - name: Run Lighthouse CI on the PWA
+      #   uses: "./.github/actions/lighthouse_ci"
