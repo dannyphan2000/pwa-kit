@@ -198,9 +198,6 @@ const baseConfig = (target) => {
                                 [dep]: findDepInStack(dep)
                             }))
                         ),
-                        // TODO: This alias is temporary. When we investigate turning the retail template into an application extension
-                        // we'll have to decide if we want to continue using an alias, or change back to using relative paths.
-                        '@salesforce/retail-react-app': projectDir,
                         // Create alias's for "all" extensions, enabled or disabled, as they as they are being imported from the SDK package
                         // and cannot be resolved from that location. We create alias's for all because we do not know which extensions
                         // are configured at build time.
