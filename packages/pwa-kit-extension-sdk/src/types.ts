@@ -39,6 +39,9 @@ export type BuildCandidatePathsOptions = {
     extensionEntries: ApplicationExtensionEntry[]
 }
 
+/**
+ * Parameters for the `getRoutes` and `getRoutesAsync` methods
+ */
 export interface GetRoutesParams {
     locals: Record<string, any>
 }
@@ -50,6 +53,9 @@ export type RouteProps = _RouteProps & {
     componentName?: string
 }
 
+/**
+ * Parameters for the `beforeRouteMatch` method
+ */
 export interface BeforeRouteMatchParams {
     allRoutes: RouteProps[]
     locals: Record<string, any>
