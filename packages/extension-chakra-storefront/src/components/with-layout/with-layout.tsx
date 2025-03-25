@@ -51,7 +51,6 @@ import useMultiSite from '../../hooks/use-multi-site'
 import {useTheme} from '@chakra-ui/react'
 
 import {UserConfig} from '../../types/config'
-import {noop} from '../../utils/utils'
 // Define a type for the HOC props
 type WithAppLayoutProps = React.ComponentPropsWithoutRef<any>
 
@@ -310,18 +309,27 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     {!isOnline && <OfflineBanner />}
                     <AddToCartModalProvider>
                     {!isBlocked ? (
-                        <Box
-                            as="main"
-                            id="app-main"
-                            role="main"
-                            display="flex"
-                            flexDirection="column"
-                            flex="1"
+                        <SkipNavContent
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                flex: 1,
+                                outline: 0
+                            }}
                         >
-                            <OfflineBoundary isOnline={false}>
-                                <WrappedComponent {...(props as P)} />
-                            </OfflineBoundary>
-                        </Box>
+                            <Box
+                                as="main"
+                                id="app-main"
+                                role="main"
+                                display="flex"
+                                flexDirection="column"
+                                flex="1"
+                            >
+                                <OfflineBoundary isOnline={false}>
+                                    <WrappedComponent {...(props as P)} />
+                                </OfflineBoundary>
+                            </Box>
+                        </SkipNavContent>
                     )
                     : (
                         <Box

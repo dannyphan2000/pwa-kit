@@ -4,16 +4,14 @@ import {
     useApplicationExtension,
     useApplicationExtensionsStore,
 } from '@salesforce/pwa-kit-extension-sdk/react'
-// Define a type for the HOC props
 type SeoHOCProps = React.ComponentPropsWithoutRef<any>
 
-// Define the HOC function
 const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
 
     const SeoHOC: React.FC<P> = (props: SeoHOCProps) => {
 
         const isBlocked = useBlockNavigation(async (_, __, signal) => {
-            // In W-17530042, updateRoutes will be used here and return false after API call completion
+            // In W-17530042, getUrlMapping will be used here and return false after API call completion
             // A manual delay is added for now just to see the skeleton that would show while the API call is made
             await new Promise((resolve, reject) => {
                 const timeout = setTimeout(() => {
