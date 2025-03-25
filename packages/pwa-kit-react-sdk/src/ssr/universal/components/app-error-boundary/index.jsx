@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React from 'react'
-import {withRouter} from 'react-router-dom'
+// import {withRouter} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import Error from '../../components/_error'
 import {HTTPError} from '../../errors'
@@ -96,4 +96,5 @@ AppErrorBoundary.propTypes = {
 }
 
 export {AppErrorBoundary as AppErrorBoundaryWithoutRouter}
-export default withRouter(withCorrelationId(AppErrorBoundary))
+// export default withRouter(withCorrelationId(AppErrorBoundary))
+export default withCorrelationId(AppErrorBoundary)

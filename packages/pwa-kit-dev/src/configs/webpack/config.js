@@ -15,7 +15,8 @@ import webpack from 'webpack'
 import WebpackNotifierPlugin from 'webpack-notifier'
 import CopyPlugin from 'copy-webpack-plugin'
 import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer'
-import LoadablePlugin from '@loadable/webpack-plugin'
+// import LoadablePlugin from '@loadable/webpack-plugin'
+import {TanStackRouterWebpack} from '@tanstack/router-plugin/webpack'
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 import SpeedMeasurePlugin from 'speed-measure-webpack-plugin'
 
@@ -63,14 +64,15 @@ export const EXT_EXTENDABLE = pkg?.ccExtensibility?.extendable
 export const DEPS_TO_DEDUPE = [
     'babel-runtime',
     '@tanstack/react-query',
-    '@loadable/component',
-    '@loadable/server',
-    '@loadable/webpack-plugin',
+    // '@loadable/component',
+    // '@loadable/server',
+    // '@loadable/webpack-plugin',
+    '@tanstack/router-plugin',
     'svg-sprite-loader',
     'react',
-    'react-router-dom',
+    // 'react-router-dom',
     'react-dom',
-    'react-helmet',
+    // 'react-helmet',
     'webpack-hot-middleware',
     'react-intl',
     '@chakra-ui/icons',
@@ -426,7 +428,7 @@ const enableReactRefresh = (config) => {
 const client =
     entryPointExists(['app', 'main']) &&
     baseConfig('web')
-        .extend(withChunking)
+        // .extend(withChunking)
         .extend((config) => {
             return {
                 ...config,
@@ -439,7 +441,15 @@ const client =
                 },
                 plugins: [
                     ...config.plugins,
-                    new LoadablePlugin({writeToDisk: true}),
+                    // new LoadablePlugin({writeToDisk: true}),
+                    TanStackRouterWebpack({
+                        routesDirectory: path.resolve(projectDir, 'app/pages'),
+                        target: 'react',
+                        autoCodeSplitting: true,
+                        generatedRouteTree: './app/pages/routeTree.gen.ts'
+                        // routeFileIgnorePrefix: '-',
+                        // quoteStyle: 'single'
+                    }),
                     analyzeBundle && getBundleAnalyzerPlugin(CLIENT)
                 ].filter(Boolean),
                 // Hide the performance hints, since we already have a similar `bundlesize` check in `template-retail-react-app` package

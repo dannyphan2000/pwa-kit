@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import {Redirect, withRouter} from 'react-router-dom'
+// import {Redirect, withRouter} from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 /**
@@ -33,4 +33,5 @@ RedirectWithStatus.propTypes = {
     to: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
 }
 
-export default withRouter(RedirectWithStatus)
+// export default withRouter(RedirectWithStatus)
+export default RedirectWithStatus

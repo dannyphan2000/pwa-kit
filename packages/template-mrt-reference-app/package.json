@@ -15,7 +15,6 @@
     "test": "pwa-kit-dev test"
   },
   "devDependencies": {
-    "@loadable/component": "^5.15.3",
     "@salesforce/pwa-kit-dev": "3.9.0-dev",
     "@salesforce/pwa-kit-runtime": "3.9.0-dev",
     "@smithy/smithy-client": "^2.1.15",
@@ -51,6 +50,8 @@
   "dependencies": {
     "@aws-sdk/client-cloudwatch-logs": "^3.450.0",
     "@aws-sdk/client-lambda": "^3.450.0",
-    "@aws-sdk/client-s3": "^3.450.0"
+    "@aws-sdk/client-s3": "^3.450.0",
+    "@tanstack/react-query": "^5.67.2",
+    "@tanstack/react-query-devtools": "^5.67.2"
   }
 }

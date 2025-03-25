@@ -31,5 +31,9 @@
     "ssrShared": [
       "intentionally-does-not-exist"
     ]
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.67.2",
+    "@tanstack/react-query-devtools": "^5.67.2"
   }
 }

@@ -34,22 +34,22 @@
     "version": "node ./scripts/version.js"
   },
   "dependencies": {
-    "@loadable/babel-plugin": "^5.15.3",
-    "@loadable/server": "^5.15.3",
-    "@loadable/webpack-plugin": "^5.15.2",
     "@salesforce/pwa-kit-runtime": "3.9.0-dev",
-    "@tanstack/react-query": "^5.62.11",
+    "@tanstack/react-router": "^1.112.18",
+    "@tanstack/react-start": "^1.114.27",
+    "@tanstack/router": "^0.0.1-beta.53",
+    "@tanstack/router-plugin": "^1.113.0",
     "cross-env": "^5.2.1",
     "event-emitter": "^0.3.5",
     "hoist-non-react-statics": "^3.3.2",
     "prop-types": "^15.8.1",
+    "react-dom": "^19.0.0",
     "react-ssr-prepass": "^1.6.0",
     "react-uid": "^2.3.2",
     "serialize-javascript": "^6.0.2",
     "svg-sprite-loader": "^6.0.11"
   },
   "devDependencies": {
-    "@loadable/component": "^5.15.3",
     "@salesforce/pwa-kit-dev": "3.9.0-dev",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^16.1.0",
@@ -59,18 +59,13 @@
     "nodemon": "^2.0.22",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-helmet": "^6.1.0",
-    "react-router-dom": "^5.3.4",
     "regenerator-runtime": "^0.13.11",
     "sinon": "^13.0.2",
     "supertest": "^4.0.2"
   },
   "peerDependencies": {
-    "@loadable/component": "^5.15.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-helmet": "^6.1.0",
-    "react-router-dom": "^5.3.4"
+    "react-dom": "^19.0.0"
   },
   "engines": {
     "node": "^16.11.0 || ^18.0.0 || ^20.0.0",

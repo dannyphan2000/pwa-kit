@@ -6,7 +6,7 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Switch as RouterSwitch, Route} from 'react-router-dom'
+// import {Switch as RouterSwitch, Route} from 'react-router-dom'
 import AppErrorBoundary from '../app-error-boundary'
 import {UIDReset, UIDFork} from 'react-uid'
 
@@ -26,18 +26,18 @@ const Switch = (props) => {
             <AppErrorBoundary error={error}>
                 {!error && (
                     <App preloadedProps={appState.appProps}>
-                        <RouterSwitch>
+                        {/* <RouterSwitch> */}
                             {routes.map((route, i) => {
                                 const {component: Component, ...routeProps} = route
                                 return (
-                                    <Route key={i} {...routeProps}>
+                                    // <Route key={i} {...routeProps}>
                                         <UIDFork>
                                             <Component preloadedProps={appState.pageProps} />
                                         </UIDFork>
-                                    </Route>
+                                    // </Route>
                                 )
                             })}
-                        </RouterSwitch>
+                        {/* </RouterSwitch> */}
                     </App>
                 )}
             </AppErrorBoundary>

@@ -28,6 +28,8 @@
     "test": "internal-lib-build test"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.67.2",
+    "@tanstack/react-query-devtools": "^5.67.2",
     "commander": "^9.5.0",
     "deepmerge": "2.2.1",
     "handlebars": "^4.7.7",

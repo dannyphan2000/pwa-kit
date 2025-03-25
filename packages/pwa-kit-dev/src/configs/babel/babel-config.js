@@ -29,7 +29,7 @@ const config = {
             }
         ],
         require('@babel/plugin-syntax-dynamic-import'),
-        require('@loadable/babel-plugin'),
+        // require('@loadable/babel-plugin'),
         require('@babel/plugin-proposal-optional-chaining'),
         [
             require('babel-plugin-formatjs'),

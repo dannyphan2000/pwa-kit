@@ -7,16 +7,22 @@
 /* global __webpack_require__ */
 import React, {useRef} from 'react'
 import {hydrateRoot} from 'react-dom/client'
-import {BrowserRouter as Router} from 'react-router-dom'
+// import {BrowserRouter as Router} from 'react-router-dom'
 import {ServerContext, CorrelationIdProvider} from '../universal/contexts'
 import App from '../universal/components/_app'
 import {getAppConfig} from '../universal/compatibility'
 import Switch from '../universal/components/switch'
 import {getRoutes, routeComponent} from '../universal/components/route-component'
-import {loadableReady} from '@loadable/component'
+// import {loadableReady} from '@loadable/component'
 import {uuidv4} from '../../utils/uuidv4.client'
 import PropTypes from 'prop-types'
 import logger from '../../utils/logger-instance'
+import {createMemoryHistory} from '@tanstack/router'
+
+import { StartClient } from '@tanstack/react-start'
+import { createRouter } from '../router'
+
+const router = createRouter()
 
 /* istanbul ignore next */
 export const registerServiceWorker = (url) => {
@@ -41,96 +47,176 @@ export const registerServiceWorker = (url) => {
     })
 }
 
-export const OuterApp = ({routes, error, WrappedApp, locals, onHydrate}) => {
-    const AppConfig = getAppConfig()
-    const isInitialPageRef = useRef(true)
+// export const OuterApp = ({routes, error, WrappedApp, locals, onHydrate}) => {
+//     const AppConfig = getAppConfig()
+//     const isInitialPageRef = useRef(true)
 
-    return (
-        <ServerContext.Provider value={{}}>
-            <Router ref={onHydrate}>
-                <CorrelationIdProvider
-                    correlationId={() => {
-                        // If we are hydrating an error page use the server correlation id.
-                        if (isInitialPageRef.current && window.__ERROR__) {
-                            isInitialPageRef.current = false
-                            return window.__INITIAL_CORRELATION_ID__
-                        }
-                        return uuidv4()
-                    }}
-                >
-                    <AppConfig locals={locals}>
-                        <Switch
-                            error={error}
-                            appState={window.__PRELOADED_STATE__}
-                            routes={routes}
-                            App={WrappedApp}
-                        />
-                    </AppConfig>
-                </CorrelationIdProvider>
-            </Router>
-        </ServerContext.Provider>
-    )
-}
+//     return (
+//         <ServerContext.Provider value={{}}>
+//             <Router ref={onHydrate}>
+//                 <CorrelationIdProvider
+//                     correlationId={() => {
+//                         // If we are hydrating an error page use the server correlation id.
+//                         if (isInitialPageRef.current && window.__ERROR__) {
+//                             isInitialPageRef.current = false
+//                             return window.__INITIAL_CORRELATION_ID__
+//                         }
+//                         return uuidv4()
+//                     }}
+//                 >
+//                     <AppConfig locals={locals}>
+//                         <Switch
+//                             error={error}
+//                             appState={window.__PRELOADED_STATE__}
+//                             routes={routes}
+//                             App={WrappedApp}
+//                         />
+//                     </AppConfig>
+//                 </CorrelationIdProvider>
+//             </Router>
+//         </ServerContext.Provider>
+//     )
+// }
 
-OuterApp.propTypes = {
-    routes: PropTypes.array.isRequired,
-    error: PropTypes.object,
-    WrappedApp: PropTypes.func.isRequired,
-    locals: PropTypes.object,
-    onHydrate: PropTypes.func
-}
+// export const OuterApp = async ({routes, error, WrappedApp, locals, onHydrate}) => {
+//     const router = createRouter()
+
+//     const memoryHistory = createMemoryHistory({
+//       initialEntries: [url],
+//     })
+
+//     router.update({
+//       history: memoryHistory,
+//     })
+
+//     await router.load()
+
+//     const AppConfig = getAppConfig()
+//     const isInitialPageRef = useRef(true)
+
+
+//     // const appHtml = ReactDOMServer.renderToString(
+//     //     <ServerContext.Provider value={{}}>
+//     //         <Router ref={onHydrate}>
+//     //             <CorrelationIdProvider
+//     //                 correlationId={res.locals.requestId}
+//     //                 resetOnPageChange={false}
+//     //             >
+//     //                 <AppConfig locals={res.locals}>
+//     //                     <StartServer router={router} />
+//     //                 </AppConfig>
+//     //             </CorrelationIdProvider>
+//     //         </Router>
+//     //     </ServerContext.Provider>
+//     // )
+
+//     // res.statusCode = router.hasNotFoundMatch() ? 404 : 200
+//     // res.setHeader('Content-Type', 'text/html')
+//     // res.end(`<!DOCTYPE html>${appHtml}`)
+
+//     // return (
+//     //     <ServerContext.Provider value={{}}>
+//     //         {/* <Router ref={onHydrate}> */}
+//     //             <CorrelationIdProvider
+//     //                 correlationId={res.locals.requestId}
+//     //                 resetOnPageChange={false}
+//     //                 >
+//     //                 <AppConfig locals={res.locals}>
+//     //                     <StartServer
+//     //                         error={error}
+//     //                         appState={window.__PRELOADED_STATE__}
+//     //                         App={WrappedApp}
+//     //                         router={router}
+//     //                     />
+//     //                 </AppConfig>
+//     //             </CorrelationIdProvider>
+//     //         {/* </Router> */}
+//     //     </ServerContext.Provider>
+//     // )
+
+//     return ReactDOM.hydrateRoot(document, <StartClient router={router} />)
+// }
+
+// OuterApp.propTypes = {
+//     routes: PropTypes.array.isRequired,
+//     error: PropTypes.object,
+//     WrappedApp: PropTypes.func.isRequired,
+//     locals: PropTypes.object,
+//     onHydrate: PropTypes.func
+// }
 /* istanbul ignore next */
-export const start = () => {
-    const AppConfig = getAppConfig()
+
+export const start = async (url) => {
+    // const AppConfig = getAppConfig()
+
+    const router = createRouter()
+
+    const memoryHistory = createMemoryHistory({
+      initialEntries: [url],
+    })
+
+    router.update({
+      history: memoryHistory,
+    })
+
+    await router.load()
+
     const rootEl = document.getElementsByClassName('react-target')[0]
-    const data = JSON.parse(document.getElementById('mobify-data').innerHTML)
 
-    // Set all globals sent from the server on the window object.
-    Object.entries(data).forEach(([key, value]) => {
-        window[key] = value
-    })
-
-    // Tell webpack how to find javascript files
-    Object.defineProperty(__webpack_require__, 'p', {
-        get: () => window.Progressive.buildOrigin
-    })
-
-    // On the browser we don't have request.locals, so we just provide an empty
-    // object that exists for the lifetime of the app. AppConfig components can use
-    // this to set up, eg. Redux stores.
-    const locals = {}
-
-    // AppConfig.restore *must* come before getRoutes()
-    AppConfig.restore(locals, window.__PRELOADED_STATE__.__STATE_MANAGEMENT_LIBRARY)
-
-    // We need to tell the routeComponent HOC when the app is hydrating in order to
-    // prevent pages from re-fetching data on the first client-side render. The
-    // reason we do this is that we expect a render to have taken place
-    // on the server already. That server-side render already called getProps()
-    // and froze the application state as a JSON blob on the page.
-    //
-    // This is VERY fiddly – don't go crazy with window.__HYDRATING__. You have
-    // been warned.
-    window.__HYDRATING__ = true
-
-    const props = {
-        error: window.__ERROR__,
-        locals: locals,
-        routes: getRoutes(locals),
-        WrappedApp: routeComponent(App, false, locals)
-    }
-
-    return Promise.resolve()
-        .then(() => new Promise((resolve) => loadableReady(resolve)))
-        .then(() => {
-            hydrateRoot(
-                rootEl,
-                <OuterApp
-                    {...props}
-                    onHydrate={() => {
-                        window.__HYDRATING__ = false
-                    }}
-                />
-            )
-        })
+    return ReactDOM.hydrateRoot(rootEl, <StartClient router={router} />)
 }
+
+// export const start = () => {
+//     const AppConfig = getAppConfig()
+//     const rootEl = document.getElementsByClassName('react-target')[0]
+//     const data = JSON.parse(document.getElementById('mobify-data').innerHTML)
+
+//     // Set all globals sent from the server on the window object.
+//     Object.entries(data).forEach(([key, value]) => {
+//         window[key] = value
+//     })
+
+//     // Tell webpack how to find javascript files
+//     Object.defineProperty(__webpack_require__, 'p', {
+//         get: () => window.Progressive.buildOrigin
+//     })
+
+//     // On the browser we don't have request.locals, so we just provide an empty
+//     // object that exists for the lifetime of the app. AppConfig components can use
+//     // this to set up, eg. Redux stores.
+//     const locals = {}
+
+//     // AppConfig.restore *must* come before getRoutes()
+//     AppConfig.restore(locals, window.__PRELOADED_STATE__.__STATE_MANAGEMENT_LIBRARY)
+
+//     // We need to tell the routeComponent HOC when the app is hydrating in order to
+//     // prevent pages from re-fetching data on the first client-side render. The
+//     // reason we do this is that we expect a render to have taken place
+//     // on the server already. That server-side render already called getProps()
+//     // and froze the application state as a JSON blob on the page.
+//     //
+//     // This is VERY fiddly – don't go crazy with window.__HYDRATING__. You have
+//     // been warned.
+//     window.__HYDRATING__ = true
+
+//     const props = {
+//         error: window.__ERROR__,
+//         locals: locals,
+//         routes: getRoutes(locals),
+//         WrappedApp: routeComponent(App, false, locals)
+//     }
+
+// // .then(() => new Promise((resolve) => loadableReady(resolve)))
+//     return Promise.resolve()
+//         .then(() => {
+//             hydrateRoot(
+//                 rootEl,
+//                 <OuterApp
+//                     {...props}
+//                     onHydrate={() => {
+//                         window.__HYDRATING__ = false
+//                     }}
+//                 />
+//             )
+//         })
+// }
