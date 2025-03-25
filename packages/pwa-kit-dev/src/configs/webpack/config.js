@@ -22,6 +22,7 @@ import WebpackNotifierPlugin from 'webpack-notifier'
 
 // PWA-Kit Plugins
 import ApplicationExtensionConfigPlugin from '@salesforce/pwa-kit-extension-sdk/configs/webpack/application-extensions-config-plugin'
+import OverrideStatsPlugin from '@salesforce/pwa-kit-extension-sdk/configs/webpack/override-stats-plugin'
 
 // Local Plugins
 import {sdkReplacementPlugin} from './plugins'
@@ -228,6 +229,7 @@ const baseConfig = (target) => {
                         WEBPACK_TARGET: `'${target}'`,
                         ['global.GENTLY']: false
                     }),
+                    process.env.RECORD_OVERRIDES === 'true' && new OverrideStatsPlugin(),
                     // new SharedStatePlugin(),
                     mode === development && new webpack.NoEmitOnErrorsPlugin(),
 
@@ -423,7 +425,10 @@ const client =
                 // Must be named "client". See - https://www.npmjs.com/package/webpack-hot-server-middleware#usage
                 name: CLIENT,
                 // use source map to make debugging easier
-                devtool: mode === development ? 'source-map' : false,
+                devtool:
+                    mode === development || process.env.PWA_KIT_SOURCE_MAP === 'true'
+                        ? 'source-map'
+                        : false,
                 entry: {
                     main: getAppEntryPoint()
                 },
@@ -456,7 +461,10 @@ const clientOptional = baseConfig('web')
                 ...optional('fetch-polyfill', resolve(projectDir, 'node_modules', 'whatwg-fetch'))
             },
             // use source map to make debugging easier
-            devtool: mode === development ? 'source-map' : false,
+            devtool:
+                mode === development || process.env.PWA_KIT_SOURCE_MAP === 'true'
+                    ? 'source-map'
+                    : false,
             plugins: [
                 ...config.plugins,
                 analyzeBundle && getBundleAnalyzerPlugin(CLIENT_OPTIONAL)
@@ -475,7 +483,10 @@ const renderer =
                 name: SERVER,
                 entry: '@salesforce/pwa-kit-react-sdk/ssr/server/react-rendering.js',
                 // use eval-source-map for server-side debugging
-                devtool: mode === development && INSPECT ? 'eval-source-map' : false,
+                devtool:
+                    (mode === development && INSPECT) || process.env.PWA_KIT_SOURCE_MAP === 'true'
+                        ? 'eval-source-map'
+                        : false,
                 output: {
                     path: buildDir,
 
@@ -508,9 +519,7 @@ const ssr = (() => {
             .extend((config) => {
                 return {
                     ...config,
-                    ...(process.env.PWA_KIT_SSR_SOURCE_MAP === 'true'
-                        ? {devtool: 'source-map'}
-                        : {}),
+                    ...(process.env.PWA_KIT_SOURCE_MAP === 'true' ? {devtool: 'source-map'} : {}),
                     // Must *not* be named "server". See - https://www.npmjs.com/package/webpack-hot-server-middleware#usage
                     name: SSR,
                     entry: getServerEntryPoint(),
@@ -546,7 +555,10 @@ const requestProcessor =
                     libraryTarget: 'commonjs2'
                 },
                 // use eval-source-map for server-side debugging
-                devtool: mode === development && INSPECT ? 'eval-source-map' : false,
+                devtool:
+                    (mode === development && INSPECT) || process.env.PWA_KIT_SOURCE_MAP === 'true'
+                        ? 'eval-source-map'
+                        : false,
                 plugins: [
                     ...config.plugins,
                     analyzeBundle && getBundleAnalyzerPlugin(REQUEST_PROCESSOR)
