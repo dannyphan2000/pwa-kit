@@ -25,7 +25,7 @@ import SamplePage from './pages/sample'
 // Using the `overridable` loader means that you are opting in to the override module resolution flow. As a result this module
 // will be resolved by first looking in the base projects `overrides` folder then the overrides folders of any extensions configured
 // after this one. Only if no module is found will the referenced module in this project be used.
-import sampleHOC from 'overridable!./components/sample-hoc'
+import seoHOC from 'overridable!./components/seo-hoc'
 
 // Others
 import extensionMeta from '../extension-meta.json'
@@ -41,10 +41,9 @@ class Sample extends ApplicationExtension<Config> {
     extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
-        console.log("(JEREMY) sliceInitializer: ", sliceInitializer)
         const HOCs = [
             // Example higher-order component, this can be safely removed.
-            sampleHOC,
+            seoHOC,
             // Optionally include state for this extension using `withApplicationExtensionStore`
             (component: React.ComponentType<any>) =>
                 withApplicationExtensionStore(component, {

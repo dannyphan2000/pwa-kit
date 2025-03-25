@@ -115,14 +115,9 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         const history = useHistory()
         const location = useLocation()
         const authModal = useAuthModal()
-        const seoExtension = useApplicationExtension(
-            '@salesforce/extension-seo-url-mapping'
-        )
-        const isSeoEnabled = !!seoExtension && seoExtension.isEnabled()
         const isBlocked = useApplicationExtensionsStore((state) => {
             return state.state['@salesforce/extension-seo-url-mapping']?.isBlocked
         })
-        console.log("(JEREMY) with-layout, after useApplicationExtensionStore. isBlocked: ", isBlocked)
         
         const {site, locale, buildUrl} = useMultiSite()
         const [isOnline, setIsOnline] = useState<boolean>(true)
@@ -314,18 +309,6 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     </Box>
                     {!isOnline && <OfflineBanner />}
                     <AddToCartModalProvider>
-                    {/* <Box
-                                as="main"
-                                id="app-main"
-                                role="main"
-                                display="flex"
-                                flexDirection="column"
-                                flex="1"
-                            >
-                                <OfflineBoundary isOnline={false}>
-                                    <WrappedComponent {...(props as P)} />
-                                </OfflineBoundary>
-                            </Box> */}
                     {!isBlocked ? (
                         <Box
                             as="main"

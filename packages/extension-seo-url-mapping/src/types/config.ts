@@ -5,9 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import type {ApplicationExtensionConfig} from '@salesforce/pwa-kit-extension-sdk/types'
-import {
-    SliceInitializer
-} from '@salesforce/pwa-kit-extension-sdk/react'
+import {SliceInitializer} from '@salesforce/pwa-kit-extension-sdk/react'
 export interface UserConfig extends ApplicationExtensionConfig {
     // react-router-style path to the new sample page
     path?: string
@@ -20,8 +18,6 @@ export type Config = Required<UserConfig>
 
 interface StoreSlice {
     isBlocked: boolean
-    setIsBlockedFalse: () => void
-    setIsBlockedTrue: () => void
     setIsBlocked: (someBool: boolean) => void
 }
 
@@ -29,7 +25,5 @@ interface StoreSlice {
 // `withApplicationExtensionStore` usage below as well.
 export const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
     isBlocked: false,
-    setIsBlockedFalse: () => set((state) => ({...state, isBlocked: false})),
-    setIsBlockedTrue: () => set((state) => ({...state, isBlocked: true})),
     setIsBlocked: (someBool) => set((state) => ({...state, isBlocked: someBool}))
 })
