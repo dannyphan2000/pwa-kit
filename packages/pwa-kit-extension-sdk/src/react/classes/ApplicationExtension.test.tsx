@@ -58,7 +58,7 @@ class TestExtensionAsyncRoutes extends ApplicationExtension<TestConfig> {
     }
 
     public getComponentMap(): ComponentMap {
-        return {MockComponent: MockComponent as any}
+        return {MockComponent: MockComponent as React.ComponentType<any>}
     }
 }
 
@@ -98,7 +98,7 @@ describe('ApplicationExtension', () => {
         })
 
         test('should allow adding a new route', () => {
-            const additionalRoute: RouteProps = {path: '/new', component: mockComponent}
+            const additionalRoute: RouteProps = {path: '/new', component: MockComponent}
             const getRoutesSpy = jest.spyOn(extension, 'getRoutes').mockImplementation(() => {
                 return [additionalRoute]
             })
@@ -120,7 +120,7 @@ describe('ApplicationExtension', () => {
 
     describe('beforeRouteMatch', () => {
         test('initially returns all of the routes unmodified', () => {
-            const route: RouteProps = {path: '/new', component: mockComponent}
+            const route: RouteProps = {path: '/new', component: MockComponent}
             const allRoutes = [route]
 
             const result = extension.beforeRouteMatch({allRoutes, locals: {}})
@@ -201,7 +201,7 @@ describe('ApplicationExtension', () => {
             const cachedRoutes = [
                 {
                     path: '/cached-route',
-                    component: {displayName: 'CachedComponent'} as any
+                    component: {displayName: 'CachedComponent'} as React.ComponentType<any>
                 }
             ]
             extensionAsyncRoutes['_cachedRoutes'] = cachedRoutes
