@@ -85,17 +85,19 @@ export const useBlockNavigation = (func) => {
     const lastLocation = useRef()
     const [isBlocked, setIsBlocked] = useState(false)
     const funcRef = useRef()
+    const abortControllerRef = useRef(new AbortController())
 
     funcRef.current = func
     useEffect(() => {
         if (location !== lastLocation.current && funcRef.current) {
             lastLocation.current = location
-
             const unblock = block((location, action) => {
+                abortControllerRef.current.abort()
+                abortControllerRef.current = new AbortController()
                 // It is necessary to wrap this block in an async function to ensure the callback itself is not async, otherwise it will mess up order of execution
                 ;(async () => {
                     setIsBlocked(true)
-                    if (!(await funcRef.current(location, action))) {
+                    if (!(await funcRef.current(location, action, abortControllerRef.current.signal))) {
                         setIsBlocked(false)
                         unblock()
                         push(location)
