@@ -5,7 +5,15 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import type {ApplicationExtensionConfig} from '@salesforce/pwa-kit-extension-sdk/types'
-//
+
+// Defines the map of resource types to component display name.
+// https://developer.salesforce.com/docs/commerce/commerce-api/references/shopper-seo?meta=getUrlMapping
+type ResourceTypeToComponentMap = {
+    category: string
+    product: string
+    content_asset: string
+}
+
 // Configuration settings for connecting to the Commerce API.
 type CommerceAPIConfig = {
     proxyPath: string
@@ -27,6 +35,7 @@ export interface UserConfig extends ApplicationExtensionConfig {
     commerceAPIAuth: {
         propertyNameInLocals: string
     }
+    resourceTypeToComponentMap: ResourceTypeToComponentMap
 }
 
 /**

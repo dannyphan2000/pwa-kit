@@ -21,13 +21,11 @@ import {
     RouteProps,
     ComponentMap
 } from '@salesforce/pwa-kit-extension-sdk/types'
-import Auth from '@salesforce/commerce-sdk-react/auth'
-import {ShopperSeo} from 'commerce-sdk-isomorphic'
 import {routeComponent} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/route-component'
 
 // Local Imports
 import {Config} from './types'
-import SamplePage from './pages/sample'
+import {getAppOrigin, getShopperSeoClient} from './utils/utils'
 
 // Overridable Imports
 // Using the `overridable` loader means that you are opting in to the override module resolution flow. As a result this module
@@ -86,11 +84,12 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
     async getRoutesAsync({locals}: GetRoutesParams): Promise<RouteProps[]> {
+        // TODO: do we need this?
         if (!locals.originalUrl) {
             return Promise.resolve([])
         }
 
-        // Example of API call to get url mapping
+        // Make SEO GET Url Mapping API call
         const config = this.getConfig()
         const shopperSeo = await getShopperSeoClient(locals, config)
         const urlMapping = await shopperSeo.getUrlMapping({
@@ -98,22 +97,19 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         })
         console.log('--- url mapping', urlMapping)
 
-        const requestURL = new URL(locals.originalUrl, getAppOrigin(locals))
+        if (!urlMapping.resourceType) {
+            return Promise.resolve([])
+        }
 
-        console.log('--- getRoutesAsync:',
-            {
-                path: requestURL.pathname,
-                componentName: 'Foo',
-                exact: true
-                // component: SamplePage
-            })
-        // Returns a partial route
+        // Transform URL mapping to serialized route
+        const requestURL = new URL(locals.originalUrl, getAppOrigin(locals))
+        const componentName =
+            config.resourceTypeToComponentMap[urlMapping.resourceType as keyof typeof config.resourceTypeToComponentMap]
         return Promise.resolve([
             {
                 path: requestURL.pathname,
-                componentName: 'Foo',
+                componentName,
                 exact: true
-                // component: SamplePage
             }
         ])
     }
@@ -125,78 +121,42 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
     beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
-        // console.log('--- beforeRouteMatch: initial routes', allRoutes)
-        const index = allRoutes.findIndex((route) => route.componentName === 'Foo')
+        const {resourceTypeToComponentMap} = this.getConfig()
+        const index = allRoutes.findIndex((route) => route.componentName && Object.values(resourceTypeToComponentMap).includes(route.componentName))
         if (index === -1) {
             return allRoutes
         }
 
         // Complete the partial route
         const routes = allRoutes.slice()
-        const [myRoute] = routes.splice(index, 1)
-        myRoute.component = routeComponent(SamplePage, true, locals)
-        console.log('JINSU beforeRouteMatch', myRoute)
+        const [route] = routes.splice(index, 1)
+        const {componentName} = route
+
+        if (!componentName) {
+            return allRoutes
+        }
+
+        const component = routes.find((_route) =>
+            _route.component?.displayName?.includes(componentName)
+        )?.component
+
+        if (!component) {
+            // TODO: fix error message
+            throw Error(`Could not find component with displayName "${componentName}"`)
+        }
+
+        route.component = routeComponent(component, true, locals)
         // NOTE: to be expected: the Sample page will be rendered on the server side, while a different page is then rendered on the client side.
         // Jinsu's work on serialization will make sure that the same page will be rendered on both server and client sides.
 
-        const result = [myRoute, ...routes]
+        const result = [route, ...routes]
         // console.log('--- beforeRouteMatch: resulting routes', result)
         return result
     }
 
     getComponentMap(): ComponentMap {
-        return {
-            Foo: SamplePage
-        }
+        return {}
     }
 }
 
 export default CommerceBmSeo
-
-const getShopperSeoClient = async (locals: Record<string, any>, config: Config) => {
-    const {
-        commerceAPI,
-        commerceAPIAuth: {propertyNameInLocals: authProperty}
-    } = config
-
-    const appOrigin = getAppOrigin(locals)
-
-    // Saving/reusing the commerce api auth (so all extensions have access to it)
-    locals[authProperty] =
-        locals[authProperty] ??
-        new Auth({
-            ...commerceAPI.parameters,
-            proxy: `${appOrigin}${commerceAPI.proxyPath}`,
-            redirectURI: `${appOrigin}/callback`,
-            logger: console // TODO: proper logger
-        })
-
-    const auth: Auth = locals[authProperty]
-    const {access_token} = await auth.ready()
-
-    const clientConfig = {
-        ...commerceAPI,
-        proxy: `${appOrigin}${commerceAPI.proxyPath}`
-    }
-
-    return new ShopperSeo({
-        ...clientConfig,
-        headers: {authorization: `Bearer ${access_token}`}
-    })
-}
-
-// getAppOrigin is going to be deprecated in PWA Kit v4. Currently we have a replacement (useOrigin) but it's a React hook. So we still need a non-hook version.
-// TODO: move to somewhere in SDK
-const getAppOrigin = (locals: Record<string, any> = {}, fromXForwardedHeader = false): string => {
-    if (typeof window !== 'undefined') {
-        return window.location.origin
-    }
-
-    const xForwardedOrigin = locals.xForwardedOrigin
-    if (fromXForwardedHeader && xForwardedOrigin) {
-        return xForwardedOrigin
-    }
-
-    const {APP_ORIGIN = ''} = process.env
-    return APP_ORIGIN
-}
