@@ -139,7 +139,7 @@ export const render = async (req, res, next) => {
         locals: res.locals
     })
 
-    let routes = await getAllRoutes(res.locals)
+    let _routes = await getAllRoutes(res.locals)
 
     const [pathname] = req.originalUrl.split('?')
 
@@ -159,6 +159,14 @@ export const render = async (req, res, next) => {
             .filter((entry) => Boolean(entry[1]))
     )
     console.log('--- serialized extensions in react-rendering', serializedExtensions)
+
+    applicationExtensions.forEach((extension) => {
+        const componentMap = extension.getComponentMap(_routes)
+        console.log('JINSU componentMap', componentMap)
+        extension.deserialize(componentMap)
+    })
+
+    let routes = await getAllRoutes(res.locals)
 
     // Step 1 - Find the match.
 

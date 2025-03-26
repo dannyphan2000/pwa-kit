@@ -121,41 +121,18 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
     beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
-        const {resourceTypeToComponentMap} = this.getConfig()
-        const index = allRoutes.findIndex((route) => route.componentName && Object.values(resourceTypeToComponentMap).includes(route.componentName))
-        if (index === -1) {
-            return allRoutes
-        }
-
-        // Complete the partial route
-        const routes = allRoutes.slice()
-        const [route] = routes.splice(index, 1)
-        const {componentName} = route
-
-        if (!componentName) {
-            return allRoutes
-        }
-
-        const component = routes.find((_route) =>
-            _route.component?.displayName?.includes(componentName)
-        )?.component
-
-        if (!component) {
-            // TODO: fix error message
-            throw Error(`Could not find component with displayName "${componentName}"`)
-        }
-
-        route.component = routeComponent(component, true, locals)
-        // NOTE: to be expected: the Sample page will be rendered on the server side, while a different page is then rendered on the client side.
-        // Jinsu's work on serialization will make sure that the same page will be rendered on both server and client sides.
-
-        const result = [route, ...routes]
-        // console.log('--- beforeRouteMatch: resulting routes', result)
-        return result
+        return allRoutes
     }
 
-    getComponentMap(): ComponentMap {
-        return {}
+    getComponentMap(allRoutes: RouteProps[]): ComponentMap {
+        const {resourceTypeToComponentMap} = this.getConfig()
+        return Object.values(resourceTypeToComponentMap).reduce((map: ComponentMap, componentName) => {
+            const component = allRoutes.find(route => route.component?.displayName.includes(componentName))?.component
+            if (component) {
+                map[componentName] = component
+            }
+            return map
+        }, {})
     }
 }
 

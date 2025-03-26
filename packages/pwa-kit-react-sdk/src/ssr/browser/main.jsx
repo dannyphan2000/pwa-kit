@@ -132,8 +132,17 @@ export const start = async () => {
         locals
     })
 
+    const _routes = await getAllRoutes(locals)
+
+    applicationExtensions.forEach((extension) => {
+        const componentMap = extension.getComponentMap(_routes)
+        console.log('JINSU componentMap', componentMap)
+        extension.deserialize(componentMap)
+    })
+
     const routes = await getAllRoutes(locals)
-    console.log('allRoutes', routes)
+
+    console.log('allRoutes', _routes)
     const props = {
         error: window.__ERROR__,
         locals: locals,
