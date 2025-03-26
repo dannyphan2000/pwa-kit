@@ -72,16 +72,6 @@ export type DeserializedExtension = {
 }
 
 /**
- * This type is used in the serialize() method of an Application Extension to represent
- * the routes added to the application.
- */
-export type SerializedRoute = {
-    path: string | readonly string[] | undefined
-    componentName: string
-    exact?: boolean | undefined
-}
-
-/**
  * This type is used in the deserialize() method of an Application Extension to represent
  * the data from an extension that needs to be serialized on the server and deserialized
  * on the client.

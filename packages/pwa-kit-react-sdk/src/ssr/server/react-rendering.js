@@ -153,8 +153,6 @@ export const render = async (req, res, next) => {
     // Some application extensions need to be serialized because they have asynchronous state
     const serializedExtensions = Object.fromEntries(
         applicationExtensions
-            // TODO: I think react sdk should not be aware to filter by getRoutesAsync.
-            // .filter((extension) => extension.getRoutesAsync)
             .map((extension) => [extension.getName(), extension.serialize()])
             .filter((entry) => Boolean(entry[1]))
     )
