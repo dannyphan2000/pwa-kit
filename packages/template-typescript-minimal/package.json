@@ -1,7 +1,6 @@
 {
   "name": "typescript-minimal",
   "version": "4.0.0-extensibility-preview.4",
-  "private": true,
   "scripts": {
     "analyze-build": "cross-env MOBIFY_ANALYZE=true npm run build",
     "build": "pwa-kit-dev build",
