@@ -72,7 +72,6 @@ export const useOrigin = ({fromXForwardedHeader = false}) => {
     return APP_ORIGIN
 }
 
-
 /**
  * Blocks the navigation to run a provided function whenever there is a new page being navigated to
  * The function must return false to unblock the navigation
@@ -96,7 +95,13 @@ export const useBlockNavigation = (func) => {
                 abortControllerRef.current = new AbortController()
                 ;(async () => {
                     setIsBlocked(true)
-                    if (!(await funcRef.current(location, action, abortControllerRef.current.signal))) {
+                    if (
+                        !(await funcRef.current(
+                            location,
+                            action,
+                            abortControllerRef.current.signal
+                        ))
+                    ) {
                         setIsBlocked(false)
                         unblock()
                         push(location)
@@ -106,6 +111,6 @@ export const useBlockNavigation = (func) => {
             })
         }
     }, [location])
-    
+
     return isBlocked
 }

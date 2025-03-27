@@ -117,7 +117,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         const isBlocked = useApplicationExtensionsStore((state) => {
             return state.state['@salesforce/extension-seo-url-mapping']?.isBlocked
         })
-        
+
         const {site, locale, buildUrl} = useMultiSite()
         const [isOnline, setIsOnline] = useState<boolean>(true)
         const styles = useStyleConfig('App')
@@ -308,41 +308,40 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     </Box>
                     {!isOnline && <OfflineBanner />}
                     <AddToCartModalProvider>
-                    {!isBlocked ? (
-                        <SkipNavContent
-                            style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                flex: 1,
-                                outline: 0
-                            }}
-                        >
-                            <Box
-                                as="main"
-                                id="app-main"
-                                role="main"
-                                display="flex"
-                                flexDirection="column"
-                                flex="1"
+                        {!isBlocked ? (
+                            <SkipNavContent
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    flex: 1,
+                                    outline: 0
+                                }}
                             >
-                                <OfflineBoundary isOnline={false}>
-                                    <WrappedComponent {...(props as P)} />
-                                </OfflineBoundary>
+                                <Box
+                                    as="main"
+                                    id="app-main"
+                                    role="main"
+                                    display="flex"
+                                    flexDirection="column"
+                                    flex="1"
+                                >
+                                    <OfflineBoundary isOnline={false}>
+                                        <WrappedComponent {...(props as P)} />
+                                    </OfflineBoundary>
+                                </Box>
+                            </SkipNavContent>
+                        ) : (
+                            <Box
+                                height="700px"
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                            >
+                                <PlaceholderComponent></PlaceholderComponent>
                             </Box>
-                        </SkipNavContent>
-                    )
-                    : (
-                        <Box
-                            height="700px"
-                            style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}
-                        >
-                            <PlaceholderComponent></PlaceholderComponent>
-                        </Box>
-                    )}
+                        )}
                         {!isCheckout ? <Footer /> : <CheckoutFooter />}
 
                         <AuthModal {...(authModal as any)} />
