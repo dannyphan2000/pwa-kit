@@ -39,6 +39,9 @@ export type BuildCandidatePathsOptions = {
     extensionEntries: ApplicationExtensionEntry[]
 }
 
+/**
+ * Parameters for the `getRoutes` and `getRoutesAsync` methods
+ */
 export interface GetRoutesParams {
     locals: Record<string, any>
 }
@@ -50,6 +53,9 @@ export type RouteProps = _RouteProps & {
     componentName?: string
 }
 
+/**
+ * Parameters for the `beforeRouteMatch` method
+ */
 export interface BeforeRouteMatchParams {
     allRoutes: RouteProps[]
     locals: Record<string, any>
@@ -69,16 +75,6 @@ export type ComponentMap = {
  */
 export type DeserializedExtension = {
     routes: RouteProps[]
-}
-
-/**
- * This type is used in the serialize() method of an Application Extension to represent
- * the routes added to the application.
- */
-export type SerializedRoute = {
-    path: string | readonly string[] | undefined
-    componentName: string
-    exact?: boolean | undefined
 }
 
 /**

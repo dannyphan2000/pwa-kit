@@ -28,12 +28,14 @@ const mockRoutes: RouteProps[] = [
 const mockSerializedRoutes: RouteProps[] = [
     {
         path: '/test',
-        componentName: 'MockComponent'
+        componentName: 'MockComponent',
+        component: MockComponent
     },
     {
         path: '/test-route-with-exact',
         componentName: 'MockComponent',
-        exact: true
+        exact: true,
+        component: MockComponent
     }
 ]
 
@@ -44,10 +46,6 @@ class TestConfig implements ApplicationExtensionConfig {
 
 class TestExtension extends ApplicationExtension<TestConfig> {
     static readonly id = 'test-extension'
-
-    public getRoutes(): RouteProps[] {
-        return mockRoutes
-    }
 }
 
 class TestExtensionAsyncRoutes extends ApplicationExtension<TestConfig> {
@@ -58,7 +56,7 @@ class TestExtensionAsyncRoutes extends ApplicationExtension<TestConfig> {
     }
 
     public getComponentMap(): ComponentMap {
-        return {MockComponent: MockComponent as any}
+        return {MockComponent: MockComponent}
     }
 }
 
@@ -91,36 +89,42 @@ describe('ApplicationExtension', () => {
         })
     })
 
-    /*
-    describe('extendRoutes', () => {
-        test('should return the routes array without modification', () => {
-            const routes: RouteProps[] = [
-                {path: '/home', component: MockComponent},
-                {path: '/about', component: MockComponent}
-            ]
-
-            const result = extension.extendRoutes(routes)
-            expect(result).toEqual(routes)
+    describe('getRoutes', () => {
+        test('initially return an empty array', () => {
+            const routes = extension.getRoutes({locals: {}})
+            expect(routes).toHaveLength(0)
         })
 
-        test('should allow for modification of routes', () => {
-            const routes: RouteProps[] = [{path: '/home', component: MockComponent}]
+        test('should allow adding a new route', () => {
             const additionalRoute: RouteProps = {path: '/new', component: MockComponent}
+            const getRoutesSpy = jest.spyOn(extension, 'getRoutes').mockImplementation(() => {
+                return [additionalRoute]
+            })
 
-            const extendRoutesSpy = jest
-                .spyOn(extension, 'extendRoutes')
-                .mockImplementation((baseRoutes) => {
-                    return Promise.resolve([...baseRoutes, additionalRoute])
-                })
+            const routes = extension.getRoutes({locals: {}})
+            expect(routes).toContainEqual(additionalRoute)
+            expect(routes).toHaveLength(1)
 
-            const modifiedRoutes = extension.extendRoutes(routes)
-            expect(modifiedRoutes).toContainEqual(additionalRoute)
-            expect(modifiedRoutes).toHaveLength(routes.length + 1)
-
-            extendRoutesSpy.mockRestore()
+            getRoutesSpy.mockRestore()
         })
     })
-    */
+
+    describe('getRoutesAsync', () => {
+        test('initially undefined', () => {
+            // eslint-disable-next-line @typescript-eslint/unbound-method
+            expect(extension.getRoutesAsync).toBeUndefined()
+        })
+    })
+
+    describe('beforeRouteMatch', () => {
+        test('initially returns all of the routes unmodified', () => {
+            const route: RouteProps = {path: '/new', component: MockComponent}
+            const allRoutes = [route]
+
+            const result = extension.beforeRouteMatch({allRoutes, locals: {}})
+            expect(result).toStrictEqual(allRoutes)
+        })
+    })
 
     describe('serialize', () => {
         it('should serialize routes correctly', async () => {
@@ -195,7 +199,7 @@ describe('ApplicationExtension', () => {
             const cachedRoutes = [
                 {
                     path: '/cached-route',
-                    component: {displayName: 'CachedComponent'} as any
+                    component: {displayName: 'CachedComponent'} as React.ComponentType<any>
                 }
             ]
             extensionAsyncRoutes['_cachedRoutes'] = cachedRoutes

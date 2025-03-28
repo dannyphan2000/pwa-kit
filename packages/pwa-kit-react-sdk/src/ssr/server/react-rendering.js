@@ -153,8 +153,6 @@ export const render = async (req, res, next) => {
     // Some application extensions need to be serialized because they have asynchronous state
     const serializedExtensions = Object.fromEntries(
         applicationExtensions
-            // TODO: I think react sdk should not be aware to filter by getRoutesAsync.
-            // .filter((extension) => extension.getRoutesAsync)
             .map((extension) => [extension.getName(), extension.serialize()])
             .filter((entry) => Boolean(entry[1]))
     )
@@ -167,14 +165,11 @@ export const render = async (req, res, next) => {
         routes = applicationExtension.beforeRouteMatch({allRoutes: routes, locals: res.locals})
     })
 
-    // console.log('--- routes after ALL the extensions and beforeRouteMatch', routes)
-
     res.__performanceTimer.mark(PERFORMANCE_MARKS.routeMatching, 'start')
     let route
     let match
 
     routes.some((_route) => {
-        // console.log('--- iterating routes at:', _route)
         const _match = matchPath(req.path, _route)
         if (_match) {
             match = _match
@@ -182,7 +177,6 @@ export const render = async (req, res, next) => {
         }
         return !!match
     })
-    // console.log('--- matched with route', route, match)
     res.__performanceTimer.mark(PERFORMANCE_MARKS.routeMatching, 'end')
 
     // Step 2 - Get the component

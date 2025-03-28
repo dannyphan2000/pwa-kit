@@ -1,6 +1,6 @@
 {
   "name": "@salesforce/retail-react-app",
-  "version": "5.1.0-extensibility-preview.4",
+  "version": "6.1.0-extensibility-preview.4",
   "private": true,
   "license": "See license in LICENSE",
   "author": "cc-pwa-kit@salesforce.com",
@@ -41,7 +41,8 @@
     "@lhci/cli": "^0.11.0",
     "@loadable/component": "^5.15.3",
     "@peculiar/webcrypto": "^1.4.2",
-    "@salesforce/commerce-sdk-react": "3.2.0-extensibility-preview.4",
+    "@salesforce/cc-datacloud-typescript": "^1.0.10",
+    "@salesforce/commerce-sdk-react": "3.3.0-extensibility-preview.4",
     "@salesforce/pwa-kit-dev": "4.0.0-extensibility-preview.4",
     "@salesforce/pwa-kit-react-sdk": "4.0.0-extensibility-preview.4",
     "@salesforce/pwa-kit-runtime": "4.0.0-extensibility-preview.4",
@@ -51,6 +52,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "14.5.2",
+    "babel-plugin-module-resolver": "5.0.2",
     "base64-arraybuffer": "^0.2.0",
     "bundlesize2": "^0.0.31",
     "card-validator": "^8.1.1",
@@ -61,6 +63,7 @@
     "full-icu": "^1.5.0",
     "helmet": "^4.6.0",
     "jest-fetch-mock": "^2.1.2",
+    "jose": "^4.14.4",
     "js-cookie": "^3.0.1",
     "jsonwebtoken": "^9.0.0",
     "jwt-decode": "^4.0.0",
@@ -83,17 +86,17 @@
     "cross-env": "^5.2.1"
   },
   "engines": {
-    "node": "^16.11.0 || ^18.0.0 || ^20.0.0",
-    "npm": "^8.0.0 || ^9.0.0 || ^10.0.0"
+    "node": "^16.11.0 || ^18.0.0 || ^20.0.0 || ^22.0.0",
+    "npm": "^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0"
   },
   "bundlesize": [
     {
       "path": "build/main.js",
-      "maxSize": "53 kB"
+      "maxSize": "58 kB"
     },
     {
       "path": "build/vendor.js",
-      "maxSize": "350 kB"
+      "maxSize": "353 kB"
     }
   ]
 }

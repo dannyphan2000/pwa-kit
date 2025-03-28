@@ -42,6 +42,10 @@ import AboveHeader from '@salesforce/retail-react-app/app/components/_app/partia
 import StoreLocatorModal from '@salesforce/retail-react-app/app/components/store-locator-modal'
 // Hooks
 import {AuthModal, useAuthModal} from '@salesforce/retail-react-app/app/hooks/use-auth-modal'
+import {
+    DntNotification,
+    useDntNotification
+} from '@salesforce/retail-react-app/app/hooks/use-dnt-notification'
 import {AddToCartModalProvider} from '@salesforce/retail-react-app/app/hooks/use-add-to-cart-modal'
 import useMultiSite from '@salesforce/retail-react-app/app/hooks/use-multi-site'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
@@ -69,6 +73,7 @@ import {
 
 import Seo from '@salesforce/retail-react-app/app/components/seo'
 import {Helmet} from 'react-helmet'
+import {getPathWithLocale} from '@salesforce/retail-react-app/app/utils/url'
 
 const PlaceholderComponent = () => (
     <Center p="2">
@@ -123,6 +128,7 @@ const App = (props) => {
     const history = useHistory()
     const location = useLocation()
     const authModal = useAuthModal()
+    const dntNotification = useDntNotification()
     const {site, locale, buildUrl} = useMultiSite()
 
     const [isOnline, setIsOnline] = useState(true)
@@ -324,7 +330,12 @@ const App = (props) => {
                                 <link
                                     rel="alternate"
                                     hrefLang={locale.id.toLowerCase()}
-                                    href={`${appOrigin}${buildUrl(location.pathname)}`}
+                                    href={`${appOrigin}${getPathWithLocale(locale.id, buildUrl, {
+                                        location: {
+                                            ...location,
+                                            search: ''
+                                        }
+                                    })}`}
                                     key={locale.id}
                                 />
                             ))}
@@ -332,7 +343,12 @@ const App = (props) => {
                             <link
                                 rel="alternate"
                                 hrefLang={site.l10n.defaultLocale.slice(0, 2)}
-                                href={`${appOrigin}${buildUrl(location.pathname)}`}
+                                href={`${appOrigin}${getPathWithLocale(locale.id, buildUrl, {
+                                    location: {
+                                        ...location,
+                                        search: ''
+                                    }
+                                })}`}
                             />
                             {/* A wider fallback for user locales that the app does not support */}
                             <link rel="alternate" hrefLang="x-default" href={`${appOrigin}/`} />
@@ -415,6 +431,7 @@ const App = (props) => {
                                 {!isCheckout ? <Footer /> : <CheckoutFooter />}
 
                                 <AuthModal {...authModal} />
+                                <DntNotification {...dntNotification} />
                             </AddToCartModalProvider>
                         </Box>
                     </CurrencyProvider>

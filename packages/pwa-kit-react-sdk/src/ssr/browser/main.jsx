@@ -112,7 +112,7 @@ export const start = async () => {
     // this to set up, eg. Redux stores.
     const locals = {}
 
-    // AppConfig.restore *must* come before getRoutes()
+    // AppConfig.restore *must* come before getAllRoutes()
     AppConfig.restore(locals, window.__PRELOADED_STATE__.__STATE_MANAGEMENT_LIBRARY)
 
     // We need to tell the routeComponent HOC when the app is hydrating in order to

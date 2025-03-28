@@ -17,6 +17,7 @@
     "LICENSE",
     "+(configs|express|react|shared)/**/!(*.test*).{ts,js}",
     "*.{js,d.ts}",
+    "bin/**/*.js",
     "!*.test*.{js,d.ts}",
     "!test*.*",
     "!+(jest|babel).config.js",
@@ -24,6 +25,9 @@
   ],
   "publishConfig": {
     "directory": "dist"
+  },
+  "bin": {
+    "pwa-kit-extension-sdk": "bin/pwa-kit-extension-sdk.js"
   },
   "types": "dist/index.d.ts",
   "scripts": {
@@ -36,6 +40,7 @@
     "test": "pwa-kit-dev test"
   },
   "dependencies": {
+    "chalk": "^4.1.2",
     "cross-env": "^5.2.1",
     "dedent": "^1.5.3",
     "fs-extra": "^11.2.0",

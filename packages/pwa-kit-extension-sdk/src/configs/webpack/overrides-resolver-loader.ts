@@ -15,6 +15,7 @@ import {buildCandidatePaths, getPackageName, SETUP_FILE_REGEX} from '../../share
 
 // Types
 import type {ExtendedCompiler} from './types'
+import type {OverrideStatsEntry} from './override-stats-plugin'
 
 // Constants
 const EXTENSION_PACKAGE_PREFIX = 'extension-'
@@ -88,6 +89,18 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
         packageIterator: () => paths,
         ...options?.resolveOptions
     })
+
+    // Record override stats if RECORD_OVERRIDES is enabled
+    if (this._compilation && 'overrideStats' in this._compilation) {
+        const compilation = this._compilation as {overrideStats: OverrideStatsEntry[]}
+
+        // Add the override information to the stats
+        compilation.overrideStats.push({
+            original: resourcePath,
+            resolved: resolvedResourcePath,
+            sourceExtension: packageName
+        })
+    }
 
     // Tell Webpack to treat this new resource as a dependency of the original module in order to have the dependency
     // transpiled with all the same loaders/plugins that the original file was.

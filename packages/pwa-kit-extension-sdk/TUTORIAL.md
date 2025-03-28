@@ -123,8 +123,13 @@ const Home = () => {
 
 export default Home
 ```
+For now, you need to restart the dev server for new override files to take effect. Once the server is started, navigate to home page and you should see. 
 
-For now, you need to restart the dev server for new override files to take effect. Once the server is started, navigate to home page and you should see
+You can also verify the overrides by running the [List Overridable Files](README.md#list-overridable-files) command at the root of your project directory:
+```bash
+npm run list-overrides
+```
+
 #### Important Considerations
 
 🙋 Note: After creating new override files, you'll need to restart your development server for the changes to take effect. This is because override resolution happens during the application's bootstrap phase.
@@ -249,7 +254,7 @@ This powerful system enables you to:
 * Enhance performance monitoring
 
 
-`extendRoutes` is a method of the ApplicationExtension class that allows you to add/modify the routes for your React application and `beforeRouteMatch` is used to modify all routes if necessary during server side rendering.
+`getRoutes` is a method of the ApplicationExtension class that allows you to add new routes for your React application, and `beforeRouteMatch` is used to modify existing routes if necessary.
 
 
 ### Creating a Public Interface with Overridable Files 🎯

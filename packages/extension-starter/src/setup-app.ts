@@ -74,10 +74,8 @@ class Sample extends ApplicationExtension<Config> {
     }
 
     /**
-     * TODO: update this comment
-     * This method is used to make changes to the PWA-Kit application routes. If your extension adds a new page to the application
-     * then you can add it to the router here. The routes passed to this method is an accrued list of routes that have been added
-     * from extensions applied before it. It is called during the `getRoutes` phase on both the server and the client.
+     * This method is used to add new routes. If your extension adds a new page to the application, then you can add it to the
+     * router here. The method is called during the `getAllRoutes` phase on both the server and the client.
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
@@ -92,8 +90,7 @@ class Sample extends ApplicationExtension<Config> {
     }
 
     /**
-     * TODO: update comment to make it clearer that beforeRouteMatch is also called on the client side
-     * This method is used on the server during the rendering pipeline. It's provided a list of all the routes that your application
+     * This method is used on both the server and client sides. It's provided a list of all the routes that your application
      * is configured with, including those defined in the base application and those added by all the extensions. You can use this
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */

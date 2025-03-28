@@ -138,9 +138,8 @@ export class ApplicationExtension<
             }
 
             return {
-                path: route.path,
-                componentName: route.component.displayName,
-                ...(route.exact && {exact: true})
+                ...route,
+                componentName: route.component.displayName
             }
         })
 
