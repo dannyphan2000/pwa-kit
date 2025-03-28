@@ -35,9 +35,9 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
             return false
         })
 
-        useApplicationExtension('@salesforce/extension-seo-url-mapping')
+        useApplicationExtension('@salesforce/extension-commerce-bm-seo')
         const setIsBlocked = useApplicationExtensionsStore((state) => {
-            return state.state['@salesforce/extension-seo-url-mapping']?.setIsBlocked
+            return state.state['@salesforce/extension-commerce-bm-seo']?.setIsBlocked
         })
         setIsBlocked(isBlocked)
 

@@ -115,7 +115,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         const location = useLocation()
         const authModal = useAuthModal()
         const isBlocked = useApplicationExtensionsStore((state) => {
-            return state.state['@salesforce/extension-seo-url-mapping']?.isBlocked
+            return state.state['@salesforce/extension-commerce-bm-seo']?.isBlocked
         })
 
         const {site, locale, buildUrl} = useMultiSite()

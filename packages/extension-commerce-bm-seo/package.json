@@ -1,5 +1,5 @@
 {
-  "name": "@salesforce/extension-seo-url-mapping",
+  "name": "@salesforce/extension-commerce-bm-seo",
   "version": "0.1.0-extensibility-preview.4",
   "private": true,
   "scripts": {
