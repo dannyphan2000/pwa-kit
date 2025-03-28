@@ -46,6 +46,13 @@ export interface GetRoutesParams {
     locals: Record<string, any>
 }
 
+/*
+ * Same as react-router's RouteProps, but now supports `componentName` if the route is meant to be serializable
+ */
+export type SerializedRouteProps = RouteProps & {
+    componentName?: string
+}
+
 /**
  * Parameters for the `beforeRouteMatch` method
  */
@@ -76,5 +83,5 @@ export type DeserializedExtension = {
  * on the client.
  */
 export type SerializedExtension = {
-    routes: RouteProps[]
+    routes: SerializedRouteProps[]
 }
