@@ -14,7 +14,6 @@ import {
     ApplicationExtensionConfig,
     BeforeRouteMatchParams,
     ComponentMap,
-    DeserializedExtension,
     GetRoutesParams,
     RouteProps,
     SerializedExtension
@@ -104,7 +103,7 @@ export class ApplicationExtension<
             throw new Error(`Routes have not been loaded. Call getRoutesAsync() before serializing`)
         }
         console.log(
-            '--- serializing routes for extension',
+            'serialize(): routes for extension',
             this.getName(),
             'cachedRoutes:',
             this._cachedRoutes
@@ -132,9 +131,8 @@ export class ApplicationExtension<
             }
 
             return {
-                path: route.path,
+                ...route,
                 componentName: route.component.displayName,
-                ...(route.exact && {exact: true})
             }
         })
 
@@ -181,13 +179,12 @@ export class ApplicationExtension<
 
         let serializedRoutes
         if (!isServerSide()) {
-            console.log('JINSUUUU !isServerSide')
             serializedRoutes = window.__EXTENSIONS__[this.getName()].routes
         } else {
             serializedRoutes = this._cachedRoutes
         }
 
-        console.log('JINSU serializedRoutes', serializedRoutes)
+        console.log('JINSU deserialize(): serializedRoutes', serializedRoutes)
         const routes = serializedRoutes?.map(({componentName, ...route}) => {
             if (!componentName) {
                 throw new Error(
@@ -207,13 +204,17 @@ export class ApplicationExtension<
                 )
             }
 
+            if (route.props) {
+                // const WrappedComponent = (props: any) => <Component {...props} />
+            }
+
             return {
                 ...route,
                 component
             }
         })
-        console.log('--- deserialized', this.getName(), 'extension :', {routes})
+        console.log('deserialize(): ', this.getName(), 'extension :', {routes})
         this._cachedRoutes = routes || null
-        // return {routes}
+        return {routes}
     }
 }

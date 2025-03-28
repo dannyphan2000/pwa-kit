@@ -19,9 +19,8 @@ import {
     GetRoutesParams,
     BeforeRouteMatchParams,
     RouteProps,
-    ComponentMap
+    ComponentMap,
 } from '@salesforce/pwa-kit-extension-sdk/types'
-import {routeComponent} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/route-component'
 
 // Local Imports
 import {Config} from './types'
@@ -109,6 +108,10 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             {
                 path: requestURL.pathname,
                 componentName,
+                // TODO: logic for componentProps and Redirect
+                props: {
+                    [`${urlMapping.resourceType}Id`]: urlMapping.resourceId
+                },
                 exact: true
             }
         ])
@@ -121,6 +124,18 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
     beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
+        // const componentMap = this.getComponentMap(allRoutes)
+        
+        // // Find the serialized route added for the SEO URL Mapping
+        // allRoutes
+        //     .filter((route: RouteProps) => route.componentName && Object.keys(componentMap).includes(route.componentName))
+        //     .forEach((route: RouteProps) => {
+        //         route.component = componentMap[route.componentName!]
+        //     })
+        // // NOTE: to be expected: the Sample page will be rendered on the server side, while a different page is then rendered on the client side.
+        // // Jinsu's work on serialization will make sure that the same page will be rendered on both server and client sides.
+
+        // console.log('--- beforeRouteMatch: resulting route', allRoutes.filter((route: RouteProps) => route.componentName && Object.keys(componentMap).includes(route.componentName)))
         return allRoutes
     }
 
