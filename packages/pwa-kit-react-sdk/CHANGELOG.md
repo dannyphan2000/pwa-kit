@@ -1,3 +1,4 @@
+## v3.10.0-nightly-20250328080219 (Mar 28, 2025)
 ## v3.10.0-dev (Feb 18, 2025)
 - Fix the performance logging util to use the correct delimiter for the server-timing header. [#2225](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2295)
 
