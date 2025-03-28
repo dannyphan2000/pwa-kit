@@ -1207,23 +1207,6 @@ const main = async (opts) => {
         context.preset = PRESETS.find(({id}) => id === presetId)
     }
 
-    // Add the selected preset to the context object.
-    const selectedPreset = PRESETS.find(
-        ({id}) => id === (presetId || context.answers.general.presetId)
-    )
-
-    // Add the preset to the context.
-    context.preset = selectedPreset
-
-    // If using the preset, output the preset name
-    if (presetId) {
-        console.log(`Using preset "${selectedPreset.name}"`)
-    }
-
-    if (!OUTPUT_DIR_FLAG_ACTIVE) {
-        outputDir = p.join(process.cwd(), selectedPreset.id)
-    }
-
     // Ask preset specific questions and merge into the current context.
     const {questions = {}, answers = {}} = context.preset
     if (questions) {

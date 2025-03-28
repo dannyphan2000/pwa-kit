@@ -110,7 +110,7 @@ describe('ApplicationExtension', () => {
     })
 
     describe('getRoutesAsync', () => {
-        test('initially undefined', () => {
+        test('initially not implemented', () => {
             // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(extension.getRoutesAsync).toBeUndefined()
         })

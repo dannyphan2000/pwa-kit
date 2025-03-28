@@ -26,12 +26,7 @@ const mkdtempSync = () => fs.mkdtempSync(p.resolve(os.tmpdir(), 'pwa-template-tm
 const tarPathForPkg = (pkg) => p.resolve(templatesDir, `${pkg}.tar.gz`)
 
 const main = () => {
-    const templatePkgNames = [
-        'retail-react-app',
-        'express-minimal',
-        'typescript-minimal',
-        'mrt-reference-app'
-    ]
+    const templatePkgNames = ['express-minimal', 'typescript-minimal', 'mrt-reference-app']
 
     const extensionPkgName = [EXTENSION_STARTER_NAME, EXTENSION_CHAKRA_STOREFRONT_NAME]
 
