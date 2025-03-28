@@ -10,13 +10,13 @@ import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/cla
 import {cacheMethodResult, isServerSide} from '../utils/helpers'
 
 // Types
+import {RouteProps} from 'react-router-dom'
 import {
     ApplicationExtensionConfig,
     BeforeRouteMatchParams,
     ComponentMap,
     DeserializedExtension,
     GetRoutesParams,
-    RouteProps,
     SerializedExtension
 } from '../../types'
 
@@ -111,17 +111,12 @@ export class ApplicationExtension<
         }
 
         const serializedRoutes = this._cachedRoutes.map((route) => {
-            if (!route.componentName && !route.component) {
+            if (!route.component) {
                 throw new Error(
                     `Route with path "${String(
                         route.path
-                    )}" must contain either a componentName or component to be serializable in in the ${this.getName()} extension`
+                    )}" must contain a component to be serializable in the ${this.getName()} extension`
                 )
-            }
-
-            // Check if the route is already serialized
-            if (route.componentName) {
-                return route
             }
 
             if (!route.component?.displayName) {
