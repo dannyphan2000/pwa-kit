@@ -41,6 +41,7 @@ export class ApplicationExtension<
 
         if (!isServerSide()) {
             // Deserialize the routes on the client to ensure the latest routes are loaded on the client
+            // TODO: no need to call the generic deserialize, but do it here directly
             this._cachedRoutes = this.deserialize()?.routes || null
         }
 
@@ -116,18 +117,18 @@ export class ApplicationExtension<
             this._cachedRoutes
         )
         const serializedRoutes = this._cachedRoutes.map((route) => {
-            if (!route.componentName && !route.component) {
-                throw new Error(
-                    `Route with path "${String(
-                        route.path
-                    )}" must contain either a componentName or component to be serializable in in the ${this.getName()} extension`
-                )
-            }
+            // if (!route.componentName && !route.component) {
+            //     throw new Error(
+            //         `Route with path "${String(
+            //             route.path
+            //         )}" must contain either a componentName or component to be serializable in in the ${this.getName()} extension`
+            //     )
+            // }
 
             // Check if the route is already serialized
-            if (route.componentName) {
-                return route
-            }
+            // if (route.componentName) {
+            //     return route
+            // }
 
             if (!route.component?.displayName) {
                 throw new Error(
@@ -163,7 +164,7 @@ export class ApplicationExtension<
      * @protected
      * @returns ComponentMap - The map of component names to components.
      */
-    protected getComponentMap?(): ComponentMap
+    // protected getComponentMap?(): ComponentMap
 
     /**
      * Called on the client to deserialize the extension data that was serialized on the server.
@@ -178,11 +179,11 @@ export class ApplicationExtension<
             return null
         }
 
-        if (!this.getComponentMap) {
-            throw new Error(
-                `getComponentMap() must be defined when getRoutesAsync() is defined in the ${this.getName()} extension`
-            )
-        }
+        // if (!this.getComponentMap) {
+        //     throw new Error(
+        //         `getComponentMap() must be defined when getRoutesAsync() is defined in the ${this.getName()} extension`
+        //     )
+        // }
 
         console.log(
             '--- deserializing routes for extension',
@@ -190,34 +191,35 @@ export class ApplicationExtension<
             '- window.__EXTENSIONS__:',
             window.__EXTENSIONS__
         )
-        console.log('ComponentMap:', this.getComponentMap())
-        const componentMap = this.getComponentMap()
+        // console.log('ComponentMap:', this.getComponentMap())
+        // const componentMap = this.getComponentMap()
         const serializedExtension = window.__EXTENSIONS__[this.getName()]
 
-        const routes = serializedExtension.routes.map(({componentName, ...route}) => {
-            if (!componentName) {
-                throw new Error(
-                    `Missing componentName for the route with path: "${String(
-                        route.path
-                    )}". Ensure that ${
-                        this.serialize.name
-                    }() correctly assigns a componentName to the serialized route in the ${this.getName()} extension`
-                )
-            }
+        const routes = serializedExtension.routes
+        // const routes = serializedExtension.routes.map(({component, ...route}) => {
+        //     if (!componentName) {
+        //         throw new Error(
+        //             `Missing componentName for the route with path: "${String(
+        //                 route.path
+        //             )}". Ensure that ${
+        //                 this.serialize.name
+        //             }() correctly assigns a componentName to the serialized route in the ${this.getName()} extension`
+        //         )
+        //     }
 
-            const component = componentMap[componentName]
+        //     const component = componentMap[componentName]
 
-            if (!component) {
-                throw new Error(
-                    `"${componentName}" was not found in the component map. Ensure that getComponentMap() includes a mapping for it in the ${this.getName()} extension`
-                )
-            }
+        //     if (!component) {
+        //         throw new Error(
+        //             `"${componentName}" was not found in the component map. Ensure that getComponentMap() includes a mapping for it in the ${this.getName()} extension`
+        //         )
+        //     }
 
-            return {
-                ...route,
-                component
-            }
-        })
+        //     return {
+        //         ...route,
+        //         component
+        //     }
+        // })
         console.log('--- deserialized', this.getName(), 'extension :', {routes})
         return {routes}
     }

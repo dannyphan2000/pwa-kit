@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {ApplicationExtension} from './ApplicationExtension'
-import {ApplicationExtensionConfig, ComponentMap, RouteProps} from '../../types'
+import {ApplicationExtensionConfig, ComponentMap, MyRouteProps, RouteProps} from '../../types'
 import React from 'react'
 
 const MockComponent: React.ComponentType<any> = () => {
@@ -25,7 +25,7 @@ const mockRoutes: RouteProps[] = [
     }
 ]
 
-const mockSerializedRoutes: RouteProps[] = [
+const mockSerializedRoutes: MyRouteProps[] = [
     {
         path: '/test',
         componentName: 'MockComponent',

@@ -14,12 +14,13 @@ import {
     SliceInitializer,
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
-import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
+import {applyHOCs, isServerSide} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {
     GetRoutesParams,
     BeforeRouteMatchParams,
     RouteProps,
-    ComponentMap
+    ComponentMap,
+    MyRouteProps
 } from '@salesforce/pwa-kit-extension-sdk/types'
 import {routeComponent} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/route-component'
 
@@ -35,6 +36,7 @@ import sampleHOC from 'overridable!./components/sample-hoc'
 
 // Others
 import extensionMeta from '../extension-meta.json'
+import Sample from './pages/sample'
 
 interface StoreSlice {
     count: number
@@ -92,10 +94,13 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         // Make SEO GET Url Mapping API call
         const config = this.getConfig()
         const shopperSeo = await getShopperSeoClient(locals, config)
-        const urlMapping = await shopperSeo.getUrlMapping({
+        let urlMapping = await shopperSeo.getUrlMapping({
             parameters: {urlSegment: locals.originalUrl}
         })
         console.log('--- url mapping', urlMapping)
+
+        // DEBUG
+        urlMapping = {resourceType: 'category'}
 
         if (!urlMapping.resourceType) {
             return Promise.resolve([])
@@ -104,11 +109,16 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         // Transform URL mapping to serialized route
         const requestURL = new URL(locals.originalUrl, getAppOrigin(locals))
         const componentName =
-            config.resourceTypeToComponentMap[urlMapping.resourceType as keyof typeof config.resourceTypeToComponentMap]
+            config.resourceTypeToComponentMap[
+                urlMapping.resourceType as keyof typeof config.resourceTypeToComponentMap
+            ]
+        const component = createPlaceholderPage(componentName)
+
+        // @ts-ignore
         return Promise.resolve([
             {
                 path: requestURL.pathname,
-                componentName,
+                component,
                 exact: true
             }
         ])
@@ -122,22 +132,24 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      */
     beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
         const {resourceTypeToComponentMap} = this.getConfig()
-        const index = allRoutes.findIndex((route) => route.componentName && Object.values(resourceTypeToComponentMap).includes(route.componentName))
+        const getComponentName = (route: MyRouteProps) => {
+            return route.component?.displayName || route.componentName || ''
+        }
+
+        const index = allRoutes.findIndex((route) => {
+            const componentName = getComponentName(route)
+            return Object.values(resourceTypeToComponentMap).includes(componentName)
+        })
         if (index === -1) {
             return allRoutes
         }
 
-        // Complete the partial route
         const routes = allRoutes.slice()
-        const [route] = routes.splice(index, 1)
-        const {componentName} = route
-
-        if (!componentName) {
-            return allRoutes
-        }
+        const [asyncRoute] = routes.splice(index, 1)
+        const componentName = getComponentName(asyncRoute)
 
         const component = routes.find((_route) =>
-            _route.component?.displayName?.includes(componentName)
+            getComponentName(_route).includes(componentName)
         )?.component
 
         if (!component) {
@@ -145,18 +157,30 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             throw Error(`Could not find component with displayName "${componentName}"`)
         }
 
-        route.component = routeComponent(component, true, locals)
-        // NOTE: to be expected: the Sample page will be rendered on the server side, while a different page is then rendered on the client side.
-        // Jinsu's work on serialization will make sure that the same page will be rendered on both server and client sides.
+        asyncRoute.component = component
 
-        const result = [route, ...routes]
-        // console.log('--- beforeRouteMatch: resulting routes', result)
+        const result = [asyncRoute, ...routes]
+        console.log('--- beforeRouteMatch: resulting routes', result)
         return result
     }
 
-    getComponentMap(): ComponentMap {
-        return {}
-    }
+    // getComponentMap(): ComponentMap {
+    //     return {}
+    // }
 }
 
 export default CommerceBmSeo
+
+const createPlaceholderPage = (componentName: string) => {
+    // @ts-ignore
+    Sample.displayName = componentName
+    return Sample
+
+    // TODO: wrap this component with loadable
+    // const PlaceholderPage = () => {
+    //     return
+    // }
+    // PlaceholderPage.displayName = componentName
+
+    // return PlaceholderPage
+}
