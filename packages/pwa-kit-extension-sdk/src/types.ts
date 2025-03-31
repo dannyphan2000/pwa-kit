@@ -62,14 +62,6 @@ export type ComponentMap = {
     [key: string]: React.ComponentType<any>
 }
 
-/**
- * This type is used in the deserialize() method of an Application Extension to represent
- * the data from an extension after it has been deserialized on the client.
- */
-export type DeserializedExtension = {
-    routes: RouteProps[]
-}
-
 /*
  * Same as react-router's RouteProps, but now supports `componentName` if the route is meant to be serializable
  */

@@ -5,11 +5,15 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import {SerializedExtension} from './types'
+import {SerializedRouteProps} from './types'
 
 declare global {
     interface Window {
-        __EXTENSIONS__: {[key: string]: SerializedExtension}
+        __EXTENSIONS__: {
+            [key: string]: {
+                routes: SerializedRouteProps[]
+            }
+        }
     }
 }
 
