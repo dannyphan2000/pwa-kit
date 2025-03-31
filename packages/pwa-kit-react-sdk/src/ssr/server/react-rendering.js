@@ -285,7 +285,7 @@ const serializeAsyncRoutes = async (applicationExtensions) => {
         return routes.map((route) => {
             return {
                 ...route,
-                componentName: route.componentName || route.component.displayName
+                componentName: route.component.displayName || route.componentName
             }
         })
     }

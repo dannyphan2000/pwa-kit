@@ -117,7 +117,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
                 // Placeholder component that will be replaced later during beforeRouteMatch
                 component: Sample,
                 // Still need this `componentName` for later (during beforeRouteMatch).
-                // `displayName` will be long, after component has been wrapped multiple times.
+                // `displayName` will be a long name, after component has been wrapped multiple times.
                 componentName,
                 exact: true
             }
