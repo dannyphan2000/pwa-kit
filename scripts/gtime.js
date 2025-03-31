@@ -16,8 +16,10 @@ const main = () => {
     const args = process.argv.slice(4)
     const metricName = process.argv[2]
     const format = '{"max_memory_kb": "%M", "max_cpu_percent": "%P", "wall_time_seconds": "%e"}'
-
-    const {status, stderr} = childProc.spawnSync('/usr/bin/time', ['-f', format, cmd, ...args], {
+    console.log("(JEREMY) format: ", format)
+    console.log("(JEREMY) cmd: ", cmd)
+    console.log("(JEREMY) args: ", args)
+    const {status, stderr} = childProc.spawnSync('/usr/bin/time', [cmd, ...args], {
         stdio: ['inherit', 'inherit', 'pipe']
     })
 
