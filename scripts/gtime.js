@@ -19,7 +19,7 @@ const main = () => {
     console.log("(JEREMY) format: ", format)
     console.log("(JEREMY) cmd: ", cmd)
     console.log("(JEREMY) args: ", args)
-    const {status, stderr} = childProc.spawnSync('/usr/bin/time', [cmd, ...args], {
+    const {status, stderr} = childProc.spawnSync('/usr/bin/time', ['-f', format, cmd, ...args], {
         stdio: ['inherit', 'inherit', 'pipe']
     })
 
@@ -30,7 +30,9 @@ const main = () => {
 
     const errorLines = err.split('\n')
     const last = errorLines[errorLines.length - 1]
+    console.log("(JEREMY) last: ", last)
     const data = JSON.parse(last)
+    console.log("(JEREMY) data: ", data)
 
     Object.keys(data).forEach((k) => {
         const metric = `mobify_platform_sdks.${metricName}_${k}`
