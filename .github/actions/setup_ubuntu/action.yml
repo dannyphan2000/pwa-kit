@@ -12,11 +12,10 @@ runs:
       run: |-
         # Install node dependencies
         npm cache clean --force
-        npm install -g npm@latest
         echo "HEY ABOUT TO RUN THIS"
         node ./scripts/gtime.js monorepo_install npm ci
         echo "RAN IT"
-        
+
         # Build the PWA
         # npm run lerna -- run analyze-build --scope "@salesforce/retail-react-app"
 
