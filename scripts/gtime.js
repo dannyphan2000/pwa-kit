@@ -22,6 +22,8 @@ const main = () => {
     })
 
     const err = stderr.toString().trim()
+    if (err)
+        console.log("(JEREMY) there was an error: ")
     console.error(err)
 
     const errorLines = err.split('\n')
