@@ -224,6 +224,7 @@ module.exports = {
             }
           }
         ],
+        ["@salesforce/extension-starter", {}],
       ]
     },
     ssrEnabled: true,

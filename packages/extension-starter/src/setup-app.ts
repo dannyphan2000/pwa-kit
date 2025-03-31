@@ -79,14 +79,18 @@ class Sample extends ApplicationExtension<Config> {
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
-    getRoutes(params: GetRoutesParams): RouteProps[] {
-        return [
+    getRoutesAsync(params: GetRoutesParams): Promise<RouteProps[]> {
+        return Promise.resolve([
             {
                 exact: true,
                 path: this.getConfig().path,
                 component: SamplePage
             }
-        ]
+        ])
+    }
+
+    getComponentMap() {
+        return {SamplePage}
     }
 
     /**

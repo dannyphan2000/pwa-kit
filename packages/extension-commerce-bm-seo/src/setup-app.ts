@@ -7,6 +7,7 @@
 
 // Third-Party
 import React from 'react'
+import {RouteProps} from 'react-router-dom'
 
 // Platform Imports
 import {
@@ -16,10 +17,9 @@ import {
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {
+    ComponentMap,
     GetRoutesParams,
-    BeforeRouteMatchParams,
-    RouteProps,
-    ComponentMap
+    BeforeRouteMatchParams
 } from '@salesforce/pwa-kit-extension-sdk/types'
 import {routeComponent} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/route-component'
 
@@ -105,10 +105,14 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         const requestURL = new URL(locals.originalUrl, getAppOrigin(locals))
         const componentName =
             config.resourceTypeToComponentMap[urlMapping.resourceType as keyof typeof config.resourceTypeToComponentMap]
+        
+        // Create a placeholder component so it can be deserialized later in beforeRouteMatch
+        const component = Object.assign(() => null, {displayName: `${this.getName()}.${componentName}`})
+
         return Promise.resolve([
             {
                 path: requestURL.pathname,
-                componentName,
+                component,
                 exact: true
             }
         ])
@@ -121,8 +125,12 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
     beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
-        const {resourceTypeToComponentMap} = this.getConfig()
-        const index = allRoutes.findIndex((route) => route.componentName && Object.values(resourceTypeToComponentMap).includes(route.componentName))
+        const index = allRoutes.findIndex(
+            (route: RouteProps) => 
+                route.component &&
+                route.component.displayName?.includes(this.getName())
+        )
+
         if (index === -1) {
             return allRoutes
         }
@@ -130,13 +138,13 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         // Complete the partial route
         const routes = allRoutes.slice()
         const [route] = routes.splice(index, 1)
-        const {componentName} = route
+        const componentName = route.component.displayName.split(".").pop()
 
         if (!componentName) {
             return allRoutes
         }
 
-        const component = routes.find((_route) =>
+        const component = routes.find((_route: RouteProps) =>
             _route.component?.displayName?.includes(componentName)
         )?.component
 
@@ -155,7 +163,14 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
     }
 
     getComponentMap(): ComponentMap {
-        return {}
+        // During deserialize each serialized route in this extension MUST return a component.
+        // This implementation returns an object where the keys are component names in resourceTypeToComponentMap
+        // and the values are placeholder components with the displayName
+        const {resourceTypeToComponentMap} = this.getConfig()
+        return Object.values(resourceTypeToComponentMap).reduce((acc: ComponentMap, name) => {
+            acc[`${this.getName()}.${name}`] = Object.assign(() => null, {displayName: `${this.getName()}.${name}`})
+            return acc
+        }, {} as Record<string, string>)
     }
 }
 
