@@ -49,9 +49,7 @@ export interface GetRoutesParams {
 /*
  * Same as react-router's RouteProps, but now supports `componentName` if the route is meant to be serializable
  */
-export type RouteProps = _RouteProps
-// TODO: do I still need MyRouteProps?
-export type MyRouteProps = _RouteProps & {
+export type RouteProps = _RouteProps & {
     componentName?: string
 }
 
@@ -85,5 +83,5 @@ export type DeserializedExtension = {
  * on the client.
  */
 export type SerializedExtension = {
-    routes: MyRouteProps[]
+    routes: RouteProps[]
 }
