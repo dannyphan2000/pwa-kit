@@ -151,11 +151,14 @@ export const render = async (req, res, next) => {
     }
 
     // Some application extensions need to be serialized because they have asynchronous state
+    const serializedRoutes = await serializeAsyncRoutes(applicationExtensions)
     const serializedExtensions = Object.fromEntries(
         applicationExtensions
-            // TODO: instead of calling the generic serialize, serialize the async routes here in the SDK
-            .map((extension) => [extension.getName(), extension.serialize()])
-            .filter((entry) => Boolean(entry[1]))
+            .map((extension, whichExtension) => [
+                extension.getName(),
+                {routes: serializedRoutes[whichExtension]}
+            ])
+            .filter((entry) => Boolean(entry[1].routes))
     )
     console.log('--- serialized extensions in react-rendering', serializedExtensions)
 
@@ -270,6 +273,24 @@ export const render = async (req, res, next) => {
     } else {
         res.status(status).send(html)
     }
+}
+
+const serializeAsyncRoutes = async (applicationExtensions) => {
+    const serializeRoutes = async (extension) => {
+        if (typeof extension.getRoutesAsync === 'undefined') return null
+
+        // getRoutesAsync should have cached its result
+        const routes = await extension.getRoutesAsync()
+
+        return routes.map((route) => {
+            return {
+                ...route,
+                componentName: route.componentName || route.component.displayName
+            }
+        })
+    }
+
+    return await Promise.all(applicationExtensions.map((extension) => serializeRoutes(extension)))
 }
 
 const OuterApp = ({req, res, error, App, appState, routes, routerContext, location}) => {

@@ -112,13 +112,14 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             config.resourceTypeToComponentMap[
                 urlMapping.resourceType as keyof typeof config.resourceTypeToComponentMap
             ]
-        const component = createPlaceholderPage(componentName)
+        // const component = createPlaceholderPage(componentName)
 
         // @ts-ignore
         return Promise.resolve([
             {
                 path: requestURL.pathname,
-                component,
+                component: Sample, // placeholder component
+                componentName,
                 exact: true
             }
         ])
@@ -133,11 +134,12 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
     beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
         const {resourceTypeToComponentMap} = this.getConfig()
         const getComponentName = (route: MyRouteProps) => {
-            return route.component?.displayName || route.componentName || ''
+            return route.componentName || route.component?.displayName || ''
         }
 
         const index = allRoutes.findIndex((route) => {
             const componentName = getComponentName(route)
+            console.log('--- componentName', componentName)
             return Object.values(resourceTypeToComponentMap).includes(componentName)
         })
         if (index === -1) {
@@ -163,17 +165,13 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         console.log('--- beforeRouteMatch: resulting routes', result)
         return result
     }
-
-    // getComponentMap(): ComponentMap {
-    //     return {}
-    // }
 }
 
 export default CommerceBmSeo
 
+// TODO: in the sdk, implement a PlaceholderRoute and then use it here
 const createPlaceholderPage = (componentName: string) => {
-    // @ts-ignore
-    Sample.displayName = componentName
+    Sample.getTemplateName = () => componentName
     return Sample
 
     // TODO: wrap this component with loadable

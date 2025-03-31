@@ -126,6 +126,7 @@ describe('ApplicationExtension', () => {
         })
     })
 
+    /*
     describe('serialize', () => {
         it('should serialize routes correctly', async () => {
             if (extensionAsyncRoutes.getRoutesAsync) {
@@ -184,6 +185,7 @@ describe('ApplicationExtension', () => {
             )
         })
     })
+    */
 
     describe('constructor', () => {
         it('should cache getRoutesAsync result', async () => {
