@@ -14,7 +14,7 @@ runs:
         set -e
         npm cache clean --force
         echo "HEY ABOUT TO RUN THIS"
-        node ./scripts/gtime.js monorepo_install npm ci
+        node ./scripts/gtime.js monorepo_install npm ci --verbose
         echo "RAN IT"
 
         # Build the PWA
