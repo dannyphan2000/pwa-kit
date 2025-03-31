@@ -14,13 +14,11 @@ import {
     SliceInitializer,
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
-import {applyHOCs, isServerSide} from '@salesforce/pwa-kit-extension-sdk/react/utils'
+import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {
     GetRoutesParams,
     BeforeRouteMatchParams,
-    RouteProps,
-    ComponentMap,
-    MyRouteProps
+    RouteProps
 } from '@salesforce/pwa-kit-extension-sdk/types'
 import {routeComponent} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/route-component'
 
@@ -114,7 +112,6 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             ]
         // const component = createPlaceholderPage(componentName)
 
-        // @ts-ignore
         return Promise.resolve([
             {
                 path: requestURL.pathname,
@@ -133,25 +130,26 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      */
     beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
         const {resourceTypeToComponentMap} = this.getConfig()
-        const getComponentName = (route: MyRouteProps) => {
-            return route.componentName || route.component?.displayName || ''
-        }
-
-        const index = allRoutes.findIndex((route) => {
-            const componentName = getComponentName(route)
-            console.log('--- componentName', componentName)
-            return Object.values(resourceTypeToComponentMap).includes(componentName)
-        })
+        const index = allRoutes.findIndex(
+            (route) =>
+                route.componentName &&
+                Object.values(resourceTypeToComponentMap).includes(route.componentName)
+        )
         if (index === -1) {
             return allRoutes
         }
 
+        // Complete the partial route
         const routes = allRoutes.slice()
-        const [asyncRoute] = routes.splice(index, 1)
-        const componentName = getComponentName(asyncRoute)
+        const [route] = routes.splice(index, 1)
+        const {componentName} = route
+
+        if (!componentName) {
+            return allRoutes
+        }
 
         const component = routes.find((_route) =>
-            getComponentName(_route).includes(componentName)
+            _route.component?.displayName?.includes(componentName)
         )?.component
 
         if (!component) {
@@ -159,26 +157,14 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             throw Error(`Could not find component with displayName "${componentName}"`)
         }
 
-        asyncRoute.component = component
+        route.component = routeComponent(component, true, locals)
+        // NOTE: to be expected: the Sample page will be rendered on the server side, while a different page is then rendered on the client side.
+        // Jinsu's work on serialization will make sure that the same page will be rendered on both server and client sides.
 
-        const result = [asyncRoute, ...routes]
-        console.log('--- beforeRouteMatch: resulting routes', result)
+        const result = [route, ...routes]
+        // console.log('--- beforeRouteMatch: resulting routes', result)
         return result
     }
 }
 
 export default CommerceBmSeo
-
-// TODO: in the sdk, implement a PlaceholderRoute and then use it here
-const createPlaceholderPage = (componentName: string) => {
-    Sample.getTemplateName = () => componentName
-    return Sample
-
-    // TODO: wrap this component with loadable
-    // const PlaceholderPage = () => {
-    //     return
-    // }
-    // PlaceholderPage.displayName = componentName
-
-    // return PlaceholderPage
-}
