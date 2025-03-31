@@ -124,42 +124,31 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      * is configured with, including those defined in the base application and those added by all the extensions. You can use this
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
-    beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
-        const index = allRoutes.findIndex(
-            (route: RouteProps) => 
-                route.component &&
-                route.component.displayName?.includes(this.getName())
+    beforeRouteMatch({ allRoutes, locals }: BeforeRouteMatchParams): RouteProps[] {
+        const routes = [...allRoutes]
+        const index = routes.findIndex(
+            (route) => route.component?.displayName?.includes(this.getName())
         )
-
-        if (index === -1) {
-            return allRoutes
-        }
-
-        // Complete the partial route
-        const routes = allRoutes.slice()
+    
+        if (index === -1) return routes
+    
+        // Extract and remove the matched route
         const [route] = routes.splice(index, 1)
         const componentName = route.component.displayName.split(".").pop()
-
-        if (!componentName) {
-            return allRoutes
-        }
-
-        const component = routes.find((_route: RouteProps) =>
+    
+        if (!componentName) return routes
+    
+        const component = routes.find((_route) =>
             _route.component?.displayName?.includes(componentName)
         )?.component
-
+    
         if (!component) {
-            // TODO: fix error message
-            throw Error(`Could not find component with displayName "${componentName}"`)
+            throw new Error(`Could not find component with displayName "${componentName}"`)
         }
-
+    
         route.component = routeComponent(component, true, locals)
-        // NOTE: to be expected: the Sample page will be rendered on the server side, while a different page is then rendered on the client side.
-        // Jinsu's work on serialization will make sure that the same page will be rendered on both server and client sides.
-
-        const result = [route, ...routes]
-        // console.log('--- beforeRouteMatch: resulting routes', result)
-        return result
+    
+        return [route, ...routes]
     }
 
     getComponentMap(): ComponentMap {
