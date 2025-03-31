@@ -181,8 +181,6 @@ export const render = async (req, res, next) => {
 
     // Step 2 - Get the component
     res.__performanceTimer.mark(PERFORMANCE_MARKS.loadComponent, 'start')
-    // console.log('JINSU react-rendering after beforeRouteMatch:', routes)
-    console.log('JINSU react-rendering after beforeRouteMatch:', route)
     const component = await route.component.getComponent()
     res.__performanceTimer.mark(PERFORMANCE_MARKS.loadComponent, 'end')
 

@@ -108,12 +108,7 @@ export class ApplicationExtension<
         if (this._cachedRoutes === null) {
             throw new Error(`Routes have not been loaded. Call getRoutesAsync() before serializing`)
         }
-        console.log(
-            '--- serializing routes for extension',
-            this.getName(),
-            'cachedRoutes:',
-            this._cachedRoutes
-        )
+
         const serializedRoutes = this._cachedRoutes.map((route) => {
             if (!route.component) {
                 throw new Error(
@@ -137,10 +132,6 @@ export class ApplicationExtension<
             }
         })
 
-        console.log('--- serialized', this.getName(), 'extension :', {
-            routes: serializedRoutes
-        })
-
         return serializedRoutes
     }
 
@@ -158,7 +149,7 @@ export class ApplicationExtension<
     protected getComponentMap?(): ComponentMap
 
     /**
-     * Called on the client to deserialize the extension data that was serialized on the server.
+     * Called on the client to deserialize the extension's routes that was serialized on the server.
      *
      * @param serializedExtension - The serialized extension data.
      * @returns RouteProps - The deserialized extension data.
@@ -176,13 +167,6 @@ export class ApplicationExtension<
             )
         }
 
-        console.log(
-            '--- deserializing routes for extension',
-            this.getName(),
-            '- window.__EXTENSIONS__:',
-            window.__EXTENSIONS__
-        )
-        console.log('ComponentMap:', this.getComponentMap())
         const componentMap = this.getComponentMap()
         const serializedExtension = window.__EXTENSIONS__[this.getName()]
 
@@ -210,7 +194,6 @@ export class ApplicationExtension<
                 component
             }
         })
-        console.log('--- deserialized', this.getName(), 'extension :', {routes})
         return routes
     }
 }
