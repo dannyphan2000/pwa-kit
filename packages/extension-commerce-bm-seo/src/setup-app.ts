@@ -12,8 +12,7 @@ import {RouteProps} from 'react-router-dom'
 // Platform Imports
 import {
     ApplicationExtension,
-    withApplicationExtensionStore,
-    withApplicationExtensions
+    withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 
