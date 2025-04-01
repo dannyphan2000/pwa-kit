@@ -85,12 +85,11 @@ export const useBlockNavigation = (func) => {
     const [isBlocked, setIsBlocked] = useState(false)
     const funcRef = useRef()
     const abortControllerRef = useRef(new AbortController())
-
     funcRef.current = func
     useEffect(() => {
-        if (location !== lastLocation.current && funcRef.current) {
-            lastLocation.current = location
-            const unblock = block((location, action) => {
+        const unblock = block((location, action) => {
+            if (location?.pathname !== lastLocation.current?.pathname && funcRef.current) {
+                lastLocation.current = location
                 abortControllerRef.current.abort()
                 abortControllerRef.current = new AbortController()
                 ;(async () => {
@@ -108,8 +107,8 @@ export const useBlockNavigation = (func) => {
                     }
                 })()
                 return false
-            })
-        }
+            }
+        })
     }, [location])
 
     return isBlocked
