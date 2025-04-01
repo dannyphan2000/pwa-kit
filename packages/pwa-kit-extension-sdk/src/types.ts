@@ -68,12 +68,3 @@ export type ComponentMap = {
 export type SerializedRouteProps = RouteProps & {
     componentName?: string
 }
-
-/**
- * This type is used in the deserialize() method of an Application Extension to represent
- * the data from an extension that needs to be serialized on the server and deserialized
- * on the client.
- */
-export type SerializedExtension = {
-    routes: SerializedRouteProps[]
-}

@@ -95,18 +95,17 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         const urlMapping = await shopperSeo.getUrlMapping({
             parameters: {urlSegment: locals.originalUrl}
         })
-        console.log('--- url mapping', urlMapping)
 
         if (!urlMapping.resourceType) {
             return Promise.resolve([])
         }
 
-        // Transform URL mapping to serialized route
         const requestURL = new URL(locals.originalUrl, getAppOrigin(locals))
         const componentName =
             config.resourceTypeToComponentMap[urlMapping.resourceType as keyof typeof config.resourceTypeToComponentMap]
         
-        // Create a placeholder component so it can be deserialized later in beforeRouteMatch
+        // Create a placeholder component since the component is defined in another extension.  
+        // Deserialization will be handled in beforeRouteMatch, where all routes from other extensions are accessible.
         const component = Object.assign(() => null, {displayName: `${this.getName()}.${componentName}`})
 
         return Promise.resolve([
@@ -152,9 +151,9 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
     }
 
     getComponentMap(): ComponentMap {
-        // During deserialize each serialized route in this extension MUST return a component.
+        // During deserialization, each serialized route in this extension MUST return a component.
         // This implementation returns an object where the keys are component names in resourceTypeToComponentMap
-        // and the values are placeholder components with the displayName
+        // and the values are placeholder components with the displayName.
         const {resourceTypeToComponentMap} = this.getConfig()
         return Object.values(resourceTypeToComponentMap).reduce((acc: ComponentMap, name) => {
             acc[`${this.getName()}.${name}`] = Object.assign(() => null, {displayName: `${this.getName()}.${name}`})
