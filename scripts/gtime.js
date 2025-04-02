@@ -25,9 +25,7 @@ const main = () => {
 
     const errorLines = err.split('\n')
     const last = errorLines[errorLines.length - 1]
-    console.log("(JEREMY) last: ", last)
     const data = JSON.parse(last)
-    console.log("(JEREMY) data: ", data)
 
     Object.keys(data).forEach((k) => {
         const metric = `mobify_platform_sdks.${metricName}_${k}`
