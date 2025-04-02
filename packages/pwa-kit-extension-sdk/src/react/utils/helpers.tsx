@@ -60,3 +60,29 @@ export function cacheMethodResult(instance: any, methodName: string, cacheProper
  * @returns {boolean} `true` if running on the server, `false` if running on the client.
  */
 export const isServerSide = () => typeof window === 'undefined'
+
+
+// Components
+// @ts-ignore
+import loadable from '@loadable/component'
+import {Skeleton} from '@chakra-ui/react'
+
+// Page fallback
+const fallback = <Skeleton height="75vh" width="100%" />
+
+import fs from 'fs'
+
+export const createLoadableComponent = (importPath: string) => {
+    // console.log(process.cwd()) 
+    // if (fs.existsSync(importPath)) {
+    //     console.log('File exists', importPath)
+    // } else {
+    //     console.log('File does not exist', importPath)
+    // }
+    const LoadableComponent = loadable(() => import(/* webpackChunkName: "[request]" */ importPath), {
+        fallback
+    });
+
+    (LoadableComponent as any).importPath = importPath;
+    return LoadableComponent;
+};

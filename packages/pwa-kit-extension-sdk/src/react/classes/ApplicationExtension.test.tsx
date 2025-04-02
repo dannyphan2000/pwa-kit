@@ -30,12 +30,12 @@ const mockRoutes: RouteProps[] = [
 const mockSerializedRoutes: SerializedRouteProps[] = [
     {
         path: '/test',
-        componentName: 'MockComponent',
+        componentPath: './MockComponent',
         component: MockComponent
     },
     {
         path: '/test-route-with-exact',
-        componentName: 'MockComponent',
+        componentPath: './MockComponent',
         exact: true,
         component: MockComponent
     }

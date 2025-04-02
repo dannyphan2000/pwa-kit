@@ -7,7 +7,7 @@
 
 // Local
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
-import {cacheMethodResult, isServerSide} from '../utils/helpers'
+import {cacheMethodResult, createLoadableComponent, isServerSide} from '../utils/helpers'
 
 // Types
 import {RouteProps} from 'react-router-dom'
@@ -118,17 +118,18 @@ export class ApplicationExtension<
                 )
             }
 
-            if (!route.component?.displayName) {
+            const componentPath = (route.component as any).importPath
+            if (!componentPath) {
                 throw new Error(
                     `Component for route with path "${String(
                         route.path
-                    )}" is missing a displayName in the ${this.getName()} extension`
+                    )}" is missing a importPath in the ${this.getName()} extension. Ensure you use createLoadableComponent`
                 )
             }
 
             return {
                 ...route,
-                componentName: route.component.displayName
+                componentPath
             }
         })
 
@@ -160,33 +161,27 @@ export class ApplicationExtension<
             return null
         }
 
-        if (!this.getComponentMap) {
-            throw new Error(
-                `getComponentMap() must be defined when getRoutesAsync() is defined in the ${this.getName()} extension`
-            )
-        }
-
-        const componentMap = this.getComponentMap()
         const serializedExtension = window.__EXTENSIONS__[this.getName()]
 
         console.log('JINSU deserializeAsyncRoutes:', serializedExtension)
 
-        const routes = serializedExtension.routes.map(({componentName, ...route}) => {
-            if (!componentName) {
+        const routes = serializedExtension.routes.map(({componentPath, ...route}) => {
+            if (!componentPath) {
                 throw new Error(
-                    `Missing componentName for the route with path: "${String(
+                    `Missing componentPath for the route with path: "${String(
                         route.path
                     )}". Ensure that ${
                         this.serializeAsyncRoutes.name
-                    }() correctly assigns a componentName to the serialized route in the ${this.getName()} extension`
+                    }() correctly assigns a componentPath to the serialized route in the ${this.getName()} extension`
                 )
             }
 
-            const component = componentMap[componentName]
+            console.log('deserializeAsyncRoutes before createLoadableComponent', componentPath)
+            const component = createLoadableComponent(componentPath)
 
             if (!component) {
                 throw new Error(
-                    `"${componentName}" was not found in the component map. Ensure that getComponentMap() includes a mapping for it in the ${this.getName()} extension`
+                    `"${componentPath}" was not found. Ensure that the path exists in the ${this.getName()} extension`
                 )
             }
 

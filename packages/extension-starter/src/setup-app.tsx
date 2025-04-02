@@ -14,7 +14,7 @@ import {
     SliceInitializer,
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
-import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
+import {applyHOCs, createLoadableComponent} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {
     BeforeRouteMatchParams,
     GetRoutesParams,
@@ -79,12 +79,16 @@ class Sample extends ApplicationExtension<Config> {
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
-    getRoutesAsync(params: GetRoutesParams): Promise<RouteProps[]> {
+    async getRoutesAsync(params: GetRoutesParams): Promise<RouteProps[]> {
+        console.log(`${this.getName()}.getRoutesAsync before createLoadableComponent`, './pages/sample')
+        const component = createLoadableComponent('./pages/sample')
+        // const component = createLoadableComponent('./node_modules/@salesforce/extension-starter/src/pages/sample')
+        console.log(`${this.getName()}.getRoutesAsync:`, component)
         return Promise.resolve([
             {
                 exact: true,
                 path: this.getConfig().path,
-                component: SamplePage
+                component
             }
         ])
     }

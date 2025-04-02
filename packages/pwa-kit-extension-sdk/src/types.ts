@@ -63,8 +63,8 @@ export type ComponentMap = {
 }
 
 /*
- * Same as react-router's RouteProps, but now supports `componentName` if the route is meant to be serializable
+ * Same as react-router's RouteProps, but now supports `componentPath` if the route is meant to be serializable
  */
 export type SerializedRouteProps = RouteProps & {
-    componentName?: string
+    componentPath?: string
 }

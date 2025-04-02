@@ -8,6 +8,7 @@
     "lint:js": "pwa-kit-dev lint \"**/*.{js,jsx,ts,tsx}\""
   },
   "devDependencies": {
+    "@chakra-ui/react": "2.8.2",
     "@loadable/component": "^5.15.3",
     "@salesforce/pwa-kit-dev": "4.0.0-extensibility-preview.4",
     "@salesforce/pwa-kit-extension-sdk": "4.0.0-extensibility-preview.4",

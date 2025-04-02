@@ -164,6 +164,7 @@ export const render = async (req, res, next) => {
     applicationExtensions.forEach((applicationExtension) => {
         routes = applicationExtension.beforeRouteMatch({allRoutes: routes, locals: res.locals})
     })
+    console.log('react-rendering after beforeRouteMatch')
 
     res.__performanceTimer.mark(PERFORMANCE_MARKS.routeMatching, 'start')
     let route
@@ -181,7 +182,9 @@ export const render = async (req, res, next) => {
 
     // Step 2 - Get the component
     res.__performanceTimer.mark(PERFORMANCE_MARKS.loadComponent, 'start')
-    const component = await route.component.getComponent()
+    console.log('react-rendering before getComponent')
+    const component = route.component
+    console.log('react-rendering after getComponent')
     res.__performanceTimer.mark(PERFORMANCE_MARKS.loadComponent, 'end')
 
     // Step 3 - Init the app state
@@ -225,6 +228,7 @@ export const render = async (req, res, next) => {
     appJSX = React.cloneElement(appJSX, {error: appStateError, appState})
 
     // Step 4 - Render the App
+    console.log('react-rendering before renderApp')
     let renderResult
     try {
         renderResult = renderApp({
@@ -247,6 +251,7 @@ export const render = async (req, res, next) => {
         // default error handling middleware provided by Express
         return next(e)
     }
+    console.log('react-rendering after renderApp')
 
     // Step 5 - Determine what is going to happen, redirect, or send html with
     // the correct status code.
