@@ -14,7 +14,7 @@ type SeoHOCProps = React.ComponentPropsWithoutRef<any>
 
 const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const SeoHOC: React.FC<P> = (props: SeoHOCProps) => {
-        const isNavigationBlocked = useBlockNavigation(async (_, __, signal) => {
+        const {isBlocked: isNavigationBlocked} = useBlockNavigation(async (_, __, signal) => {
             // In W-17530042, getUrlMapping will be used here and return false after API call completion
             // A manual delay is added for now just to see the skeleton that would show while the API call is made
             await new Promise((resolve, reject) => {

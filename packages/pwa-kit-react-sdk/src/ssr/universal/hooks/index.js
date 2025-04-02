@@ -108,8 +108,10 @@ export const useBlockNavigation = (func) => {
                 })()
                 return false
             }
+            return () => unblock()
         })
+        
     }, [location])
 
-    return isBlocked
+    return {isBlocked}
 }
