@@ -114,8 +114,8 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         const history = useHistory()
         const location = useLocation()
         const authModal = useAuthModal()
-        const isBlocked = useApplicationExtensionsStore((state) => {
-            return state.state['@salesforce/extension-commerce-bm-seo']?.isBlocked
+        const isNavigationBlocked = useApplicationExtensionsStore((state) => {
+            return state.state['@salesforce/extension-commerce-bm-seo']?.isNavigationBlocked
         })
 
         const {site, locale, buildUrl} = useMultiSite()
@@ -308,7 +308,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     </Box>
                     {!isOnline && <OfflineBanner />}
                     <AddToCartModalProvider>
-                        {!isBlocked ? (
+                        {!isNavigationBlocked ? (
                             <SkipNavContent
                                 style={{
                                     display: 'flex',

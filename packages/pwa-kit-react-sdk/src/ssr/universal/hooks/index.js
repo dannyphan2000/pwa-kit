@@ -83,9 +83,9 @@ export const useBlockNavigation = (func) => {
     const {block, push, location} = useHistory()
     const lastLocation = useRef()
     const [isBlocked, setIsBlocked] = useState(false)
-    const funcRef = useRef()
+    const funcRef = useRef(func)
     const abortControllerRef = useRef(new AbortController())
-    funcRef.current = func
+
     useEffect(() => {
         const unblock = block((location, action) => {
             if (location?.pathname !== lastLocation.current?.pathname && funcRef.current) {

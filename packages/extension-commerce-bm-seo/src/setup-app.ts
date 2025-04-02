@@ -17,7 +17,8 @@ import {
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 
 // Local Imports
-import {Config, sliceInitializer} from './types'
+import {Config} from './types'
+import {SliceInitializer} from '@salesforce/pwa-kit-extension-sdk/react'
 import SamplePage from './pages/sample'
 
 // Overridable Imports
@@ -28,6 +29,19 @@ import seoHOC from 'overridable!./components/seo-hoc'
 
 // Others
 import extensionMeta from '../extension-meta.json'
+
+interface StoreSlice {
+    isNavigationBlocked: boolean
+    setIsNavigationBlocked: (someBool: boolean) => void
+}
+
+// This is safe to delete if your extension does not use state. If you aren't using this, ensure you remove the
+// `withApplicationExtensionStore` usage below as well.
+export const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
+    isNavigationBlocked: false,
+    setIsNavigationBlocked: (someBool) =>
+        set((state) => ({...state, isNavigationBlocked: someBool}))
+})
 
 class Sample extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
