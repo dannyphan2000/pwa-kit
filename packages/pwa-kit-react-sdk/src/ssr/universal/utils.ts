@@ -38,7 +38,7 @@ export const getAssetUrl = (path: string) => {
         ? // @ts-ignore
           `${window.Progressive.buildOrigin as string}`
         : `${bundleBasePath}/${process.env.BUNDLE_ID || 'development'}`
-    
+
     // Normalize the public path by removing the trailing slash
     publicPath = publicPath.replace(/\/$/, '')
 
@@ -56,16 +56,18 @@ export const getAssetUrl = (path: string) => {
  * @function
  * @returns {string} The full URL to the static asset.
  */
-export const getStaticAssetUrl = (path: string = '', opts: GetAssetUrlOptions) => {
+export const getStaticAssetUrl = (path = '', opts: GetAssetUrlOptions) => {
     const {appExtensionPackageName = ''} = opts || {}
-    const extensionPrefix =  `${appExtensionPackageName ? `/${EXTENSIONS_NAMESPACE}/${appExtensionPackageName}` : ''}`
+    const extensionPrefix = `${
+        appExtensionPackageName ? `/${EXTENSIONS_NAMESPACE}/${appExtensionPackageName}` : ''
+    }`
 
     /* istanbul ignore next */
-    let  publicPath = onClient
+    let publicPath = onClient
         ? // @ts-ignore
           `${window.Progressive.buildOrigin as string}`
         : `${bundleBasePath}/${process.env.BUNDLE_ID || 'development'}`
-    
+
     // Normalize the public path by removing the trailing slash
     publicPath = publicPath.replace(/\/$/, '')
 
