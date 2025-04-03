@@ -15,7 +15,7 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-
+import {withOptionalCommerceSdkReactProvider} from './components/with-optional-commerce-sdk-react-provider'
 // Local Imports
 import {Config} from './types'
 import {SliceInitializer} from '@salesforce/pwa-kit-extension-sdk/react'
@@ -54,6 +54,8 @@ class Sample extends ApplicationExtension<Config> {
     extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
+        const config = this.getConfig()
+
         const HOCs = [
             // Example higher-order component, this can be safely removed.
             seoHOC,
@@ -62,7 +64,9 @@ class Sample extends ApplicationExtension<Config> {
                 withApplicationExtensionStore(component, {
                     id: extensionMeta.id,
                     initializer: sliceInitializer
-                })
+                }),
+            (component: React.ComponentType<any>) =>
+                withOptionalCommerceSdkReactProvider(component, config),
         ]
 
         return applyHOCs(App, HOCs)

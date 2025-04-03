@@ -6,6 +6,7 @@
  */
 import React from 'react'
 import {useBlockNavigation} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
+import {useUrlMapping} from '@salesforce/commerce-sdk-react'
 import {
     useApplicationExtension,
     useApplicationExtensionsStore
