@@ -47,7 +47,7 @@ const Registration = () => {
 
     useEffect(() => {
         if (isRegistered) {
-            navigate --('/account')
+            navigate('/account')
         }
     }, [isRegistered])
 

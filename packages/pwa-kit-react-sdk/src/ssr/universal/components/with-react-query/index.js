@@ -10,6 +10,7 @@ import {dehydrate, HydrationBoundary, QueryClient, QueryClientProvider} from '@t
 import {FetchStrategy} from '../fetch-strategy'
 import {PERFORMANCE_MARKS} from '../../../../utils/performance'
 import logger from '../../../../utils/logger-instance'
+import ReactDOMServer from "react-dom/server";
 
 const STATE_KEY = '__reactQuery'
 const passthrough = (input) => input
@@ -92,12 +93,21 @@ export const withReactQuery = (Wrapped, options = {}) => {
                 // Set up a listener to capture queries as they're created
                 const listener = createQueryPrefetchListener(queryClient)
 
+                // Perform a temporary render to trigger all useQuery hooks
+                const tempApp = React.createElement(
+                    QueryClientProvider,
+                    { client: queryClient },
+                    appJSX
+                )
+                ReactDOMServer.renderToStaticMarkup(tempApp)
+
                 // Get all the queries that were registered
                 const queries = listener.getQueries()
+
                 listener.cleanup()
 
                 // Now prefetch all the discovered queries in parallel
-                await Promise.all(
+                const t = await Promise.all(
                     queries.map((q, i) => {
                         const displayName = q.meta?.displayName
                             ? `${q.meta?.displayName}:${i}`
