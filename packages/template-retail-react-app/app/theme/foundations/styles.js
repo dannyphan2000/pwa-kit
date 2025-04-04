@@ -16,6 +16,9 @@ export default {
         '.react-target': {
             display: 'flex',
             minHeight: '100vh'
+        },
+        '#embeddedMessagingModalOverlay.isMaximized': {
+            top: '100px !important',
         }
     }
 }

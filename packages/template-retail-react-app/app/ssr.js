@@ -51,7 +51,7 @@ const options = {
     // Set this to false if using a SLAS public client
     // When setting this to true, make sure to also set the PWA_KIT_SLAS_CLIENT_SECRET
     // environment variable as this endpoint will return HTTP 501 if it is not set
-    useSLASPrivateClient: false,
+    useSLASPrivateClient: true,
 
     // If you wish to use additional SLAS endpoints that require private clients,
     // customize this regex to include the additional endpoints the custom SLAS
@@ -293,34 +293,33 @@ export async function jwksCaching(req, res, options) {
 }
 
 const {handler} = runtime.createHandler(options, (app) => {
+
     app.use(express.json()) // To parse JSON payloads
     app.use(express.urlencoded({extended: true}))
     // Set default HTTP security headers required by PWA Kit
-    app.use(defaultPwaKitSecurityHeaders)
-    // Set custom HTTP security headers
-    app.use(
-        helmet({
-            contentSecurityPolicy: {
-                useDefaults: true,
-                directives: {
-                    'img-src': [
-                        // Default source for product images - replace with your CDN
-                        '*.commercecloud.salesforce.com'
-                    ],
-                    'script-src': [
-                        // Used by the service worker in /worker/main.js
-                        'storage.googleapis.com'
-                    ],
-                    'connect-src': [
-                        // Connect to Einstein APIs
-                        'api.cquotient.com',
-                        // Connect to DataCloud APIs
-                        '*.c360a.salesforce.com'
-                    ]
-                }
-            }
-        })
-    )
+    // app.use(defaultPwaKitSecurityHeaders)
+    // // Set custom HTTP security headers
+    // app.use(
+    //     helmet({
+    //         contentSecurityPolicy: {
+    //             useDefaults: true,
+    //             directives: {
+    //                 'img-src': [
+    //                     // Default source for product images - replace with your CDN
+    //                     '*.commercecloud.salesforce.com'
+    //                 ],
+    //                 'script-src': [
+    //                     // Used by the service worker in /worker/main.js
+    //                     'storage.googleapis.com'
+    //                 ],
+    //                 'connect-src': [
+    //                     // Connect to Einstein APIs
+    //                     'api.cquotient.com'
+    //                 ]
+    //             }
+    //         }
+    //     })
+    // )
 
     // Handle the redirect from SLAS as to avoid error
     app.get('/callback?*', (req, res) => {

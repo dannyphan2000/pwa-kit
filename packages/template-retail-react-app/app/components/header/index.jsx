@@ -202,7 +202,7 @@ const Header = ({
                         onMouseOver={isDesktop ? onAccountMenuOpen : noop}
                     />
 
-                    {isRegistered && isHydrated() && (
+                    {/* {isRegistered && isHydrated() && (
                         <Popover
                             isLazy
                             arrowSize={15}
@@ -299,7 +299,7 @@ const Header = ({
                                 </PopoverFooter>
                             </PopoverContent>
                         </Popover>
-                    )}
+                    )} */}
                     <IconButtonWithRegistration
                         aria-label={intl.formatMessage({
                             defaultMessage: 'Wishlist',

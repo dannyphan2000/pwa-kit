@@ -151,6 +151,43 @@ const Search = (props) => {
         setIsOpen(false)
     }
 
+    const handleEmbeddedMessagingInitSuccess = (searchText) => {
+        console.log("onEmbeddedMessagingInitSuccess")
+
+        setTimeout(() => {
+            embeddedservice_bootstrap.utilAPI.sendTextMessage(searchText)
+        }, 5000)
+    }
+
+
+    const launchChat = (searchText) => {
+
+        // TODO: figure out what values these should be and how to test them in Core org
+        // embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
+        //     Hidden1: "value one",
+        //     Hidden2: "value two",
+        //     Hidden3: "value three",
+        //     Hidden4: "value four",
+        //   });
+
+        embeddedservice_bootstrap.utilAPI.launchChat()
+            .then(() => {
+                console.log("launchChat success")
+            }).catch((err) => {
+                console.log("launchChat error", err)
+            }).finally(() => {
+                console.log("launchChat finally")
+            });
+
+        window.addEventListener("onEmbeddedMessagingInitSuccess", () => handleEmbeddedMessagingInitSuccess(searchText));
+    }
+
+
+    const hideChat = () => {
+        embeddedservice_bootstrap.utilAPI.minimizeIframe()
+    }
+
+
     const onSubmitSearch = (e) => {
         e.preventDefault()
         // Avoid blank spaces to be searched
@@ -159,12 +196,15 @@ const Search = (props) => {
         if (searchText.length < 1) {
             return
         }
+        launchChat(searchText)
+
         saveRecentSearch(searchText)
         clearInput()
         navigate(searchUrlBuilder(searchText))
     }
 
     const closeAndNavigate = (link) => {
+        console.log("closeAndNavigate fired", link)
         if (!link) {
             clearInput()
             setIsOpen(false)
@@ -173,6 +213,7 @@ const Search = (props) => {
             setIsOpen(false)
             navigate(link)
         }
+        hideChat()
     }
 
     const shouldOpenPopover = () => {
@@ -190,7 +231,7 @@ const Search = (props) => {
 
     const onSearchInputChange = (e) => {
         onSearchChange(e)
-        shouldOpenPopover()
+        // shouldOpenPopover()
     }
 
     return (
@@ -233,17 +274,17 @@ const Search = (props) => {
                 </PopoverTrigger>
 
                 <HideOnMobile>
-                    <PopoverContent data-testid="sf-suggestion-popover">
+                    {/* <PopoverContent data-testid="sf-suggestion-popover">
                         <SearchSuggestions
                             closeAndNavigate={closeAndNavigate}
                             recentSearches={recentSearches}
                             searchSuggestions={searchSuggestions}
                         />
-                    </PopoverContent>
+                    </PopoverContent> */}
                 </HideOnMobile>
             </Popover>
             <HideOnDesktop>
-                <Flex
+                {/* <Flex
                     display={isOpen || searchInputRef?.value?.length > 0 ? 'block' : 'none'}
                     postion="absolute"
                     background="white"
@@ -268,7 +309,7 @@ const Search = (props) => {
                             searchSuggestions={searchSuggestions}
                         />
                     )}
-                </Flex>
+                </Flex> */}
             </HideOnDesktop>
         </Box>
     )
