@@ -104,9 +104,8 @@ class UrlMapping extends ApplicationExtension<Config> {
         return Promise.resolve([
             {
                 path: requestURL.pathname,
-                componentName: 'Foo',
+                component: SamplePage,
                 exact: true
-                // component: SamplePage
             }
         ])
     }

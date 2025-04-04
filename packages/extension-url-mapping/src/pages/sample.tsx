@@ -28,5 +28,6 @@ const Sample = () => {
 }
 
 Sample.getTemplateName = () => 'sample'
+Sample.displayName = 'SamplePage'
 
 export default Sample
