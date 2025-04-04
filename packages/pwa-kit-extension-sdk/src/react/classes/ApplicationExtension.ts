@@ -15,9 +15,8 @@ import {
     ApplicationExtensionConfig,
     BeforeRouteMatchParams,
     ComponentMap,
-    DeserializedExtension,
     GetRoutesParams,
-    SerializedExtension
+    SerializedRouteProps
 } from '../../types'
 
 export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
@@ -41,7 +40,7 @@ export class ApplicationExtension<
 
         if (!isServerSide()) {
             // Deserialize the routes on the client to ensure the latest routes are loaded on the client
-            this._cachedRoutes = this.deserialize()?.routes || null
+            this._cachedRoutes = this.deserializeAsyncRoutes() || null
         }
 
         cacheMethodResult(this, 'getRoutesAsync', '_cachedRoutes')
@@ -97,13 +96,13 @@ export class ApplicationExtension<
     }
 
     /**
-     * Called on the server to serialize the extension data that will be sent to the client.
+     * Called on the server to serialize the extension's asynchronous routes that will be sent to the client.
      *
-     * @returns SerializedExtension - The serialized extension data.
+     * @returns SerializedRouteProps - The serialized extension data.
      * @returns null if there's no asynchronous state that needs to be serialized
      * @throws Error if the routes have not been loaded.
      */
-    public serialize(): SerializedExtension | null {
+    public serializeAsyncRoutes(): SerializedRouteProps[] | null {
         if (typeof this.getRoutesAsync === 'undefined') return null
 
         if (this._cachedRoutes === null) {
@@ -133,9 +132,7 @@ export class ApplicationExtension<
             }
         })
 
-        return {
-            routes: serializedRoutes
-        }
+        return serializedRoutes
     }
 
     /**
@@ -152,14 +149,13 @@ export class ApplicationExtension<
     protected getComponentMap?(): ComponentMap
 
     /**
-     * Called on the client to deserialize the extension data that was serialized on the server.
+     * Called on the client to deserialize the extension's asynchronous routes that were serialized on the server.
      *
-     * @param serializedExtension - The serialized extension data.
-     * @returns DeserializedExtension - The deserialized extension data.
+     * @returns RouteProps - The deserialized extension routes.
      * @throws Error if getComponentMap() is not defined.
      * @throws Error if the deserialized component cannot be found in the component map.
      */
-    private deserialize(): DeserializedExtension | null {
+    private deserializeAsyncRoutes(): RouteProps[] | null {
         if (isServerSide() || typeof this.getRoutesAsync === 'undefined') {
             return null
         }
@@ -172,14 +168,13 @@ export class ApplicationExtension<
 
         const componentMap = this.getComponentMap()
         const serializedExtension = window.__EXTENSIONS__[this.getName()]
-
         const routes = serializedExtension.routes.map(({componentName, ...route}) => {
             if (!componentName) {
                 throw new Error(
                     `Missing componentName for the route with path: "${String(
                         route.path
                     )}". Ensure that ${
-                        this.serialize.name
+                        this.serializeAsyncRoutes.name
                     }() correctly assigns a componentName to the serialized route in the ${this.getName()} extension`
                 )
             }
@@ -197,6 +192,6 @@ export class ApplicationExtension<
                 component
             }
         })
-        return {routes}
+        return routes
     }
 }

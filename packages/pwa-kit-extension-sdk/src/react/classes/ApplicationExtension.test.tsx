@@ -4,10 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+import React from 'react'
+import {RouteProps} from 'react-router-dom'
+
 import {ApplicationExtension} from './ApplicationExtension'
 import {ApplicationExtensionConfig, ComponentMap, SerializedRouteProps} from '../../types'
-import {RouteProps} from 'react-router-dom'
-import React from 'react'
 
 const MockComponent: React.ComponentType<any> = () => {
     return <div>{MockComponent.displayName}</div>
@@ -111,7 +112,7 @@ describe('ApplicationExtension', () => {
     })
 
     describe('getRoutesAsync', () => {
-        test('initially not implemented', () => {
+        test('initially undefined', () => {
             // eslint-disable-next-line @typescript-eslint/unbound-method
             expect(extension.getRoutesAsync).toBeUndefined()
         })
@@ -127,25 +128,18 @@ describe('ApplicationExtension', () => {
         })
     })
 
-    describe('serialize', () => {
+    describe('serializeAsyncRoutes', () => {
+        it('should return null if getRoutesAsync is not defined', () => {
+            const result = extension.serializeAsyncRoutes()
+            expect(result).toBeNull()
+        })
+
         it('should serialize routes correctly', async () => {
             if (extensionAsyncRoutes.getRoutesAsync) {
                 await extensionAsyncRoutes.getRoutesAsync({locals: {}})
             }
-            const serialized = extensionAsyncRoutes.serialize()
-            expect(serialized).toEqual({routes: mockSerializedRoutes})
-        })
-
-        it('should return routes that have a componentName instead of component', () => {
-            const mockRoutes = [
-                {
-                    path: '/test-route',
-                    componentName: 'Foo'
-                }
-            ]
-            extensionAsyncRoutes['_cachedRoutes'] = mockRoutes
-            const serialized = extensionAsyncRoutes.serialize()
-            expect(serialized).toEqual({routes: mockRoutes})
+            const serializedRoutes = extensionAsyncRoutes.serializeAsyncRoutes()
+            expect(serializedRoutes).toEqual(mockSerializedRoutes)
         })
 
         it.each([
@@ -159,14 +153,14 @@ describe('ApplicationExtension', () => {
             (route) => {
                 // Mock `_cachedRoutes` to contain a route with an undefined componentName
                 extensionAsyncRoutes['_cachedRoutes'] = [route as RouteProps]
-                expect(() => extensionAsyncRoutes.serialize()).toThrow(
-                    'Route with path "/test-route" must contain either a componentName or component to be serializable in in the TestExtensionAsyncRoutes extension'
+                expect(() => extensionAsyncRoutes.serializeAsyncRoutes()).toThrow(
+                    'Route with path "/test-route" must contain a component to be serializable in the TestExtensionAsyncRoutes extension'
                 )
             }
         )
 
         it('should throw an error if getRoutesAsync() is not called before serializing', () => {
-            expect(() => extensionAsyncRoutes.serialize()).toThrow(
+            expect(() => extensionAsyncRoutes.serializeAsyncRoutes()).toThrow(
                 'Routes have not been loaded. Call getRoutesAsync() before serializing'
             )
         })
@@ -180,7 +174,7 @@ describe('ApplicationExtension', () => {
                 }
             ]
 
-            expect(() => extensionAsyncRoutes.serialize()).toThrow(
+            expect(() => extensionAsyncRoutes.serializeAsyncRoutes()).toThrow(
                 'Component for route with path "/test-route" is missing a displayName in the TestExtensionAsyncRoutes extension'
             )
         })
@@ -213,14 +207,14 @@ describe('ApplicationExtension', () => {
             expect(routes).toEqual(cachedRoutes)
         })
 
-        it('should not deserialize when server-side', () => {
+        it('should not deserialize routes when server-side', () => {
             // Simulate server-side
             ;(global as any).window = undefined
             extension = new TestExtensionAsyncRoutes(new TestConfig())
             expect(extension['_cachedRoutes']).toBeNull()
         })
 
-        it('should deserialize when client-side', () => {
+        it('should deserialize routes when client-side', () => {
             // Simulate client-side with serialized routes in the window global variable
             ;(global as any).window = {
                 __EXTENSIONS__: {TestExtensionAsyncRoutes: {routes: mockSerializedRoutes}}
@@ -254,7 +248,7 @@ describe('ApplicationExtension', () => {
                 }
             }
             expect(() => new TestExtensionAsyncRoutes(new TestConfig())).toThrow(
-                'Missing componentName for the route with path: "/test". Ensure that serialize() correctly assigns a componentName to the serialized route in the TestExtensionAsyncRoutes extension'
+                'Missing componentName for the route with path: "/test". Ensure that serializeAsyncRoutes() correctly assigns a componentName to the serialized route in the TestExtensionAsyncRoutes extension'
             )
         })
 

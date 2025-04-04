@@ -153,8 +153,8 @@ export const render = async (req, res, next) => {
     // Some application extensions need to be serialized because they have asynchronous state
     const serializedExtensions = Object.fromEntries(
         applicationExtensions
-            .map((extension) => [extension.getName(), extension.serialize()])
-            .filter((entry) => Boolean(entry[1]))
+            .map((extension) => [extension.getName(), {routes: extension.serializeAsyncRoutes()}])
+            .filter(([, value]) => value.routes)
     )
 
     // Step 1 - Find the match.
