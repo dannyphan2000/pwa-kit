@@ -17,7 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@loadable/component": "^5.15.3",
+    "@loadable/component": "file:../../../loadable-components/packages/component",
     "@salesforce/commerce-sdk-react": "3.2.0-dev",
     "@salesforce/pwa-kit-dev": "3.9.0-dev",
     "@salesforce/pwa-kit-react-sdk": "3.9.0-dev",

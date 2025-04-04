@@ -70,7 +70,7 @@ export const withReactQuery = (Wrapped, options = {}) => {
 
             res.__performanceTimer.mark(PERFORMANCE_MARKS.reactQueryPrerender, 'start')
             // Use `ssrPrepass` to collect all uses of `useQuery`.
-            await ssrPrepass(appJSX)
+            // await ssrPrepass(appJSX)
             res.__performanceTimer.mark(PERFORMANCE_MARKS.reactQueryPrerender, 'end')
             const queryCache = queryClient.getQueryCache()
             const queries = queryCache.getAll().filter((q) => q.options.enabled !== false)

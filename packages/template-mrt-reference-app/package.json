@@ -15,9 +15,7 @@
     "test": "pwa-kit-dev test"
   },
   "devDependencies": {
-    "@loadable/component": "^5.15.3",
-    "@salesforce/pwa-kit-dev": "3.9.0-dev",
-    "@salesforce/pwa-kit-runtime": "3.9.0-dev",
+    "@loadable/component": "file:../../../loadable-components/packages/component",
     "@smithy/smithy-client": "^2.1.15",
     "aws-sdk-client-mock": "^3.0.0",
     "cross-fetch": "^3.1.4",

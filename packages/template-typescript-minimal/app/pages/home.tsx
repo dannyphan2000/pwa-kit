@@ -1,3 +1,5 @@
+'use client'
+
 /*
  * Copyright (c) 2023, Salesforce, Inc.
  * All rights reserved.
@@ -5,13 +7,12 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React, {useEffect, useState} from 'react'
-import {useQuery} from '@tanstack/react-query'
 
 import HelloTS from '../components/hello-typescript'
 import HelloJS from '../components/hello-javascript'
-
 interface Props {
     value: number
+    data: unknown
 }
 
 const style = `
@@ -81,84 +82,19 @@ h1 {
 }
 `
 
-const Home = ({value}: Props) => {
+const Home = ({value, data}: Props) => {
     const [counter, setCounter] = useState(0)
+    console.log('data', data)
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         setCounter(counter + 1)
+    //     }, 1000)
+    //     return () => clearInterval(interval)
+    // }, [counter, setCounter])
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCounter(counter + 1)
-        }, 1000)
-        return () => clearInterval(interval)
-    }, [counter, setCounter])
-
-    const query = useQuery(
-        ['example-data'],
-        () =>
-            new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve('This came from react-query')
-                }, 1000)
-            })
-    )
-
-    return (
-        <div>
-            <style dangerouslySetInnerHTML={{__html: style}} />
-            <div className="loading-screen">
-                <div className="panel title">
-                    <h1>
-                        Typescript
-                        <br />
-                        Support!
-                    </h1>
-                </div>
-                <div className="panel">
-                    <div className="divider"></div>
-                </div>
-                <div className="panel">
-                    <p style={{width: '300px'}} className="fade-in fade-in-0">
-                        <>
-                            <b>This page is written in Typescript</b>
-                            <br />
-                            <br />
-                            React query works if this is not empty: &quot;{query.data}&quot;
-                            <br />
-                            <br />
-                            Server-side getProps works if this is a valid expression: &quot;5 times
-                            7 is {value}
-                            &quot;
-                            <br />
-                            <br />
-                            Client-side JS works if this counter increments: {counter}
-                            <br />
-                            <br />
-                            <b>You can mix-and-match JS and TS</b>
-                            <br />
-                            <br />
-                            <HelloJS />
-                            &nbsp;
-                            <HelloTS message="it works!" />
-                        </>
-                    </p>
-                </div>
-            </div>
-        </div>
-    )
+    return <div>Home page</div>
 }
 
 Home.getTemplateName = () => 'home'
-
-Home.getProps = async () => {
-    // Note: This is simply a mock function to demo deferred execution for fetching props (e.g.: Making a call to the server to fetch data)
-    const getData = (a: number, b: number) => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve(a * b)
-            }, 1000)
-        })
-    }
-    const value = await getData(5, 7)
-    return {value}
-}
 
 export default Home
