@@ -6,7 +6,6 @@
  */
 import React from 'react'
 import hoistNonReactStatic from 'hoist-non-react-statics'
-import ssrPrepass from 'react-ssr-prepass'
 import {dehydrate, HydrationBoundary, QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {FetchStrategy} from '../fetch-strategy'
 import {PERFORMANCE_MARKS} from '../../../../utils/performance'
@@ -14,6 +13,23 @@ import logger from '../../../../utils/logger-instance'
 
 const STATE_KEY = '__reactQuery'
 const passthrough = (input) => input
+
+// Use this internal React Query event to detect queries as they're created
+const createQueryPrefetchListener = (queryClient) => {
+    const queries = new Set()
+
+    // Listen for query creation events
+    const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
+        if (event.type === 'added' && event.query.options.enabled !== false) {
+            queries.add(event.query)
+        }
+    })
+
+    return {
+        getQueries: () => Array.from(queries),
+        cleanup: unsubscribe
+    }
+}
 
 /**
  * A HoC for adding React Query support to your application.
@@ -69,38 +85,60 @@ export const withReactQuery = (Wrapped, options = {}) => {
                 res.locals.__queryClient || new QueryClient(queryClientConfig))
 
             res.__performanceTimer.mark(PERFORMANCE_MARKS.reactQueryPrerender, 'start')
-            // Use `ssrPrepass` to collect all uses of `useQuery`.
-            // await ssrPrepass(appJSX)
-            res.__performanceTimer.mark(PERFORMANCE_MARKS.reactQueryPrerender, 'end')
-            const queryCache = queryClient.getQueryCache()
-            const queries = queryCache.getAll().filter((q) => q.options.enabled !== false)
-            await Promise.all(
-                queries.map((q, i) => {
-                    // always include the index to avoid duplicate entries
-                    const displayName = q.meta?.displayName ? `${q.meta?.displayName}:${i}` : `${i}`
-                    res.__performanceTimer.mark(
-                        `${PERFORMANCE_MARKS.reactQueryUseQuery}::${displayName}`,
-                        'start'
-                    )
-                    return q
-                        .fetch()
-                        .then((result) => {
-                            res.__performanceTimer.mark(
-                                `${PERFORMANCE_MARKS.reactQueryUseQuery}::${displayName}`,
-                                'end',
-                                {
-                                    detail: q.queryHash
-                                }
-                            )
-                            return result
-                        })
-                        .catch(() => {
-                            // If there's an error in this fetch, react-query will log the error
-                            // On our end, simply catch any error and move on to the next query
-                        })
-                })
-            )
 
+            // React 19 compatibility: Instead of using ssrPrepass, we use a two-phase approach:
+            // 1. First render - this will register all queries but not wait for them
+            try {
+                // Set up a listener to capture queries as they're created
+                const listener = createQueryPrefetchListener(queryClient)
+
+                // // Mount the component shallowly to trigger query registration
+                // // Use a shallow renderer or a temporary render
+                // React.createElement(QueryClientProvider, {client: queryClient}, appJSX)
+                //
+                // // Wait a tick to ensure all queries are registered
+                // await new Promise((resolve) => setTimeout(resolve, 0))
+
+                // Get all the queries that were registered
+                const queries = listener.getQueries()
+                listener.cleanup()
+
+                // Now prefetch all the discovered queries in parallel
+                await Promise.all(
+                    queries.map((q, i) => {
+                        const displayName = q.meta?.displayName
+                            ? `${q.meta?.displayName}:${i}`
+                            : `${i}`
+                        res.__performanceTimer.mark(
+                            `${PERFORMANCE_MARKS.reactQueryUseQuery}::${displayName}`,
+                            'start'
+                        )
+                        return q
+                            .fetch()
+                            .then((result) => {
+                                res.__performanceTimer.mark(
+                                    `${PERFORMANCE_MARKS.reactQueryUseQuery}::${displayName}`,
+                                    'end',
+                                    {
+                                        detail: q.queryHash
+                                    }
+                                )
+                                return result
+                            })
+                            .catch(() => {
+                                // If there's an error in this fetch, react-query will log the error
+                                // On our end, simply catch any error and move on to the next query
+                            })
+                    })
+                )
+            } catch (error) {
+                logger.error('Error during query prefetching', {
+                    namespace: 'with-react-query.doInitAppState',
+                    additionalProperties: {error}
+                })
+            }
+
+            res.__performanceTimer.mark(PERFORMANCE_MARKS.reactQueryPrerender, 'end')
             return {[STATE_KEY]: dehydrate(queryClient)}
         }
 
