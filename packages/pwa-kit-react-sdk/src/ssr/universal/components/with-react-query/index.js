@@ -92,13 +92,6 @@ export const withReactQuery = (Wrapped, options = {}) => {
                 // Set up a listener to capture queries as they're created
                 const listener = createQueryPrefetchListener(queryClient)
 
-                // // Mount the component shallowly to trigger query registration
-                // // Use a shallow renderer or a temporary render
-                // React.createElement(QueryClientProvider, {client: queryClient}, appJSX)
-                //
-                // // Wait a tick to ensure all queries are registered
-                // await new Promise((resolve) => setTimeout(resolve, 0))
-
                 // Get all the queries that were registered
                 const queries = listener.getQueries()
                 listener.cleanup()
