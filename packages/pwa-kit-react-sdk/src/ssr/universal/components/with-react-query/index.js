@@ -82,58 +82,79 @@ export const withReactQuery = (Wrapped, options = {}) => {
          * @private
          */
         static async doInitAppState({res, appJSX}) {
-            const queryClient = (res.locals.__queryClient =
-                res.locals.__queryClient || new QueryClient(queryClientConfig))
+            // Create a separate query client just for discovery to avoid shared state
+            const discoveryQueryClient = new QueryClient(queryClientConfig)
+
+            // The actual query client that will be used for the real render
+            const queryClient = new QueryClient(queryClientConfig)
+            res.locals.__queryClient = queryClient
 
             res.__performanceTimer.mark(PERFORMANCE_MARKS.reactQueryPrerender, 'start')
 
-            // React 19 compatibility: Instead of using ssrPrepass, we use a two-phase approach:
-            // 1. First render - this will register all queries but not wait for them
             try {
                 // Set up a listener to capture queries as they're created
-                const listener = createQueryPrefetchListener(queryClient)
+                const listener = createQueryPrefetchListener(discoveryQueryClient)
 
-                // Perform a temporary render to trigger all useQuery hooks
-                const tempApp = React.createElement(
-                    QueryClientProvider,
-                    { client: queryClient },
-                    appJSX
+                // Create a completely separate component tree for discovery
+                // We're using a new instance of all providers to ensure isolation
+                // potential perfomance impact since we are deepcloning a trea here???
+                const discoveryApp = (
+                    <QueryClientProvider client={discoveryQueryClient}>
+                        {/* We use a deep clone by recreating the entire tree structure */}
+                        {React.cloneElement(appJSX, {key: 'discovery-phase'})}
+                    </QueryClientProvider>
                 )
-                ReactDOMServer.renderToStaticMarkup(tempApp)
 
-                // Get all the queries that were registered
+                // Use renderToStaticMarkup to make the render faster and discard the result
+                ReactDOMServer.renderToStaticMarkup(discoveryApp)
+
+                // Get all the discovered queries
                 const queries = listener.getQueries()
-
                 listener.cleanup()
 
-                // Now prefetch all the discovered queries in parallel
-                const t = await Promise.all(
-                    queries.map((q, i) => {
-                        const displayName = q.meta?.displayName
-                            ? `${q.meta?.displayName}:${i}`
+                // Extract the query keys and configs we need to prefetch
+                const queryConfigs = queries.map(q => ({
+                    queryKey: q.queryKey,
+                    queryFn: q.options.queryFn,
+                    meta: q.meta
+                }))
+
+                // Now prefetch all the discovered queries in parallel using the REAL query client
+                await Promise.all(
+                    queryConfigs.map((config, i) => {
+                        const displayName = config.meta?.displayName
+                            ? `${config.meta?.displayName}:${i}`
                             : `${i}`
                         res.__performanceTimer.mark(
                             `${PERFORMANCE_MARKS.reactQueryUseQuery}::${displayName}`,
                             'start'
                         )
-                        return q
-                            .fetch()
-                            .then((result) => {
-                                res.__performanceTimer.mark(
-                                    `${PERFORMANCE_MARKS.reactQueryUseQuery}::${displayName}`,
-                                    'end',
-                                    {
-                                        detail: q.queryHash
-                                    }
-                                )
-                                return result
-                            })
-                            .catch(() => {
-                                // If there's an error in this fetch, react-query will log the error
-                                // On our end, simply catch any error and move on to the next query
-                            })
+
+                        // Execute the query on the real query client
+                        return queryClient.fetchQuery({
+                            queryKey: config.queryKey,
+                            queryFn: config.queryFn,
+                            meta: config.meta
+                        })
+                        .then((result) => {
+                            res.__performanceTimer.mark(
+                                `${PERFORMANCE_MARKS.reactQueryUseQuery}::${displayName}`,
+                                'end',
+                                {
+                                    detail: JSON.stringify(config.queryKey)
+                                }
+                            )
+                            return result
+                        })
+                        .catch(() => {
+                            // If there's an error in this fetch, react-query will log the error
+                            // On our end, simply catch any error and move on to the next query
+                        })
                     })
                 )
+
+                // Clean up the discovery query client to free memory
+                discoveryQueryClient.clear()
             } catch (error) {
                 logger.error('Error during query prefetching', {
                     namespace: 'with-react-query.doInitAppState',
