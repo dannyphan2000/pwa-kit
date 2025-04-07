@@ -292,7 +292,8 @@ Home.getProps = async ({res, api}) => {
     if (res) {
         res.set('Cache-Control', `max-age=${MAX_CACHE_AGE}`)
     }
-
+    
+    console.log("CAlling Product Search")
     const productSearchResult = await api.shopperSearch.productSearch({
         parameters: {
             refine: [`cgid=${HOME_SHOP_PRODUCTS_CATEGORY_ID}`, 'htype=master'],

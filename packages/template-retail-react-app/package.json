@@ -92,5 +92,11 @@
         "iOS >= 9.0",
         "Android >= 4.4.4",
         "last 4 ChromeAndroid versions"
-    ]
+    ],
+    "dependencies": {
+        "@salesforce/commerce-sdk-react": "^3.2.1",
+        "@tanstack/react-query": "^5.71.1",
+        "ajv": "^8.17.1",
+        "ajv-keywords": "^5.1.0"
+    }
 }

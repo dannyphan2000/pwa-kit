@@ -310,7 +310,7 @@ App.getProps = async ({api, res}) => {
     const messages = await fetchTranslations(targetLocale)
 
     // Login as `guest` to get session.
-    await api.auth.login()
+    await api.auth.ready()
 
     // Get the root category, this will be used for things like the navigation.
     const rootCategory = await api.shopperProducts.getCategory({

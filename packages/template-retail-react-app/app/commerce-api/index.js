@@ -12,8 +12,9 @@ import {detectStorefrontPreview} from 'pwa-kit-react-sdk/ssr/universal/component
 import ShopperBaskets from './shopper-baskets'
 import OcapiShopperOrders from './ocapi-shopper-orders'
 import {isError} from './utils'
-import Auth from './auth'
+// import Auth from './auth'
 import EinsteinAPI from './einstein'
+import Auth from '@salesforce/commerce-sdk-react/auth'
 
 /**
  * The configuration details for the connecting to the API.
@@ -58,7 +59,15 @@ class CommerceAPI {
 
         this._config = {proxy, ...restConfig}
 
-        this.auth = new Auth(this)
+        const _authConfig = {
+            redirectURI: `${getAppOrigin()}/callback`,
+            proxy,
+            locale: this._config.locale,
+            currency: this._config.currency,
+            ...this._config.parameters
+        }
+
+        this.auth = new Auth(_authConfig)
 
         if (this._config.einsteinConfig?.einsteinId) {
             this.einstein = new EinsteinAPI(this)
@@ -194,24 +203,16 @@ class CommerceAPI {
         }
 
         // If a login promise exists, we don't proceed unless it is resolved.
-        const pendingLogin = this.auth.pendingLogin
-        if (pendingLogin) {
+        const pendingLogin = this.auth.ready()
+        if (pendingLogin && typeof pendingLogin.then === 'function') {
             await pendingLogin
-        }
-
-        // If the token is invalid (missing, past/nearing expiration), we issue
-        //  a login call, which will attempt to refresh the token or get a new
-        //  guest token. Once login is complete, we can proceed.
-        if (!this.auth.isTokenValid) {
-            // NOTE: Login will update `this.auth.authToken` with a fresh token
-            await this.auth.login()
         }
 
         // Apply the appropriate auth headers and return new options
         const [fetchOptions, ...restParams] = params
         const newFetchOptions = {
             ...fetchOptions,
-            headers: {...fetchOptions.headers, Authorization: this.auth.authToken},
+            headers: {...fetchOptions.headers, Authorization: `Bearer ${this.auth.get('access_token')}`},
             // In Storefront Preview mode, add cache breaker for all SCAPI's requests.
             // Otherwise, it's possible to get stale responses after the Shopper Context is set.
             // (i.e. in this case, we optimize for accurate data, rather than performance/caching)
