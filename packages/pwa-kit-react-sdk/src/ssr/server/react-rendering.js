@@ -156,7 +156,6 @@ export const render = async (req, res, next) => {
             .map((extension) => [extension.getName(), {routes: extension.serializeAsyncRoutes()}])
             .filter(([, value]) => value.routes)
     )
-    console.log('--- serialized extensions in react-rendering', serializedExtensions)
 
     // Step 1 - Find the match.
 
