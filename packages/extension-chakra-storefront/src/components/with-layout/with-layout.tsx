@@ -138,9 +138,6 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
         const updateBasket = useShopperBasketsMutation('updateBasket')
         const updateCustomerForBasket = useShopperBasketsMutation('updateCustomerForBasket')
-        useSeoExtension((config) => {
-            return callGetUrlMapping(config)
-        })
         useEffect(() => {
             // update the basket currency if it doesn't match the current locale currency
             if (basket?.currency && basket?.currency !== currency) {

@@ -9,7 +9,6 @@
 import React, {useContext, useEffect, useRef, useState} from 'react'
 import {useHistory} from 'react-router-dom'
 import {CorrelationIdContext, ServerContext} from '../contexts'
-
 /**
  * Use this hook to get the correlation id value of the closest CorrelationIdProvider component.
  *
@@ -87,31 +86,40 @@ export const useBlockNavigation = (func) => {
     const abortControllerRef = useRef(new AbortController())
 
     useEffect(() => {
+        console.log("(JEREMY) in location use effect")
         const unblock = block((location, action) => {
+            console.log("(JEREMY) in block callback function")
             if (location?.pathname !== lastLocation.current?.pathname && funcRef.current) {
                 lastLocation.current = location
                 abortControllerRef.current.abort()
                 abortControllerRef.current = new AbortController()
                 ;(async () => {
                     setIsBlocked(true)
+                    const destinationUrl = await funcRef.current(
+                        location,
+                        action,
+                        abortControllerRef.current.signal
+                    )
+                    console.log("(JEREMY) destinationUrl from callback passed: ", destinationUrl)
                     if (
-                        !(await funcRef.current(
-                            location,
-                            action,
-                            abortControllerRef.current.signal
-                        ))
+                        destinationUrl !== undefined
                     ) {
                         setIsBlocked(false)
                         unblock()
-                        push(location)
+                        push(destinationUrl)
+                    }
+                    else {
+                        console.log("(JEREMY) destinationUrl is undefined. location: ", location)
+                        unblock()
+                        push(location.pathname + location.search)
                     }
                 })()
                 return false
             }
-            return () => unblock()
         })
+        return () => unblock()
         
     }, [location])
 
-    return {isBlocked}
+    return {isBlocked, push}
 }
