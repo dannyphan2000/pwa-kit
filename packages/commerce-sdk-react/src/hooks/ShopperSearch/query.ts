@@ -88,13 +88,27 @@ export const createUseQuery = <M extends ClientMethodNames>(
             ...queryOptions.meta
         }
 
-        // We need to use a type assertion here to work around TypeScript limitations
-        // while ensuring the correct runtime behavior
-        return useQuery({...netOptions, parameters} as any, queryOptions as any, {
-            method,
-            queryKey,
-            requiredParameters
-        }) as UseQueryResult<Data, Error>
+        // We still need type assertions for the input parameters due to the complex type transformations
+        // happening with the commerce API client and parameter handling. However, by using the correct
+        // generic type parameters for the return type (Data and Error), we ensure that the hook returns
+        // properly typed data to consumers, which is the most important part for API users.
+        //
+        // The type assertions are internal implementation details that don't affect the public API.
+        return useQuery<
+            typeof client,
+            Options,
+            Data,
+            Error,
+            Data   // We're not transforming the data, so TData = TQueryFnData
+        >(
+            {...netOptions, parameters} as any, // Type assertion needed due to complex transformations of API parameters
+            queryOptions as any, // Type assertion needed for compatibility with the SDK's queryOptions type
+            {
+                method,
+                queryKey,
+                requiredParameters
+            }
+        )
     }
 }
 
