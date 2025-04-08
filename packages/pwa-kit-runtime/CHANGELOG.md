@@ -1,4 +1,16 @@
-## v3.9.0-dev (Oct 29, 2024)
+## v3.10.0-dev (Feb 18, 2025)
+
+## v3.9.2 (Mar 08, 2025)
+- Disable CloudWatch metrics sender retries [#2304](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2304) 
+
+## v3.9.1 (Mar 05, 2025)
+- Update PWA-Kit SDKs to v3.9.1 [#2301](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2301)
+- Remove forced garbage collection on each invocation. Set `FORCE_GC=true` for the old behavior. [#2285](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2285)
+
+## v3.9.0 (Feb 18, 2025)
+- Fix stale service worker file that could cause requests to still use old Content-Security-Policy [#2191](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2191)
+- Support Node 22 [#2218](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2218)
+- Support Social Login, Passwordless Login, and Password Reset: update the default value for `applySLASPrivateClientToEndpoints` option [#2250](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2250)
 
 ## v3.8.0 (Oct 28, 2024)
 - Add proxy handling for trusted agent on behalf of (TAOB) requests [#2077](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2077)

@@ -15,6 +15,23 @@ module.exports = {
             showDefaults: true,
             interpretPlusSignAsSpace: false
         },
+        login: {
+            passwordless: {
+                enabled: false,
+                callbackURI:
+                    process.env.PASSWORDLESS_LOGIN_CALLBACK_URI || '/passwordless-login-callback',
+                landingPath: '/passwordless-login-landing'
+            },
+            social: {
+                enabled: false,
+                idps: ['google', 'apple'],
+                redirectURI: process.env.SOCIAL_LOGIN_REDIRECT_URI || '/social-callback'
+            },
+            resetPassword: {
+                callbackURI: process.env.RESET_PASSWORD_CALLBACK_URI || '/reset-password-callback',
+                landingPath: '/reset-password-landing'
+            }
+        },
         defaultSite: 'RefArchGlobal',
         siteAliases: {
             RefArch: 'us',
@@ -36,6 +53,10 @@ module.exports = {
             // This differs from the siteId in commerceAPIConfig for testing purposes
             siteId: 'aaij-MobileFirst',
             isProduction: false
+        },
+        dataCloudAPI: {
+            appSourceId: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            tenantId: 'mmyw8zrxhfsg09lfmzrd1zjqmg'
         }
     },
     externals: [],
@@ -50,7 +71,7 @@ module.exports = {
         '**/*.json'
     ],
     ssrParameters: {
-        ssrFunctionNodeVersion: '20.x',
+        ssrFunctionNodeVersion: '22.x',
         proxyConfigs: [
             {
                 host: 'kv7kzm78.api.commercecloud.salesforce.com',

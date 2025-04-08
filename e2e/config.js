@@ -101,9 +101,13 @@ module.exports = {
       },
     ],
     "retail-app-private-client": [],
+    "retail-react-app-bug-bounty": [],
+    "retail-react-app-demo-site": [],
   },
   PRESET: {
     "retail-app-private-client": "retail-react-app-private-slas-client",
+    "retail-react-app-bug-bounty": "retail-react-app-bug-bounty",
+    "retail-react-app-demo-site": "retail-react-app-demo-site-internal"
   },
   EXPECTED_GENERATED_ARTIFACTS: {
     "retail-app-demo": [
@@ -156,4 +160,7 @@ module.exports = {
       "worker",
     ],
   },
+  PWA_E2E_USER_EMAIL: process.env.PWA_E2E_USER_EMAIL,
+  PWA_E2E_USER_PASSWORD: process.env.PWA_E2E_USER_PASSWORD,
+  SOCIAL_LOGIN_RETAIL_APP_HOME: "https://wasatch-mrt-feature-public.mrt-storefront-staging.com"
 };

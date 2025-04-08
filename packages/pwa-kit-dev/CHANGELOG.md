@@ -1,4 +1,16 @@
-## v3.9.0-dev (Oct 29, 2024)
+## v3.10.0-dev (Feb 18, 2025)
+- Support source map for both client and server on MRT [#240](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2240)
+- Fix dependencies vulnerabilities [#2338](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2338)
+
+## v3.9.2 (Mar 07, 2025)
+- Update PWA-Kit SDKs to v3.9.2 [#2304](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2304)
+
+## v3.9.1 (Mar 05, 2025)
+- Update PWA-Kit SDKs to v3.9.1 [#2301](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2301)
+
+## v3.9.0 (Feb 18, 2025)
+- Support Node 22 [#2218](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2218) 
+- Set minimum target node version [#2241](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2241)
 
 ## v3.8.0 (Oct 28, 2024)
 
