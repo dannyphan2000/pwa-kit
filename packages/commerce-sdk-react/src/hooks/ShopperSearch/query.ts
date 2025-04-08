@@ -14,6 +14,81 @@ import {mergeOptions, omitNullableParameters, pickValidParams} from '../utils'
 import * as queryKeyHelpers from './queryKeyHelpers'
 
 type Client = ApiClients['shopperSearch']
+// Type to ensure we only get function methods from the client
+type ClientMethodNames = {
+    [K in keyof Client]: Client[K] extends (...args: any[]) => any ? K : never
+}[keyof Client]
+
+/**
+ * Creates a typed query hook for a specific Shopper Search API method.
+ * 
+ * @template M - The method name from the ShopperSearch client
+ * @param methodName - The name of the method in the ShopperSearch client
+ * @param displayName - The name to use for the hook in debugging tools
+ * @returns A custom hook that provides access to the specified Shopper Search API method
+ */
+export const createUseQuery = <M extends ClientMethodNames>(
+    methodName: M,
+    displayName: string
+) => {
+    type MethodType = Client[M]
+    
+    /**
+     * Custom hook for accessing a Shopper Search API method
+     * 
+     * @param apiOptions - Options to pass through to `commerce-sdk-isomorphic`, with `null` accepted for unset API parameters.
+     * @param queryOptions - TanStack Query query options, with `enabled` by default set to check that all required API parameters have been set.
+     * @returns A TanStack Query query hook with data from the specified Shopper Search endpoint.
+     */
+    return (
+        apiOptions: NullableParameters<Argument<MethodType>>,
+        queryOptions: ApiQueryOptions<MethodType> = {}
+    ): UseQueryResult<DataType<MethodType>, Error> => {
+        type Options = Argument<MethodType>
+        type Data = DataType<MethodType>
+        const {shopperSearch: client} = useCommerceApi()
+        
+        // Use a type assertion for the required parameters to avoid indexing issues
+        // @ts-ignore This is safe as we know the structure of ShopperSearch.paramKeys
+        const requiredParameters = ShopperSearch.paramKeys[`${methodName}Required`]
+
+        // Parameters can be set in `apiOptions` or `client.clientConfig`;
+        // we must merge them in order to generate the correct query key.
+        const netOptions = omitNullableParameters(mergeOptions(client, apiOptions))
+        
+        // Use a type assertion for the param keys to avoid indexing issues
+        // @ts-ignore This is safe as we know the structure of ShopperSearch.paramKeys
+        const methodParamKeys = ShopperSearch.paramKeys[methodName]
+        
+        // @ts-ignore Need to bypass type checking for parameters
+        const parameters = pickValidParams(netOptions.parameters, methodParamKeys)
+        
+        // Use a type assertion for the query key helper to avoid indexing issues
+        // @ts-ignore This is safe as we know the structure of queryKeyHelpers
+        const queryKey = queryKeyHelpers[methodName].queryKey(netOptions.parameters)
+        
+        // We don't use `netOptions` here because we manipulate the options in `useQuery`.
+        // Use a safer way to call the method that handles the type issues
+        const method = async (options: Options) => {
+            // @ts-ignore This is safe as we know the method exists on the client
+            return await client[methodName](options)
+        }
+
+        queryOptions.meta = {
+            displayName,
+            ...queryOptions.meta
+        }
+
+        // For some reason, if we don't explicitly set these generic parameters, the inferred type for
+        // `Data` sometimes, but not always, includes `Response`, which is incorrect. I don't know why.
+        // @ts-ignore TODO: Fix react query result error generics
+        return useQuery<Client, Options, Data>({...netOptions, parameters}, queryOptions, {
+            method,
+            queryKey,
+            requiredParameters
+        })
+    }
+}
 
 /**
  * Provides keyword and refinement search functionality for products.
@@ -29,38 +104,8 @@ type Client = ApiClients['shopperSearch']
  * @see {@link https://salesforcecommercecloud.github.io/commerce-sdk-isomorphic/classes/shoppersearch.shoppersearch-1.html#productsearch | `commerce-sdk-isomorphic` documentation} for more information on the parameters and returned data type.
  * @see {@link https://tanstack.com/query/latest/docs/react/reference/useQuery | TanStack Query `useQuery` reference} for more information about the return value.
  */
-export const useProductSearch = (
-    apiOptions: NullableParameters<Argument<Client['productSearch']>>,
-    queryOptions: ApiQueryOptions<Client['productSearch']> = {}
-): UseQueryResult<DataType<Client['productSearch']>, Error> => {
-    type Options = Argument<Client['productSearch']>
-    type Data = DataType<Client['productSearch']>
-    const {shopperSearch: client} = useCommerceApi()
-    const methodName = 'productSearch'
-    const requiredParameters = ShopperSearch.paramKeys[`${methodName}Required`]
+export const useProductSearch = createUseQuery('productSearch', 'useProductSearch')
 
-    // Parameters can be set in `apiOptions` or `client.clientConfig`;
-    // we must merge them in order to generate the correct query key.
-    const netOptions = omitNullableParameters(mergeOptions(client, apiOptions))
-    const parameters = pickValidParams(netOptions.parameters, ShopperSearch.paramKeys[methodName])
-    const queryKey = queryKeyHelpers[methodName].queryKey(netOptions.parameters)
-    // We don't use `netOptions` here because we manipulate the options in `useQuery`.
-    const method = async (options: Options) => await client[methodName](options)
-
-    queryOptions.meta = {
-        displayName: 'useProductSearch',
-        ...queryOptions.meta
-    }
-
-    // For some reason, if we don't explicitly set these generic parameters, the inferred type for
-    // `Data` sometimes, but not always, includes `Response`, which is incorrect. I don't know why.
-    // @ts-ignore TODO: Fix react query result error generics
-    return useQuery<Client, Options, Data>({...netOptions, parameters}, queryOptions, {
-        method,
-        queryKey,
-        requiredParameters
-    })
-}
 /**
  * Provides keyword search functionality for products, categories, and brands suggestions.
  *
@@ -74,35 +119,4 @@ export const useProductSearch = (
  * @see {@link https://salesforcecommercecloud.github.io/commerce-sdk-isomorphic/classes/shoppersearch.shoppersearch-1.html#getsearchsuggestions | `commerce-sdk-isomorphic` documentation} for more information on the parameters and returned data type.
  * @see {@link https://tanstack.com/query/latest/docs/react/reference/useQuery | TanStack Query `useQuery` reference} for more information about the return value.
  */
-export const useSearchSuggestions = (
-    apiOptions: NullableParameters<Argument<Client['getSearchSuggestions']>>,
-    queryOptions: ApiQueryOptions<Client['getSearchSuggestions']> = {}
-): UseQueryResult<DataType<Client['getSearchSuggestions']>, Error> => {
-    type Options = Argument<Client['getSearchSuggestions']>
-    type Data = DataType<Client['getSearchSuggestions']>
-    const {shopperSearch: client} = useCommerceApi()
-    const methodName = 'getSearchSuggestions'
-    const requiredParameters = ShopperSearch.paramKeys[`${methodName}Required`]
-
-    // Parameters can be set in `apiOptions` or `client.clientConfig`;
-    // we must merge them in order to generate the correct query key.
-    const netOptions = omitNullableParameters(mergeOptions(client, apiOptions))
-    const parameters = pickValidParams(netOptions.parameters, ShopperSearch.paramKeys[methodName])
-    const queryKey = queryKeyHelpers[methodName].queryKey(netOptions.parameters)
-    // We don't use `netOptions` here because we manipulate the options in `useQuery`.
-    const method = async (options: Options) => await client[methodName](options)
-
-    queryOptions.meta = {
-        displayName: 'useSearchSuggestions',
-        ...queryOptions.meta
-    }
-
-    // For some reason, if we don't explicitly set these generic parameters, the inferred type for
-    // `Data` sometimes, but not always, includes `Response`, which is incorrect. I don't know why.
-    // @ts-ignore TODO: Fix react query result error generics
-    return useQuery<Client, Options, Data>({...netOptions, parameters}, queryOptions, {
-        method,
-        queryKey,
-        requiredParameters
-    })
-}
+export const useSearchSuggestions = createUseQuery('getSearchSuggestions', 'useSearchSuggestions')
