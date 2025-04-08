@@ -4,55 +4,62 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {ShopperSearch, ShopperProducts, ShopperSearchTypes, ShopperProductsTypes} from 'commerce-sdk-isomorphic'
-import {ApiClientConfigParams} from '../types'
+import {ShopperSearch, ShopperProducts} from 'commerce-sdk-isomorphic'
+import {ApiClients, ApiMethod, Argument} from '../types'
 import {pickValidParams} from '../utils'
+
+/**
+ * Helper type to extract API method parameters from any API client method
+ */
+type ClientMethodParams<
+    C extends keyof ApiClients,
+    M extends keyof ApiClients[C] & string
+> = ApiClients[C][M] extends ApiMethod<any, any>
+    ? NonNullable<Argument<ApiClients[C][M]>['parameters']>
+    : never;
 
 /**
  * Factory function to create query key helpers for specific API endpoints
  */
 function createQueryKeyHelper<P>(
-    endpointPath: string,
+    getPath: (params: P) => string[],
     paramKeys: ReadonlyArray<string>
 ) {
-    return {
+    const basePath = ['/commerce-sdk-react', '/organizations/']
+    const helper = {
         path: (params: P) => [
-            '/commerce-sdk-react',
-            '/organizations/',
+            ...basePath,
+
+            // organizationId is always required for all API endpoints
             (params as any).organizationId,
-            endpointPath
+            ...getPath(params)
         ],
-        
+
         queryKey: (params: P) => {
-            const path = [
-                '/commerce-sdk-react',
-                '/organizations/',
-                (params as any).organizationId,
-                endpointPath
-            ];
-            
             return [
-                ...path,
+                ...helper.path(params),
                 pickValidParams(params as Record<string, any>, Array.from(paramKeys))
             ];
         }
     };
+    
+    return helper;
 }
 
 const queryKeyHelpers = {
     shopperSearch: {
-        productSearch: createQueryKeyHelper<NonNullable<Parameters<ShopperSearchTypes.ShopperSearch<ApiClientConfigParams>['productSearch']>[0]>['parameters']>(
-            '/product-search',
+        productSearch: createQueryKeyHelper<ClientMethodParams<'shopperSearch', 'productSearch'>>(
+            (params) => ['/product-search'],
             ShopperSearch.paramKeys.productSearch
         ),
-        getSearchSuggestions: createQueryKeyHelper<NonNullable<Parameters<ShopperSearchTypes.ShopperSearch<ApiClientConfigParams>['getSearchSuggestions']>[0]>['parameters']>(
-            '/search-suggestions',
+        getSearchSuggestions: createQueryKeyHelper<ClientMethodParams<'shopperSearch', 'getSearchSuggestions'>>(
+            (params) => ['/search-suggestions'],
             ShopperSearch.paramKeys.getSearchSuggestions
         )
     },
     shopperProducts: {
-        getProducts: createQueryKeyHelper<NonNullable<Parameters<ShopperProductsTypes.ShopperProducts<ApiClientConfigParams>['getProducts']>[0]>['parameters']>(
-            '/products',
+        getProducts: createQueryKeyHelper<ClientMethodParams<'shopperProducts', 'getProducts'>>(
+            (params) => ['/products'],
             ShopperProducts.paramKeys.getProducts
         )
     }
