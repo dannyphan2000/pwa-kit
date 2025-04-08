@@ -12,6 +12,11 @@ import useCommerceApi from '../useCommerceApi'
 import {useQuery} from '../useQuery'
 import {mergeOptions, omitNullableParameters, pickValidParams} from '../utils'
 import * as queryKeyHelpers from './queryKeyHelpers'
+import {createUseQuery} from '../createUseQuery'
+import {
+    productSearch as productSearchQueryKeyHelper,
+    getSearchSuggestions as getSearchSuggestionsQueryKeyHelper
+} from './queryKeyHelpers'
 
 type Client = ApiClients['shopperSearch']
 // Type to ensure we only get function methods from the client
@@ -29,88 +34,88 @@ interface CreateUseQueryOptions<M extends ClientMethodNames> {
     displayName: string;
 }
 
-/**
- * Creates a typed query hook for a specific Shopper Search API method.
- * 
- * @template M - The method name from the ShopperSearch client
- * @param options - Configuration options for creating the query hook
- * @returns A custom hook that provides access to the specified Shopper Search API method
- */
-export const createUseQuery = <M extends ClientMethodNames>(
-    options: CreateUseQueryOptions<M>
-) => {
-    const { methodName, displayName } = options;
-    type MethodType = Client[M]
+// /**
+//  * Creates a typed query hook for a specific Shopper Search API method.
+//  * 
+//  * @template M - The method name from the ShopperSearch client
+//  * @param options - Configuration options for creating the query hook
+//  * @returns A custom hook that provides access to the specified Shopper Search API method
+//  */
+// export const createUseQuery = <M extends ClientMethodNames>(
+//     options: CreateUseQueryOptions<M>
+// ) => {
+//     const { methodName, displayName } = options;
+//     type MethodType = Client[M]
     
-    /**
-     * Custom hook for accessing a Shopper Search API method
-     * 
-     * @param apiOptions - Options to pass through to `commerce-sdk-isomorphic`, with `null` accepted for unset API parameters.
-     * @param queryOptions - TanStack Query query options, with `enabled` by default set to check that all required API parameters have been set.
-     * @returns A TanStack Query query hook with data from the specified Shopper Search endpoint.
-     */
-    return (
-        apiOptions: NullableParameters<Argument<MethodType>>,
-        queryOptions: ApiQueryOptions<MethodType> = {}
-    ): UseQueryResult<DataType<MethodType>, Error> => {
-        type Options = Argument<MethodType>
-        type Data = DataType<MethodType>
-        const {shopperSearch: client} = useCommerceApi()
+//     /**
+//      * Custom hook for accessing a Shopper Search API method
+//      * 
+//      * @param apiOptions - Options to pass through to `commerce-sdk-isomorphic`, with `null` accepted for unset API parameters.
+//      * @param queryOptions - TanStack Query query options, with `enabled` by default set to check that all required API parameters have been set.
+//      * @returns A TanStack Query query hook with data from the specified Shopper Search endpoint.
+//      */
+//     return (
+//         apiOptions: NullableParameters<Argument<MethodType>>,
+//         queryOptions: ApiQueryOptions<MethodType> = {}
+//     ): UseQueryResult<DataType<MethodType>, Error> => {
+//         type Options = Argument<MethodType>
+//         type Data = DataType<MethodType>
+//         const {shopperSearch: client} = useCommerceApi()
         
-        // ShopperSearch.paramKeys is guaranteed to have this structure at runtime
-        const requiredKey = `${methodName}Required` as string
-        const requiredParamArray = (ShopperSearch.paramKeys as any)[requiredKey] as string[]
+//         // ShopperSearch.paramKeys is guaranteed to have this structure at runtime
+//         const requiredKey = `${methodName}Required` as string
+//         const requiredParamArray = (ShopperSearch.paramKeys as any)[requiredKey] as string[]
         
-        // Convert the string array to a readonly array of parameter keys
-        type ParamKeys = keyof NonNullable<Options['parameters']>
-        const requiredParameters = requiredParamArray as unknown as readonly ParamKeys[]
+//         // Convert the string array to a readonly array of parameter keys
+//         type ParamKeys = keyof NonNullable<Options['parameters']>
+//         const requiredParameters = requiredParamArray as unknown as readonly ParamKeys[]
         
-        const netOptions = omitNullableParameters(mergeOptions(client, apiOptions))
+//         const netOptions = omitNullableParameters(mergeOptions(client, apiOptions))
         
-        // ShopperSearch.paramKeys is guaranteed to have this structure at runtime
-        const methodParamKeys = (ShopperSearch.paramKeys as any)[methodName] as string[]
+//         // ShopperSearch.paramKeys is guaranteed to have this structure at runtime
+//         const methodParamKeys = (ShopperSearch.paramKeys as any)[methodName] as string[]
         
-        // These parameters are valid at runtime
-        const parameters = pickValidParams(netOptions.parameters, methodParamKeys as any)
+//         // These parameters are valid at runtime
+//         const parameters = pickValidParams(netOptions.parameters, methodParamKeys as any)
         
-        // queryKeyHelpers is guaranteed to have this structure at runtime
-        const queryKeyHelper = (queryKeyHelpers as any)[methodName]
-        const queryKey = queryKeyHelper.queryKey(netOptions.parameters)
+//         // queryKeyHelpers is guaranteed to have this structure at runtime
+//         const queryKeyHelper = (queryKeyHelpers as any)[methodName]
+//         const queryKey = queryKeyHelper.queryKey(netOptions.parameters)
         
-        // We don't use `netOptions` here because we manipulate the options in `useQuery`.
-        const method = async (options: Options) => {
-            // client[methodName] is guaranteed to be a function at runtime
-            return await (client as any)[methodName](options)
-        }
+//         // We don't use `netOptions` here because we manipulate the options in `useQuery`.
+//         const method = async (options: Options) => {
+//             // client[methodName] is guaranteed to be a function at runtime
+//             return await (client as any)[methodName](options)
+//         }
 
-        queryOptions.meta = {
-            displayName,
-            ...queryOptions.meta
-        }
+//         queryOptions.meta = {
+//             displayName,
+//             ...queryOptions.meta
+//         }
 
-        // We still need type assertions for the input parameters due to the complex type transformations
-        // happening with the commerce API client and parameter handling. However, by using the correct
-        // generic type parameters for the return type (Data and Error), we ensure that the hook returns
-        // properly typed data to consumers, which is the most important part for API users.
-        //
-        // The type assertions are internal implementation details that don't affect the public API.
-        return useQuery<
-            typeof client,
-            Options,
-            Data,
-            Error,
-            Data   // We're not transforming the data, so TData = TQueryFnData
-        >(
-            {...netOptions, parameters} as any, // Type assertion needed due to complex transformations of API parameters
-            queryOptions as any, // Type assertion needed for compatibility with the SDK's queryOptions type
-            {
-                method,
-                queryKey,
-                requiredParameters
-            }
-        )
-    }
-}
+//         // We still need type assertions for the input parameters due to the complex type transformations
+//         // happening with the commerce API client and parameter handling. However, by using the correct
+//         // generic type parameters for the return type (Data and Error), we ensure that the hook returns
+//         // properly typed data to consumers, which is the most important part for API users.
+//         //
+//         // The type assertions are internal implementation details that don't affect the public API.
+//         return useQuery<
+//             typeof client,
+//             Options,
+//             Data,
+//             Error,
+//             Data   // We're not transforming the data, so TData = TQueryFnData
+//         >(
+//             {...netOptions, parameters} as any, // Type assertion needed due to complex transformations of API parameters
+//             queryOptions as any, // Type assertion needed for compatibility with the SDK's queryOptions type
+//             {
+//                 method,
+//                 queryKey,
+//                 requiredParameters
+//             }
+//         )
+//     }
+// }
 
 /**
  * Provides keyword and refinement search functionality for products.
@@ -126,10 +131,14 @@ export const createUseQuery = <M extends ClientMethodNames>(
  * @see {@link https://salesforcecommercecloud.github.io/commerce-sdk-isomorphic/classes/shoppersearch.shoppersearch-1.html#productsearch | `commerce-sdk-isomorphic` documentation} for more information on the parameters and returned data type.
  * @see {@link https://tanstack.com/query/latest/docs/react/reference/useQuery | TanStack Query `useQuery` reference} for more information about the return value.
  */
-export const useProductSearch = createUseQuery({
-    methodName: 'productSearch',
-    displayName: 'useProductSearch'
-})
+export const useProductSearch = createUseQuery(
+    {
+        clientKey: 'shopperSearch',
+        methodName: 'productSearch',
+        displayName: 'useProductSearch'
+    },
+    productSearchQueryKeyHelper
+)
 
 /**
  * Provides keyword search functionality for products, categories, and brands suggestions.
@@ -144,7 +153,11 @@ export const useProductSearch = createUseQuery({
  * @see {@link https://salesforcecommercecloud.github.io/commerce-sdk-isomorphic/classes/shoppersearch.shoppersearch-1.html#getsearchsuggestions | `commerce-sdk-isomorphic` documentation} for more information on the parameters and returned data type.
  * @see {@link https://tanstack.com/query/latest/docs/react/reference/useQuery | TanStack Query `useQuery` reference} for more information about the return value.
  */
-export const useSearchSuggestions = createUseQuery({
-    methodName: 'getSearchSuggestions',
-    displayName: 'useSearchSuggestions'
-})
+export const useSearchSuggestions = createUseQuery(
+    {
+        clientKey: 'shopperSearch',
+        methodName: 'getSearchSuggestions',
+        displayName: 'useSearchSuggestions'
+    },
+    getSearchSuggestionsQueryKeyHelper
+)
