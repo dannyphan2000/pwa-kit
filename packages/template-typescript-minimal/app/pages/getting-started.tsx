@@ -6,6 +6,7 @@
  */
 import React from 'react'
 import {useApplicationExtensions} from '@salesforce/pwa-kit-extension-sdk/react'
+import {Link} from 'react-router-dom'
 
 const style = `
 .content {
@@ -62,6 +63,8 @@ const GettingStarted = () => {
             <div className="loading-screen">
                 <div className="title">
                     <h1>Welcome!</h1>
+                    <Link to="/product-detail">Product Detail Page</Link><br/>
+                    <Link to="/product-list">Product List Page</Link>
                 </div>
                 <div>
                     <div className="divider"></div>

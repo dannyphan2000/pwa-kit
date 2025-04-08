@@ -22,6 +22,7 @@ import WebpackNotifierPlugin from 'webpack-notifier'
 
 // PWA-Kit Plugins
 import ApplicationExtensionConfigPlugin from '@salesforce/pwa-kit-extension-sdk/configs/webpack/application-extensions-config-plugin'
+
 import OverrideStatsPlugin from '@salesforce/pwa-kit-extension-sdk/configs/webpack/override-stats-plugin'
 
 // Local Plugins
@@ -260,6 +261,16 @@ const baseConfig = (target) => {
                             use: {
                                 loader: findDepInStack('source-map-loader')
                             }
+                        },
+                        {
+                            test: /\.(js|jsx|ts|tsx)$/,
+                            use: [
+                                {
+                                    loader: findDepInStack(
+                                        '@salesforce/pwa-kit-extension-sdk/configs/webpack/chakra-theme-namespacer-loader.js'
+                                    )
+                                }
+                            ]
                         },
                         ruleForApplicationExtensibility({
                             loaderOptions: {

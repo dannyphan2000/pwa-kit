@@ -56,6 +56,13 @@ export class ApplicationExtension<
     }
 
     /**
+     * Provider agnostic way of getting a theme object.
+     */
+    public getTheme(): any {
+        return {}
+    }
+
+    /**
      * Called during server rendering and client application initialization. This method allows
      * you to add new routes, typically routes pointing at page components added by your application extension.
      *
