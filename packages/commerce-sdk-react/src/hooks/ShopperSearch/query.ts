@@ -48,30 +48,30 @@ export const createUseQuery = <M extends ClientMethodNames>(
         type Data = DataType<MethodType>
         const {shopperSearch: client} = useCommerceApi()
         
-        // Use a type assertion for the required parameters to avoid indexing issues
-        // @ts-ignore This is safe as we know the structure of ShopperSearch.paramKeys
-        const requiredParameters = ShopperSearch.paramKeys[`${methodName}Required`]
-
-        // Parameters can be set in `apiOptions` or `client.clientConfig`;
-        // we must merge them in order to generate the correct query key.
+        // ShopperSearch.paramKeys is guaranteed to have this structure at runtime
+        const requiredKey = `${methodName}Required` as string
+        const requiredParamArray = (ShopperSearch.paramKeys as any)[requiredKey] as string[]
+        
+        // Convert the string array to a readonly array of parameter keys
+        type ParamKeys = keyof NonNullable<Options['parameters']>
+        const requiredParameters = requiredParamArray as unknown as readonly ParamKeys[]
+        
         const netOptions = omitNullableParameters(mergeOptions(client, apiOptions))
         
-        // Use a type assertion for the param keys to avoid indexing issues
-        // @ts-ignore This is safe as we know the structure of ShopperSearch.paramKeys
-        const methodParamKeys = ShopperSearch.paramKeys[methodName]
+        // ShopperSearch.paramKeys is guaranteed to have this structure at runtime
+        const methodParamKeys = (ShopperSearch.paramKeys as any)[methodName] as string[]
         
-        // @ts-ignore Need to bypass type checking for parameters
-        const parameters = pickValidParams(netOptions.parameters, methodParamKeys)
+        // These parameters are valid at runtime
+        const parameters = pickValidParams(netOptions.parameters, methodParamKeys as any)
         
-        // Use a type assertion for the query key helper to avoid indexing issues
-        // @ts-ignore This is safe as we know the structure of queryKeyHelpers
-        const queryKey = queryKeyHelpers[methodName].queryKey(netOptions.parameters)
+        // queryKeyHelpers is guaranteed to have this structure at runtime
+        const queryKeyHelper = (queryKeyHelpers as any)[methodName]
+        const queryKey = queryKeyHelper.queryKey(netOptions.parameters)
         
         // We don't use `netOptions` here because we manipulate the options in `useQuery`.
-        // Use a safer way to call the method that handles the type issues
         const method = async (options: Options) => {
-            // @ts-ignore This is safe as we know the method exists on the client
-            return await client[methodName](options)
+            // client[methodName] is guaranteed to be a function at runtime
+            return await (client as any)[methodName](options)
         }
 
         queryOptions.meta = {
@@ -79,14 +79,13 @@ export const createUseQuery = <M extends ClientMethodNames>(
             ...queryOptions.meta
         }
 
-        // For some reason, if we don't explicitly set these generic parameters, the inferred type for
-        // `Data` sometimes, but not always, includes `Response`, which is incorrect. I don't know why.
-        // @ts-ignore TODO: Fix react query result error generics
-        return useQuery<Client, Options, Data>({...netOptions, parameters}, queryOptions, {
+        // We need to use a type assertion here to work around TypeScript limitations
+        // while ensuring the correct runtime behavior
+        return useQuery({...netOptions, parameters} as any, queryOptions as any, {
             method,
             queryKey,
             requiredParameters
-        })
+        }) as UseQueryResult<Data, Error>
     }
 }
 
