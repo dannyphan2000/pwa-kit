@@ -20,17 +20,26 @@ type ClientMethodNames = {
 }[keyof Client]
 
 /**
+ * Options for creating a typed query hook
+ */
+interface CreateUseQueryOptions<M extends ClientMethodNames> {
+    /** The name of the method in the ShopperSearch client */
+    methodName: M;
+    /** The name to use for the hook in debugging tools */
+    displayName: string;
+}
+
+/**
  * Creates a typed query hook for a specific Shopper Search API method.
  * 
  * @template M - The method name from the ShopperSearch client
- * @param methodName - The name of the method in the ShopperSearch client
- * @param displayName - The name to use for the hook in debugging tools
+ * @param options - Configuration options for creating the query hook
  * @returns A custom hook that provides access to the specified Shopper Search API method
  */
 export const createUseQuery = <M extends ClientMethodNames>(
-    methodName: M,
-    displayName: string
+    options: CreateUseQueryOptions<M>
 ) => {
+    const { methodName, displayName } = options;
     type MethodType = Client[M]
     
     /**
@@ -103,7 +112,10 @@ export const createUseQuery = <M extends ClientMethodNames>(
  * @see {@link https://salesforcecommercecloud.github.io/commerce-sdk-isomorphic/classes/shoppersearch.shoppersearch-1.html#productsearch | `commerce-sdk-isomorphic` documentation} for more information on the parameters and returned data type.
  * @see {@link https://tanstack.com/query/latest/docs/react/reference/useQuery | TanStack Query `useQuery` reference} for more information about the return value.
  */
-export const useProductSearch = createUseQuery('productSearch', 'useProductSearch')
+export const useProductSearch = createUseQuery({
+    methodName: 'productSearch',
+    displayName: 'useProductSearch'
+})
 
 /**
  * Provides keyword search functionality for products, categories, and brands suggestions.
@@ -118,4 +130,7 @@ export const useProductSearch = createUseQuery('productSearch', 'useProductSearc
  * @see {@link https://salesforcecommercecloud.github.io/commerce-sdk-isomorphic/classes/shoppersearch.shoppersearch-1.html#getsearchsuggestions | `commerce-sdk-isomorphic` documentation} for more information on the parameters and returned data type.
  * @see {@link https://tanstack.com/query/latest/docs/react/reference/useQuery | TanStack Query `useQuery` reference} for more information about the return value.
  */
-export const useSearchSuggestions = createUseQuery('getSearchSuggestions', 'useSearchSuggestions')
+export const useSearchSuggestions = createUseQuery({
+    methodName: 'getSearchSuggestions',
+    displayName: 'useSearchSuggestions'
+})
