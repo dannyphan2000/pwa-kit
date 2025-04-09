@@ -5,17 +5,20 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {Accordion, AccordionItem, Box, Button} from '@chakra-ui/react'
 import {StoreLocatorListItem} from 'overridable!./list-item'
 import {useStoreLocator} from './use-store-locator'
 import {Stores, Store} from '../types/store'
+import {StoreSelectionContext} from './provider'
 
 interface StoreLocatorListProps {
     storesInfo?: Stores
 }
 
 export const StoreLocatorList: React.FC<StoreLocatorListProps> = () => {
+    const {selectedStore, updateSelectedStore} = useContext(StoreSelectionContext)
+
     const {data, isLoading, config, formValues, mode} = useStoreLocator()
     const [page, setPage] = useState(1)
     useEffect(() => {
@@ -45,6 +48,11 @@ export const StoreLocatorList: React.FC<StoreLocatorListProps> = () => {
     const showNumberOfStores = page * config.defaultPageSize
     const showLoadMoreButton = data?.total > showNumberOfStores
     const storesToShow = data?.data?.slice(0, showNumberOfStores) || []
+
+    //Mocking selecting a store
+    if (!selectedStore && storesToShow[0]) {
+        updateSelectedStore(storesToShow[0])
+    }
 
     return (
         <>
