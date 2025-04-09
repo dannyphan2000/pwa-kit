@@ -4,16 +4,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import {UseQueryResult} from '@tanstack/react-query'
-import {ApiClients, ApiQueryOptions, Argument, DataType, NullableParameters} from '../types'
-import useCommerceApi from '../useCommerceApi'
-import {useQuery} from '../useQuery'
-import {mergeOptions, omitNullableParameters, pickValidParams} from '../utils'
-import * as queryKeyHelpers from './queryKeyHelpers'
-import {ShopperBaskets} from 'commerce-sdk-isomorphic'
+
 import { createUseQuery } from '../createUseQuery'
-type Client = ApiClients['shopperBaskets']
+import * as queryKeyHelpers from './queryKeyHelpers'
+
 
 /**
  * Gets a basket.
