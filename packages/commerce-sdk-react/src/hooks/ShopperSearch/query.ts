@@ -5,10 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {createUseQuery} from '../createUseQuery'
-import {
-    productSearch as productSearchQueryKeyHelper,
-    getSearchSuggestions as getSearchSuggestionsQueryKeyHelper
-} from './queryKeyHelpers'
+import * as queryKeyHelpers from './queryKeyHelpers'
 
 
 /**
@@ -29,7 +26,7 @@ export const useProductSearch = createUseQuery({
     clientKey: 'shopperSearch',
     methodName: 'productSearch',
     displayName: 'useProductSearch',
-    queryKeyHelper: productSearchQueryKeyHelper
+    queryKeyHelper: queryKeyHelpers.productSearch
 })
 
 /**
@@ -49,5 +46,5 @@ export const useSearchSuggestions = createUseQuery({
     clientKey: 'shopperSearch',
     methodName: 'getSearchSuggestions',
     displayName: 'useSearchSuggestions',
-    queryKeyHelper: getSearchSuggestionsQueryKeyHelper
+    queryKeyHelper: queryKeyHelpers.getSearchSuggestions
 })
