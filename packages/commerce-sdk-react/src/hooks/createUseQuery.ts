@@ -113,19 +113,15 @@ export const createUseQuery = <
         
         // Get required parameters for this method
         const requiredKey = `${String(methodName)}Required`;
-        const requiredParamArray = SDKClass.paramKeys[requiredKey] as string[];
-        
-        // Convert the string array to a readonly array of parameter keys
-        type ParamKeys = keyof NonNullable<Options['parameters']>
-        const requiredParameters = requiredParamArray as unknown as readonly ParamKeys[];
+        const requiredParameters = SDKClass.paramKeys[requiredKey];
         
         const netOptions = omitNullableParameters(mergeOptions(client, apiOptions));
         
         // Get valid parameter keys for this method
-        const methodParamKeys = SDKClass.paramKeys[String(methodName)] as string[];
+        const methodParamKeys = SDKClass.paramKeys[String(methodName)];
         
         // These parameters are valid at runtime
-        const parameters = pickValidParams(netOptions.parameters || {}, methodParamKeys as any);
+        const parameters = pickValidParams(netOptions.parameters || {}, methodParamKeys);
         
         // Get query key for this method
         const queryKey = queryKeyHelper.queryKey(netOptions.parameters);
