@@ -22,72 +22,62 @@ import Seo from '@salesforce/retail-react-app/app/components/seo'
 import {useForm} from 'react-hook-form'
 import {useRouteMatch} from 'react-router'
 import {useLocation} from 'react-router-dom'
-import useEinstein from '@salesforce/retail-react-app/app/hooks/use-einstein'
-import useDataCloud from '@salesforce/retail-react-app/app/hooks/use-datacloud'
-import LoginForm from '@salesforce/retail-react-app/app/components/login'
-import PasswordlessEmailConfirmation from '@salesforce/retail-react-app/app/components/email-confirmation/index'
+import useEinstein from '../../commerce-api/hooks/useEinstein'
+
+import LoginForm from '../../components/login'
+
+import {isServer} from '../../utils/utils'
+
 import {
-    API_ERROR_MESSAGE,
-    CREATE_ACCOUNT_FIRST_ERROR_MESSAGE,
-    INVALID_TOKEN_ERROR,
-    INVALID_TOKEN_ERROR_MESSAGE,
-    FEATURE_UNAVAILABLE_ERROR_MESSAGE,
-    LOGIN_TYPES,
-    PASSWORDLESS_LOGIN_LANDING_PATH,
-    PASSWORDLESS_ERROR_MESSAGES,
-    USER_NOT_FOUND_ERROR
-} from '@salesforce/retail-react-app/app/constants'
-import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
-import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+    AuthHelpers,
+    useAuthHelper,
+    useCustomer,
+    useCustomerId,
+    useCustomerType,
+    useCustomerBaskets,
+    useShopperBasketsMutation
+} from '@salesforce/commerce-sdk-react'
 
-const LOGIN_ERROR_MESSAGE = defineMessage({
-    defaultMessage: 'Incorrect username or password, please try again.',
-    id: 'login_page.error.incorrect_username_or_password'
-})
-
-const LOGIN_VIEW = 'login'
-const EMAIL_VIEW = 'email'
-
-const Login = ({initialView = LOGIN_VIEW}) => {
+const Login = () => {
     const {formatMessage} = useIntl()
+
+    const customerId = useCustomerId()
+    const {isRegistered, customerType} = useCustomerType()
+
+    const customer = useCustomer(
+        {parameters: {customerId}},
+        {enabled: !!customerId && isRegistered}
+    )
+
+    // const customer = useCustomer()
     const navigate = useNavigation()
     const form = useForm()
     const location = useLocation()
     const queryParams = new URLSearchParams(location.search)
     const {path} = useRouteMatch()
     const einstein = useEinstein()
-    const dataCloud = useDataCloud()
-    const {isRegistered, customerType} = useCustomerType()
-    const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
-    const loginPasswordless = useAuthHelper(AuthHelpers.LoginPasswordlessUser)
-    const authorizePasswordlessLogin = useAuthHelper(AuthHelpers.AuthorizePasswordless)
-    const {passwordless = {}, social = {}} = getConfig().app.login || {}
-    const isPasswordlessEnabled = !!passwordless?.enabled
-    const isSocialEnabled = !!social?.enabled
-    const idps = social?.idps
 
-    const customerId = useCustomerId()
-    const prevAuthType = usePrevious(customerType)
-    const {data: baskets, isSuccess: isSuccessCustomerBaskets} = useCustomerBaskets(
+    const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
+    const register = useAuthHelper(AuthHelpers.Register)
+
+    const {data: baskets} = useCustomerBaskets(
         {parameters: {customerId}},
         {enabled: !!customerId && !isServer, keepPreviousData: true}
     )
-    const mergeBasket = useShopperBasketsMutation('mergeBasket')
-    const [currentView, setCurrentView] = useState(initialView)
-    const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
-    const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
-    const [redirectPath, setRedirectPath] = useState('')
 
-    const handleMergeBasket = () => {
-        const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
-        // we only want to merge basket when the user is logged in as a recurring user
-        // only recurring users trigger the login mutation, new user triggers register mutation
-        // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
-        // if you change logic here, also change it in login page
-        const shouldMergeBasket = hasBasketItem && prevAuthType === 'guest'
-        if (shouldMergeBasket) {
-            try {
+    const submitForm = async (data) => {
+        try {
+            await login.mutateAsync({
+                username: data.email,
+                password: data.password
+            })
+            const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
+            // we only want to merge basket when the user is logged in as a recurring user
+            // only recurring users trigger the login mutation, new user triggers register mutation
+            // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
+            // if you change logic here, also change it in login page
+            const shouldMergeBasket = hasBasketItem && prevAuthType === 'guest'
+            if (shouldMergeBasket) {
                 mergeBasket.mutate({
                     headers: {
                         // This is not required since the request has no body
@@ -98,31 +88,17 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                         createDestinationBasket: true
                     }
                 })
-            } catch (e) {
-                form.setError('global', {
-                    type: 'manual',
-                    message: formatMessage(API_ERROR_MESSAGE)
-                })
             }
+        } catch (error) {
+            const message = /invalid credentials/i.test(error.message)
+                ? formatMessage({
+                      defaultMessage: 'Incorrect username or password, please try again.',
+                      id: 'login_page.error.incorrect_username_or_password'
+                  })
+                : error.message
+            form.setError('global', {type: 'manual', message})
         }
     }
-
-    const submitForm = async (data) => {
-        form.clearErrors()
-
-        const handlePasswordlessLogin = async (email) => {
-            try {
-                await authorizePasswordlessLogin.mutateAsync({userid: email})
-                setCurrentView(EMAIL_VIEW)
-            } catch (error) {
-                const message = USER_NOT_FOUND_ERROR.test(error.message)
-                    ? formatMessage(CREATE_ACCOUNT_FIRST_ERROR_MESSAGE)
-                    : PASSWORDLESS_ERROR_MESSAGES.some((msg) => msg.test(error.message))
-                    ? formatMessage(FEATURE_UNAVAILABLE_ERROR_MESSAGE)
-                    : formatMessage(API_ERROR_MESSAGE)
-                form.setError('global', {type: 'manual', message})
-            }
-        }
 
         return {
             login: async (data) => {
