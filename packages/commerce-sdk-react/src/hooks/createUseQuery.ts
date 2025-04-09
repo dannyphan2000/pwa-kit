@@ -4,12 +4,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import {UseQueryResult} from '@tanstack/react-query'
 import {
     ApiClients, 
     ApiMethod,
-    ApiOptions,
     ApiQueryOptions, 
     Argument, 
     DataType, 
@@ -99,16 +97,13 @@ export const createUseQuery = <
         
         // Get the client from useCommerceApi based on clientKey
         const commerceApi = useCommerceApi();
-        // @ts-ignore - We know this exists based on the type constraint
         const client: Client = commerceApi[clientKey];
         
         // Get the SDK class for parameter keys
-        // @ts-ignore - Access to constructor which is guaranteed to exist
         const SDKClass = client.constructor;
         
         // Get required parameters for this method
         const requiredKey = `${String(methodName)}Required`;
-        // @ts-ignore - Access to paramKeys which is defined at runtime
         const requiredParamArray = (SDKClass.paramKeys as any)[requiredKey] as string[];
         
         // Convert the string array to a readonly array of parameter keys
@@ -118,7 +113,6 @@ export const createUseQuery = <
         const netOptions = omitNullableParameters(mergeOptions(client, apiOptions));
         
         // Get valid parameter keys for this method
-        // @ts-ignore - Access to paramKeys which is defined at runtime
         const methodParamKeys = (SDKClass.paramKeys as any)[String(methodName)] as string[];
         
         // These parameters are valid at runtime
