@@ -129,9 +129,9 @@ describe('ApplicationExtension', () => {
     })
 
     describe('serializeAsyncRoutes', () => {
-        it('should return null if getRoutesAsync is not defined', () => {
+        it('should return empty array if getRoutesAsync is not defined', () => {
             const result = extension.serializeAsyncRoutes()
-            expect(result).toBeNull()
+            expect(result).toEqual([])
         })
 
         it('should serialize routes correctly', async () => {
