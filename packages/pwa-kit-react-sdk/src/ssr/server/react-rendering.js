@@ -154,7 +154,7 @@ export const render = async (req, res, next) => {
     const serializedExtensions = Object.fromEntries(
         applicationExtensions
             .map((extension) => [extension.getName(), {routes: extension.serializeAsyncRoutes()}])
-            .filter(([, value]) => value.routes)
+            .filter(([, value]) => Array.isArray(value.routes) && value.routes.length > 0)
     )
     console.log('--- serialized extensions in react-rendering', serializedExtensions)
 
