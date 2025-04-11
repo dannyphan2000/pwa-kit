@@ -34,7 +34,7 @@ import Document from '../universal/components/_document'
 import Throw404 from '../universal/components/throw-404'
 import {getAppConfig} from '../universal/compatibility'
 import Switch from '../universal/components/switch'
-import {getRoutes, routeComponent} from '../universal/components/route-component'
+import {getAllRoutes, routeComponent} from '../universal/components/route-component'
 import * as errors from '../universal/errors'
 import logger from '../../utils/logger-instance'
 import PerformanceTimer, {PERFORMANCE_MARKS} from '../../utils/performance'
@@ -139,7 +139,7 @@ export const render = async (req, res, next) => {
         locals: res.locals
     })
 
-    let routes = getRoutes(res.locals)
+    let routes = await getAllRoutes(res.locals)
 
     const [pathname] = req.originalUrl.split('?')
 
@@ -154,7 +154,7 @@ export const render = async (req, res, next) => {
 
     // Call `beforeRouteMatch` application extension hook.
     applicationExtensions.forEach((applicationExtension) => {
-        routes = applicationExtension.beforeRouteMatch(routes)
+        routes = applicationExtension.beforeRouteMatch({allRoutes: routes, locals: res.locals})
     })
 
     res.__performanceTimer.mark(PERFORMANCE_MARKS.routeMatching, 'start')

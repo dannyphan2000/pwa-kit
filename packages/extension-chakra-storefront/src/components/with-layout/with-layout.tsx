@@ -24,6 +24,7 @@ import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
 
 // Local Project Components
 import {DrawerMenu} from '../drawer-menu'
+import {getPathWithLocale} from '../../utils/url'
 import {HideOnDesktop, HideOnMobile} from '../responsive'
 import {ListMenu, ListMenuContent} from '../list-menu'
 import {withCommerceSdkReactHookData} from '../with-commerce-sdk-react-hook-data'
@@ -48,6 +49,7 @@ import {
 import {watchOnlineStatus, flatten} from '../../utils/utils'
 import useActiveData from '../../hooks/use-active-data'
 import useMultiSite from '../../hooks/use-multi-site'
+import {DntNotification, useDntNotification} from '../../hooks/use-dnt-notification'
 import {useTheme} from '@chakra-ui/react'
 
 import {UserConfig} from '../../types/config'
@@ -118,6 +120,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
             return state.state['@salesforce/extension-commerce-bm-seo']?.isNavigationBlocked
         })
 
+        const dntNotification = useDntNotification()
         const {site, locale, buildUrl} = useMultiSite()
         const [isOnline, setIsOnline] = useState<boolean>(true)
         const styles = useStyleConfig('App')
@@ -220,7 +223,9 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
         // Ensure styles.container is an object
         const containerStyles = (styles.container as React.CSSProperties) || {}
-        const headerWrapperStyles = {display: 'flex'}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const headerWrapperStyles = styles.headerWrapper || {}
 
         return (
             <Box className="sf-app" {...(containerStyles as any)}>
@@ -242,13 +247,16 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
                     {/* Urls for all localized versions of this page (including current page)
                     For more details on hrefLang, see https://developers.google.com/search/docs/advanced/crawling/localized-versions */}
-                    {site.l10n?.supportedLocales.map((locale: any) => (
+                    {site.l10n?.supportedLocales.map((locale) => (
                         <link
                             rel="alternate"
                             hrefLang={locale.id.toLowerCase()}
-                            href={`${appOrigin}${
-                                buildUrl(location.pathname, site.id, locale.id) as string
-                            }`}
+                            href={`${appOrigin}${getPathWithLocale(locale.id, buildUrl, {
+                                location: {
+                                    ...location,
+                                    search: ''
+                                }
+                            })}`}
                             key={locale.id}
                         />
                     ))}
@@ -256,9 +264,12 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     <link
                         rel="alternate"
                         hrefLang={site.l10n.defaultLocale.slice(0, 2)}
-                        href={`${appOrigin}${
-                            buildUrl(location.pathname, site.id, locale.id) as string
-                        }`}
+                        href={`${appOrigin}${getPathWithLocale(locale.id, buildUrl, {
+                            location: {
+                                ...location,
+                                search: ''
+                            }
+                        })}`}
                     />
                     {/* A wider fallback for user locales that the app does not support */}
                     <link rel="alternate" hrefLang="x-default" href={`${appOrigin}/`} />
@@ -344,6 +355,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                         {!isCheckout ? <Footer /> : <CheckoutFooter />}
 
                         <AuthModal {...(authModal as any)} />
+                        <DntNotification {...dntNotification} />
                     </AddToCartModalProvider>
                 </Box>
                 {(config.activeDataEnabled as boolean) && (

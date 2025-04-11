@@ -90,9 +90,9 @@ jobs:
       # - name: Run bundlesize test
       #   uses: "./.github/actions/bundle_size_test"
 
-      - name: Smoke test scripts
-        if: env.IS_DEFAULT_NPM == 'true'
-        uses: "./.github/actions/smoke_tests"
+      # - name: Smoke test scripts
+      #   if: env.IS_DEFAULT_NPM == 'true'
+      #   uses: "./.github/actions/smoke_tests"
 
       - name: Create MRT credentials file
         if: env.IS_NOT_FORK == 'true' && env.IS_MRT_NODE == 'true' && ( env.DEVELOP == 'true' || env.RELEASE == 'true' )

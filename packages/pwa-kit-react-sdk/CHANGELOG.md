@@ -1,6 +1,8 @@
 ## v4.0.0-extensibility-preview.4 (Feb 12, 2025)
 - Added useBlockNavigation. (#2288)[https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2288]. TODO: update this link with actual PR being merged to extensibility branch
 - Replace `event-emitter` in favor of the native `EventTarget` [#2289](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2289)
+- Call app extension's new methods `getRoutes` and `getRoutesAsync` [#2308](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2308)
+- Call app extension's `beforeRouteMatch` method with updated parameters [#2308](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2308)
 
 ## v4.0.0-extensibility-preview.3 (Dec 13, 2024)
 

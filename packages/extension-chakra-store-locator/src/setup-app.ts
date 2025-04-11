@@ -7,7 +7,6 @@
 
 // Third-Party
 import React from 'react'
-import {RouteProps} from 'react-router-dom'
 
 // Platform Imports
 import {
@@ -16,6 +15,7 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
+import {GetRoutesParams, RouteProps} from '@salesforce/pwa-kit-extension-sdk/types'
 
 // Local Imports
 import {withOptionalChakra} from './components/with-optional-chakra-provider'
@@ -71,14 +71,13 @@ class StoreLocatorExtension extends ApplicationExtension<Config> {
         return applyHOCs(App, HOCs)
     }
 
-    extendRoutes(routes: RouteProps[]): RouteProps[] {
+    getRoutes(params: GetRoutesParams): RouteProps[] {
         return [
             {
                 exact: true,
                 path: this.getConfig().path,
                 component: StoreLocatorPage
-            },
-            ...routes
+            }
         ]
     }
 }
