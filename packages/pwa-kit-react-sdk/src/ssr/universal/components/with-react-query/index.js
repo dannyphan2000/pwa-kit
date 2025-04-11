@@ -15,23 +15,6 @@ import ReactDOMServer from "react-dom/server";
 const STATE_KEY = '__reactQuery'
 const passthrough = (input) => input
 
-// Use this internal React Query event to detect queries as they're created
-const createQueryPrefetchListener = (queryClient) => {
-    const queries = new Set()
-
-    // Listen for query creation events
-    const unsubscribe = queryClient.getQueryCache().subscribe((event) => {
-        if (event.type === 'added' && event.query.options.enabled !== false) {
-            queries.add(event.query)
-        }
-    })
-
-    return {
-        getQueries: () => Array.from(queries),
-        cleanup: unsubscribe
-    }
-}
-
 /**
  * A HoC for adding React Query support to your application.
  *
@@ -82,66 +65,31 @@ export const withReactQuery = (Wrapped, options = {}) => {
          * @private
          */
         static async doInitAppState({res, appJSX}) {
-            // Create a separate query client just for discovery to avoid shared state
-            const discoveryQueryClient = new QueryClient(queryClientConfig)
-
-            // The actual query client that will be used for the real render
-            const queryClient = new QueryClient(queryClientConfig)
-            res.locals.__queryClient = queryClient
+            const queryClient = (res.locals.__queryClient =
+                res.locals.__queryClient || new QueryClient(queryClientConfig))
 
             res.__performanceTimer.mark(PERFORMANCE_MARKS.reactQueryPrerender, 'start')
-
-            try {
-                // Set up a listener to capture queries as they're created
-                const listener = createQueryPrefetchListener(discoveryQueryClient)
-
-                // Create a completely separate component tree for discovery
-                // We're using a new instance of all providers to ensure isolation
-                // potential perfomance impact since we are deepcloning a trea here???
-                const discoveryApp = (
-                    <QueryClientProvider client={discoveryQueryClient}>
-                        {/* We use a deep clone by recreating the entire tree structure */}
-                        {React.cloneElement(appJSX, {key: 'discovery-phase'})}
-                    </QueryClientProvider>
-                )
-
-                // Use renderToStaticMarkup to make the render faster and discard the result
-                ReactDOMServer.renderToStaticMarkup(discoveryApp)
-
-                // Get all the discovered queries
-                const queries = listener.getQueries()
-                listener.cleanup()
-
-                // Extract the query keys and configs we need to prefetch
-                const queryConfigs = queries.map(q => ({
-                    queryKey: q.queryKey,
-                    queryFn: q.options.queryFn,
-                    meta: q.meta
-                }))
-
-                // Now prefetch all the discovered queries in parallel using the REAL query client
-                await Promise.all(
-                    queryConfigs.map((config, i) => {
-                        const displayName = config.meta?.displayName
-                            ? `${config.meta?.displayName}:${i}`
-                            : `${i}`
-                        res.__performanceTimer.mark(
-                            `${PERFORMANCE_MARKS.reactQueryUseQuery}::${displayName}`,
-                            'start'
-                        )
-
-                        // Execute the query on the real query client
-                        return queryClient.fetchQuery({
-                            queryKey: config.queryKey,
-                            queryFn: config.queryFn,
-                            meta: config.meta
-                        })
+            // Use `ssrPrepass` to collect all uses of `useQuery`.
+            await ssrPrepass(appJSX)
+            res.__performanceTimer.mark(PERFORMANCE_MARKS.reactQueryPrerender, 'end')
+            const queryCache = queryClient.getQueryCache()
+            const queries = queryCache.getAll().filter((q) => q.options.enabled !== false)
+            await Promise.all(
+                queries.map((q, i) => {
+                    // always include the index to avoid duplicate entries
+                    const displayName = q.meta?.displayName ? `${q.meta?.displayName}-${i}` : `${i}`
+                    res.__performanceTimer.mark(
+                        `${PERFORMANCE_MARKS.reactQueryUseQuery}.${displayName}`,
+                        'start'
+                    )
+                    return q
+                        .fetch()
                         .then((result) => {
                             res.__performanceTimer.mark(
-                                `${PERFORMANCE_MARKS.reactQueryUseQuery}::${displayName}`,
+                                `${PERFORMANCE_MARKS.reactQueryUseQuery}.${displayName}`,
                                 'end',
                                 {
-                                    detail: JSON.stringify(config.queryKey)
+                                    detail: q.queryHash
                                 }
                             )
                             return result
@@ -150,19 +98,9 @@ export const withReactQuery = (Wrapped, options = {}) => {
                             // If there's an error in this fetch, react-query will log the error
                             // On our end, simply catch any error and move on to the next query
                         })
-                    })
-                )
-
-                // Clean up the discovery query client to free memory
-                discoveryQueryClient.clear()
-            } catch (error) {
-                logger.error('Error during query prefetching', {
-                    namespace: 'with-react-query.doInitAppState',
-                    additionalProperties: {error}
                 })
-            }
+            )
 
-            res.__performanceTimer.mark(PERFORMANCE_MARKS.reactQueryPrerender, 'end')
             return {[STATE_KEY]: dehydrate(queryClient)}
         }
 
