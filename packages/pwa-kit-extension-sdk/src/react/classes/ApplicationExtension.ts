@@ -40,7 +40,7 @@ export class ApplicationExtension<
 
         if (!isServerSide()) {
             // Deserialize the routes on the client to ensure the latest routes are loaded on the client
-            this._cachedRoutes = this.deserializeAsyncRoutes()
+            this._cachedRoutes = this.deserializeAsyncRoutes() || null
         }
 
         cacheMethodResult(this, 'getRoutesAsync', '_cachedRoutes')
@@ -102,8 +102,8 @@ export class ApplicationExtension<
      * @returns null if there's no asynchronous state that needs to be serialized
      * @throws Error if the routes have not been loaded.
      */
-    public serializeAsyncRoutes(): SerializedRouteProps[] {
-        if (typeof this.getRoutesAsync === 'undefined') return []
+    public serializeAsyncRoutes(): SerializedRouteProps[] | null {
+        if (typeof this.getRoutesAsync === 'undefined') return null
 
         if (this._cachedRoutes === null) {
             throw new Error(`Routes have not been loaded. Call getRoutesAsync() before serializing`)
@@ -154,7 +154,7 @@ export class ApplicationExtension<
      * @throws Error if getComponentMap() is not defined.
      * @throws Error if the deserialized component cannot be found in the component map.
      */
-    private deserializeAsyncRoutes(): RouteProps[] {
+    private deserializeAsyncRoutes(): RouteProps[] | null {
         if (isServerSide() || typeof this.getRoutesAsync === 'undefined') {
             return []
         }
@@ -167,6 +167,9 @@ export class ApplicationExtension<
 
         const componentMap = this.getComponentMap()
         const serializedExtension = window.__EXTENSIONS__[this.getName()]
+
+        console.log('JINSU deserializeAsyncRoutes:', serializedExtension)
+
         const routes = serializedExtension.routes.map(({componentName, ...route}) => {
             if (!componentName) {
                 throw new Error(

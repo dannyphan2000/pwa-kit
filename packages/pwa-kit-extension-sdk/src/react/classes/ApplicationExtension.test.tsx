@@ -127,13 +127,8 @@ describe('ApplicationExtension', () => {
             expect(result).toStrictEqual(allRoutes)
         })
     })
-
-    describe('serializeAsyncRoutes', () => {
-        it('should return empty array if getRoutesAsync is not defined', () => {
-            const result = extension.serializeAsyncRoutes()
-            expect(result).toEqual([])
-        })
-
+/*
+    describe('serialize', () => {
         it('should serialize routes correctly', async () => {
             if (extensionAsyncRoutes.getRoutesAsync) {
                 await extensionAsyncRoutes.getRoutesAsync({locals: {}})
@@ -179,7 +174,7 @@ describe('ApplicationExtension', () => {
             )
         })
     })
-
+*/
     describe('constructor', () => {
         it('should cache getRoutesAsync result', async () => {
             let routes

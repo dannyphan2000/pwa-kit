@@ -51,7 +51,7 @@ import {useHistory, useLocation, useParams} from 'react-router-dom'
 import {useToast} from '../../hooks/use-toast'
 import {useWishList} from '../../hooks/use-wish-list'
 
-const ProductDetail = () => {
+const ProductDetail = (props) => {
     const {formatMessage} = useIntl()
     const history = useHistory()
     const location = useLocation()
@@ -77,7 +77,10 @@ const ProductDetail = () => {
     }
 
     /*************************** Product Detail and Category ********************/
-    const {productId} = useParams()
+    let {productId} = useParams()
+    if (props.productId) {
+        productId = props.productId
+    }
     const urlParams = new URLSearchParams(location.search)
     const {
         data: product,

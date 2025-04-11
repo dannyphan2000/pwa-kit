@@ -62,10 +62,8 @@ export type ComponentMap = {
     [key: string]: React.ComponentType<any>
 }
 
-/**
- * This type is represents the serialized version of the route props.
- * It is used when serializing the route props on the server and when
- * deserializing them on the client.
+/*
+ * Same as react-router's RouteProps, but now supports `componentName` if the route is meant to be serializable
  */
 export type SerializedRouteProps = RouteProps & {
     componentName?: string

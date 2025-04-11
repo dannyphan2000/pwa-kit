@@ -1,78 +1,36 @@
-{
-  "name": "typescript-minimal",
-  "version": "4.0.0-extensibility-preview.4",
-  "private": true,
-  "scripts": {
-    "analyze-build": "cross-env MOBIFY_ANALYZE=true npm run build",
-    "build": "pwa-kit-dev build",
-    "format": "pwa-kit-dev format \"**/*.{js,jsx,ts,tsx}\"",
-    "lint": "npm run lint:js && npm run typecheck",
-    "lint:fix": "npm run lint:js -- --fix",
-    "lint:js": "pwa-kit-dev lint \"**/*.{js,jsx,ts,tsx}\"",
-    "push": "npm run build && pwa-kit-dev push",
-    "save-credentials": "pwa-kit-dev save-credentials",
-    "start": "cross-env NODE_ICU_DATA=node_modules/full-icu pwa-kit-dev start",
-    "start:inspect": "npm run start -- --inspect",
-    "tail-logs": "pwa-kit-dev tail-logs",
-    "test": "pwa-kit-dev test",
-    "typecheck": "tsc --noEmit"
-  },
-  "devDependencies": {
-    "@chakra-ui/react": "^2.8.2",
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "@loadable/component": "^5.15.3",
-    "@salesforce/pwa-kit-dev": "4.0.0-extensibility-preview.4",
-    "@salesforce/pwa-kit-extension-sdk": "4.0.0-extensibility-preview.4",
-    "@salesforce/pwa-kit-react-sdk": "4.0.0-extensibility-preview.4",
-    "@salesforce/pwa-kit-runtime": "4.0.0-extensibility-preview.4",
-    "@salesforce/extension-chakra-storefront": "0.1.0-extensibility-preview.4",
-    "@salesforce/extension-starter": "0.1.0-extensibility-preview.4",
-    "@salesforce/extension-commerce-bm-seo": "0.1.0-extensibility-preview.4",
-    "@tanstack/react-query": "^4.28.0",
-    "@types/loadable__component": "~5.13.4",
-    "@types/react": "~18.2.0",
-    "@types/react-dom": "~18.2.1",
-    "@types/react-router-dom": "~5.3.3",
-    "cross-env": "^5.2.1",
-    "framer-motion": "^11.5.4",
-    "full-icu": "^1.5.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-helmet": "^6.1.0",
-    "react-intl": "^5.25.1",
-    "react-router-dom": "^5.3.4",
-    "typescript": "4.9.5",
-    "zustand": "5.0.3",
+/*
+ * Copyright (c) 2025, salesforce.com, inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
+ */
 
-    "@chakra-ui/skip-nav": "^2.0.15",
-    "@peculiar/webcrypto": "^1.4.2",
-    "@salesforce/commerce-sdk-react": "^3.2.0-extensibility-preview.0",
-    "@tanstack/react-query-devtools": "^4.29.1",
-    "card-validator": "^8.1.1",
-    "cross-fetch": "^3.1.4",
-    "express": "^4.19.2",
-    "focus-visible": "^5.2.0",
-    "helmet": "^4.6.0",
-    "lodash": "^4.17.21",
-    "nanoid": "^3.3.4",
-    "prop-types": "^15.8.1",
-    "query-string": "^7.1.3",
-    "raf": "^3.4.1"
-  },
-  "engines": {
-    "node": "^16.11.0 || ^18.0.0 || ^20.0.0",
-    "npm": "^8.0.0 || ^9.0.0 || ^10.0.0"
-  },
-  "mobify": {
-    "app": {
-      "extensions": [
-        [
-          "@salesforce/extension-url-mapping"
-        ],
-        [
-          "@salesforce/extension-starter"
-        ],
+module.exports = {
+    app: {
+      extensions: [
+        ["@salesforce/extension-commerce-bm-seo", {
+          enabled: true,
+          path: "/sample-page",
+          commerceAPI: {
+              proxyPath: "/mobify/proxy/api",
+              parameters: {
+                  clientId: "c9c45bfd-0ed3-4aa2-9971-40f88962b836",
+                  organizationId: "f_ecom_zzrf_001",
+                  shortCode: "8o7m175y",
+                  siteId: "RefArchGlobal"
+              }
+          },
+          commerceAPIAuth: {
+              propertyNameInLocals: "commerceAPIAuth"
+          },
+          resourceTypeToComponentMap: {
+            category: 'ProductList',
+            product: 'ProductDetail',
+            // TODO: what component should content be mapped to?
+            content_asset: 'ProductList'
+          },
+
+      }],
         [
           "@salesforce/extension-chakra-storefront",
           {
@@ -265,34 +223,34 @@
               "interpretPlusSignAsSpace": false
             }
           }
-        ]
+        ],
+        ["@salesforce/extension-starter", {}],
       ]
     },
-    "ssrEnabled": true,
-    "ssrOnly": [
+    ssrEnabled: true,
+    ssrOnly: [
       "ssr.js",
       "ssr.js.map",
       "node_modules/**/*.*"
     ],
-    "ssrShared": [
+    ssrShared: [
       "static/favicon.ico",
       "static/robots.txt",
       "**/*.js",
       "**/*.js.map",
       "**/*.json"
     ],
-    "ssrParameters": {
-      "ssrFunctionNodeVersion": "20.x",
-      "proxyConfigs": [
+    ssrParameters: {
+      ssrFunctionNodeVersion: "20.x",
+      proxyConfigs: [
         {
-          "host": "kv7kzm78.api.commercecloud.salesforce.com",
-          "path": "api"
+          host: "kv7kzm78.api.commercecloud.salesforce.com",
+          path: "api"
         },
         {
-          "host": "zzrf-001.dx.commercecloud.salesforce.com",
-          "path": "ocapi"
+          host: "zzrf-001.dx.commercecloud.salesforce.com",
+          path: "ocapi"
         }
       ]
     }
-  }
 }
