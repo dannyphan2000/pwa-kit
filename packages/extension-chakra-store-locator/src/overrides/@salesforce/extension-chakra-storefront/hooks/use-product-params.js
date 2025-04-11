@@ -10,7 +10,7 @@ import {StoreSelectionContext} from '../../../../components/provider'
 
 export const useProductParamsInPDP = ({productId, urlParams}) => {
     const {selectedStore} = useContext(StoreSelectionContext)
-    console.log('JINSU useProductParamsInPDP in chakra-store-locator')
+    // console.log('JINSU useProductParamsInPDP in chakra-store-locator')
     return {
         id: urlParams.get('pid') || productId,
         perPricebook: true,

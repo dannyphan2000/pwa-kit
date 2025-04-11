@@ -29,6 +29,7 @@ import Swatch from '../../components/swatch-group/swatch'
 import SwatchGroup from '../../components/swatch-group'
 import {getPriceData} from '../../utils/product-utils'
 import PromoCallout from '../../components/product-tile/promo-callout'
+import InventoryMessage from 'overridable!../../components/inventory-message'
 
 const ProductViewHeader = ({
     name,
@@ -617,20 +618,12 @@ const ProductView = forwardRef(
                         </VStack>
 
                         <Box>
-                            {!showLoading && showInventoryMessage && !customInventoryMessage && (
-                                <Fade in={true}>
-                                    <Text color="orange.600" fontWeight={600} marginBottom={8}>
-                                        {inventoryMessage}
-                                    </Text>
-                                </Fade>
-                            )}
-                            {!showLoading && customInventoryMessage && (
-                                <Fade in={true}>
-                                    <Text color="orange.600" fontWeight={600} marginBottom={8}>
-                                        {customInventoryMessage}
-                                    </Text>
-                                </Fade>
-                            )}
+                            <InventoryMessage
+                                product={product}
+                                showInventoryMessage={showInventoryMessage}
+                                inventoryMessage={inventoryMessage}
+                                customInventoryMessage={customInventoryMessage}
+                            />
                             <Box
                                 display={
                                     isProductPartOfSet ? 'block' : ['none', 'none', 'none', 'block']
