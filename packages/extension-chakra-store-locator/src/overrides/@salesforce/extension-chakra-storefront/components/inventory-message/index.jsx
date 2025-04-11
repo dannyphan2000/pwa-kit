@@ -8,6 +8,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Box, Fade, FormattedMessage, Link, Text} from '@chakra-ui/react'
+import BaseInventoryMessage from '@salesforce/extension-chakra-storefront/components/inventory-message'
 import {useContext} from 'react'
 import {StoreSelectionContext} from '../../../../../components/provider'
 
@@ -30,6 +31,7 @@ const InventoryMessage = ({
 
     console.log('product.inventories', product.inventories)
     console.log('inStock', inStock)
+    console.log('chakra-store-locator InventoryMessage')
     return (
         <>
             <Box gap={1} fontWeight={400} display="flex">
@@ -48,20 +50,12 @@ const InventoryMessage = ({
                     </>
                 )}
             </Box>
-            {showInventoryMessage && !customInventoryMessage && (
-                <Fade in={true}>
-                    <Text color="orange.600" fontWeight={600} marginBottom={8}>
-                        {inventoryMessage}
-                    </Text>
-                </Fade>
-            )}
-            {customInventoryMessage && (
-                <Fade in={true}>
-                    <Text color="orange.600" fontWeight={600} marginBottom={8}>
-                        {customInventoryMessage}
-                    </Text>
-                </Fade>
-            )}
+            <BaseInventoryMessage
+                product={product}
+                showInventoryMessage={showInventoryMessage}
+                inventoryMessage={inventoryMessage}
+                customInventoryMessage={customInventoryMessage}
+            />
         </>
     )
 }

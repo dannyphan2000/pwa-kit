@@ -61,7 +61,7 @@ const InventoryMessage = ({product, showInventoryMessage, customInventoryMessage
     //     }
     //     return {customInventoryMessage: currentInventoryMsg}
     // }, [showInventoryMessage, childProductOrderability])
-
+    console.log('chakra-storefront InventoryMessage')
     return (
         <>
             {showInventoryMessage && !customInventoryMessage && (
