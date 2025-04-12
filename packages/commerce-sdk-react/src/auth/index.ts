@@ -742,6 +742,23 @@ class Auth {
     }
 
     /**
+     * This method extracts the custom parameters from a set of parameters.
+     *
+     * Custom parameters are defined as those whose keys are prefixed with 'c_'
+     * @Internal
+     */
+    extractCustomParameters = (
+        parameters: {[s: string]: string | number | boolean | string[] | number[]} | null
+    ): helpers.CustomQueryParameters => {
+        if (typeof parameters !== 'object' || parameters === null) {
+            throw new Error('Invalid input. Expecting an object as an input.')
+        }
+        return Object.fromEntries(
+            Object.entries(parameters).filter(([key]) => key.startsWith('c_'))
+        )
+    }
+
+    /**
      * The ready function returns a promise that resolves with valid ShopperLogin
      * token response.
      *
@@ -792,7 +809,7 @@ class Auth {
      * A wrapper method for commerce-sdk-isomorphic helper: loginGuestUser.
      *
      */
-    async loginGuestUser() {
+    async loginGuestUser(parameters: helpers.CustomQueryParameters = {}) {
         if (this.clientSecret && onClient() && this.clientSecret !== SLAS_SECRET_PLACEHOLDER) {
             this.logWarning(SLAS_SECRET_WARNING_MSG)
         }
@@ -812,7 +829,9 @@ class Auth {
             {
                 redirectURI: this.redirectURI,
                 dnt: dntPref,
-                ...(usid && {usid})
+                ...(usid && {usid}),
+                // custom parameters are sent only into the /authorize endpoint.
+                ...parameters
             }
         ] as const
         const callback = this.clientSecret
@@ -839,7 +858,8 @@ class Auth {
     async register(body: ShopperCustomersTypes.CustomerRegistration) {
         const {
             customer: {login},
-            password
+            password,
+            ...parameters
         } = body
 
         // login is optional field from isomorphic library
@@ -855,10 +875,13 @@ class Auth {
             },
             body
         })
-        await this.loginRegisteredUserB2C({
-            username: login,
-            password
-        })
+        await this.loginRegisteredUserB2C(
+            {
+                username: login,
+                password
+            },
+            parameters
+        )
         return res
     }
 
@@ -866,7 +889,10 @@ class Auth {
      * A wrapper method for commerce-sdk-isomorphic helper: loginRegisteredUserB2C.
      *
      */
-    async loginRegisteredUserB2C(credentials: LoginRegisteredUserB2CCredentials) {
+    async loginRegisteredUserB2C(
+        credentials: LoginRegisteredUserB2CCredentials,
+        parameters: helpers.CustomRequestBody = {}
+    ) {
         if (this.clientSecret && onClient() && this.clientSecret !== SLAS_SECRET_PLACEHOLDER) {
             this.logWarning(SLAS_SECRET_WARNING_MSG)
         }
@@ -884,6 +910,9 @@ class Auth {
                 redirectURI,
                 dnt: dntPref,
                 ...(usid && {usid})
+            },
+            {
+                body: parameters
             }
         )
         this.handleTokenResponse(token, isGuest)
@@ -1066,12 +1095,14 @@ class Auth {
     async authorizeIDP(parameters: AuthorizeIDPParams) {
         const redirectURI = parameters.redirectURI || this.redirectURI
         const usid = this.get('usid')
+        const customParameters = this.extractCustomParameters(parameters)
         const {url, codeVerifier} = await helpers.authorizeIDP(
             this.client,
             {
                 redirectURI,
                 hint: parameters.hint,
-                ...(usid && {usid})
+                ...(usid && {usid}),
+                ...customParameters
             },
             this.isPrivate
         )

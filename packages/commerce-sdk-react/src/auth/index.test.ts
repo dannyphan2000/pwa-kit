@@ -491,6 +491,18 @@ describe('Auth', () => {
         expect(helpers.loginGuestUser).toHaveBeenCalled()
     })
 
+    test('loginGuestUser can pass along custom parameters', async () => {
+        const parameters = {c_test: 'custom parameter'}
+        const auth = new Auth(config)
+        await auth.loginGuestUser(parameters)
+        // The first argument is the SLAS config, which we don't need to verify in this case
+        // We only want to see that the custom parameters were included in the second argument
+        expect(helpers.loginGuestUser).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.objectContaining({c_test: 'custom parameter'})
+        )
+    })
+
     test.each([
         // When user has not selected DNT pref
         [true, undefined, {dnt: true}],
@@ -614,6 +626,26 @@ describe('Auth', () => {
         })
     })
 
+    test('loginRegisteredUserB2C can pass along custom parameters', async () => {
+        const parameters = {c_test: 'custom parameter'}
+        const credentials = {
+            username: 'test',
+            password: 'test'
+        }
+        const auth = new Auth(config)
+        await auth.loginRegisteredUserB2C(credentials, parameters)
+        // We don't need to verify the first and third parameters as they correspond to the SLAS client and mandatory parameters
+        // The second argument is credentials, including the client secret
+        // The fourth argument is custom parameters
+        // We only want to see that the custom parameters were included in the second argument
+        expect(helpers.loginRegisteredUserB2C).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.objectContaining(credentials),
+            expect.anything(),
+            {body: {c_test: 'custom parameter'}}
+        )
+    })
+
     test('loginIDPUser calls isomorphic loginIDPUser', async () => {
         const auth = new Auth(config)
         await auth.loginIDPUser({redirectURI: 'redirectURI', code: 'test'})
@@ -634,10 +666,18 @@ describe('Auth', () => {
 
     test('authorizeIDP calls isomorphic authorizeIDP', async () => {
         const auth = new Auth(config)
-        await auth.authorizeIDP({redirectURI: 'redirectURI', hint: 'test'})
+        await auth.authorizeIDP({
+            redirectURI: 'redirectURI',
+            hint: 'test',
+            c_customParam: 'customParam'
+        })
         expect(helpers.authorizeIDP).toHaveBeenCalled()
         const functionArg = (helpers.authorizeIDP as jest.Mock).mock.calls[0][1]
-        expect(functionArg).toMatchObject({redirectURI: 'redirectURI', hint: 'test'})
+        expect(functionArg).toMatchObject({
+            redirectURI: 'redirectURI',
+            hint: 'test',
+            c_customParam: 'customParam'
+        })
     })
 
     test('authorizeIDP adds clientSecret to parameters when using private client', async () => {
