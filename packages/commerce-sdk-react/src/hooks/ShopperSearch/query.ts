@@ -7,7 +7,6 @@
 import {createUseQuery} from '../createUseQuery'
 import * as queryKeyHelpers from './queryKeyHelpers'
 
-
 /**
  * Provides keyword and refinement search functionality for products.
  *

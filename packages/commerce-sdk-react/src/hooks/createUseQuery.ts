@@ -6,11 +6,11 @@
  */
 import {UseQueryResult} from '@tanstack/react-query'
 import {
-    ApiClients, 
+    ApiClients,
     ApiMethod,
-    ApiQueryOptions, 
-    Argument, 
-    DataType, 
+    ApiQueryOptions,
+    Argument,
+    DataType,
     NullableParameters
 } from './types'
 import useCommerceApi from './useCommerceApi'
@@ -33,7 +33,7 @@ export type QueryKeyHelper = {
      * @param params - The parameters to generate a query key for
      * @returns A query key for the parameters
      */
-    queryKey: (params: any) => any;
+    queryKey: (params: any) => any
 }
 
 /**
@@ -41,8 +41,8 @@ export type QueryKeyHelper = {
  */
 interface SDKClassConstructor {
     paramKeys: {
-        [key: string]: string[];
-    };
+        [key: string]: string[]
+    }
 }
 
 /**
@@ -53,13 +53,13 @@ export interface CreateUseQueryOptions<
     M extends MethodsOf<ApiClients[ClientKey]>
 > {
     /** The client key in ApiClients (e.g., 'shopperSearch', 'shopperProducts') */
-    clientKey: ClientKey;
+    clientKey: ClientKey
     /** The name of the method in the API client */
-    methodName: M;
+    methodName: M
     /** The name to use for the hook in debugging tools */
-    displayName: string;
+    displayName: string
     /** The query key helper for the specified method */
-    queryKeyHelper: QueryKeyHelper;
+    queryKeyHelper: QueryKeyHelper
 }
 
 /**
@@ -68,16 +68,16 @@ export interface CreateUseQueryOptions<
 export type QueryHook<M extends ApiMethod<any, any>> = (
     apiOptions: NullableParameters<Argument<M>>,
     queryOptions?: ApiQueryOptions<M>
-) => UseQueryResult<DataType<M>, Error>;
+) => UseQueryResult<DataType<M>, Error>
 
 /**
  * Helper to ensure a method is an ApiMethod
  */
-type EnsureApiMethod<T> = T extends ApiMethod<any, any> ? T : never;
+type EnsureApiMethod<T> = T extends ApiMethod<any, any> ? T : never
 
 /**
  * Creates a typed query hook for a specific API client method.
- * 
+ *
  * @template ClientKey - The key of the client in ApiClients
  * @template M - The method name from the specified client
  * @param options - Configuration options for creating the query hook
@@ -89,47 +89,47 @@ export const createUseQuery = <
 >(
     options: CreateUseQueryOptions<ClientKey, M>
 ): QueryHook<EnsureApiMethod<ApiClients[ClientKey][M]>> => {
-    const { clientKey, methodName, displayName, queryKeyHelper } = options;
-    type Client = ApiClients[ClientKey];
+    const {clientKey, methodName, displayName, queryKeyHelper} = options
+    type Client = ApiClients[ClientKey]
     // Ensure method type is a function
-    type Method = ApiClients[ClientKey][M] & ApiMethod<any, any>;
-    
+    type Method = ApiClients[ClientKey][M] & ApiMethod<any, any>
+
     /**
      * Custom hook for accessing an API method
      */
-    const hook = (
+    const useQueryHook = (
         apiOptions: NullableParameters<Argument<Method>>,
         queryOptions: ApiQueryOptions<Method> = {}
     ): UseQueryResult<DataType<Method>, Error> => {
         type Options = Argument<Method>
         type Data = DataType<Method>
-        
+
         // Get the client from useCommerceApi based on clientKey
-        const commerceApi = useCommerceApi();
-        const client: Client = commerceApi[clientKey];
-        
+        const commerceApi = useCommerceApi()
+        const client: Client = commerceApi[clientKey]
+
         // Get the SDK class for parameter keys
-        const SDKClass = client.constructor as unknown as SDKClassConstructor;
-        
+        const SDKClass = client.constructor as unknown as SDKClassConstructor
+
         // Get required parameters for this method
-        const requiredKey = `${String(methodName)}Required`;
-        const requiredParameters = SDKClass.paramKeys[requiredKey];
-        
-        const netOptions = omitNullableParameters(mergeOptions(client, apiOptions));
-        
+        const requiredKey = `${String(methodName)}Required`
+        const requiredParameters = SDKClass.paramKeys[requiredKey]
+
+        const netOptions = omitNullableParameters(mergeOptions(client, apiOptions))
+
         // Get valid parameter keys for this method
-        const methodParamKeys = SDKClass.paramKeys[String(methodName)];
-        
+        const methodParamKeys = SDKClass.paramKeys[String(methodName)]
+
         // These parameters are valid at runtime
-        const parameters = pickValidParams(netOptions.parameters || {}, methodParamKeys);
-        
+        const parameters = pickValidParams(netOptions.parameters || {}, methodParamKeys)
+
         // Get query key for this method
-        const queryKey = queryKeyHelper.queryKey(netOptions.parameters);
-        
+        const queryKey = queryKeyHelper.queryKey(netOptions.parameters)
+
         // We don't use `netOptions` here because we manipulate the options in `useQuery`.
         const method = async (options: Options) => {
             // client[methodName] is guaranteed to be a function at runtime
-            return await (client[methodName] as Method)(options);
+            return await (client[methodName] as Method)(options)
         }
 
         queryOptions.meta = {
@@ -142,17 +142,13 @@ export const createUseQuery = <
             Options,
             Data,
             Error,
-            Data   // We're not transforming the data, so TData = TQueryFnData
-        >(
-            {...netOptions, parameters} as any,
-            queryOptions as any,
-            {
-                method,
-                queryKey,
-                requiredParameters
-            }
-        )
-    };
+            Data // We're not transforming the data, so TData = TQueryFnData
+        >({...netOptions, parameters} as any, queryOptions as any, {
+            method,
+            queryKey,
+            requiredParameters
+        })
+    }
 
-    return hook;
+    return useQueryHook
 }

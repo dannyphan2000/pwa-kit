@@ -4,7 +4,13 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {useQuery as useReactQuery, UseQueryOptions, UseQueryResult, QueryKey, DefaultError} from '@tanstack/react-query'
+import {
+    useQuery as useReactQuery,
+    UseQueryOptions,
+    UseQueryResult,
+    QueryKey,
+    DefaultError
+} from '@tanstack/react-query'
 import {helpers} from 'commerce-sdk-isomorphic'
 import {useAuthorizationHeader} from './useAuthorizationHeader'
 import useAuthContext from './useAuthContext'
@@ -13,7 +19,6 @@ import {
     ApiMethod,
     ApiOptions,
     ApiQueryKey,
-    ApiQueryOptions,
     MergedOptions,
     NullableParameters,
     OmitNullableParameters,
@@ -21,7 +26,6 @@ import {
 } from './types'
 import useConfig from './useConfig'
 import {hasAllKeys} from './utils'
-import {onClient} from '../utils'
 import {handleInvalidToken, generateCustomEndpointOptions} from './helpers'
 
 /**
@@ -42,7 +46,10 @@ export const useQuery = <
     // `OmitNullableParameters<NullableParameters<...>>` has the net result of marking parameters
     // as optional if they are required in `Options` and NOT required in `Client`.
     apiOptions: OmitNullableParameters<NullableParameters<MergedOptions<Client, Options>>>,
-    queryOptions: Omit<UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>, 'queryFn' | 'queryKey'>,
+    queryOptions: Omit<
+        UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+        'queryFn' | 'queryKey'
+    >,
     hookConfig: {
         method: ApiMethod<Options, TQueryFnData>
         queryKey: TQueryKey
@@ -62,10 +69,10 @@ export const useQuery = <
     // for this case would add significantly more complexity.
     const wrappedMethod = async () => await authenticatedMethod(apiOptions as Options)
 
-    const finalEnabled = 
-        typeof queryOptions.enabled !== 'undefined' 
-            ? queryOptions.enabled 
-            : hookConfig.enabled !== false && 
+    const finalEnabled =
+        typeof queryOptions.enabled !== 'undefined'
+            ? queryOptions.enabled
+            : hookConfig.enabled !== false &&
               hasAllKeys(apiOptions.parameters, hookConfig.requiredParameters)
 
     return useReactQuery<TQueryFnData, TError, TData, TQueryKey>({
@@ -93,7 +100,10 @@ export const useCustomQuery = <
     TQueryKey extends QueryKey = QueryKey
 >(
     apiOptions: OptionalCustomEndpointClientConfig,
-    queryOptions?: Omit<UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>, 'queryKey' | 'queryFn'>
+    queryOptions?: Omit<
+        UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+        'queryKey' | 'queryFn'
+    >
 ): UseQueryResult<TData, TError> => {
     const config = useConfig()
     const logger = config.logger || console
