@@ -8,7 +8,8 @@
 
 import React, {useContext, useEffect, useRef, useState} from 'react'
 import {useHistory} from 'react-router-dom'
-import {CorrelationIdContext, ServerContext} from '../contexts'
+import {CorrelationIdContext, ServerContext, RoutesContext} from '../contexts'
+
 /**
  * Use this hook to get the correlation id value of the closest CorrelationIdProvider component.
  *
@@ -122,4 +123,16 @@ export const useBlockNavigation = (func) => {
     }, [location])
 
     return {isBlocked, push}
+}
+/*
+ * Use this hook to get the routes value of the closest RoutesProvider component.
+ *
+ * @returns {object} array of routes
+ */
+export const useRoutes = () => {
+    const context = useContext(RoutesContext)
+    if (!context) {
+        throw new Error('useRoutes must be used within a RoutesProvider')
+    }
+    return context
 }
