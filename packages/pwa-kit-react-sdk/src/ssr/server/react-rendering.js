@@ -10,7 +10,7 @@
  */
 
 import path from 'path'
-import React from 'react'
+import React, {Suspense} from 'react'
 import ReactDOMServer from 'react-dom/server'
 import {Helmet} from 'react-helmet'
 import {ChunkExtractor} from '@loadable/server'
@@ -24,6 +24,7 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 import {getAssetUrl} from '../universal/utils'
 import {ServerContext, CorrelationIdProvider} from '../universal/contexts'
+import {PassThrough} from 'stream'
 
 import Document from '../universal/components/_document'
 import App from '../universal/components/_app'
@@ -131,6 +132,7 @@ export const render = async (req, res, next) => {
 
     const routes = getRoutes(res.locals)
     const WrappedApp = routeComponent(App, false, res.locals)
+    console.log('WrappedApp', WrappedApp)
 
     const [pathname] = req.originalUrl.split('?')
 
@@ -157,8 +159,9 @@ export const render = async (req, res, next) => {
     res.__performanceTimer.mark(PERFORMANCE_MARKS.routeMatching, 'end')
 
     // Step 2 - Get the component
-    res.__performanceTimer.mark(PERFORMANCE_MARKS.loadComponent, 'start')
-    const component = await route.component.getComponent()
+    // res.__performanceTimer.mark(PERFORMANCE_MARKS.loadComponent, 'start')
+    // const component = await route.component.getComponent()
+    // console.log('component', component)
     res.__performanceTimer.mark(PERFORMANCE_MARKS.loadComponent, 'end')
 
     // Step 3 - Init the app state
@@ -176,35 +179,36 @@ export const render = async (req, res, next) => {
 
     let appState, appStateError
 
-    if (component === Throw404) {
-        appState = {}
-        appStateError = new errors.HTTPNotFound('Not found')
-    } else {
-        res.__performanceTimer.mark(PERFORMANCE_MARKS.fetchStrategies, 'start')
-        const ret = await AppConfig.initAppState({
-            App: WrappedApp,
-            component,
-            match,
-            route,
-            req,
-            res,
-            location,
-            appJSX
-        })
-        appState = {
-            ...ret.appState,
-            __STATE_MANAGEMENT_LIBRARY: AppConfig.freeze(res.locals)
-        }
-        appStateError = ret.error
-        res.__performanceTimer.mark(PERFORMANCE_MARKS.fetchStrategies, 'end')
+    // if (component === Throw404) {
+    //     console.log('Throw 404+++++++++++++++')
+    //     appState = {}
+    //     appStateError = new errors.HTTPNotFound('Not found')
+    // } else {
+    //     res.__performanceTimer.mark(PERFORMANCE_MARKS.fetchStrategies, 'start')
+    //     const ret = await AppConfig.initAppState({
+    //         App: WrappedApp,
+    //         component,
+    //         match,
+    //         route,
+    //         req,
+    //         res,
+    //         location,
+    //         appJSX
+    //     })
+    appState = {
+        // ...ret.appState,
+        __STATE_MANAGEMENT_LIBRARY: AppConfig.freeze(res.locals)
     }
+    // appStateError = ret.error
+    res.__performanceTimer.mark(PERFORMANCE_MARKS.fetchStrategies, 'end')
+    // }
     res.__performanceTimer.mark(PERFORMANCE_MARKS.renderToString, 'start')
     appJSX = React.cloneElement(appJSX, {error: appStateError, appState})
 
     // Step 4 - Render the App
     let renderResult
     try {
-        renderResult = renderApp({
+        renderResult = await renderApp({
             App: WrappedApp,
             appState,
             appStateError: appStateError && logAndFormatError(appStateError),
@@ -213,7 +217,8 @@ export const render = async (req, res, next) => {
             res,
             location,
             config,
-            appJSX
+            appJSX,
+            AppConfig
         })
     } catch (e) {
         // This is an unrecoverable error.
@@ -255,7 +260,9 @@ const OuterApp = ({req, res, error, App, appState, routes, routerContext, locati
                     resetOnPageChange={false}
                 >
                     <AppConfig locals={res.locals}>
-                        <Switch error={error} appState={appState} routes={routes} App={App} />
+                        <Suspense fallback={<div>loading</div>}>
+                            <Switch error={error} appState={appState} routes={routes} App={App} />
+                        </Suspense>
                     </AppConfig>
                 </CorrelationIdProvider>
             </Router>
@@ -274,36 +281,37 @@ OuterApp.propTypes = {
     location: PropTypes.object
 }
 
-const renderToString = (jsx, extractor) =>
-    ReactDOMServer.renderToString(extractor.collectChunks(jsx))
+const renderToString = async (jsx, extractor) => {
+    // return ReactDOMServer.renderToString(extractor.collectChunks(jsx))
+}
 
-const renderApp = (args) => {
-    const {req, res, appStateError, appJSX, appState, config} = args
+const renderApp = async (args) => {
+    const {req, res, appStateError, appJSX, appState, config, AppConfig} = args
     const extractor = new ChunkExtractor({statsFile: BUNDLES_PATH, publicPath: getAssetUrl()})
 
     const ssrOnly = 'mobify_server_only' in req.query || '__server_only' in req.query
     const prettyPrint = 'mobify_pretty' in req.query || '__pretty_print' in req.query
     const indent = prettyPrint ? 8 : 0
 
-    let routerContext
-    let appHtml
-    let renderError
+    // let routerContext
+    // let appHtml
+    // let renderError
     // It's important that we render the App before extracting the script elements,
     // otherwise it won't return the correct chunks.
 
-    try {
-        routerContext = {}
-        appHtml = renderToString(React.cloneElement(appJSX, {routerContext}), extractor)
-    } catch (e) {
-        // This will catch errors thrown from the app and pass the error
-        // to the AppErrorBoundary component, and renders the error page.
-        routerContext = {}
-        renderError = logAndFormatError(e)
-        appHtml = renderToString(
-            React.cloneElement(appJSX, {routerContext, error: renderError}),
-            extractor
-        )
-    }
+    // try {
+    //     routerContext = {}
+    //     appHtml = await renderToString(React.cloneElement(appJSX, {routerContext}), extractor)
+    // } catch (e) {
+    //     // This will catch errors thrown from the app and pass the error
+    //     // to the AppErrorBoundary component, and renders the error page.
+    //     routerContext = {}
+    //     renderError = logAndFormatError(e)
+    //     appHtml = await renderToString(
+    //         React.cloneElement(appJSX, {routerContext, error: renderError}),
+    //         extractor
+    //     )
+    // }
 
     // Setting type: 'application/json' stops the browser from executing the code.
     const scriptProps = ssrOnly ? {type: 'application/json'} : {}
@@ -322,31 +330,29 @@ const renderApp = (args) => {
     const helmet = Helmet.renderStatic()
 
     // Return the first error encountered during the rendering pipeline.
-    const error = appStateError || renderError
+    // const error = appStateError || renderError
     // Remove the stacktrace when executing remotely as to not leak any important
     // information to users about our system.
-    if (error && isRemote()) {
-        delete error.stack
-    }
+    // if (error && isRemote()) {
+    //     delete error.stack
+    // }
 
     // Do not include *dynamic*, executable inline scripts – these cause issues with
     // strict CSP headers that customers often want to use. Avoid inline scripts,
     // full-stop, whenever possible.
-
-    // Each key in `windowGlobals` is expected to be set on the window
-    // object, client-side, by code in ssr/browser/main.jsx.
-    //
-    // Do *not* add to these without a very good reason - globals are a liability.
     const windowGlobals = {
         __INITIAL_CORRELATION_ID__: res.locals.requestId,
         __CONFIG__: config,
         __PRELOADED_STATE__: appState,
-        __ERROR__: error,
+        // __ERROR__: error,
         // `window.Progressive` has a long history at Mobify and some
         // client-side code depends on it. Maintain its name out of tradition.
         Progressive: getWindowProgressive(req, res)
     }
-
+    // Each key in `windowGlobals` is expected to be set on the window
+    // object, client-side, by code in ssr/browser/main.jsx.
+    //
+    // Do *not* add to these without a very good reason - globals are a liability.
     const scripts = [
         <script
             id="mobify-data"
@@ -358,24 +364,67 @@ const renderApp = (args) => {
         />,
         ...bundles
     ]
-
     const svgs = [<div key="svg_sprite" dangerouslySetInnerHTML={{__html: sprite.stringify()}} />]
     const helmetHeadTags = VALID_TAG_NAMES.map(
         (tag) => helmet[tag] && helmet[tag].toComponent()
     ).filter((tag) => tag)
+    const wrappedJSX = extractor.collectChunks(appJSX)
 
-    const html = ReactDOMServer.renderToString(
-        <Document
-            head={[...helmetHeadTags]}
-            html={appHtml}
-            afterBodyStart={svgs}
-            beforeBodyEnd={scripts}
-            htmlAttributes={helmet.htmlAttributes.toComponent()}
-            bodyAttributes={helmet.bodyAttributes.toComponent()}
-        />
-    )
+    return new Promise((resolve, reject) => {
+        const stream = new PassThrough()
+        const chunks = []
 
-    return {error, html: ['<!doctype html>', html].join(''), routerContext}
+        const {pipe} = ReactDOMServer.renderToPipeableStream(
+            <Document
+                head={[...helmetHeadTags]}
+                html={wrappedJSX}
+                afterBodyStart={svgs}
+                beforeBodyEnd={scripts}
+                htmlAttributes={helmet.htmlAttributes.toComponent()}
+                bodyAttributes={helmet.bodyAttributes.toComponent()}
+            />,
+            {
+                onAllReady() {
+                    const {__REACT_QUERY_STATE__} = AppConfig?.dehydrate({res})
+                    if (__REACT_QUERY_STATE__) {
+                        stream.write(
+                            `<script>window.__REACT_QUERY_STATE__ = ${JSON.stringify(
+                                __REACT_QUERY_STATE__
+                            )}</script>`
+                        )
+                    }
+
+                    pipe(stream)
+                },
+                onError(err) {
+                    console.error('SSR stream error:', err)
+                    reject(err)
+                },
+                onShellError(err) {
+                    console.error('Shell render failed:', err)
+                    reject(err)
+                }
+            }
+        )
+
+        stream.on('data', (chunk) => {
+            chunks.push(chunk)
+        })
+        stream.on('end', () => {
+            const html = Buffer.concat(chunks).toString('utf-8')
+            console.log('html', html)
+            resolve({
+                error: appStateError || null,
+                html: html,
+                routerContext: {} // Adjust if you reintroduce routerContext logic
+            })
+        })
+
+        stream.on('error', (err) => {
+            console.error('Stream failure:', err)
+            reject(err)
+        })
+    })
 }
 
 const getWindowProgressive = (req, res) => {

@@ -56,7 +56,7 @@ const Document = (props) => {
                 {afterBodyStart.map((child, i) => (
                     <React.Fragment key={i}>{child}</React.Fragment>
                 ))}
-                <div className="react-target" dangerouslySetInnerHTML={{__html: html}} />
+                <div className="react-target">{html}</div>
                 {beforeBodyEnd.map((child, i) => (
                     <React.Fragment key={i}>{child}</React.Fragment>
                 ))}

@@ -1,5 +1,3 @@
-'use client'
-
 /*
  * Copyright (c) 2023, Salesforce, Inc.
  * All rights reserved.
@@ -7,12 +5,38 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React, {useEffect, useState} from 'react'
-
+import {useQuery, useSuspenseQuery} from '@tanstack/react-query'
+import {useRegisteredQuery} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/with-react-query'
 import HelloTS from '../components/hello-typescript'
 import HelloJS from '../components/hello-javascript'
+
 interface Props {
     value: number
-    data: unknown
+}
+
+// Properly typed API response
+interface User {
+    id: number
+    name: string
+    username: string
+    email: string
+    phone: string
+    website: string
+    company: {
+        name: string
+        catchPhrase: string
+        bs: string
+    }
+    address: {
+        street: string
+        suite: string
+        city: string
+        zipcode: string
+        geo: {
+            lat: string
+            lng: string
+        }
+    }
 }
 
 const style = `
@@ -80,11 +104,51 @@ h1 {
     margin-left: 5em;
     margin-right: 3em;
 }
+.user-info {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 12px 0;
+    backdrop-filter: blur(5px);
+}
+.user-info h3 {
+    margin: 0 0 8px 0;
+    color: #fff;
+}
+.user-details {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 12px;
+}
+.user-details .label {
+    font-weight: bold;
+    color: #fff;
+}
+.user-details .value {
+    color: #fff;
+}
 `
 
-const Home = ({value, data}: Props) => {
+// API fetch function separated for better code organization
+const fetchUserData = async (id: number): Promise<User> => {
+    console.log('id', id)
+    const response = await fetch('https://jsonplaceholder.typicode.com/users/' + id)
+
+    if (!response.ok) {
+        throw new Error(`API error: ${response.status} ${response.statusText}`)
+    }
+
+    return response.json()
+}
+
+const Home = ({value}: Props) => {
     const [counter, setCounter] = useState(0)
-    console.log('data', data)
+
+    const {data: user} = useSuspenseQuery<User>({
+        queryKey: ['user-profile'],
+        queryFn: () => fetchUserData(1)
+    })
+
     // useEffect(() => {
     //     const interval = setInterval(() => {
     //         setCounter(counter + 1)
@@ -92,9 +156,86 @@ const Home = ({value, data}: Props) => {
     //     return () => clearInterval(interval)
     // }, [counter, setCounter])
 
-    return <div>Home page</div>
+    //
+    // const {data: user1} = useRegisteredQuery<User>({
+    //     queryKey: ['user-profile-1'],
+    //     queryFn: () => fetchUserData(2)
+    // })
+    // console.log('user', user)
+    // console.log('user1', user1)
+
+    return (
+        <div>
+            <div className="loading-screen">
+                <div>
+                    <a href="/about">About page</a>
+                    <a href="/query-example" style={{marginLeft: '10px'}}>
+                        Query Example
+                    </a>
+                </div>
+                <div className="panel title">
+                    <h1>
+                        Typescript
+                        <br />
+                        Support!
+                    </h1>
+                </div>
+
+                {/*{user1 && (*/}
+                {/*    <pre>*/}
+                {/*        <div className="user-info">{JSON.stringify(user1, null, 2)}</div>*/}
+                {/*    </pre>*/}
+                {/*)}*/}
+
+                {user && (
+                    <pre>
+                        <div className="user-info">{JSON.stringify(user, null, 2)}</div>
+                    </pre>
+                )}
+
+                <button onClick={() => setCounter(counter + 1)}>Increase counter</button>
+
+                <div className="panel">
+                    <div className="divider"></div>
+                </div>
+                <div className="panel">
+                    <p style={{width: '300px'}} className="fade-in fade-in-0">
+                        <>
+                            Server-side getProps works if this is a valid expression: &quot;5 times
+                            7 is {value}
+                            &quot;
+                            <br />
+                            <br />
+                            Client-side JS works if this counter increments: {counter}
+                            <br />
+                            <br />
+                            <b>You can mix-and-match JS and TS</b>
+                            <br />
+                            <br />
+                            <HelloJS />
+                            &nbsp;
+                            <HelloTS message="it works!" />
+                        </>
+                    </p>
+                </div>
+            </div>
+        </div>
+    )
 }
 
 Home.getTemplateName = () => 'home'
+
+// Home.getProps = async () => {
+//     // Note: This is simply a mock function to demo deferred execution for fetching props (e.g.: Making a call to the server to fetch data)
+//     const getData = (a: number, b: number) => {
+//         return new Promise((resolve) => {
+//             setTimeout(() => {
+//                 resolve(a * b)
+//             }, 1000)
+//         })
+//     }
+//     const value = await getData(5, 7)
+//     return {value}
+// }
 
 export default Home

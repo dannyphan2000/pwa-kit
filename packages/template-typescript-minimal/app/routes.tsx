@@ -8,7 +8,6 @@ import loadable, {LoadableComponent} from '@loadable/component'
 
 const Home = loadable(() => import('./pages/home'))
 const About = loadable(() => import('./pages/about'))
-const ServerCompPage = loadable(() => import('./pages/server-demo'))
 
 const routes = [
     {
@@ -17,6 +16,13 @@ const routes = [
         // Type assertion because otherwise we encounter this error:
         // Exported variable 'routes' has or is using name 'Props' from external module "./app/pages/home" but cannot be named.
         component: Home as LoadableComponent<unknown>
+    },
+    {
+        path: '/about',
+        exact: true,
+        // Type assertion because otherwise we encounter this error:
+        // Exported variable 'routes' has or is using name 'Props' from external module "./app/pages/home" but cannot be named.
+        component: About as LoadableComponent<unknown>
     }
 ]
 

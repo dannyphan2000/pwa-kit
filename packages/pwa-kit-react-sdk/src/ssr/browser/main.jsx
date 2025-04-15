@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /* global __webpack_require__ */
-import React, {useRef} from 'react'
+import React, {Suspense, useRef} from 'react'
 import {hydrateRoot} from 'react-dom/client'
 import {BrowserRouter as Router} from 'react-router-dom'
 import {ServerContext, CorrelationIdProvider} from '../universal/contexts'
@@ -44,7 +44,6 @@ export const registerServiceWorker = (url) => {
 export const OuterApp = ({routes, error, WrappedApp, locals, onHydrate}) => {
     const AppConfig = getAppConfig()
     const isInitialPageRef = useRef(true)
-
     return (
         <ServerContext.Provider value={{}}>
             <Router ref={onHydrate}>
@@ -59,12 +58,14 @@ export const OuterApp = ({routes, error, WrappedApp, locals, onHydrate}) => {
                     }}
                 >
                     <AppConfig locals={locals}>
-                        <Switch
-                            error={error}
-                            appState={window.__PRELOADED_STATE__}
-                            routes={routes}
-                            App={WrappedApp}
-                        />
+                        <Suspense fallback={null}>
+                            <Switch
+                                error={error}
+                                appState={window.__PRELOADED_STATE__}
+                                routes={routes}
+                                App={WrappedApp}
+                            />
+                        </Suspense>
                     </AppConfig>
                 </CorrelationIdProvider>
             </Router>
