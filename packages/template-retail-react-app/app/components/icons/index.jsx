@@ -59,6 +59,7 @@ import '@salesforce/retail-react-app/app/assets/svg/visibility-off.svg'
 import '@salesforce/retail-react-app/app/assets/svg/heart.svg'
 import '@salesforce/retail-react-app/app/assets/svg/heart-solid.svg'
 import '@salesforce/retail-react-app/app/assets/svg/close.svg'
+import '@salesforce/retail-react-app/app/assets/svg/sparkle.svg'
 
 // For non-square SVGs, we can use the symbol data from the import to set the
 // proper viewBox attribute on the Icon wrapper.
@@ -170,6 +171,7 @@ export const GoogleIcon = icon('google')
 export const HamburgerIcon = icon('hamburger')
 export const HeartIcon = icon('heart')
 export const HeartSolidIcon = icon('heart-solid')
+export const SparkleIcon = icon('sparkle')
 export const InfoIcon = icon('info')
 export const LikeIcon = icon('like')
 export const LockIcon = icon(

@@ -161,7 +161,7 @@ const Search = (props) => {
 
 
     const launchChat = (searchText) => {
-
+        console.time("chatInitDuration")
         // TODO: figure out what values these should be and how to test them in Core org
         // embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({
         //     Hidden1: "value one",
@@ -178,8 +178,18 @@ const Search = (props) => {
             }).finally(() => {
                 console.log("launchChat finally")
             });
+        let hasFired = false
+        window.addEventListener("onEmbeddedMessagingConversationParticipantChanged", () => {
+            if (!hasFired) {
+                hasFired = true
+                console.timeEnd("chatInitDuration")
+                handleEmbeddedMessagingInitSuccess(searchText)
+            }
+        });
 
-        window.addEventListener("onEmbeddedMessagingInitSuccess", () => handleEmbeddedMessagingInitSuccess(searchText));
+        // TODO: windows event listeners that we might need to handle for
+        // - onEmbeddedMessagingWindowMinimized // chat window minimized
+        // - onEmbeddedMessagingConversationParticipantChanged // agent joins
     }
 
 
@@ -189,6 +199,7 @@ const Search = (props) => {
 
 
     const onSubmitSearch = (e) => {
+        console.time("onSubmitSearch")
         e.preventDefault()
         // Avoid blank spaces to be searched
         let searchText = searchInputRef.current.value.trim()

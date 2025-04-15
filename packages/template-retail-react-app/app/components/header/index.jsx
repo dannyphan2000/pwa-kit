@@ -42,7 +42,8 @@ import {
     ChevronDownIcon,
     HeartIcon,
     SignoutIcon,
-    StoreIcon
+    StoreIcon,
+    SparkleIcon
 } from '@salesforce/retail-react-app/app/components/icons'
 
 import {navLinks, messages} from '@salesforce/retail-react-app/app/pages/account/constant'
@@ -189,6 +190,22 @@ const Header = ({
                     <HideOnMobile>
                         <SearchBar />
                     </HideOnMobile>
+                    <IconButton
+                        aria-label={intl.formatMessage(
+                            {
+                                id: 'header.button.assistive_msg.shopping_assistant',
+                                defaultMessage: 'Shopping Assistant'
+                            }
+                        )}
+                        icon={
+                            <SparkleIcon />
+                        }
+                        variant="unstyled"
+                        {...styles.icons}
+                        onClick={() => {
+                            embeddedservice_bootstrap.utilAPI.launchChat()
+                        }}
+                    />
                     <IconButtonWithRegistration
                         icon={<AccountIcon />}
                         aria-label={intl.formatMessage({
