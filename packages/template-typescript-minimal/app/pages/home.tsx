@@ -149,6 +149,16 @@ const Home = ({value}: Props) => {
         queryFn: () => fetchUserData(1)
     })
 
+    const query = useSuspenseQuery({
+        queryKey: ['example-data'],
+        queryFn: () =>
+            new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve('This came from react-query')
+                }, 1000)
+            })
+    })
+
     // useEffect(() => {
     //     const interval = setInterval(() => {
     //         setCounter(counter + 1)
@@ -193,6 +203,7 @@ const Home = ({value}: Props) => {
                     </pre>
                 )}
 
+                {query && <pre>{query.data}</pre>}
                 <button onClick={() => setCounter(counter + 1)}>Increase counter</button>
 
                 <div className="panel">
