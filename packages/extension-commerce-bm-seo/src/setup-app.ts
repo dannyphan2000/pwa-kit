@@ -102,11 +102,15 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
 
         const requestURL = new URL(locals.originalUrl, getAppOrigin(locals))
         const componentName =
-            config.resourceTypeToComponentMap[urlMapping.resourceType as keyof typeof config.resourceTypeToComponentMap]
-        
-        // Create a placeholder component since the component is defined in another extension.  
+            config.resourceTypeToComponentMap[
+                urlMapping.resourceType as keyof typeof config.resourceTypeToComponentMap
+            ]
+
+        // Create a placeholder component since the component is defined in another extension.
         // Deserialization will be handled in beforeRouteMatch, where all routes from other extensions are accessible.
-        const component = Object.assign(() => null, {displayName: `${this.getName()}.${componentName}`})
+        const component = Object.assign(() => null, {
+            displayName: `${this.getName()}.${componentName}`
+        })
 
         return Promise.resolve([
             {
@@ -123,30 +127,30 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      * is configured with, including those defined in the base application and those added by all the extensions. You can use this
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
-    beforeRouteMatch({ allRoutes, locals }: BeforeRouteMatchParams): RouteProps[] {
+    beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
         const routes = [...allRoutes]
-        const index = routes.findIndex(
-            (route) => route.component?.displayName?.includes(this.getName())
+        const index = routes.findIndex((route) =>
+            route.component?.displayName?.includes(this.getName())
         )
-    
+
         if (index === -1) return routes
-    
+
         // Extract and remove the matched route
         const [route] = routes.splice(index, 1)
-        const componentName = route.component.displayName.split(".").pop()
-    
+        const componentName = route.component?.displayName?.split('.').pop()
+
         if (!componentName) return routes
-    
+
         const component = routes.find((_route) =>
             _route.component?.displayName?.includes(componentName)
         )?.component
-    
+
         if (!component) {
             throw new Error(`Could not find component with displayName "${componentName}"`)
         }
-    
+
         route.component = routeComponent(component, true, locals)
-    
+
         return [route, ...routes]
     }
 
@@ -156,9 +160,11 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         // and the values are placeholder components with the displayName.
         const {resourceTypeToComponentMap} = this.getConfig()
         return Object.values(resourceTypeToComponentMap).reduce((acc: ComponentMap, name) => {
-            acc[`${this.getName()}.${name}`] = Object.assign(() => null, {displayName: `${this.getName()}.${name}`})
+            acc[`${this.getName()}.${name}`] = Object.assign(() => null, {
+                displayName: `${this.getName()}.${name}`
+            })
             return acc
-        }, {} as Record<string, string>)
+        }, {} as ComponentMap)
     }
 }
 
