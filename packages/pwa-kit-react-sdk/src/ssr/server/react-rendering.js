@@ -152,11 +152,14 @@ export const render = async (req, res, next) => {
 
     // Some application extensions need to be serialized because they have asynchronous state
     const serializedExtensions = Object.fromEntries(
-        applicationExtensions
-            .map((extension) => [extension.getName(), {routes: extension.serializeAsyncRoutes()}])
-            .filter(([, value]) => value.routes)
+        applicationExtensions.flatMap((extension) => {
+            if (typeof extension.getRoutesAsync !== 'function') return []
+            const routes = extension.serializeAsyncRoutes()
+            // TODO W-18257236: Use a unique key for each extension like the extension ID from
+            // extension-meta.json
+            return [[extension.getName(), {routes}]]
+        })
     )
-    console.log('--- serialized extensions in react-rendering', serializedExtensions)
 
     // Step 1 - Find the match.
 

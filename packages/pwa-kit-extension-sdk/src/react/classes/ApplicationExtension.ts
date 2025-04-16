@@ -7,7 +7,7 @@
 
 // Local
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
-import {cacheMethodResult, isServerSide} from '../utils/helpers'
+import {cacheMethodResult, isServerSide, NOT_CACHED} from '../utils/helpers'
 
 // Types
 import {RouteProps} from 'react-router-dom'
@@ -33,14 +33,14 @@ export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 export class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
-    protected _cachedRoutes: RouteProps[] | null = null
+    protected _cachedRoutes: RouteProps[] | typeof NOT_CACHED = NOT_CACHED
 
     constructor(config: Config) {
         super(config)
 
         if (!isServerSide()) {
             // Deserialize the routes on the client to ensure the latest routes are loaded on the client
-            this._cachedRoutes = this.deserializeAsyncRoutes() || null
+            this._cachedRoutes = this.deserializeAsyncRoutes()
         }
 
         cacheMethodResult(this, 'getRoutesAsync', '_cachedRoutes')
@@ -102,10 +102,10 @@ export class ApplicationExtension<
      * @returns null if there's no asynchronous state that needs to be serialized
      * @throws Error if the routes have not been loaded.
      */
-    public serializeAsyncRoutes(): SerializedRouteProps[] | null {
-        if (typeof this.getRoutesAsync === 'undefined') return null
+    public serializeAsyncRoutes(): SerializedRouteProps[] {
+        if (typeof this.getRoutesAsync === 'undefined') return []
 
-        if (this._cachedRoutes === null) {
+        if (this._cachedRoutes === NOT_CACHED) {
             throw new Error(`Routes have not been loaded. Call getRoutesAsync() before serializing`)
         }
 
@@ -131,7 +131,6 @@ export class ApplicationExtension<
                 componentName: route.component.displayName
             }
         })
-
         return serializedRoutes
     }
 
@@ -155,9 +154,9 @@ export class ApplicationExtension<
      * @throws Error if getComponentMap() is not defined.
      * @throws Error if the deserialized component cannot be found in the component map.
      */
-    private deserializeAsyncRoutes(): RouteProps[] | null {
+    private deserializeAsyncRoutes(): RouteProps[] {
         if (isServerSide() || typeof this.getRoutesAsync === 'undefined') {
-            return null
+            return []
         }
 
         if (!this.getComponentMap) {
@@ -168,9 +167,6 @@ export class ApplicationExtension<
 
         const componentMap = this.getComponentMap()
         const serializedExtension = window.__EXTENSIONS__[this.getName()]
-
-        console.log('JINSU deserializeAsyncRoutes:', serializedExtension)
-
         const routes = serializedExtension.routes.map(({componentName, ...route}) => {
             if (!componentName) {
                 throw new Error(

@@ -22,7 +22,6 @@ const monorepoPackages = JSON.parse(sh.exec('lerna list --all --json', {silent: 
 const monorepoPackageNames = monorepoPackages.map((pkg) => pkg.name)
 
 const INDEPENDENT_PACKAGES = [
-    '@salesforce/retail-react-app',
     '@salesforce/commerce-sdk-react',
     '@salesforce/extension-chakra-storefront',
     '@salesforce/extension-chakra-store-locator',

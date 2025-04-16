@@ -62,7 +62,10 @@ class ChakraStorefront extends ApplicationExtension<Config> {
                 exact: true
             },
             {
-                path: config.pages.Login && config.pages.Login.path,
+                path: [
+                    config.pages.Login && config.pages.Login.path,
+                    config.login.passwordless.enabled && config.login.passwordless.landingPath
+                ].filter(Boolean),
                 component: Pages.Login,
                 exact: true
             },
@@ -72,7 +75,10 @@ class ChakraStorefront extends ApplicationExtension<Config> {
                 exact: true
             },
             {
-                path: config.pages.ResetPassword && config.pages.ResetPassword.path,
+                path: [
+                    config.pages.ResetPassword && config.pages.ResetPassword.path,
+                    config.login.resetPassword && config.login.resetPassword.landingPath
+                ].filter(Boolean),
                 component: Pages.ResetPassword,
                 exact: true
             },
@@ -92,6 +98,11 @@ class ChakraStorefront extends ApplicationExtension<Config> {
             {
                 path: config.pages.LoginRedirect && config.pages.LoginRedirect.path,
                 component: Pages.LoginRedirect,
+                exact: true
+            },
+            {
+                path: config.login.social.enabled && config.login.social.redirectURI,
+                component: Pages.SocialLoginRedirect,
                 exact: true
             },
             {
