@@ -33,7 +33,17 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const SeoHOC: React.FC<P> = (props: SeoHOCProps) => {
         const location = useLocation()
         const {routes, setRoutes} = useRoutes()
-        console.log('(YUNA)', routes)
+
+        // If `location.pathname` matches a predefined route, the application should skip the `getUrlMapping` API call
+        // The following is a configuration that toggles whether to trust the predefined route config or always fallback to the `getUrlMapping`API
+        // `usePredefinedRoutes == true`: use routes from `routes.jsx`, skip if route is found
+        // `usePredefinedRoutes == false`: always call `getUrlMapping`
+        const usePredefinedRoutes = true
+        const skipMappingCall = usePredefinedRoutes && isRouteDefined(location.pathname, routes)
+        if (skipMappingCall) {
+            return <WrappedComponent {...(props as P)} />
+        }
+        
         const [urlSegment, setUrlSegment] = useState(removeLocalePrefix(location.pathname))
         const resolveRef = useRef<(result?: object) => void>()
 
