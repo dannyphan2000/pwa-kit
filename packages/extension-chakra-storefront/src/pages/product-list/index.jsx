@@ -143,7 +143,7 @@ const ProductList = (props) => {
     const {mutateAsync: deleteCustomerProductListItem} = useShopperCustomersMutation(
         'deleteCustomerProductListItem'
     )
-
+    console.log("(JEREMY) rendering product list page")
     /**************** Query Actions ****************/
     // _refine is an invalid param for useProductSearch, we don't want to pass it to API call
     const {_refine, ...restOfParams} = searchParams

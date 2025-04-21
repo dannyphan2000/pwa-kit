@@ -7,8 +7,11 @@
 
 // Third-Party
 import React from 'react'
-import {RouteProps} from 'react-router-dom'
-
+// import {RouteProps} from 'react-router-dom'
+import {
+    RouteProps,
+    BeforeRouteMatchParams
+} from '@salesforce/pwa-kit-extension-sdk/types'
 // Platform Imports
 import {
     ApplicationExtension,
@@ -20,6 +23,7 @@ import {withOptionalCommerceSdkReactProvider} from './components/with-optional-c
 import {Config} from './types'
 import {SliceInitializer} from '@salesforce/pwa-kit-extension-sdk/react'
 import SamplePage from './pages/sample'
+
 
 // Overridable Imports
 // Using the `overridable` loader means that you are opting in to the override module resolution flow. As a result this module
@@ -95,7 +99,7 @@ class Sample extends ApplicationExtension<Config> {
      * is configured with, including those defined in the base application and those added by all the extensions. You can use this
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
-    beforeRouteMatch(allRoutes: RouteProps[]): RouteProps[] {
+    beforeRouteMatch({allRoutes}: BeforeRouteMatchParams): RouteProps[] {
         return allRoutes
     }
 }

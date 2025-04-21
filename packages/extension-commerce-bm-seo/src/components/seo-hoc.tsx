@@ -5,9 +5,9 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React, {useState, useEffect, useRef} from 'react'
-import {useBlockNavigation} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
+import {useBlockNavigation, useRoutes} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useUrlMapping} from '@salesforce/commerce-sdk-react'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation,  Redirect } from 'react-router-dom'
 import {
     useApplicationExtensionsStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
@@ -22,12 +22,11 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
 
     const SeoHOC: React.FC<P> = (props: SeoHOCProps) => {
         const location = useLocation()
-        // whenever theres a link change this initial state seems to get set again
+        const {routes, setRoutes} = useRoutes()
         const [urlSegment, setUrlSegment] = useState(removeLocalePrefix(location.pathname))
-        const resolveRef = useRef<(result?: string) => void>()
-        console.log("(JEREMY) urlSegment state: ", urlSegment)
+        const resolveRef = useRef<(result?: object) => void>()
 
-        const {data: urlMappingResult, isLoading, refetch, isFetching, status, isSuccess} = useUrlMapping(
+        const {refetch} = useUrlMapping(
             {
                 parameters: {
                     urlSegment: urlSegment,
@@ -36,8 +35,8 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                 }
             },
             {
-                cacheTime: 0,  // Prevents caching (removes from cache immediately)
-                staleTime: 0,  // Forces refetch every time
+                cacheTime: 0,
+                staleTime: 0,
                 enabled: false
             }
         )
@@ -47,25 +46,73 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                 if (urlSegment) {
                     const result = await refetch()
                     if (resolveRef.current) {
-                        if (result.data?.destinationUrl) {
-                            resolveRef.current("/global/en-GB" + result.data.destinationUrl)
-                        } else {
+                        if (result.status === 'error') {
                             resolveRef.current(undefined)
+                        } else {
+                            if (result.data?.destinationUrl) {
+                                // TODO: don't hardcode /global/en-GB
+                                resolveRef.current({
+                                    destinationPath: "/global/en-GB" + result.data.destinationUrl,
+                                    destinationUrl: result.data.destinationUrl,
+                                    resourceType: result.data.resourceType
+                                })
+                            } else {
+                                resolveRef.current(undefined)
+                            }
                         }
-                        resolveRef.current = undefined
                     }
+
                 }
             }
             fetchData()
         }, [urlSegment])
 
-        const {isBlocked: isNavigationBlocked} = useBlockNavigation((location, action, signal) => {
-            return new Promise<string | undefined>((resolve, reject) => {
+        const {isBlocked: isNavigationBlocked} = useBlockNavigation(async (location, action) => {
+            const urlMappingResponse = await new Promise<object | undefined>((resolve, reject) => {
                 const nextSegment = removeLocalePrefix(location.pathname)
                 // So that this promise can be resolved and navigation is unblocked outside this function
                 resolveRef.current = resolve
                 setUrlSegment(nextSegment)
             })
+            console.log("(JEREMY) urlMappingResponse: ", urlMappingResponse)
+            // If no redirect rule exists, go to original url
+            if (urlMappingResponse === undefined) {
+                return location
+            }
+            let Component
+            let props
+            // If the Redirect type is URL do a Redirect, else load matching component
+            if (!urlMappingResponse.resourceType) {
+                Component = Redirect
+                console.log("(JEREMY) AAA Redirecting to ", urlMappingResponse.destinationUrl)
+                props = {
+                    to: urlMappingResponse.destinationUrl
+                }
+
+            } else {
+                console.log("(JEREMY) over here")
+                // const resourceableComponents = {
+                //     category: ProductList,
+                //     product: ProductDetail
+                // }
+                // // See how to get ProductList, ProductDetail. 
+                // Component = resourceableComponents[urlMappingResponse.resourceType]
+                // props = {
+                //     [`${urlMappingResponse.resourceType}Id`]: urlMappingResponse.resourceId
+                // }
+            }
+            console.log("(JERMEY) location.pathname: ", location.pathname)
+            setRoutes([
+                {
+                    path: location.pathname,
+                    component: () => <Component {...props} onRedirect={() => {
+                        console.log("(JEREMY) Redirecting......")
+                    }}/>
+                },
+                ...routes
+            ])
+            // console.log("(JEREMY) redirectObject: ", redirectObject)
+            return location.pathname
         })
 
         const setIsNavigationBlocked = useApplicationExtensionsStore((state) => {
