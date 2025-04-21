@@ -7,7 +7,7 @@
 import React, {useState, useEffect, useRef} from 'react'
 import {useBlockNavigation, useRoutes} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useUrlMapping} from '@salesforce/commerce-sdk-react'
-import { useLocation,  Redirect } from 'react-router-dom'
+import { useLocation,  Redirect , matchPath} from 'react-router-dom'
 import {
     useApplicationExtensionsStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
@@ -18,11 +18,22 @@ const removeLocalePrefix = (url: string): string => {
     return url.replace(/^\/global\/[a-z]{2}-[A-Z]{2}/, '')
 }
 
+const isRouteDefined = (routeToMatch: string, routes: Array<{path: string}>): boolean => {
+    const isMatch = routes.some(({path}) => {
+        return matchPath(routeToMatch, {
+            path,
+            exact: true
+        }) !== null
+    })
+    return isMatch
+}
+
 const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
 
     const SeoHOC: React.FC<P> = (props: SeoHOCProps) => {
         const location = useLocation()
         const {routes, setRoutes} = useRoutes()
+        console.log('(YUNA)', routes)
         const [urlSegment, setUrlSegment] = useState(removeLocalePrefix(location.pathname))
         const resolveRef = useRef<(result?: object) => void>()
 
