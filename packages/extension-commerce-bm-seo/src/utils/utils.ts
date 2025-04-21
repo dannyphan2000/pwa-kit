@@ -40,7 +40,8 @@ export const getShopperSeoClient = async (locals: Record<string, any>, config: C
 
     return new ShopperSeo({
         ...clientConfig,
-        headers: {authorization: `Bearer ${access_token}`}
+        headers: {authorization: `Bearer ${access_token}`},
+        throwOnBadResponse: true
     })
 }
 

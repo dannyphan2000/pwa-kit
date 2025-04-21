@@ -7,7 +7,7 @@
 
 // Third-Party
 import React from 'react'
-import {RouteProps} from 'react-router-dom'
+import {Redirect, RouteProps} from 'react-router-dom'
 
 // Platform Imports
 import {
@@ -22,6 +22,7 @@ import {
     BeforeRouteMatchParams
 } from '@salesforce/pwa-kit-extension-sdk/types'
 import {routeComponent} from '@salesforce/pwa-kit-react-sdk/ssr/universal/components/route-component'
+import hoistNonReactStatics from 'hoist-non-react-statics'
 
 // Local Imports
 import {Config} from './types'
@@ -84,6 +85,8 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
     async getRoutesAsync({locals}: GetRoutesParams): Promise<RouteProps[]> {
+        let urlMapping, component
+
         // TODO: do we need this?
         if (!locals.originalUrl) {
             return Promise.resolve([])
@@ -92,25 +95,42 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         // Make SEO GET Url Mapping API call
         const config = this.getConfig()
         const shopperSeo = await getShopperSeoClient(locals, config)
-        const urlMapping = await shopperSeo.getUrlMapping({
-            parameters: {urlSegment: locals.originalUrl}
-        })
-
-        if (!urlMapping.resourceType) {
-            return Promise.resolve([])
+        try {
+            urlMapping = await shopperSeo.getUrlMapping({
+                parameters: {urlSegment: locals.originalUrl}
+            })
+        } catch (e) {
+            console.error(`Couldn't find mapping for given segement: ${locals.originalUrl}`)
         }
 
         const requestURL = new URL(locals.originalUrl, getAppOrigin(locals))
-        const componentName =
-            config.resourceTypeToComponentMap[
-                urlMapping.resourceType as keyof typeof config.resourceTypeToComponentMap
-            ]
 
-        // Create a placeholder component since the component is defined in another extension.
-        // Deserialization will be handled in beforeRouteMatch, where all routes from other extensions are accessible.
-        const component = Object.assign(() => null, {
-            displayName: `${this.getName()}.${componentName}`
-        })
+        if (!urlMapping) {
+            return Promise.resolve([])
+        }
+
+        const isRedirect = !urlMapping.resourceType
+        if (isRedirect) {
+            const props = {to: urlMapping.destinationUrl}
+            console.log('getRoutesAsync urlMapping', urlMapping, 'props', props)
+            component = () => <Redirect {...props} />
+            component.displayName = 'Redirect'
+        }
+        // } else {
+        //     const componentName =
+        //         config.resourceTypeToComponentMap[
+        //             urlMapping.resourceType as keyof typeof config.resourceTypeToComponentMap
+        //         ]
+
+        //     // Create a placeholder component since the component is defined in another extension.
+        //     // Deserialization will be handled in beforeRouteMatch, where all routes from other extensions are accessible.
+        //     component = Object.assign(() => null, {
+        //         displayName: `${this.getName()}.${componentName}`,
+        //         props: {
+        //             [`${urlMapping.resourceType}Id`]: urlMapping.resourceId
+        //         }
+        //     })
+        // }
 
         return Promise.resolve([
             {
@@ -129,28 +149,32 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      */
     beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
         const routes = [...allRoutes]
-        const index = routes.findIndex((route) =>
-            route.component?.displayName?.includes(this.getName())
-        )
+        // const index = routes.findIndex((route) =>
+        //     route.component?.displayName?.includes(this.getName())
+        // )
 
-        if (index === -1) return routes
+        // if (index === -1) return routes
 
-        // Extract and remove the matched route
-        const [route] = routes.splice(index, 1)
-        const componentName = route.component?.displayName?.split('.').pop()
+        // // Extract and remove the matched route
+        // const [route] = routes.splice(index, 1)
+        // const componentName = route.component?.displayName?.split('.').pop()
 
-        if (!componentName) return routes
+        // if (!componentName) return routes
 
-        const component = routes.find((_route) =>
-            _route.component?.displayName?.includes(componentName)
-        )?.component
+        // const ComponentClass = routes.find((_route) =>
+        //     _route.component?.displayName?.includes(componentName)
+        // )?.component
 
-        if (!component) {
-            throw new Error(`Could not find component with displayName "${componentName}"`)
-        }
+        // console.log(ComponentClass)
 
-        route.component = routeComponent(component, true, locals)
+        // if (!ComponentClass) {
+        //     throw new Error(`Could not find component with displayName "${componentName}"`)
+        // }
 
+        // if (route.component?.props) {
+        //     route.component = withPropsWrapper(ComponentClass, route.component.props)
+        // }
+        return routes
         return [route, ...routes]
     }
 
@@ -166,6 +190,17 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             return acc
         }, {} as ComponentMap)
     }
+}
+
+const withPropsWrapper: GenericHocType<any> = (WrappedComponent: React.ComponentType<C>, props) => {
+    const withPropsWrapper = (props: any) => <WrappedComponent {...props} />
+
+    // Set a display name for easier debugging in React DevTools
+    withPropsWrapper.displayName = `withPropsWrapper(${
+        WrappedComponent.displayName || WrappedComponent.name || 'Component'
+    })`
+
+    return hoistNonReactStatics(withPropsWrapper, WrappedComponent)
 }
 
 export default CommerceBmSeo
