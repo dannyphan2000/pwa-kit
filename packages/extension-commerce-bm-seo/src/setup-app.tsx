@@ -114,23 +114,23 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             const props = {to: urlMapping.destinationUrl}
             console.log('getRoutesAsync urlMapping', urlMapping, 'props', props)
             component = () => <Redirect {...props} />
+            // Needs a display name for serialization
             component.displayName = 'Redirect'
-        }
-        // } else {
-        //     const componentName =
-        //         config.resourceTypeToComponentMap[
-        //             urlMapping.resourceType as keyof typeof config.resourceTypeToComponentMap
-        //         ]
+        } else {
+            const componentName =
+                config.resourceTypeToComponentMap[
+                    urlMapping.resourceType as keyof typeof config.resourceTypeToComponentMap
+                ]
 
-        //     // Create a placeholder component since the component is defined in another extension.
-        //     // Deserialization will be handled in beforeRouteMatch, where all routes from other extensions are accessible.
-        //     component = Object.assign(() => null, {
-        //         displayName: `${this.getName()}.${componentName}`,
-        //         props: {
-        //             [`${urlMapping.resourceType}Id`]: urlMapping.resourceId
-        //         }
-        //     })
-        // }
+            // Create a placeholder component since the component is defined in another extension.
+            // Deserialization will be handled in beforeRouteMatch, where all routes from other extensions are accessible.
+            component = Object.assign(() => null, {
+                displayName: `${this.getName()}.${componentName}`,
+                props: {
+                    [`${urlMapping.resourceType}Id`]: urlMapping.resourceId
+                }
+            })
+        }
 
         return Promise.resolve([
             {
@@ -149,32 +149,31 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      */
     beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
         const routes = [...allRoutes]
-        // const index = routes.findIndex((route) =>
-        //     route.component?.displayName?.includes(this.getName())
-        // )
+        const index = routes.findIndex((route) =>
+            route.component?.displayName?.includes(this.getName())
+        )
 
-        // if (index === -1) return routes
+        if (index === -1) return routes
 
-        // // Extract and remove the matched route
-        // const [route] = routes.splice(index, 1)
-        // const componentName = route.component?.displayName?.split('.').pop()
+        // Extract and remove the matched route
+        const [route] = routes.splice(index, 1)
+        const componentName = route.component?.displayName?.split('.').pop()
 
-        // if (!componentName) return routes
+        if (!componentName) return routes
 
-        // const ComponentClass = routes.find((_route) =>
-        //     _route.component?.displayName?.includes(componentName)
-        // )?.component
+        const ComponentClass = routes.find((_route) =>
+            _route.component?.displayName?.includes(componentName)
+        )?.component
 
-        // console.log(ComponentClass)
+        console.log(ComponentClass)
 
-        // if (!ComponentClass) {
-        //     throw new Error(`Could not find component with displayName "${componentName}"`)
-        // }
-
-        // if (route.component?.props) {
-        //     route.component = withPropsWrapper(ComponentClass, route.component.props)
-        // }
-        return routes
+        if (!ComponentClass) {
+            throw new Error(`Could not find component with displayName "${componentName}"`)
+        }
+        if (route.component?.props) {
+            console.log('route.component.props', route.component.props)
+            route.component = withPropsWrapper(ComponentClass, route.component.props)
+        }
         return [route, ...routes]
     }
 

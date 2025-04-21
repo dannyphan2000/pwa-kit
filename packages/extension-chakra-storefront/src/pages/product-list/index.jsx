@@ -133,6 +133,7 @@ const ProductList = (props) => {
     const isSearch = !!searchQuery
 
     const categoryId = props?.categoryId || params?.categoryId
+    console.log('ProductList categoryId:', categoryId, 'props', props)
     if (categoryId) {
         searchParams._refine.push(`cgid=${categoryId}`)
     }
