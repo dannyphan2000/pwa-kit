@@ -155,7 +155,7 @@ export const stringToBase64 =
  */
 export const extractCustomParameters = (
     parameters: {[s: string]: string | number | boolean | string[] | number[]} | null
-): helpers.CustomQueryParameters => {
+): helpers.CustomQueryParameters | helpers.CustomRequestBody => {
     if (typeof parameters !== 'object' || parameters === null) {
         throw new Error('Invalid input. Expecting an object as an input.')
     }

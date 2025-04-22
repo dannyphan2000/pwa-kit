@@ -843,8 +843,10 @@ class Auth {
         const {
             customer: {login},
             password,
-            ...customParameters
+            ...parameters
         } = body
+
+        const customParameters = extractCustomParameters(parameters)
 
         // login is optional field from isomorphic library
         // type CustomerRegistration

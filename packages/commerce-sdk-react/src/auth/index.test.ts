@@ -52,7 +52,8 @@ jest.mock('commerce-sdk-isomorphic', () => {
         },
         ShopperCustomers: jest.fn().mockImplementation(() => {
             return {
-                updateCustomerPassword: () => {}
+                updateCustomerPassword: () => {},
+                registerCustomer: () => {}
             }
         })
     }
@@ -505,6 +506,28 @@ describe('Auth', () => {
         expect(helpers.loginGuestUser).toHaveBeenCalledWith(
             expect.anything(),
             expect.objectContaining({c_test: 'custom parameter'})
+        )
+    })
+
+    test('register only sends custom parameters to registered login', async () => {
+        const auth = new Auth(config)
+        const inputToRegister = {
+            customer: baseCustomer,
+            password: 'test',
+            someOtherParameter: 'this should not be passed to login',
+            c_test: 'custom parameter'
+        }
+
+        await auth.register(inputToRegister)
+
+        // We don't need to verify the first and third parameters as they correspond to the SLAS client and mandatory parameters
+        // The second argument is credentials
+        // We want to see that only the custom parameters were included in the fourth argument and not any other parameters
+        expect(helpers.loginRegisteredUserB2C).toHaveBeenCalledWith(
+            expect.anything(),
+            expect.anything(),
+            expect.anything(),
+            {body: {c_test: 'custom parameter'}}
         )
     })
 
