@@ -843,7 +843,7 @@ class Auth {
         const {
             customer: {login},
             password,
-            ...parameters
+            ...customParameters
         } = body
 
         // login is optional field from isomorphic library
@@ -864,7 +864,9 @@ class Auth {
                 username: login,
                 password
             },
-            parameters
+            {
+                body: customParameters
+            }
         )
         return res
     }
@@ -875,7 +877,7 @@ class Auth {
      */
     async loginRegisteredUserB2C(
         credentials: LoginRegisteredUserB2CCredentials,
-        parameters: helpers.CustomRequestBody = {}
+        options?: {body: helpers.CustomRequestBody}
     ) {
         if (this.clientSecret && onClient() && this.clientSecret !== SLAS_SECRET_PLACEHOLDER) {
             this.logWarning(SLAS_SECRET_WARNING_MSG)
@@ -895,9 +897,7 @@ class Auth {
                 dnt: dntPref,
                 ...(usid && {usid})
             },
-            {
-                body: parameters
-            }
+            options
         )
         this.handleTokenResponse(token, isGuest)
         if (onClient()) {

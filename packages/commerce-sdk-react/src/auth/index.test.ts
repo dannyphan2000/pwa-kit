@@ -632,13 +632,15 @@ describe('Auth', () => {
     })
 
     test('loginRegisteredUserB2C can pass along custom parameters', async () => {
-        const parameters = {c_test: 'custom parameter'}
+        const options = {
+            body: {c_test: 'custom parameter'}
+        }
         const credentials = {
             username: 'test',
             password: 'test'
         }
         const auth = new Auth(config)
-        await auth.loginRegisteredUserB2C(credentials, parameters)
+        await auth.loginRegisteredUserB2C(credentials, options)
         // We don't need to verify the first and third parameters as they correspond to the SLAS client and mandatory parameters
         // The second argument is credentials, including the client secret
         // The fourth argument is custom parameters
