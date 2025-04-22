@@ -124,12 +124,11 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
 
             // Create a placeholder component since the component is defined in another extension.
             // Deserialization will be handled in beforeRouteMatch, where all routes from other extensions are accessible.
-            component = Object.assign(() => null, {
-                displayName: `${this.getName()}.${componentName}`,
-                props: {
-                    [`${urlMapping.resourceType}Id`]: urlMapping.resourceId
-                }
-            })
+            const displayName = `${this.getName()}.${componentName}`
+            const props = {
+                [`${urlMapping.resourceType}Id`]: urlMapping.resourceId
+            }
+            component = createPlaceholderComponent(displayName, props)
         }
 
         return Promise.resolve([
@@ -147,34 +146,37 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      * is configured with, including those defined in the base application and those added by all the extensions. You can use this
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
-    beforeRouteMatch({allRoutes, locals}: BeforeRouteMatchParams): RouteProps[] {
-        const routes = [...allRoutes]
-        const index = routes.findIndex((route) =>
+    beforeRouteMatch({allRoutes}: BeforeRouteMatchParams): RouteProps[] {
+        const updatedRoutes = [...allRoutes]
+
+        const isPlaceholderRoute = (route: RouteProps) =>
             route.component?.displayName?.includes(this.getName())
-        )
 
-        if (index === -1) return routes
+        const getComponentName = (displayName: string) => displayName.split('.').pop()
 
-        // Extract and remove the matched route
-        const [route] = routes.splice(index, 1)
-        const componentName = route.component?.displayName?.split('.').pop()
+        const findComponentByName = (name: string): React.ComponentType<any> | undefined =>
+            updatedRoutes.find((r) => r.component?.displayName?.includes(name))?.component
 
-        if (!componentName) return routes
+        // TODO: do we need to loop through all the possible localized routes?
+        for (const route of updatedRoutes) {
+            if (!isPlaceholderRoute(route)) continue
 
-        const ComponentClass = routes.find((_route) =>
-            _route.component?.displayName?.includes(componentName)
-        )?.component
+            const {displayName, props} = route.component as any
+            console.log('beforeRouteMatch found placeholder route', displayName, route.path)
 
-        console.log(ComponentClass)
+            if (!displayName || !props) continue
 
-        if (!ComponentClass) {
-            throw new Error(`Could not find component with displayName "${componentName}"`)
+            const componentName = getComponentName(displayName)
+            if (!componentName) continue
+
+            const actualComponent = findComponentByName(componentName)
+            if (!actualComponent) {
+                throw new Error(`Could not find component with displayName "${componentName}"`)
+            }
+            route.component = withPropsWrapper(actualComponent, props)
         }
-        if (route.component?.props) {
-            console.log('route.component.props', route.component.props)
-            route.component = withPropsWrapper(ComponentClass, route.component.props)
-        }
-        return [route, ...routes]
+
+        return updatedRoutes
     }
 
     getComponentMap(): ComponentMap {
@@ -182,12 +184,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         // This implementation returns an object where the keys are component names in resourceTypeToComponentMap
         // and the values are placeholder components with the displayName.
         const {resourceTypeToComponentMap} = this.getConfig()
-        return Object.values(resourceTypeToComponentMap).reduce((acc: ComponentMap, name) => {
-            acc[`${this.getName()}.${name}`] = Object.assign(() => null, {
-                displayName: `${this.getName()}.${name}`
-            })
-            return acc
-        }, {} as ComponentMap)
+        return {}
     }
 }
 
@@ -200,6 +197,21 @@ const withPropsWrapper: GenericHocType<any> = (WrappedComponent: React.Component
     })`
 
     return hoistNonReactStatics(withPropsWrapper, WrappedComponent)
+}
+
+export function createPlaceholderComponent<P = any>(
+    displayName: string,
+    props: P
+): React.ComponentType<any> {
+    const Placeholder: React.FC = () => {
+        throw new Error(`Placeholder component "${displayName}" should never be rendered directly.`)
+    }
+
+    Placeholder.displayName = displayName
+    ;(Placeholder as any).props = props
+    ;(Placeholder as any).isPlaceholder = true
+
+    return Placeholder
 }
 
 export default CommerceBmSeo

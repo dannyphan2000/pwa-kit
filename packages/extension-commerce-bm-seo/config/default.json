@@ -12,5 +12,10 @@
     },
     "commerceAPIAuth": {
         "propertyNameInLocals": "commerceAPIAuth"
+    },
+    "resourceTypeToComponentMap": {
+        "category": "ProductList",
+        "product": "ProductDetail",
+        "content_asset": "ProductDetail"
     }
 }
