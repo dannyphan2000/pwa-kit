@@ -130,8 +130,7 @@ h1 {
 `
 
 // API fetch function separated for better code organization
-const fetchUsersData = async (id: number): Promise<User> => {
-    console.log('id', id)
+const fetchUsersData = async (): Promise<User> => {
     const response = await fetch('https://jsonplaceholder.typicode.com/users/')
 
     if (!response.ok) {
