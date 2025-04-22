@@ -8,6 +8,7 @@ import logger from './logger-instance'
 export const PERFORMANCE_MARKS = {
     total: 'ssr:total',
     renderToString: 'ssr:render-to-string',
+    renderStream: 'ssr:render-stream',
     routeMatching: 'ssr:route-matching',
     loadComponent: 'ssr:load-component',
     fetchStrategies: 'ssr:fetch-strategies',

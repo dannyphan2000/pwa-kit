@@ -130,9 +130,9 @@ h1 {
 `
 
 // API fetch function separated for better code organization
-const fetchUserData = async (id: number): Promise<User> => {
+const fetchUsersData = async (id: number): Promise<User> => {
     console.log('id', id)
-    const response = await fetch('https://jsonplaceholder.typicode.com/users/' + id)
+    const response = await fetch('https://jsonplaceholder.typicode.com/users/')
 
     if (!response.ok) {
         throw new Error(`API error: ${response.status} ${response.statusText}`)
@@ -142,11 +142,12 @@ const fetchUserData = async (id: number): Promise<User> => {
 }
 
 const Home = ({value}: Props) => {
+    console.log('value', value)
     const [counter, setCounter] = useState(0)
 
     const {data: user} = useSuspenseQuery<User>({
-        queryKey: ['user-profile'],
-        queryFn: () => fetchUserData(1)
+        queryKey: ['users'],
+        queryFn: () => fetchUsersData()
     })
 
     const query = useSuspenseQuery({
@@ -178,10 +179,7 @@ const Home = ({value}: Props) => {
         <div>
             <div className="loading-screen">
                 <div>
-                    <a href="/about">About page</a>
-                    <a href="/query-example" style={{marginLeft: '10px'}}>
-                        Query Example
-                    </a>
+                    <a href="/user/1">User 1</a>
                 </div>
                 <div className="panel title">
                     <h1>

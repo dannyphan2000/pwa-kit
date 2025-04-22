@@ -5,9 +5,11 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import loadable, {LoadableComponent} from '@loadable/component'
-
-const Home = loadable(() => import('./pages/home'))
-const About = loadable(() => import('./pages/about'))
+import React, {lazy} from 'react'
+// import Home from './pages/home'
+// import User from './pages/user'
+const Home = lazy(() => import('./pages/home'))
+const User = lazy(() => import('./pages/user'))
 
 const routes = [
     {
@@ -15,14 +17,14 @@ const routes = [
         exact: true,
         // Type assertion because otherwise we encounter this error:
         // Exported variable 'routes' has or is using name 'Props' from external module "./app/pages/home" but cannot be named.
-        component: Home as LoadableComponent<unknown>
+        component: Home as React.ElementType
     },
     {
-        path: '/about',
+        path: '/user/:userId',
         exact: true,
         // Type assertion because otherwise we encounter this error:
         // Exported variable 'routes' has or is using name 'Props' from external module "./app/pages/home" but cannot be named.
-        component: About as LoadableComponent<unknown>
+        component: User as React.ElementType
     }
 ]
 

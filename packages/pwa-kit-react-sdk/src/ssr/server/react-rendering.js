@@ -132,7 +132,6 @@ export const render = async (req, res, next) => {
 
     const routes = getRoutes(res.locals)
     const WrappedApp = routeComponent(App, false, res.locals)
-    console.log('WrappedApp', WrappedApp)
 
     const [pathname] = req.originalUrl.split('?')
 
@@ -202,7 +201,7 @@ export const render = async (req, res, next) => {
     // appStateError = ret.error
     res.__performanceTimer.mark(PERFORMANCE_MARKS.fetchStrategies, 'end')
     // }
-    res.__performanceTimer.mark(PERFORMANCE_MARKS.renderToString, 'start')
+    res.__performanceTimer.mark(PERFORMANCE_MARKS.renderStream, 'start')
     appJSX = React.cloneElement(appJSX, {error: appStateError, appState})
 
     // Step 4 - Render the App
@@ -235,7 +234,7 @@ export const render = async (req, res, next) => {
     const redirectUrl = routerContext.url
     const status = (error && error.status) || res.statusCode
 
-    res.__performanceTimer.mark(PERFORMANCE_MARKS.renderToString, 'end')
+    res.__performanceTimer.mark(PERFORMANCE_MARKS.renderStream, 'end')
     res.__performanceTimer.mark(PERFORMANCE_MARKS.total, 'end')
     res.__performanceTimer.log()
 
@@ -368,8 +367,7 @@ const renderApp = async (args) => {
     const helmetHeadTags = VALID_TAG_NAMES.map(
         (tag) => helmet[tag] && helmet[tag].toComponent()
     ).filter((tag) => tag)
-    const wrappedJSX = extractor.collectChunks(appJSX)
-
+    // const wrappedJSX = extractor.collectChunks(appJSX)
     return new Promise((resolve, reject) => {
         const stream = new PassThrough()
         const chunks = []
@@ -377,7 +375,7 @@ const renderApp = async (args) => {
         const {pipe} = ReactDOMServer.renderToPipeableStream(
             <Document
                 head={[...helmetHeadTags]}
-                html={wrappedJSX}
+                html={appJSX}
                 afterBodyStart={svgs}
                 beforeBodyEnd={scripts}
                 htmlAttributes={helmet.htmlAttributes.toComponent()}
@@ -412,7 +410,6 @@ const renderApp = async (args) => {
         })
         stream.on('end', () => {
             const html = Buffer.concat(chunks).toString('utf-8')
-            console.log('html', html)
             resolve({
                 error: appStateError || null,
                 html: html,
