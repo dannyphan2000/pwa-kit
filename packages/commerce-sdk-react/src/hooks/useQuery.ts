@@ -69,7 +69,7 @@ export const useQuery = <
     // for this case would add significantly more complexity.
     const wrappedMethod = async () => await authenticatedMethod(apiOptions as Options)
 
-    const finalEnabled =
+    const enabled =
         typeof queryOptions.enabled !== 'undefined'
             ? queryOptions.enabled
             : hookConfig.enabled !== false &&
@@ -78,7 +78,7 @@ export const useQuery = <
     return useReactQuery<TQueryFnData, TError, TData, TQueryKey>({
         queryKey: hookConfig.queryKey,
         queryFn: wrappedMethod,
-        enabled: finalEnabled,
+        enabled,
         ...queryOptions
     })
 }
