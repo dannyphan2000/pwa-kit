@@ -841,11 +841,11 @@ class Auth {
      */
     async register(body: ShopperCustomersTypes.CustomerRegistration) {
         const {
-            customer: {login},
+            customer,
             password,
             ...parameters
         } = body
-
+        const {login} = customer
         const customParameters = extractCustomParameters(parameters)
 
         // login is optional field from isomorphic library
@@ -855,11 +855,16 @@ class Auth {
             throw new Error('Customer registration is missing login field.')
         }
 
+        // The registerCustomer endpoint currently does not support custom parameters
+        // so we make sure not to send any custom params here
         const res = await this.shopperCustomersClient.registerCustomer({
             headers: {
                 authorization: `Bearer ${this.get('access_token')}`
             },
-            body
+            body: {
+                customer,
+                password
+            }
         })
         await this.loginRegisteredUserB2C(
             {
