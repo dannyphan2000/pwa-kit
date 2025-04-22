@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {UseMutationResult} from '@tanstack/react-query'
 import {
     ApiClients,
     ApiMethod,
@@ -71,7 +70,6 @@ export const createUseMutation = <
 
         const commerceApi = useCommerceApi()
         const client = commerceApi[clientKey] as Client
-        
         // We need to cast mutation to keyof Client to keep TypeScript happy
         const methodKey = mutation as unknown as keyof Client
         const method = client[methodKey] as ApiMethod<any, any>
