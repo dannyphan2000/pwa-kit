@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {
+    DefaultError,
     InvalidateQueryFilters,
     QueryFilters,
     QueryKey,
@@ -158,9 +159,12 @@ export type ApiQueryKey<Params extends Record<string, unknown> = Record<string, 
     readonly [...path: (string | undefined)[], parameters: Params]
 
 /** Query options for endpoint hooks. */
-export type ApiQueryOptions<Method extends ApiMethod<any, unknown>> = Prettify<
+export type ApiQueryOptions<
+    Method extends ApiMethod<any, unknown>,
+    TError = DefaultError
+> = Prettify<
     Omit<
-        UseQueryOptions<DataType<Method>, unknown, DataType<Method>, ApiQueryKey>,
+        UseQueryOptions<DataType<Method>, TError, DataType<Method>, ApiQueryKey>,
         'queryFn' | 'queryKey'
     >
 >
