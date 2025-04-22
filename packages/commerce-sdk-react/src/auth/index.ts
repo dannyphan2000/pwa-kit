@@ -21,7 +21,8 @@ import {
     onClient,
     getDefaultCookieAttributes,
     isAbsoluteUrl,
-    stringToBase64
+    stringToBase64,
+    extractCustomParameters
 } from '../utils'
 import {
     MOBIFY_PATH,
@@ -742,23 +743,6 @@ class Auth {
     }
 
     /**
-     * This method extracts the custom parameters from a set of parameters.
-     *
-     * Custom parameters are defined as those whose keys are prefixed with 'c_'
-     * @Internal
-     */
-    extractCustomParameters = (
-        parameters: {[s: string]: string | number | boolean | string[] | number[]} | null
-    ): helpers.CustomQueryParameters => {
-        if (typeof parameters !== 'object' || parameters === null) {
-            throw new Error('Invalid input. Expecting an object as an input.')
-        }
-        return Object.fromEntries(
-            Object.entries(parameters).filter(([key]) => key.startsWith('c_'))
-        )
-    }
-
-    /**
      * The ready function returns a promise that resolves with valid ShopperLogin
      * token response.
      *
@@ -1095,7 +1079,7 @@ class Auth {
     async authorizeIDP(parameters: AuthorizeIDPParams) {
         const redirectURI = parameters.redirectURI || this.redirectURI
         const usid = this.get('usid')
-        const customParameters = this.extractCustomParameters(parameters)
+        const customParameters = extractCustomParameters(parameters)
         const {url, codeVerifier} = await helpers.authorizeIDP(
             this.client,
             {

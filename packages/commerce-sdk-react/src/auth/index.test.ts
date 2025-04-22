@@ -58,14 +58,19 @@ jest.mock('commerce-sdk-isomorphic', () => {
     }
 })
 
-jest.mock('../utils', () => ({
-    __esModule: true,
-    onClient: () => true,
-    getParentOrigin: jest.fn().mockResolvedValue(''),
-    isOriginTrusted: () => false,
-    getDefaultCookieAttributes: () => {},
-    isAbsoluteUrl: () => true
-}))
+jest.mock('../utils', () => {
+    const originalModule = jest.requireActual('../utils')
+
+    return {
+        ...originalModule,
+        __esModule: true,
+        onClient: () => true,
+        getParentOrigin: jest.fn().mockResolvedValue(''),
+        isOriginTrusted: () => false,
+        getDefaultCookieAttributes: () => {},
+        isAbsoluteUrl: () => true
+    }
+})
 
 /** The auth data we store has a slightly different shape than what we use. */
 type StoredAuthData = Omit<AuthData, 'refresh_token'> & {refresh_token_guest?: string}
@@ -637,7 +642,7 @@ describe('Auth', () => {
         // We don't need to verify the first and third parameters as they correspond to the SLAS client and mandatory parameters
         // The second argument is credentials, including the client secret
         // The fourth argument is custom parameters
-        // We only want to see that the custom parameters were included in the second argument
+        // We only want to see that the custom parameters were included in the fourth argument
         expect(helpers.loginRegisteredUserB2C).toHaveBeenCalledWith(
             expect.anything(),
             expect.objectContaining(credentials),
