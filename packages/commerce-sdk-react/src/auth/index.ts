@@ -802,7 +802,7 @@ class Auth {
      * A wrapper method for commerce-sdk-isomorphic helper: loginGuestUser.
      *
      */
-    async loginGuestUser(parameters: helpers.CustomQueryParameters = {}) {
+    async loginGuestUser(parameters?: helpers.CustomQueryParameters) {
         if (this.clientSecret && onClient() && this.clientSecret !== SLAS_SECRET_PLACEHOLDER) {
             this.logWarning(SLAS_SECRET_WARNING_MSG)
         }
