@@ -663,7 +663,7 @@ describe('Auth', () => {
             password: 'test'
         }
         const auth = new Auth(config)
-        await auth.loginRegisteredUserB2C(credentials, options)
+        await auth.loginRegisteredUserB2C({...credentials, options})
         // We don't need to verify the first and third parameters as they correspond to the SLAS client and mandatory parameters
         // The second argument is credentials, including the client secret
         // The fourth argument is custom parameters
@@ -672,7 +672,7 @@ describe('Auth', () => {
             expect.anything(),
             expect.objectContaining(credentials),
             expect.anything(),
-            {body: {c_test: 'custom parameter'}}
+            options
         )
     })
 

@@ -73,6 +73,15 @@ type LoginPasswordlessParams = Parameters<Helpers['getPasswordLessAccessToken']>
 type LoginRegisteredUserB2CCredentials = Parameters<Helpers['loginRegisteredUserB2C']>[1]
 
 /**
+ * This is a temporary type until we can make a breaking change and modify the signature for 
+ * loginRegisteredUserB2C so that it takes in a body rather than just credentials
+ * 
+ */
+type LoginRegisteredUserCredentialsWithCustomParams = LoginRegisteredUserB2CCredentials & {
+    options?: {body: helpers.CustomRequestBody}
+}
+
+/**
  * The extended field is not from api response, we manually store the auth type,
  * so we don't need to make another API call when we already have the data.
  * Plus, the getCustomer endpoint only works for registered user, it returns a 404 for a guest user,
@@ -869,10 +878,10 @@ class Auth {
         await this.loginRegisteredUserB2C(
             {
                 username: login,
-                password
-            },
-            {
-                body: customParameters
+                password,
+                options: {
+                    body: customParameters
+                }
             }
         )
         return res
@@ -883,8 +892,7 @@ class Auth {
      *
      */
     async loginRegisteredUserB2C(
-        credentials: LoginRegisteredUserB2CCredentials,
-        options?: {body: helpers.CustomRequestBody}
+        credentials: LoginRegisteredUserCredentialsWithCustomParams
     ) {
         if (this.clientSecret && onClient() && this.clientSecret !== SLAS_SECRET_PLACEHOLDER) {
             this.logWarning(SLAS_SECRET_WARNING_MSG)
@@ -896,7 +904,8 @@ class Auth {
         const token = await helpers.loginRegisteredUserB2C(
             this.client,
             {
-                ...credentials,
+                username: credentials.username,
+                password: credentials.password,
                 clientSecret: this.clientSecret
             },
             {
@@ -904,7 +913,7 @@ class Auth {
                 dnt: dntPref,
                 ...(usid && {usid})
             },
-            options
+            credentials.options
         )
         this.handleTokenResponse(token, isGuest)
         if (onClient()) {
