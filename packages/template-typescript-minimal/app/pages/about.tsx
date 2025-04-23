@@ -7,7 +7,6 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React from 'react'
-import ServerComponentDemo from '../components/ServerComponentDemo'
 
 interface Props {
     value: number
@@ -17,8 +16,6 @@ function About() {
     return (
         <div>
             About
-            {/* React Server Component Demo */}
-            <ServerComponentDemo />
         </div>
     )
 }

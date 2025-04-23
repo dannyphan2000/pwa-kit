@@ -8,7 +8,6 @@ import loadable, {LoadableComponent} from '@loadable/component'
 
 const Home = loadable(() => import('./pages/home'))
 const About = loadable(() => import('./pages/about'))
-const ServerCompPage = loadable(() => import('./pages/server-demo'))
 
 const routes = [
     {

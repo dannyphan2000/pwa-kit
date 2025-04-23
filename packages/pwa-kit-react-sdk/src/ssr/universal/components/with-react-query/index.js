@@ -93,7 +93,7 @@ export const withReactQuery = (Wrapped, options = {}) => {
 
             try {
                 // Set up a listener to capture queries as they're created
-                const listener = createQueryPrefetchListener(discoveryQueryClient)
+                const listener = createQueryPrefetchListener(queryClient)
 
                 // Create a completely separate component tree for discovery
                 // We're using a new instance of all providers to ensure isolation
@@ -110,7 +110,6 @@ export const withReactQuery = (Wrapped, options = {}) => {
 
                 // Get all the discovered queries
                 const queries = listener.getQueries()
-                listener.cleanup()
 
                 // Extract the query keys and configs we need to prefetch
                 const queryConfigs = queries.map(q => ({
@@ -118,15 +117,18 @@ export const withReactQuery = (Wrapped, options = {}) => {
                     queryFn: q.options.queryFn,
                     meta: q.meta
                 }))
+                // console.log('queries', queries)
+                listener.cleanup()
 
-                // Now prefetch all the discovered queries in parallel using the REAL query client
+
+                // Now prefetch data all the discovered queries in parallel using the REAL query client
                 await Promise.all(
                     queryConfigs.map((config, i) => {
                         const displayName = config.meta?.displayName
                             ? `${config.meta?.displayName}:${i}`
                             : `${i}`
                         res.__performanceTimer.mark(
-                            `${PERFORMANCE_MARKS.reactQueryUseQuery}::${displayName}`,
+                            `${PERFORMANCE_MARKS.reactQueryUseQuery}.${displayName}`,
                             'start'
                         )
 
@@ -138,12 +140,13 @@ export const withReactQuery = (Wrapped, options = {}) => {
                         })
                         .then((result) => {
                             res.__performanceTimer.mark(
-                                `${PERFORMANCE_MARKS.reactQueryUseQuery}::${displayName}`,
+                                `${PERFORMANCE_MARKS.reactQueryUseQuery}.${displayName}`,
                                 'end',
                                 {
                                     detail: JSON.stringify(config.queryKey)
                                 }
                             )
+
                             return result
                         })
                         .catch(() => {
