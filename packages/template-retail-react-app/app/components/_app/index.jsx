@@ -19,6 +19,7 @@ import {
 } from '@salesforce/commerce-sdk-react'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 // Chakra
 import {
@@ -80,6 +81,7 @@ import {
 
 import Seo from '@salesforce/retail-react-app/app/components/seo'
 import {Helmet} from 'react-helmet'
+import ShopperAgent from '../shopper-agent/index'
 
 const PlaceholderComponent = () => (
     <Center p="2">
@@ -218,6 +220,7 @@ const App = (props) => {
     // customer.
     const {data: customer} = useCurrentCustomer()
     const {data: basket} = useCurrentBasket()
+    const config = getConfig()
 
     const updateBasket = useShopperBasketsMutation('updateBasket')
     const updateCustomerForBasket = useShopperBasketsMutation('updateCustomerForBasket')
@@ -372,6 +375,13 @@ const App = (props) => {
                             {/* A wider fallback for user locales that the app does not support */}
                             <link rel="alternate" hrefLang="x-default" href={`${appOrigin}/`} />
                         </Seo>
+
+                        <ShopperAgent
+                            commerceAgent={config.app.commerceAgent}
+                            domainUrl={`${appOrigin}${buildUrl(location.pathname)}`}
+                            locale={locale?.id}
+                            basketId={basket?.id}
+                        />
 
                         <ScrollToTop />
 
