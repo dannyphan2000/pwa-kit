@@ -73,9 +73,9 @@ type LoginPasswordlessParams = Parameters<Helpers['getPasswordLessAccessToken']>
 type LoginRegisteredUserB2CCredentials = Parameters<Helpers['loginRegisteredUserB2C']>[1]
 
 /**
- * This is a temporary type until we can make a breaking change and modify the signature for 
+ * This is a temporary type until we can make a breaking change and modify the signature for
  * loginRegisteredUserB2C so that it takes in a body rather than just credentials
- * 
+ *
  */
 type LoginRegisteredUserCredentialsWithCustomParams = LoginRegisteredUserB2CCredentials & {
     options?: {body: helpers.CustomRequestBody}
@@ -849,11 +849,7 @@ class Auth {
      *
      */
     async register(body: ShopperCustomersTypes.CustomerRegistration) {
-        const {
-            customer,
-            password,
-            ...parameters
-        } = body
+        const {customer, password, ...parameters} = body
         const {login} = customer
         const customParameters = extractCustomParameters(parameters)
 
@@ -875,15 +871,13 @@ class Auth {
                 password
             }
         })
-        await this.loginRegisteredUserB2C(
-            {
-                username: login,
-                password,
-                options: {
-                    body: customParameters
-                }
+        await this.loginRegisteredUserB2C({
+            username: login,
+            password,
+            options: {
+                body: customParameters
             }
-        )
+        })
         return res
     }
 
@@ -891,9 +885,7 @@ class Auth {
      * A wrapper method for commerce-sdk-isomorphic helper: loginRegisteredUserB2C.
      *
      */
-    async loginRegisteredUserB2C(
-        credentials: LoginRegisteredUserCredentialsWithCustomParams
-    ) {
+    async loginRegisteredUserB2C(credentials: LoginRegisteredUserCredentialsWithCustomParams) {
         if (this.clientSecret && onClient() && this.clientSecret !== SLAS_SECRET_PLACEHOLDER) {
             this.logWarning(SLAS_SECRET_WARNING_MSG)
         }

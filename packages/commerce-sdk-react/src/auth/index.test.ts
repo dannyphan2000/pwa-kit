@@ -7,7 +7,12 @@
 import Auth, {AuthData} from './'
 import {waitFor} from '@testing-library/react'
 import jwt from 'jsonwebtoken'
-import {helpers, ShopperCustomersTypes, ShopperLogin} from 'commerce-sdk-isomorphic'
+import {
+    helpers,
+    ShopperCustomersTypes,
+    ShopperCustomers,
+    ShopperLogin
+} from 'commerce-sdk-isomorphic'
 import * as utils from '../utils'
 import {SLAS_SECRET_PLACEHOLDER} from '../constant'
 import {ShopperLoginTypes} from 'commerce-sdk-isomorphic'
@@ -49,13 +54,7 @@ jest.mock('commerce-sdk-isomorphic', () => {
             authorizeIDP: jest.fn().mockResolvedValue(''),
             authorizePasswordless: jest.fn().mockResolvedValue(''),
             getPasswordLessAccessToken: jest.fn().mockResolvedValue('')
-        },
-        ShopperCustomers: jest.fn().mockImplementation(() => {
-            return {
-                updateCustomerPassword: () => {},
-                registerCustomer: () => {}
-            }
-        })
+        }
     }
 })
 
@@ -510,6 +509,9 @@ describe('Auth', () => {
     })
 
     test('register only sends custom parameters to registered login', async () => {
+        const registerCustomerSpy = jest
+            .spyOn(ShopperCustomers.prototype, 'registerCustomer')
+            .mockImplementation()
         const auth = new Auth(config)
         const inputToRegister = {
             customer: baseCustomer,
@@ -519,6 +521,11 @@ describe('Auth', () => {
         }
 
         await auth.register(inputToRegister)
+
+        // Body should only include credentials. No other parameters
+        expect(registerCustomerSpy).toHaveBeenCalledWith(
+            expect.objectContaining({body: {customer: baseCustomer, password: 'test'}})
+        )
 
         // We don't need to verify the first and third parameters as they correspond to the SLAS client and mandatory parameters
         // The second argument is credentials
@@ -768,6 +775,7 @@ describe('Auth', () => {
         expect(helpers.loginGuestUser).toHaveBeenCalled()
     })
     test('updateCustomerPassword calls registered login', async () => {
+        jest.spyOn(ShopperCustomers.prototype, 'updateCustomerPassword').mockImplementation()
         const auth = new Auth(config)
         await auth.updateCustomerPassword({
             customer: baseCustomer,
