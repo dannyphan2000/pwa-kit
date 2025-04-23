@@ -884,6 +884,12 @@ class Auth {
     /**
      * A wrapper method for commerce-sdk-isomorphic helper: loginRegisteredUserB2C.
      *
+     * Note: This uses the type LoginRegisteredUserCredentialsWithCustomParams rather than LoginRegisteredUserB2CCredentials
+     * as a workaround to allow custom parameters through because the login.mutateAsync hook will only pass through a single
+     * 'body' argument into this function.
+     * 
+     * In the next major version release, we should modify this method so that it's input is a body containing credentials,
+     * similar to the input for the register function.
      */
     async loginRegisteredUserB2C(credentials: LoginRegisteredUserCredentialsWithCustomParams) {
         if (this.clientSecret && onClient() && this.clientSecret !== SLAS_SECRET_PLACEHOLDER) {
