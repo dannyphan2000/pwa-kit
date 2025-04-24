@@ -50,7 +50,7 @@ const getSeoProps = (extensions) => {
     let resourceTypeToComponentMap
     extensions.forEach((applicationExtension) => {
         const {resourceTypeToComponentMap: resourceTypeToComponentMapFromExtension} =
-            applicationExtension.getExtraConfiguration()
+            applicationExtension.getComponentMatchingConfig()
         resourceTypeToComponentMap = {
             ...resourceTypeToComponentMap,
             ...resourceTypeToComponentMapFromExtension

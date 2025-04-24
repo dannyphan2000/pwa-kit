@@ -107,7 +107,7 @@ class Sample extends ApplicationExtension<Config> {
      * Provide resourceTypeToComponentMap to the PWA-Kit extension, so
      * the SEO HOC can map the correct component to the resource type after resolivng URL Mapping API.
      */
-    getExtraConfiguration(): object {
+    getComponentMatchingConfig(): object {
         const config = this.getConfig()
         return {resourceTypeToComponentMap: config?.resourceTypeToComponentMap}
     }

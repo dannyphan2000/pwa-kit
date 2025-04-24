@@ -194,7 +194,7 @@ export class ApplicationExtension<
         return routes
     }
 
-    public getExtraConfiguration(): object {
+    public getComponentMatchingConfig(): object {
         return {}
     }
 }
