@@ -99,7 +99,7 @@ export const useBlockNavigation = (func) => {
         return () => unblock()
     }, [location])
 
-    return {isBlocked, push}
+    return {isBlocked}
 }
 
 /*
