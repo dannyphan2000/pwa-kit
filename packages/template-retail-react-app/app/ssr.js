@@ -25,6 +25,10 @@ import {getRuntime} from '@salesforce/pwa-kit-runtime/ssr/server/express'
 import {defaultPwaKitSecurityHeaders} from '@salesforce/pwa-kit-runtime/utils/middleware'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
+import {isRemote} from '@salesforce/pwa-kit-runtime/utils/ssr-server/utils'
+import {RemoteServerFactory} from '@salesforce/pwa-kit-runtime/ssr/server/build-remote-server'
+import expressLogging from 'morgan'
+import logger from '@salesforce/pwa-kit-runtime/utils/logger-instance'
 
 const config = getConfig()
 
@@ -69,7 +73,60 @@ const options = {
     encodeNonAsciiHttpHeaders: true
 }
 
-const runtime = getRuntime()
+/**
+ * Override logging behavior of the pwa-kit-runtime RemoteServerFactory
+ */
+export const ServerFactory = Object.assign({}, RemoteServerFactory, {
+    _setupLogging(app) {
+        const morganLoggerFormat = function (tokens, req, res) {
+            const contentLength = tokens.res(req, res, 'content-length')
+            return [
+                `(${res.locals.requestId})`,
+                tokens.method(req, res),
+                tokens.url(req, res),
+                tokens.status(req, res),
+                tokens['response-time'](req, res),
+                'ms',
+                contentLength && `- ${contentLength}`
+            ].join(' ')
+        }
+
+        // skip this if env-var SKIP_REQUEST_LOGGING=true
+        // Morgan stream for logging status codes less than 400
+        app.use(
+            expressLogging(morganLoggerFormat, {
+                skip: function (req, res) {
+                    return res.statusCode >= 400 || Boolean(process.env.SKIP_REQUEST_LOGGING)
+                },
+                stream: {
+                    write: (message) => {
+                        logger.info(message, {
+                            namespace: 'httprequest'
+                        })
+                    }
+                }
+            })
+        )
+
+        // Morgan stream for logging status codes 400 and above
+        app.use(
+            expressLogging(morganLoggerFormat, {
+                skip: function (req, res) {
+                    return res.statusCode < 400
+                },
+                stream: {
+                    write: (message) => {
+                        logger.error(message, {
+                            namespace: 'httprequest'
+                        })
+                    }
+                }
+            })
+        )
+    }
+})
+
+const runtime = isRemote() ? ServerFactory : getRuntime()
 
 /**
  * Tokens are valid for 20 minutes. We store it at the top level scope to reuse
