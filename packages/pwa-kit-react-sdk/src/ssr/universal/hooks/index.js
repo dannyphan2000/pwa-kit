@@ -86,17 +86,14 @@ export const useBlockNavigation = (func) => {
     const funcRef = useRef(func)
 
     useEffect(() => {
-        const unblock = block((location, action) => {
+        const unblock = block(async (location, action) => {
             if (location?.pathname !== lastLocation.current?.pathname && funcRef.current) {
                 lastLocation.current = location
-                ;(async () => {
-                    setIsBlocked(true)
-                    const result = await funcRef.current(location, action)
-                    setIsBlocked(false)
-                    unblock()
-                    push(location?.pathname)
-                })()
-                return false
+                setIsBlocked(true)
+                await funcRef.current(location, action)
+                setIsBlocked(false)
+                unblock()
+                push(location?.pathname)
             }
         })
         return () => unblock()

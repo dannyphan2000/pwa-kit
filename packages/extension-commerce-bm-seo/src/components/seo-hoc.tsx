@@ -46,8 +46,6 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                 }
             },
             {
-                cacheTime: 0,
-                staleTime: 0,
                 enabled: false
             }
         )
