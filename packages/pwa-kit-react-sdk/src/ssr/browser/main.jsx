@@ -46,6 +46,21 @@ export const registerServiceWorker = (url) => {
     })
 }
 
+const getSeoProps = (extensions) => {
+    let resourceTypeToComponentMap
+    extensions.forEach((applicationExtension) => {
+        const {resourceTypeToComponentMap: resourceTypeToComponentMapFromExtension} =
+            applicationExtension.getExtraConfiguration()
+        resourceTypeToComponentMap = {
+            ...resourceTypeToComponentMap,
+            ...resourceTypeToComponentMapFromExtension
+        }
+    })
+    return {
+        resourceTypeToComponentMap: resourceTypeToComponentMap
+    }
+}
+
 export const OuterApp = ({routes, error, extensions, WrappedApp, locals, onHydrate}) => {
     const AppConfig = getAppConfig()
     const isInitialPageRef = useRef(true)
@@ -55,6 +70,7 @@ export const OuterApp = ({routes, error, extensions, WrappedApp, locals, onHydra
     extensions.forEach((applicationExtension) => {
         routes = applicationExtension.beforeRouteMatch({allRoutes: routes, locals})
     })
+    let seoExtensionPropsOptional = getSeoProps(extensions)
 
     return (
         <ServerContext.Provider value={{}}>
@@ -74,6 +90,7 @@ export const OuterApp = ({routes, error, extensions, WrappedApp, locals, onHydra
                             error={error}
                             appState={window.__PRELOADED_STATE__}
                             routes={routes}
+                            {...seoExtensionPropsOptional}
                             App={WrappedApp}
                         />
                     </AppConfig>

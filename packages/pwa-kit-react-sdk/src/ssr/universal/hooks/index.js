@@ -86,23 +86,15 @@ export const useBlockNavigation = (func) => {
     const funcRef = useRef(func)
 
     useEffect(() => {
-        console.log('(JEREMY) in location use effect')
         const unblock = block((location, action) => {
-            console.log('(JEREMY) in block callback function')
-            console.log('(JEREMY) location?.pathname: ', location?.pathname)
-            console.log('(JEREMY) lastLocation.current?.pathname: ', lastLocation.current?.pathname)
             if (location?.pathname !== lastLocation.current?.pathname && funcRef.current) {
                 lastLocation.current = location
                 ;(async () => {
                     setIsBlocked(true)
                     const result = await funcRef.current(location, action)
-                    console.log('(JEREMY) result in useBlockNavigation: ', result)
                     setIsBlocked(false)
-                    console.log('(JEREMY) unblocking')
                     unblock()
-                    console.log('(JEREMY) unblocked')
-                    // console.log("(JEREMY) location: ", location)
-                    push(result)
+                    push(location?.pathname)
                 })()
                 return false
             }
@@ -112,6 +104,7 @@ export const useBlockNavigation = (func) => {
 
     return {isBlocked, push}
 }
+
 /*
  * Use this hook to get the routes value of the closest RoutesProvider component.
  *

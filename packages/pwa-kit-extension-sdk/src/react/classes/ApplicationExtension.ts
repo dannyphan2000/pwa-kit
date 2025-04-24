@@ -193,4 +193,8 @@ export class ApplicationExtension<
         })
         return routes
     }
+
+    public getExtraConfiguration(): object {
+        return {}
+    }
 }

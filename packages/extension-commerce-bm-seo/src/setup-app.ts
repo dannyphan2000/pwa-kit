@@ -8,10 +8,7 @@
 // Third-Party
 import React from 'react'
 // import {RouteProps} from 'react-router-dom'
-import {
-    RouteProps,
-    BeforeRouteMatchParams
-} from '@salesforce/pwa-kit-extension-sdk/types'
+import {RouteProps, BeforeRouteMatchParams} from '@salesforce/pwa-kit-extension-sdk/types'
 // Platform Imports
 import {
     ApplicationExtension,
@@ -24,7 +21,6 @@ import {Config} from './types'
 import {SliceInitializer} from '@salesforce/pwa-kit-extension-sdk/react'
 import SamplePage from './pages/sample'
 
-
 // Overridable Imports
 // Using the `overridable` loader means that you are opting in to the override module resolution flow. As a result this module
 // will be resolved by first looking in the base projects `overrides` folder then the overrides folders of any extensions configured
@@ -36,15 +32,19 @@ import extensionMeta from '../extension-meta.json'
 
 interface StoreSlice {
     isNavigationBlocked: boolean
-    setIsNavigationBlocked: (someBool: boolean) => void
+    setIsNavigationBlocked: (newIsNavigationBlocked: boolean) => void
+    siteLocale: string | undefined
+    setSiteLocale: (config: object) => void
 }
 
 // This is safe to delete if your extension does not use state. If you aren't using this, ensure you remove the
 // `withApplicationExtensionStore` usage below as well.
 export const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
     isNavigationBlocked: false,
-    setIsNavigationBlocked: (someBool) =>
-        set((state) => ({...state, isNavigationBlocked: someBool}))
+    setIsNavigationBlocked: (newIsNavigationBlocked) =>
+        set((state) => ({...state, isNavigationBlocked: newIsNavigationBlocked})),
+    siteLocale: undefined,
+    setSiteLocale: (config) => set((state) => config)
 })
 
 class Sample extends ApplicationExtension<Config> {
@@ -70,7 +70,7 @@ class Sample extends ApplicationExtension<Config> {
                     initializer: sliceInitializer
                 }),
             (component: React.ComponentType<any>) =>
-                withOptionalCommerceSdkReactProvider(component, config),
+                withOptionalCommerceSdkReactProvider(component, config)
         ]
 
         return applyHOCs(App, HOCs)
@@ -101,6 +101,11 @@ class Sample extends ApplicationExtension<Config> {
      */
     beforeRouteMatch({allRoutes}: BeforeRouteMatchParams): RouteProps[] {
         return allRoutes
+    }
+
+    getExtraConfiguration(): object {
+        const config = this.getConfig()
+        return {resourceTypeToComponentMap: config?.resourceTypeToComponentMap}
     }
 }
 

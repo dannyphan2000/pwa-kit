@@ -70,11 +70,17 @@ const RoutesContext = React.createContext()
  * @param children
  * @param routes - array of routes
  */
-const RoutesProvider = ({routes, children}) => {
+const RoutesProvider = ({routes, children, resourceTypeToComponentMap}) => {
     const [_routes, setRoutes] = useState(routes)
 
     return (
-        <RoutesContext.Provider value={{routes: _routes, setRoutes}}>
+        <RoutesContext.Provider
+            value={{
+                routes: _routes,
+                setRoutes,
+                resourceTypeToComponentMap: resourceTypeToComponentMap
+            }}
+        >
             {children}
         </RoutesContext.Provider>
     )
@@ -82,7 +88,8 @@ const RoutesProvider = ({routes, children}) => {
 
 RoutesProvider.propTypes = {
     routes: PropTypes.array.isRequired,
-    children: PropTypes.node.isRequired
+    children: PropTypes.node.isRequired,
+    resourceTypeToComponentMap: PropTypes.object
 }
 
 export {CorrelationIdContext, CorrelationIdProvider, ServerContext, RoutesContext, RoutesProvider}
