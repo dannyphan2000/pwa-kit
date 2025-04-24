@@ -769,7 +769,9 @@ ProductList.getTemplateName = () => 'product-list'
 ProductList.propTypes = {
     onAddToWishlistClick: PropTypes.func,
     onRemoveWishlistClick: PropTypes.func,
-    category: PropTypes.object
+    category: PropTypes.object,
+    productId: PropTypes.string,
+    categoryId: PropTypes.string
 }
 
 export default ProductList

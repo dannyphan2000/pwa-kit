@@ -632,7 +632,8 @@ ProductDetail.propTypes = {
     /**
      * The current react router match object. (Provided internally)
      */
-    match: PropTypes.object
+    match: PropTypes.object,
+    productId: PropTypes.string
 }
 
 export default ProductDetail

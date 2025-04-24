@@ -8,8 +8,6 @@ import React, {useState, useEffect, useRef} from 'react'
 import {useBlockNavigation, useRoutes} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useUrlMapping} from '@salesforce/commerce-sdk-react'
 import {useLocation, Redirect} from 'react-router-dom'
-import {useIntl} from 'react-intl'
-import {useConfig} from '@salesforce/commerce-sdk-react'
 import {useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
 type SeoHOCProps = React.ComponentPropsWithoutRef<any>
 
@@ -71,13 +69,13 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                     }
                 }
             }
-            fetchData()
+            void fetchData().catch(console.error)
         }, [urlSegment])
 
         const {isBlocked: isNavigationBlocked} = useBlockNavigation(
-            async (location: Location, action: string) => {
+            async (location: Location, _: string) => {
                 const urlMappingResponse = await new Promise<UrlMappingResponse | undefined>(
-                    (resolve, reject) => {
+                    (resolve, __) => {
                         const nextSegment = location.pathname
                         // So that this promise can be resolved and navigation is unblocked outside this function
                         resolveRef.current = resolve
