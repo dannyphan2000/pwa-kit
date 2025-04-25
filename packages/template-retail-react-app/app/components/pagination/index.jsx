@@ -54,7 +54,7 @@ const Pagination = (props) => {
                 href={prev || currentURL}
                 to={prev || currentURL}
                 aria-label={intl.formatMessage({
-                    id: 'pagination.button.prev.assistive_msg',
+                    id: 'pagination.link.prev.assistive_msg',
                     defaultMessage: 'Previous Page'
                 })}
                 aria-disabled={!prev}

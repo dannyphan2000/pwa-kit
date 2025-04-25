@@ -1072,9 +1072,6 @@
   "page_not_found.title.page_cant_be_found": {
     "defaultMessage": "The page you're looking for can't be found."
   },
-  "pagination.button.prev.assistive_msg": {
-    "defaultMessage": "Previous Page"
-  },
   "pagination.field.num_of_pages": {
     "defaultMessage": "of {numOfPages}"
   },
@@ -1089,6 +1086,9 @@
   },
   "pagination.link.prev": {
     "defaultMessage": "Prev"
+  },
+  "pagination.link.prev.assistive_msg": {
+    "defaultMessage": "Previous Page"
   },
   "password_card.info.password_updated": {
     "defaultMessage": "Password updated"

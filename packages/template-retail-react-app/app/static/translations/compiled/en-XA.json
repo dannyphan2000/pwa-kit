@@ -5345,20 +5345,6 @@
       "value": "]"
     }
   ],
-  "pagination.button.prev.assistive_msg": [
-    {
-      "type": 0,
-      "value": "["
-    },
-    {
-      "type": 0,
-      "value": "Ƥřḗḗṽīǿǿŭŭş Ƥȧȧɠḗḗ"
-    },
-    {
-      "type": 0,
-      "value": "]"
-    }
-  ],
   "pagination.field.num_of_pages": [
     {
       "type": 0,
@@ -5427,6 +5413,20 @@
     {
       "type": 0,
       "value": "Ƥřḗḗṽ"
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
+  "pagination.link.prev.assistive_msg": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Ƥřḗḗṽīǿǿŭŭş Ƥȧȧɠḗḗ"
     },
     {
       "type": 0,
