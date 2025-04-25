@@ -55,6 +55,7 @@ export const OuterApp = ({routes, error, extensions, WrappedApp, locals, onHydra
     extensions.forEach((applicationExtension) => {
         routes = applicationExtension.beforeRouteMatch({allRoutes: routes, locals})
     })
+
     return (
         <ServerContext.Provider value={{}}>
             <Router ref={onHydrate}>
