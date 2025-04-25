@@ -131,7 +131,7 @@ export class ApplicationExtension<
             return {
                 ...route,
                 componentName: route.component.displayName,
-                //...(route.component.props && {componentProps: route.component.props})
+                ...(route.componentProps && {componentProps: route.componentProps})
             }
         })
         console.log('serializedRoutes', serializedRoutes)

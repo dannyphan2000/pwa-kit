@@ -136,7 +136,8 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         for (const route of updatedRoutes) {
             if (!route.component.isPlaceholder) continue
 
-            const {displayName, props} = route.component as any
+            const {displayName} = route.component as any // TODO: fix the type
+            const componentProps = route.componentProps || {}
             if (!displayName) continue
 
             const componentName = getComponentName(displayName)
@@ -146,7 +147,10 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             if (!actualComponent) {
                 throw new Error(`Could not find component with displayName "${componentName}"`)
             }
-            route.component = withPropsWrapper(actualComponent, props)
+
+            // We need to wrap the component with withPropsWrapper again to ensure that the props
+            // are passed correctly and static react methods are copied over.
+            route.component = withPropsWrapper(actualComponent, componentProps)
         }
 
         return updatedRoutes
@@ -159,7 +163,18 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         // where all routes are available.
 
         // TODO: use resourceTypeToComponentMap to resolve components
-        return {ProductList: createPlaceholderComponent('ProductList', {})}
+        const {resourceTypeToComponentMap} = this.getConfig() as {
+            resourceTypeToComponentMap: Record<string, string>
+        }
+
+        // Create a map of the component names to a placeholder component for each unique name
+        return Array.from(new Set(Object.values(resourceTypeToComponentMap))).reduce(
+            (acc: ComponentMap, name) => {
+                acc[name] = createPlaceholderComponent(name)
+                return acc
+            },
+            {} as ComponentMap
+        )
     }
 }
 

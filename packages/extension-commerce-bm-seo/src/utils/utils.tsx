@@ -110,7 +110,7 @@ export const getComponentForUrlMapping = (
 
         // Create a placeholder component since the component is defined in another extension.
         // Deserialization will be handled in beforeRouteMatch, where all routes from other extensions are accessible.
-        component = createPlaceholderComponent(componentName, props)
+        component = createPlaceholderComponent(componentName)
     }
     return {component, props}
 }
@@ -118,22 +118,17 @@ export const getComponentForUrlMapping = (
 interface PlaceholderMeta {
     isPlaceholder: true
     displayName: string
-    props: Record<string, any>
 }
 
 type PlaceholderComponent = React.ComponentType<any> & PlaceholderMeta
 
-export const createPlaceholderComponent = (
-    displayName: string,
-    props: Record<string, any>
-): PlaceholderComponent => {
+export const createPlaceholderComponent = (displayName: string): PlaceholderComponent => {
     const Placeholder: PlaceholderComponent = () => {
         throw new Error(`Placeholder component "${displayName}" should never be rendered directly.`)
     }
 
     Placeholder.displayName = displayName
     Placeholder.isPlaceholder = true
-    Placeholder.props = props
 
     return Placeholder
 }

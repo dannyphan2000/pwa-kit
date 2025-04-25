@@ -72,4 +72,5 @@ export type ComponentMap = {
  */
 export type SerializedRouteProps = RouteProps & {
     componentName?: string
+    componentProps?: Record<string, any>
 }
