@@ -3157,6 +3157,20 @@
       "value": "]"
     }
   ],
+  "footer.locale_selector.assistive_msg": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Şḗḗŀḗḗƈŧ Ŀȧȧƞɠŭŭȧȧɠḗḗ"
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
   "footer.message.copyright": [
     {
       "type": 0,
@@ -3193,6 +3207,20 @@
     {
       "type": 0,
       "value": "Şīɠƞ ŭŭƥ ŧǿǿ şŧȧȧẏ īƞ ŧħḗḗ ŀǿǿǿǿƥ ȧȧƀǿǿŭŭŧ ŧħḗḗ ħǿǿŧŧḗḗşŧ ḓḗḗȧȧŀş"
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
+  "footer.subscribe.email.assistive_msg": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Ḗḿȧȧīŀ ȧȧḓḓřḗḗşş ƒǿǿř ƞḗḗẇşŀḗḗŧŧḗḗř"
     },
     {
       "type": 0,
@@ -5317,6 +5345,20 @@
       "value": "]"
     }
   ],
+  "pagination.button.prev.assistive_msg": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Ƥřḗḗṽīǿǿŭŭş Ƥȧȧɠḗḗ"
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
   "pagination.field.num_of_pages": [
     {
       "type": 0,
@@ -5329,6 +5371,20 @@
     {
       "type": 1,
       "value": "numOfPages"
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
+  "pagination.field.page_number_select": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Şḗḗŀḗḗƈŧ ƥȧȧɠḗḗ ƞŭŭḿƀḗḗř"
     },
     {
       "type": 0,
@@ -5371,20 +5427,6 @@
     {
       "type": 0,
       "value": "Ƥřḗḗṽ"
-    },
-    {
-      "type": 0,
-      "value": "]"
-    }
-  ],
-  "pagination.link.prev.assistive_msg": [
-    {
-      "type": 0,
-      "value": "["
-    },
-    {
-      "type": 0,
-      "value": "Ƥřḗḗṽīǿǿŭŭş Ƥȧȧɠḗḗ"
     },
     {
       "type": 0,
@@ -5525,6 +5567,20 @@
     {
       "type": 0,
       "value": "Ƈřḗḗḓīŧ Ƈȧȧřḓ"
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
+  "payment_selection.radio_group.assistive_msg": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Ƥȧȧẏḿḗḗƞŧ"
     },
     {
       "type": 0,
@@ -5889,6 +5945,20 @@
     {
       "type": 1,
       "value": "sortOption"
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
+  "product_list.sort_by.label.assistive_msg": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Şǿǿřŧ ƥřǿǿḓŭŭƈŧş ƀẏ"
     },
     {
       "type": 0,
