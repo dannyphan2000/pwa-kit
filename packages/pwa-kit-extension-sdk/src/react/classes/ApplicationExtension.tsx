@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
+import React from 'react'
 
 // Local
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
@@ -126,11 +127,15 @@ export class ApplicationExtension<
                 )
             }
 
+            console.log('in serialize', (route.component as any).props)
             return {
                 ...route,
-                componentName: route.component.displayName
+                componentName: route.component.displayName,
+                //...(route.component.props && {componentProps: route.component.props})
             }
         })
+        console.log('serializedRoutes', serializedRoutes)
+
         return serializedRoutes
     }
 
@@ -179,6 +184,13 @@ export class ApplicationExtension<
             }
 
             const component = componentMap[componentName]
+            console.log(
+                'in deserialize',
+                componentMap,
+                componentName,
+                componentMap[componentName],
+                route
+            )
 
             if (!component) {
                 throw new Error(
@@ -186,11 +198,14 @@ export class ApplicationExtension<
                 )
             }
 
+            // const component = () => <Component {...route.componentProps} />
+
             return {
                 ...route,
                 component
             }
         })
+        console.log('in deserialize deserialized routes', routes)
         return routes
     }
 }

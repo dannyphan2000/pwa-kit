@@ -89,12 +89,13 @@ export const withPropsWrapper: any = (
 export const getComponentForUrlMapping = (
     urlMapping: any, // TODO: fix the type for urlMapping
     resourceTypeToComponentMap: Config['resourceTypeToComponentMap']
-): React.ComponentType<any> => {
+): {component: React.ComponentType<any>; props: Record<string, any>} => {
     let component: React.ComponentType<any>
+    let props: Record<string, any>
 
     const isRedirect = !urlMapping.resourceType
     if (isRedirect && urlMapping.destinationUrl) {
-        const props: RedirectProps = {to: urlMapping.destinationUrl}
+        props = {to: urlMapping.destinationUrl}
         component = () => <Redirect {...props} />
         // TODO: Needs a display name for serialization. Double-check that serialization/deserialization works without component map
         component.displayName = 'Redirect'
@@ -103,7 +104,7 @@ export const getComponentForUrlMapping = (
             resourceTypeToComponentMap[
                 urlMapping.resourceType as keyof typeof resourceTypeToComponentMap
             ]
-        const props = {
+        props = {
             [`${urlMapping.resourceType as string}Id`]: urlMapping.resourceId
         }
 
@@ -111,7 +112,7 @@ export const getComponentForUrlMapping = (
         // Deserialization will be handled in beforeRouteMatch, where all routes from other extensions are accessible.
         component = createPlaceholderComponent(componentName, props)
     }
-    return component
+    return {component, props}
 }
 
 interface PlaceholderMeta {
@@ -122,7 +123,7 @@ interface PlaceholderMeta {
 
 type PlaceholderComponent = React.ComponentType<any> & PlaceholderMeta
 
-const createPlaceholderComponent = (
+export const createPlaceholderComponent = (
     displayName: string,
     props: Record<string, any>
 ): PlaceholderComponent => {

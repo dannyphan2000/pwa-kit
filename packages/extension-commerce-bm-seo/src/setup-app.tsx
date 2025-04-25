@@ -25,6 +25,7 @@ import {
 // Local Imports
 import {Config} from './types'
 import {
+    createPlaceholderComponent,
     getAppOrigin,
     getComponentForUrlMapping,
     getShopperSeoClient,
@@ -102,7 +103,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             return Promise.resolve([])
         }
 
-        const component: React.ComponentType<any> = getComponentForUrlMapping(
+        const {component, props} = getComponentForUrlMapping(
             urlMapping,
             config.resourceTypeToComponentMap
         )
@@ -111,6 +112,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             {
                 path: requestURL.pathname,
                 component,
+                componentProps: props,
                 exact: true
             }
         ])
@@ -135,7 +137,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             if (!route.component.isPlaceholder) continue
 
             const {displayName, props} = route.component as any
-            if (!displayName || !props) continue
+            if (!displayName) continue
 
             const componentName = getComponentName(displayName)
             if (!componentName) continue
@@ -155,7 +157,9 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         // of using the component map. This is because this extension relies on components
         // defined in other extensions which can only be resolved in beforeRouteMatch
         // where all routes are available.
-        return {}
+
+        // TODO: use resourceTypeToComponentMap to resolve components
+        return {ProductList: createPlaceholderComponent('ProductList', {})}
     }
 }
 

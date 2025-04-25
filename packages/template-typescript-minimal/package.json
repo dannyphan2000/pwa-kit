@@ -68,9 +68,6 @@
     "app": {
       "extensions": [
         [
-          "@salesforce/extension-url-mapping"
-        ],
-        [
           "@salesforce/extension-starter"
         ],
         [
