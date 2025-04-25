@@ -25,11 +25,13 @@ import {
 // Local Imports
 import {Config} from './types'
 import {
+    createPlaceholderComponent,
     getAppOrigin,
     getComponentForUrlMapping,
     getShopperSeoClient,
     withPropsWrapper
 } from './utils/utils'
+import {getProps, storeProps} from './utils/routeProps'
 
 // Others
 import extensionMeta from '../extension-meta.json'
@@ -102,10 +104,12 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             return Promise.resolve([])
         }
 
-        const component: React.ComponentType<any> = getComponentForUrlMapping(
+        const {component, props} = getComponentForUrlMapping(
             urlMapping,
             config.resourceTypeToComponentMap
         )
+        storeProps(props)
+        console.log('getRoutesAsync props', getProps())
         const requestURL = new URL(urlSegment, getAppOrigin(locals))
         return Promise.resolve([
             {
@@ -134,8 +138,8 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         for (const route of updatedRoutes) {
             if (!route.component.isPlaceholder) continue
 
-            const {displayName, props} = route.component as any
-            if (!displayName || !props) continue
+            const {displayName} = route.component as any
+            if (!displayName) continue
 
             const componentName = getComponentName(displayName)
             if (!componentName) continue
@@ -144,6 +148,8 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             if (!actualComponent) {
                 throw new Error(`Could not find component with displayName "${componentName}"`)
             }
+            const props = getProps()
+            console.log('beforeRouteMatch props', props)
             route.component = withPropsWrapper(actualComponent, props)
         }
 
@@ -155,7 +161,9 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         // of using the component map. This is because this extension relies on components
         // defined in other extensions which can only be resolved in beforeRouteMatch
         // where all routes are available.
-        return {}
+
+        // TODO: use resourceTypeToComponentMap to resolve components
+        return {ProductList: createPlaceholderComponent('ProductList')}
     }
 }
 

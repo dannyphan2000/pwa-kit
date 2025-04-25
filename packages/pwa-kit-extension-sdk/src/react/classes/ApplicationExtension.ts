@@ -125,12 +125,14 @@ export class ApplicationExtension<
                     )}" is missing a displayName in the ${this.getName()} extension`
                 )
             }
-
+            console.log('in serialize', (route.component as any).props)
             return {
                 ...route,
-                componentName: route.component.displayName
+                componentName: route.component.displayName,
             }
         })
+        console.log('serializedRoutes', serializedRoutes)
+
         return serializedRoutes
     }
 
@@ -179,6 +181,7 @@ export class ApplicationExtension<
             }
 
             const component = componentMap[componentName]
+            console.log('in deserialize', componentMap, componentName, componentMap[componentName], route)
 
             if (!component) {
                 throw new Error(
@@ -191,6 +194,7 @@ export class ApplicationExtension<
                 component
             }
         })
+        console.log('in deserialize deserialized routes', routes)
         return routes
     }
 }

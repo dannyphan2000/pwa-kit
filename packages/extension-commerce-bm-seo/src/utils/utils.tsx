@@ -89,12 +89,13 @@ export const withPropsWrapper: any = (
 export const getComponentForUrlMapping = (
     urlMapping: any, // TODO: fix the type for urlMapping
     resourceTypeToComponentMap: Config['resourceTypeToComponentMap']
-): React.ComponentType<any> => {
+): {component: React.ComponentType<any>; props: Record<string, any>} => {
     let component: React.ComponentType<any>
+    let props: Record<string, any>
 
     const isRedirect = !urlMapping.resourceType
     if (isRedirect && urlMapping.destinationUrl) {
-        const props: RedirectProps = {to: urlMapping.destinationUrl}
+        props = {to: urlMapping.destinationUrl}
         component = () => <Redirect {...props} />
         // TODO: Needs a display name for serialization. Double-check that serialization/deserialization works without component map
         component.displayName = 'Redirect'
@@ -103,36 +104,31 @@ export const getComponentForUrlMapping = (
             resourceTypeToComponentMap[
                 urlMapping.resourceType as keyof typeof resourceTypeToComponentMap
             ]
-        const props = {
+        props = {
             [`${urlMapping.resourceType as string}Id`]: urlMapping.resourceId
         }
 
         // Create a placeholder component since the component is defined in another extension.
         // Deserialization will be handled in beforeRouteMatch, where all routes from other extensions are accessible.
-        component = createPlaceholderComponent(componentName, props)
+        component = createPlaceholderComponent(componentName)
     }
-    return component
+    return {component, props}
 }
 
 interface PlaceholderMeta {
     isPlaceholder: true
     displayName: string
-    props: Record<string, any>
 }
 
 type PlaceholderComponent = React.ComponentType<any> & PlaceholderMeta
 
-const createPlaceholderComponent = (
-    displayName: string,
-    props: Record<string, any>
-): PlaceholderComponent => {
+export const createPlaceholderComponent = (displayName: string): PlaceholderComponent => {
     const Placeholder: PlaceholderComponent = () => {
         throw new Error(`Placeholder component "${displayName}" should never be rendered directly.`)
     }
 
     Placeholder.displayName = displayName
     Placeholder.isPlaceholder = true
-    Placeholder.props = props
 
     return Placeholder
 }
