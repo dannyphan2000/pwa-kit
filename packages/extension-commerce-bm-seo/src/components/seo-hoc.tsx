@@ -9,6 +9,7 @@ import {useBlockNavigation, useRoutes} from '@salesforce/pwa-kit-react-sdk/ssr/u
 import {useUrlMapping} from '@salesforce/commerce-sdk-react'
 import {useLocation, Redirect} from 'react-router-dom'
 import {useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
+import {useExtensionConfig} from '../hooks/use-extension-config'
 type SeoHOCProps = React.ComponentPropsWithoutRef<any>
 
 interface UrlMappingResponse {
@@ -31,11 +32,13 @@ const getComponent = (
 const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const SeoHOC: React.FC<P> = (props: SeoHOCProps) => {
         const location = useLocation()
-        const {routes, setRoutes, resourceTypeToComponentMap} = useRoutes()
+        const {routes, setRoutes} = useRoutes()
+        const {resourceTypeToComponentMap} = useExtensionConfig()
         const [urlSegment, setUrlSegment] = useState(location.pathname)
         const {setIsNavigationBlocked, siteLocale} = useApplicationExtensionsStore((state) => {
             return state.state['@salesforce/extension-commerce-bm-seo']
         })
+
         const resolveRef = useRef<(result?: object) => void>()
 
         const {refetch} = useUrlMapping(

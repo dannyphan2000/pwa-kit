@@ -22,14 +22,13 @@ import {useRoutes} from '../../hooks'
  * @private
  */
 const Switch = (props) => {
-    const {error, appState, routes, resourceTypeToComponentMap, App} = props
+    const {error, appState, routes, App} = props
     return (
         <UIDReset>
             <AppErrorBoundary error={error}>
                 {!error && (
                     <RoutesProvider
                         routes={routes}
-                        resourceTypeToComponentMap={resourceTypeToComponentMap}
                     >
                         <App preloadedProps={appState.appProps}>
                             <RoutesConsumer appState={appState} />
@@ -46,8 +45,7 @@ Switch.propTypes = {
     appState: PropTypes.object,
     routes: PropTypes.array,
     App: PropTypes.func,
-    preloadedProps: PropTypes.object,
-    resourceTypeToComponentMap: PropTypes.object
+    preloadedProps: PropTypes.object
 }
 
 const RoutesConsumer = ({appState}) => {

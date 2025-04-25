@@ -131,15 +131,6 @@ class ChakraStorefront extends ApplicationExtension<Config> {
             ignoredRoutes: ['/callback']
         })
     }
-    
-    /**
-     * Provide resourceTypeToComponentMap to the PWA-Kit extension, so
-     * the SEO HOC can map the correct component to the resource type after resolivng URL Mapping API.
-     */
-    getComponentMatchingConfig(): object {
-        const config = this.getConfig()
-        return {resourceTypeToComponentMap: config?.resourceTypeToComponentMap}
-    }
 }
 
 export default ChakraStorefront

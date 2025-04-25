@@ -193,8 +193,4 @@ export class ApplicationExtension<
         })
         return routes
     }
-
-    public getComponentMatchingConfig(): object {
-        return {}
-    }
 }
