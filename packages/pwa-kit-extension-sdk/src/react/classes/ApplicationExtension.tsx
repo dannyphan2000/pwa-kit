@@ -15,6 +15,7 @@ import {cacheMethodResult, isServerSide, NOT_CACHED} from '../utils/helpers'
 import {RouteProps} from 'react-router-dom'
 import {
     ApplicationExtensionConfig,
+    AsyncRouteProps,
     BeforeRouteMatchParams,
     ComponentMap,
     GetRoutesParams,
@@ -82,7 +83,7 @@ export class ApplicationExtension<
      * @protected
      * @returns a promise resolving to new routes to be added
      */
-    public getRoutesAsync?(params: GetRoutesParams): Promise<RouteProps[]>
+    public getRoutesAsync?(params: GetRoutesParams): Promise<AsyncRouteProps[]>
 
     /**
      * Called before route matching is evaluated. This method gives each extension the opportunity

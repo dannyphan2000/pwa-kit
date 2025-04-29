@@ -66,7 +66,14 @@ export type ComponentMap = {
 }
 
 /**
- * This type is represents the serialized version of the route props.
+ * This type represents the route props returned by getRoutesAsync().
+ */
+export type AsyncRouteProps = RouteProps & {
+    componentProps?: Record<string, any>
+}
+
+/**
+ * This type represents the serialized version of the route props.
  * It is used when serializing the route props on the server and when
  * deserializing them on the client.
  */

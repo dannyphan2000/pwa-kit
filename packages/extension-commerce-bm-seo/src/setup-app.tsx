@@ -17,6 +17,7 @@ import {
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {
+    AsyncRouteProps,
     ComponentMap,
     GetRoutesParams,
     BeforeRouteMatchParams
@@ -81,7 +82,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
-    async getRoutesAsync({locals}: GetRoutesParams): Promise<RouteProps[]> {
+    async getRoutesAsync({locals}: GetRoutesParams): Promise<AsyncRouteProps[]> {
         let urlMapping
 
         // TODO: do we need this check?
