@@ -7,7 +7,7 @@
 import React, {useState, useEffect, useRef} from 'react'
 import {useBlockNavigation, useRoutes} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useUrlMapping} from '@salesforce/commerce-sdk-react'
-import {useLocation, Redirect} from 'react-router-dom'
+import {useLocation, Redirect, matchPath} from 'react-router-dom'
 import {useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
 import {useExtensionConfig} from '../hooks/use-extension-config'
 type SeoHOCProps = React.ComponentPropsWithoutRef<any>
@@ -60,7 +60,6 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
         // The `matchingStrategy` configuration determines whether we check the CACHE (AKA the predefined route config) first or the `getUrlMapping` API
         // `matchingStrategy == CACHE_FIRST`: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
         // `matchingStrategy == API_FIRST`: always call `getUrlMapping`
-        const {matchingStrategy} = useExtensionConfig()
         const skipMappingCall = matchingStrategy === 'CACHE_FIRST' && isRouteDefined(location.pathname, routes)
         if (skipMappingCall) {
             return <WrappedComponent {...(props as P)} />
