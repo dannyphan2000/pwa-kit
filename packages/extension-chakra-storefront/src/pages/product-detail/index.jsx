@@ -81,7 +81,6 @@ const ProductDetail = (props) => {
     if (props.productId) {
         productId = props.productId
     }
-    console.log('ProductDetail productId:', productId)
 
     const urlParams = new URLSearchParams(location.search)
     const {

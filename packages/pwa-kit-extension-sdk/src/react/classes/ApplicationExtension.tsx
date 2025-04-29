@@ -128,14 +128,12 @@ export class ApplicationExtension<
                 )
             }
 
-            console.log('in serialize', (route.component as any).props)
             return {
                 ...route,
                 componentName: route.component.displayName,
                 ...(route.componentProps && {componentProps: route.componentProps})
             }
         })
-        console.log('serializedRoutes', serializedRoutes)
 
         return serializedRoutes
     }
