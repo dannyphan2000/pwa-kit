@@ -1,0 +1,103 @@
+[
+  {
+    "id": "aria-allowed-attr",
+    "impact": "critical",
+    "description": "Ensure an element's role supports its ARIA attributes",
+    "help": "Elements must only use supported ARIA attributes",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/aria-allowed-attr?application=playwright",
+    "nodes": [
+      {
+        "html": "<form id=\"...\" aria-haspopup=\"dialog\" aria-expanded=\"false\" aria-controls=\"popover-content-:Rd95aqeqlbpH1:\">",
+        "failureSummary": "Fix all of the following:\n  ARIA attribute is not allowed: aria-expanded=\"false\"",
+        "target": [
+          "#popover-trigger-\\:Rd95aqeqlbpH1\\:"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "aria-dialog-name",
+    "impact": "serious",
+    "description": "Ensure every ARIA dialog and alertdialog node has an accessible name",
+    "help": "ARIA dialog and alertdialog nodes should have an accessible name",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/aria-dialog-name?application=playwright",
+    "nodes": [
+      {
+        "html": "<section class=\"...\" role=\"dialog\" id=\"...\" tabindex=\"-1\" aria-modal=\"true\" aria-describedby=\"chakra-modal--body-:Rhmqlbp:\" >",
+        "failureSummary": "Fix any of the following:\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute",
+        "target": [
+          "#chakra-modal-\\:Rhmqlbp\\:"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "color-contrast",
+    "impact": "serious",
+    "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=playwright",
+    "nodes": [
+      {
+        "html": "<h3 class=\"...\">Tracking Consent</h3>",
+        "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 1.74 (foreground color: #c4c4c4, background color: #ffffff, font size: 18.8pt (25px), font weight: bold). Expected contrast ratio of 3:1",
+        "target": [
+          "h3"
+        ]
+      },
+      {
+        "html": "<p class=\"...\">",
+        "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 1.45 (foreground color: #d6d6d6, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+        "target": [
+          ".css-70qvj9 > .css-1uwn38s"
+        ]
+      },
+      {
+        "html": "<button type=\"button\" class=\"...\" aria-label=\"Decline tracking\">Decline</button>",
+        "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 1.85 (foreground color: #bebebe, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+        "target": [
+          ".css-1bx0rys > .css-9w75c5"
+        ]
+      },
+      {
+        "html": "<button type=\"button\" class=\"...\" aria-label=\"Accept tracking\">Accept</button>",
+        "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 1.1 (foreground color: #d0e2f2, background color: #c0d8ed, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+        "target": [
+          ".css-1bx0rys > .css-1a5u0ki"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "heading-order",
+    "impact": "moderate",
+    "description": "Ensure the order of headings is semantically correct",
+    "help": "Heading levels should only increase by one",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/heading-order?application=playwright",
+    "nodes": [
+      {
+        "html": "<h3 class=\"...\">Tracking Consent</h3>",
+        "failureSummary": "Fix any of the following:\n  Heading order invalid",
+        "target": [
+          "h3"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "region",
+    "impact": "moderate",
+    "description": "Ensure all page content is contained by landmarks",
+    "help": "All page content should be contained by landmarks",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/region?application=playwright",
+    "nodes": [
+      {
+        "html": "<input autocomplete=\"off\" type=\"search\" aria-label=\"Search for products...\" placeholder=\"Search for products...\" id=\"...\" class=\"...\">",
+        "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
+        "target": [
+          "#popover-trigger-\\:Rd95aqeqlbpH1\\: > .css-1igwmid.chakra-stack > .chakra-input__group.css-1y0e7gb > .css-va76oz"
+        ]
+      }
+    ]
+  }
+]
