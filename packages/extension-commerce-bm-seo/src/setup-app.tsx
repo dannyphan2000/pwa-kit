@@ -128,14 +128,16 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      */
     beforeRouteMatch({allRoutes}: BeforeRouteMatchParams): RouteProps[] {
         const updatedRoutes = [...allRoutes]
+        const filteredRoutes = updatedRoutes.filter((route) => !route.component?.isPlaceholder)
 
-        for (const route of updatedRoutes) {
+        for (let i = 0; i < updatedRoutes.length; i++) {
+            const route = updatedRoutes[i]
             if (!route.component.isPlaceholder) continue
 
             const componentName: string | undefined = getComponentName(route.component.displayName)
             if (!componentName) continue
 
-            const actualComponent = findComponentByName(componentName, updatedRoutes)
+            const actualComponent = findComponentByName(componentName, filteredRoutes)
             if (!actualComponent) {
                 throw new Error(`Could not find component with displayName "${componentName}"`)
             }

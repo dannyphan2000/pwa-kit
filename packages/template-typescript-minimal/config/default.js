@@ -8,6 +8,7 @@
 module.exports = {
     app: {
         extensions: [
+            ['@salesforce/extension-commerce-bm-seo', {}],
             [
                 '@salesforce/extension-chakra-storefront',
                 {
@@ -187,7 +188,6 @@ module.exports = {
                     }
                 }
             ],
-            ['@salesforce/extension-commerce-bm-seo', {}],
             ['@salesforce/extension-starter', {}]
         ]
     },
