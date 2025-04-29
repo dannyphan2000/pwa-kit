@@ -86,8 +86,6 @@ export const withPropsWrapper: any = (
     return hoistNonReactStatics(withPropsWrapper, WrappedComponent)
 }
 
-export const getComponentName = (displayName: string) => displayName.split('.').pop()
-
 export const findComponentByName = (
     name: string,
     routes: RouteProps[]

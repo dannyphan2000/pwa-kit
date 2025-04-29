@@ -135,9 +135,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             const route = updatedRoutes[i]
             if (!route.component.isPlaceholder) continue
 
-            const componentName: string | undefined = getComponentName(route.component.displayName)
-            if (!componentName) continue
-
+            const componentName: string = route.component.displayName
             const actualComponent = findComponentByName(componentName, filteredRoutes)
             if (!actualComponent) {
                 throw new Error(`Could not find component with displayName "${componentName}"`)
@@ -163,7 +161,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         // Generate a map where each unique component name is associated with a placeholder component
         return Array.from(new Set(Object.values(resourceTypeToComponentMap))).reduce(
             (acc: ComponentMap, name) => {
-                acc[name] = createPlaceholderComponent(name)
+                acc[name] = createPlaceholderComponent()
                 return acc
             },
             {} as ComponentMap
