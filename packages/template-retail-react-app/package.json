@@ -1,6 +1,6 @@
 {
   "name": "@salesforce/retail-react-app",
-  "version": "6.1.0-dev",
+  "version": "3.10.0-dev.1",
   "license": "See license in LICENSE",
   "author": "cc-pwa-kit@salesforce.com",
   "ccExtensibility": {
@@ -89,8 +89,8 @@
     "cross-env": "^5.2.1"
   },
   "overrides": {
-    "react-router" : {
-      "path-to-regexp": "^1.9.0" 
+    "react-router": {
+      "path-to-regexp": "^1.9.0"
     }
   },
   "engines": {
