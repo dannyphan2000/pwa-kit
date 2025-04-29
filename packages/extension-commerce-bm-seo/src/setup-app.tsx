@@ -29,7 +29,6 @@ import {
     createPlaceholderComponent,
     findComponentByName,
     getAppOrigin,
-    getComponentName,
     getComponentForUrlMapping,
     getShopperSeoClient,
     withPropsWrapper
@@ -143,8 +142,8 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
 
             const componentProps = route.componentProps || {}
 
-            // We need to wrap the component with withPropsWrapper to ensure that the non-react
-            // specific statics are copied over such as `getComponent`
+            // We need to wrap the component using withPropsWrapper to ensure that the non-react
+            // specific statics are copied over such as getComponent().
             route.component = withPropsWrapper(actualComponent, componentProps)
         }
 
@@ -156,7 +155,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         // of using the component map. This is because this extension relies on components
         // defined in other extensions which can only be resolved in beforeRouteMatch
         // where all routes are available.
-        const {resourceTypeToComponentMap} = this.getConfig() as Config
+        const {resourceTypeToComponentMap} = this.getConfig()
 
         // Generate a map where each unique component name is associated with a placeholder component
         return Array.from(new Set(Object.values(resourceTypeToComponentMap))).reduce(

@@ -69,8 +69,7 @@ export const getAppOrigin = (
     return APP_ORIGIN
 }
 
-// TODO: fix typing
-export const withPropsWrapper: any = (
+export const withPropsWrapper = (
     WrappedComponent: React.ComponentType<any>,
     injectedProps: Record<string, any>
 ) => {

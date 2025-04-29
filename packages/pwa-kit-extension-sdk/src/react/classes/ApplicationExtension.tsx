@@ -190,7 +190,7 @@ export class ApplicationExtension<
                 )
             }
 
-            let component: React.ComponentType<any> = (props: Record<string, string>) => (
+            let component: React.ComponentType<any> = (props: Record<string, any>) => (
                 <Component {...props} {...route.componentProps} />
             )
             component = hoistNonReactStatics(component, Component)
