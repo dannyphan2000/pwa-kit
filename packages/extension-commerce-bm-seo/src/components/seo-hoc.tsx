@@ -7,19 +7,29 @@
 import React, {useState, useEffect, useRef} from 'react'
 import {useBlockNavigation, useRoutes} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useUrlMapping} from '@salesforce/commerce-sdk-react'
-import { useLocation,  Redirect , matchPath} from 'react-router-dom'
+import {useLocation,  Redirect , matchPath} from 'react-router-dom'
 import {
     useApplicationExtensionsStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
+import {useExtensionConfig} from '../../hooks'
+
 type SeoHOCProps = React.ComponentPropsWithoutRef<any>
+
+const CATCH_ALL_PATH = '*'
 
 // (JEREMY) temporary solution for turning something like /global/en-GB/category/womens-jewelry-necklaces to /category/womens-jewelry-necklaces
 const removeLocalePrefix = (url: string): string => {
     return url.replace(/^\/global\/[a-z]{2}-[A-Z]{2}/, '')
 }
 
+/**
+ * Checks whether the given URL path matches a predefined route defined in the application's routes config, excluding the catch-all route (e.g., path='*')
+ */
 const isRouteDefined = (routeToMatch: string, routes: Array<{path: string}>): boolean => {
-    const isMatch = routes.some(({path}) => {
+    // Exclude any catch-all (404) routes
+    const validRoutes = routes.filter(route => route.path !== CATCH_ALL_PATH)
+
+    const isMatch = validRoutes.some(({path}) => {
         return matchPath(routeToMatch, {
             path,
             exact: true
@@ -34,12 +44,11 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
         const location = useLocation()
         const {routes, setRoutes} = useRoutes()
 
-        // If `location.pathname` matches a predefined route, the application should skip the `getUrlMapping` API call
-        // The following is a configuration that toggles whether to trust the predefined route config or always fallback to the `getUrlMapping`API
-        // `usePredefinedRoutes == true`: use routes from `routes.jsx`, skip if route is found
-        // `usePredefinedRoutes == false`: always call `getUrlMapping`
-        const usePredefinedRoutes = true
-        const skipMappingCall = usePredefinedRoutes && isRouteDefined(location.pathname, routes)
+        // The `matchingStrategy` configuration determines whether we check the CACHE (AKA the predefined route config) first or the `getUrlMapping` API
+        // `matchingStrategy == CACHE_FIRST`: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
+        // `matchingStrategy == API_FIRST`: always call `getUrlMapping`
+        const {matchingStrategy} = useExtensionConfig()
+        const skipMappingCall = matchingStrategy === 'CACHE_FIRST' && isRouteDefined(location.pathname, routes)
         if (skipMappingCall) {
             return <WrappedComponent {...(props as P)} />
         }
