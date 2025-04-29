@@ -26,7 +26,9 @@ import {
 import {Config} from './types'
 import {
     createPlaceholderComponent,
+    findComponentByName,
     getAppOrigin,
+    getComponentName,
     getComponentForUrlMapping,
     getShopperSeoClient,
     withPropsWrapper
@@ -127,29 +129,21 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
     beforeRouteMatch({allRoutes}: BeforeRouteMatchParams): RouteProps[] {
         const updatedRoutes = [...allRoutes]
 
-        const getComponentName = (displayName: string) => displayName.split('.').pop()
-
-        const findComponentByName = (name: string): React.ComponentType<any> | undefined =>
-            updatedRoutes.find((r) => r.component?.displayName?.includes(name))?.component
-
-        // TODO: do we need to loop through all the possible localized routes?
         for (const route of updatedRoutes) {
             if (!route.component.isPlaceholder) continue
 
-            const {displayName} = route.component as any // TODO: fix the type
-            const componentProps = route.componentProps || {}
-            if (!displayName) continue
-
-            const componentName = getComponentName(displayName)
+            const componentName: string | undefined = getComponentName(route.component.displayName)
             if (!componentName) continue
 
-            const actualComponent = findComponentByName(componentName)
+            const actualComponent = findComponentByName(componentName, updatedRoutes)
             if (!actualComponent) {
                 throw new Error(`Could not find component with displayName "${componentName}"`)
             }
 
-            // We need to wrap the component with withPropsWrapper again to ensure that the props
-            // are passed correctly and static react methods are copied over.
+            const componentProps = route.componentProps || {}
+
+            // We need to wrap the component with withPropsWrapper to ensure that the non-react
+            // specific statics are copied over such as `getComponent`
             route.component = withPropsWrapper(actualComponent, componentProps)
         }
 
@@ -161,13 +155,9 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         // of using the component map. This is because this extension relies on components
         // defined in other extensions which can only be resolved in beforeRouteMatch
         // where all routes are available.
+        const {resourceTypeToComponentMap} = this.getConfig() as Config
 
-        // TODO: use resourceTypeToComponentMap to resolve components
-        const {resourceTypeToComponentMap} = this.getConfig() as {
-            resourceTypeToComponentMap: Record<string, string>
-        }
-
-        // Create a map of the component names to a placeholder component for each unique name
+        // Generate a map where each unique component name is associated with a placeholder component
         return Array.from(new Set(Object.values(resourceTypeToComponentMap))).reduce(
             (acc: ComponentMap, name) => {
                 acc[name] = createPlaceholderComponent(name)

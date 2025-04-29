@@ -5,6 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React from 'react'
+import hoistNonReactStatics from 'hoist-non-react-statics'
 
 // Local
 import {ApplicationExtension as ApplicationExtensionBase} from '../../shared/classes/application-extension-base'
@@ -183,29 +184,24 @@ export class ApplicationExtension<
                 )
             }
 
-            const component = componentMap[componentName]
-            console.log(
-                'in deserialize',
-                componentMap,
-                componentName,
-                componentMap[componentName],
-                route
-            )
-
-            if (!component) {
+            const Component = componentMap[componentName]
+            if (!Component) {
                 throw new Error(
                     `"${componentName}" was not found in the component map. Ensure that getComponentMap() includes a mapping for it in the ${this.getName()} extension`
                 )
             }
 
-            // const component = () => <Component {...route.componentProps} />
+            let component: React.ComponentType<any> = (props: Record<string, string>) => (
+                <Component {...props} {...route.componentProps} />
+            )
+            component = hoistNonReactStatics(component, Component)
+            component.displayName = componentName
 
             return {
                 ...route,
                 component
             }
         })
-        console.log('in deserialize deserialized routes', routes)
         return routes
     }
 }

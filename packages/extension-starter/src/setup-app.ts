@@ -17,6 +17,7 @@ import {
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {
     BeforeRouteMatchParams,
+    ComponentMap,
     GetRoutesParams,
     RouteProps
 } from '@salesforce/pwa-kit-extension-sdk/types'
@@ -84,12 +85,13 @@ class Sample extends ApplicationExtension<Config> {
             {
                 exact: true,
                 path: this.getConfig().path,
-                component: SamplePage
+                component: SamplePage,
+                componentProps: {title: 'A custom title from the extension'}
             }
         ])
     }
 
-    getComponentMap() {
+    getComponentMap(): ComponentMap {
         return {SamplePage}
     }
 

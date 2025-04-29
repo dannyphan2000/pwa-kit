@@ -7,7 +7,7 @@
 
 // Third-Party
 import React from 'react'
-import {Redirect, RedirectProps} from 'react-router-dom'
+import {Redirect, RouteProps} from 'react-router-dom'
 import hoistNonReactStatics from 'hoist-non-react-statics'
 
 // Platform Imports
@@ -86,6 +86,14 @@ export const withPropsWrapper: any = (
     return hoistNonReactStatics(withPropsWrapper, WrappedComponent)
 }
 
+export const getComponentName = (displayName: string) => displayName.split('.').pop()
+
+export const findComponentByName = (
+    name: string,
+    routes: RouteProps[]
+): React.ComponentType<any> | undefined =>
+    routes.find((r) => r.component?.displayName?.includes(name))?.component
+
 export const getComponentForUrlMapping = (
     urlMapping: any, // TODO: fix the type for urlMapping
     resourceTypeToComponentMap: Config['resourceTypeToComponentMap']
@@ -97,7 +105,6 @@ export const getComponentForUrlMapping = (
     if (isRedirect && urlMapping.destinationUrl) {
         props = {to: urlMapping.destinationUrl}
         component = () => <Redirect {...props} />
-        // TODO: Needs a display name for serialization. Double-check that serialization/deserialization works without component map
         component.displayName = 'Redirect'
     } else {
         const componentName =
@@ -110,25 +117,25 @@ export const getComponentForUrlMapping = (
 
         // Create a placeholder component since the component is defined in another extension.
         // Deserialization will be handled in beforeRouteMatch, where all routes from other extensions are accessible.
-        component = createPlaceholderComponent(componentName)
+        component = createPlaceholderComponent()
+        component.displayName = componentName
     }
     return {component, props}
 }
 
 interface PlaceholderMeta {
     isPlaceholder: true
-    displayName: string
 }
 
-type PlaceholderComponent = React.ComponentType<any> & PlaceholderMeta
+type PlaceholderComponent = React.FC<any> & PlaceholderMeta
 
-export const createPlaceholderComponent = (displayName: string): PlaceholderComponent => {
-    const Placeholder: PlaceholderComponent = () => {
-        throw new Error(`Placeholder component "${displayName}" should never be rendered directly.`)
+export const createPlaceholderComponent = (): PlaceholderComponent => {
+    const Placeholder: React.FC<any> = () => {
+        throw new Error('Placeholder component cannot be rendered')
     }
 
-    Placeholder.displayName = displayName
-    Placeholder.isPlaceholder = true
+    const component = Placeholder as PlaceholderComponent
+    component.isPlaceholder = true
 
-    return Placeholder
+    return component
 }
