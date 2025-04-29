@@ -8,6 +8,7 @@
 // Third-Party Imports
 import React, {useState, useEffect} from 'react'
 import {useHistory, useLocation} from 'react-router-dom'
+import {useConfig} from '@salesforce/commerce-sdk-react'
 import {Helmet} from 'react-helmet'
 
 // Removes focus for non-keyboard interactions for the whole application
@@ -42,10 +43,7 @@ import ScrollToTop from '../scroll-to-top'
 import {AuthModal, useAuthModal} from '../../hooks/use-auth-modal'
 import {AddToCartModalProvider} from '../../hooks/use-add-to-cart-modal'
 import {useExtensionConfig, useCurrentCustomer, useCurrentBasket} from '../../hooks'
-import {
-    useApplicationExtension,
-    useApplicationExtensionsStore
-} from '@salesforce/pwa-kit-extension-sdk/react'
+import {useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
 import {watchOnlineStatus, flatten} from '../../utils/utils'
 import useActiveData from '../../hooks/use-active-data'
 import useMultiSite from '../../hooks/use-multi-site'
@@ -101,6 +99,7 @@ const ListMenuContentWithData = withCommerceSdkReactHookData(
 const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const WithLayout: React.FC<P> = (props: WithAppLayoutProps) => {
         const config = useExtensionConfig() as UserConfig
+        const siteConfig = useConfig()
 
         const CAT_MENU_DEFAULT_ROOT_CATEGORY = String(config.categoryNav.defaultRootCategory)
         const CAT_MENU_DEFAULT_NAV_SSR_DEPTH = config.categoryNav.defaultNavSsrDepth
@@ -116,9 +115,13 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         const history = useHistory()
         const location = useLocation()
         const authModal = useAuthModal()
-        const isNavigationBlocked = useApplicationExtensionsStore((state) => {
-            return state.state['@salesforce/extension-commerce-bm-seo']?.isNavigationBlocked
+        const [siteLocale, _] = useState(siteConfig.locale)
+        const {isNavigationBlocked, setSiteLocale} = useApplicationExtensionsStore((state) => {
+            return state.state['@salesforce/extension-commerce-bm-seo']
         })
+        useEffect(() => {
+            setSiteLocale(siteLocale)
+        }, [siteLocale])
 
         const dntNotification = useDntNotification()
         const {site, locale, buildUrl} = useMultiSite()

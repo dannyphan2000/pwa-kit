@@ -21,6 +21,7 @@ export interface UserConfig extends ApplicationExtensionConfig {
             currency: string
         }
     }
+    resourceTypeToComponentMap?: object
 }
 
 /**
