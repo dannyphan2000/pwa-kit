@@ -1,5 +1,21 @@
 [
   {
+    "id": "aria-prohibited-attr",
+    "impact": "serious",
+    "description": "Ensure ARIA attributes are not prohibited for an element's role",
+    "help": "Elements must only use permitted ARIA attributes",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/aria-prohibited-attr?application=playwright",
+    "nodes": [
+      {
+        "html": "<div aria-label=\"5.99\" class=\"...\"><p class=\"...\" aria-hidden=\"true\">$5.99</p></div>",
+        "failureSummary": "Fix all of the following:\n  aria-label attribute cannot be used on a div with no valid role attribute.",
+        "target": [
+          "div"
+        ]
+      }
+    ]
+  },
+  {
     "id": "page-has-heading-one",
     "impact": "moderate",
     "description": "Ensure that the page, or at least one of its frames contains a level-one heading",

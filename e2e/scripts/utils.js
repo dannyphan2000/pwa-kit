@@ -85,11 +85,13 @@ function sanitizeHtml(html) {
  * Runs an accessibility analysis on the current page
  *
  * @param {Page} page - Playwright page object
- * @param {string} snapshotName - Name for the snapshot file
+ * @param {string|string[]} snapshotName - Name for the snapshot file
  */
 async function runAccessibilityTest(page, snapshotName) {
     // Run the accessibility audit
-    const accessibilityScanResults = await new AxeBuilder({page}).analyze()
+    const accessibilityScanResults = await new AxeBuilder({page})
+        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'])
+        .analyze()
 
     console.log(`Found ${accessibilityScanResults.violations.length} accessibility violations`)
 

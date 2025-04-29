@@ -8,15 +8,15 @@
 const {test, expect} = require('@playwright/test')
 const config = require('../../config')
 const {
-  addProductToCart,
-  registerShopper,
-  validateOrderHistory,
-  validateWishlist,
-  loginShopper,
-  navigateToPDPDesktop,
-  navigateToPDPDesktopSocial,
-  socialLoginShopper,
-} = require("../../scripts/pageHelpers")
+    addProductToCart,
+    registerShopper,
+    validateOrderHistory,
+    validateWishlist,
+    loginShopper,
+    navigateToPDPDesktop,
+    navigateToPDPDesktopSocial,
+    socialLoginShopper
+} = require('../../scripts/pageHelpers')
 const {generateUserCredentials, getCreditCardExpiry} = require('../../scripts/utils.js')
 let registeredUserCredentials = {}
 
@@ -25,12 +25,8 @@ test.beforeAll(async () => {
     registeredUserCredentials = generateUserCredentials()
 })
 
-/**
- * Test that registered shoppers can add a product to cart and go through the entire checkout process,
- * validating that shopper is able to get to the order summary section,
- * and that order shows up in order history
- */
-test('Registered shopper can checkout items', async ({page}) => {
+export const registeredUserHappyPath = async ({page, a11y = {checkA11y: false}}) => {
+    const {checkA11y, snapShotName} = a11y
     // Since we're re-using the same account, we need to check if the user is already registered.
     // This ensures the tests are independent and not dependent on the order they are run in.
     const isLoggedIn = await loginShopper({
@@ -125,6 +121,15 @@ test('Registered shopper can checkout items', async ({page}) => {
 
     // order history
     await validateOrderHistory({page})
+}
+
+/**
+ * Test that registered shoppers can add a product to cart and go through the entire checkout process,
+ * validating that shopper is able to get to the order summary section,
+ * and that order shows up in order history
+ */
+test('Registered shopper can checkout items', async ({page}) => {
+    await registeredUserHappyPath({page})
 })
 
 /**
@@ -163,40 +168,43 @@ test('Registered shopper can add item to wishlist', async ({page}) => {
  * TODO: Fix flaky test
  * Skipping this test for now because Google login requires 2FA, which Playwright cannot get past.
  */
-test.skip("Registered shopper logged in through social retains persisted cart", async ({ page }) => {
-  navigateToPDPDesktopSocial({page, productName: "Floral Ruffle Top", productColor: "Cardinal Red Multi", productPrice: "£35.19"})
+test.skip('Registered shopper logged in through social retains persisted cart', async ({page}) => {
+    navigateToPDPDesktopSocial({
+        page,
+        productName: 'Floral Ruffle Top',
+        productColor: 'Cardinal Red Multi',
+        productPrice: '£35.19'
+    })
 
-  // Add to Cart
-  await expect(
-    page.getByRole("heading", { name: /Floral Ruffle Top/i })
-  ).toBeVisible({timeout: 15000})
-  await page.getByRole("radio", { name: "L", exact: true }).click()
+    // Add to Cart
+    await expect(page.getByRole('heading', {name: /Floral Ruffle Top/i})).toBeVisible({
+        timeout: 15000
+    })
+    await page.getByRole('radio', {name: 'L', exact: true}).click()
 
-  await page.locator("button[data-testid='quantity-increment']").click()
+    await page.locator("button[data-testid='quantity-increment']").click()
 
-  // Selected Size and Color texts are broken into multiple elements on the page.
-  // So we need to look at the page URL to verify selected variants
-  const updatedPageURL = await page.url()
-  const params = updatedPageURL.split("?")[1]
-  expect(params).toMatch(/size=9LG/i)
-  expect(params).toMatch(/color=JJ9DFXX/i)
-  await page.getByRole("button", { name: /Add to Cart/i }).click()
+    // Selected Size and Color texts are broken into multiple elements on the page.
+    // So we need to look at the page URL to verify selected variants
+    const updatedPageURL = await page.url()
+    const params = updatedPageURL.split('?')[1]
+    expect(params).toMatch(/size=9LG/i)
+    expect(params).toMatch(/color=JJ9DFXX/i)
+    await page.getByRole('button', {name: /Add to Cart/i}).click()
 
-  const addedToCartModal = page.getByText(/2 items added to cart/i)
+    const addedToCartModal = page.getByText(/2 items added to cart/i)
 
-  await addedToCartModal.waitFor()
+    await addedToCartModal.waitFor()
 
-  await page.getByLabel("Close", { exact: true }).click()
+    await page.getByLabel('Close', {exact: true}).click()
 
-  // Social Login
-  await socialLoginShopper({
-    page
-  })
+    // Social Login
+    await socialLoginShopper({
+        page
+    })
 
-  // Check Items in Cart
-  await page.getByLabel(/My cart/i).click()
-  await page.waitForLoadState()
-  await expect(
-    page.getByRole("link", { name: /Floral Ruffle Top/i })
-  ).toBeVisible()
+    // Check Items in Cart
+    await page.getByLabel(/My cart/i).click()
+    await page.waitForLoadState()
+    await expect(page.getByRole('link', {name: /Floral Ruffle Top/i})).toBeVisible()
 })

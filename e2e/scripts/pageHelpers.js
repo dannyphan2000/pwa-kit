@@ -376,7 +376,8 @@ export const searchProduct = async ({page, query, isMobile = false}) => {
  *      - email
  *      - password
  */
-export const checkoutProduct = async ({page, userCredentials, checkA11y = false}) => {
+export const checkoutProduct = async ({page, userCredentials, a11y = {checkA11y: false}}) => {
+    const {checkA11y, snapShotName} = a11y
     await page.getByRole('link', {name: 'Proceed to Checkout'}).click()
 
     await expect(page.getByRole('heading', {name: /Contact Info/i})).toBeVisible()
@@ -402,7 +403,7 @@ export const checkoutProduct = async ({page, userCredentials, checkA11y = false}
     await page.locator('select#stateCode').selectOption(userCredentials.address.state)
     await page.locator('input#postalCode').fill(userCredentials.address.zipcode)
     if (checkA11y) {
-        await runAccessibilityTest(page, 'checkout-a11y-violations-step-1.json')
+        await runAccessibilityTest(page, [snapShotName, 'checkout-a11y-violations-step-1.json'])
     }
     await page.getByRole('button', {name: /Continue to Shipping Method/i}).click()
 
@@ -420,7 +421,7 @@ export const checkoutProduct = async ({page, userCredentials, checkA11y = false}
         })
         await expect(continueToPayment).toBeVisible({timeout: 2000})
         if (checkA11y) {
-            await runAccessibilityTest(page, 'checkout-a11y-violations-step-2.json')
+            await runAccessibilityTest(page, [snapShotName, 'checkout-a11y-violations-step-2.json'])
         }
         await continueToPayment.click()
     } catch {}
@@ -433,7 +434,7 @@ export const checkoutProduct = async ({page, userCredentials, checkA11y = false}
     await page.locator('input#expiry').fill(creditCardExpiry)
     await page.locator('input#securityCode').fill('213')
     if (checkA11y) {
-        await runAccessibilityTest(page, 'checkout-a11y-violations-step-3.json')
+        await runAccessibilityTest(page, [snapShotName, 'checkout-a11y-violations-step-3.json'])
     }
     await page.getByRole('button', {name: /Review Order/i}).click()
 
@@ -445,5 +446,11 @@ export const checkoutProduct = async ({page, userCredentials, checkA11y = false}
     const orderConfirmationHeading = page.getByRole('heading', {
         name: /Thank you for your order!/i
     })
+    if (checkA11y) {
+        await runAccessibilityTest(page, [
+            snapShotName,
+            'checkout-a11y-violations-review-order.json'
+        ])
+    }
     await orderConfirmationHeading.waitFor()
 }

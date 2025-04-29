@@ -15,10 +15,11 @@ const {
     checkoutProduct
 } = require('../../scripts/pageHelpers')
 const {generateUserCredentials, runAccessibilityTest} = require('../../scripts/utils')
+const {registeredUserHappyPath} = require('./registered-shopper.spec')
 
 const GUEST_USER_CREDENTIALS = generateUserCredentials()
 
-test.describe('Accessibility Tests with Snapshots', () => {
+test.describe('Accessibility Tests with Snapshots for guest user', () => {
     test('Homepage should not have new accessibility issues', async ({page}) => {
         // Go to the homepage
         await page.goto(config.RETAIL_APP_HOME)
@@ -30,7 +31,7 @@ test.describe('Accessibility Tests with Snapshots', () => {
         await expect(page.getByRole('link', {name: /Denim slim skirt/i})).toBeVisible()
 
         // Run the a11y test
-        await runAccessibilityTest(page, 'homepage-a11y-violations.json')
+        await runAccessibilityTest(page, ['guest', 'homepage-a11y-violations.json'])
     })
 
     test('Product Listing Page should not have new accessibility issues', async ({page}) => {
@@ -48,7 +49,7 @@ test.describe('Accessibility Tests with Snapshots', () => {
         await expect(productTile.getByText(/From \$39\.99/i)).toBeVisible()
 
         // Run the a11y test
-        await runAccessibilityTest(page, 'plp-a11y-violations.json')
+        await runAccessibilityTest(page, ['guest', 'plp-a11y-violations.json'])
     })
 
     test('Product Detail Page should not have new accessibility issues', async ({page}) => {
@@ -57,7 +58,7 @@ test.describe('Accessibility Tests with Snapshots', () => {
         await page.waitForLoadState()
 
         // Run the a11y test
-        await runAccessibilityTest(page, 'pdp-a11y-violations.json')
+        await runAccessibilityTest(page, ['guest', 'pdp-a11y-violations.json'])
     })
 
     test('Cart should not have new accessibility issues', async ({page}) => {
@@ -71,7 +72,7 @@ test.describe('Accessibility Tests with Snapshots', () => {
         await expect(page.getByRole('link', {name: /Cotton Turtleneck Sweater/i})).toBeVisible()
 
         // Run the a11y test
-        await runAccessibilityTest(page, 'cart-a11y-violations.json')
+        await runAccessibilityTest(page, ['guest', 'cart-a11y-violations.json'])
     })
 
     test('Checkout should not have new accessibility issues', async ({page}) => {
@@ -84,9 +85,18 @@ test.describe('Accessibility Tests with Snapshots', () => {
         // make sure the cart is fully load
         await expect(page.getByRole('link', {name: /Cotton Turtleneck Sweater/i})).toBeVisible()
 
-        await checkoutProduct({page, userCredentials: GUEST_USER_CREDENTIALS, checkA11y: true})
+        await checkoutProduct({
+            page,
+            userCredentials: GUEST_USER_CREDENTIALS,
+            a11y: {checkA11y: true, snapShotName: 'guest'}
+        })
+    })
+})
 
-        // Run the a11y test
-        await runAccessibilityTest(page, 'checkout-a11y-violations.json')
+test.describe('Accessibility Tests with Snapshots for registered user', async () => {
+    test('Registered shopper checkout page should not have new accessibility issues', async ({
+        page
+    }) => {
+        await registeredUserHappyPath({page, a11y: {checkA11y: true, snapShotName: 'registered'}})
     })
 })
