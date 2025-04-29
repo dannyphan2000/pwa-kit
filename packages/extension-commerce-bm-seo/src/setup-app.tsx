@@ -27,12 +27,10 @@ import {
 import {Config} from './types'
 import {
     createPlaceholderComponent,
-    findComponentByName,
-    getAppOrigin,
     getComponentForUrlMapping,
-    getShopperSeoClient,
     withPropsWrapper
-} from './utils/utils'
+} from './utils/component-utils'
+import {getAppOrigin, getShopperSeoClient} from './utils/shopper-seo-utils'
 
 // Others
 import extensionMeta from '../extension-meta.json'
@@ -135,7 +133,10 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             if (!route.component.isPlaceholder) continue
 
             const componentName: string = route.component.displayName
-            const actualComponent = findComponentByName(componentName, filteredRoutes)
+            const actualComponent = filteredRoutes.find((r) =>
+                r.component?.displayName?.includes(componentName)
+            )?.component
+
             if (!actualComponent) {
                 throw new Error(`Could not find component with displayName "${componentName}"`)
             }
