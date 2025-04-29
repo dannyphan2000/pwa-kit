@@ -85,7 +85,7 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                 )
                 // If no redirect rule exists, go to original url
                 if (urlMappingResponse === undefined) {
-                    return location
+                    return
                 }
                 let Component
                 let props
