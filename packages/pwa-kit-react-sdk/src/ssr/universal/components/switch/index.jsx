@@ -27,9 +27,7 @@ const Switch = (props) => {
         <UIDReset>
             <AppErrorBoundary error={error}>
                 {!error && (
-                    <RoutesProvider
-                        routes={routes}
-                    >
+                    <RoutesProvider routes={routes}>
                         <App preloadedProps={appState.appProps}>
                             <RoutesConsumer appState={appState} />
                         </App>
