@@ -61,9 +61,9 @@ describe('SeoHOC', () => {
 
     beforeEach(() => {
         // Reset all mocks before each test
-        jest.clearAllMocks();
+        jest.clearAllMocks()
         // Default mock for useLocation
-        (useLocation as jest.Mock).mockReturnValue({
+        ;(useLocation as jest.Mock).mockReturnValue({
             pathname: '/products/123'
         })
     })
@@ -71,7 +71,7 @@ describe('SeoHOC', () => {
     describe('CACHE_FIRST strategy', () => {
         it('should skip URL mapping when route is defined and strategy is CACHE_FIRST', () => {
             // Mock useExtensionConfig to return CACHE_FIRST strategy
-            (useExtensionConfig as jest.Mock).mockReturnValue({
+            ;(useExtensionConfig as jest.Mock).mockReturnValue({
                 matchingStrategy: 'CACHE_FIRST',
                 resourceTypeToComponentMap: {}
             })
@@ -81,16 +81,21 @@ describe('SeoHOC', () => {
                 {path: '/products/:id', component: MockComponent},
                 {path: '/category/:id', component: MockComponent},
                 {path: '*', component: MockComponent} // Catch-all route
-            ];
+            ]
 
-            (jest.requireMock('@salesforce/pwa-kit-react-sdk/ssr/universal/hooks').useRoutes as jest.Mock).mockReturnValue({
+            ;(
+                jest.requireMock('@salesforce/pwa-kit-react-sdk/ssr/universal/hooks')
+                    .useRoutes as jest.Mock
+            ).mockReturnValue({
                 routes: mockRoutes,
                 setRoutes: jest.fn()
             })
 
             // Mock useUrlMapping to ensure it's not called
-            const mockRefetch = jest.fn();
-            (jest.requireMock('@salesforce/commerce-sdk-react').useUrlMapping as jest.Mock).mockReturnValue({
+            const mockRefetch = jest.fn()
+            ;(
+                jest.requireMock('@salesforce/commerce-sdk-react').useUrlMapping as jest.Mock
+            ).mockReturnValue({
                 refetch: mockRefetch
             })
 
@@ -107,21 +112,26 @@ describe('SeoHOC', () => {
 
         it('should proceed with URL mapping when route is not defined and strategy is CACHE_FIRST', () => {
             // Mock useExtensionConfig to return CACHE_FIRST strategy
-            (useExtensionConfig as jest.Mock).mockReturnValue({
+            ;(useExtensionConfig as jest.Mock).mockReturnValue({
                 matchingStrategy: 'CACHE_FIRST',
                 resourceTypeToComponentMap: {}
             })
 
             // Mock useRoutes to return only catch-all route
-            const mockRoutes = [{path: '*', component: MockComponent}];
-            (jest.requireMock('@salesforce/pwa-kit-react-sdk/ssr/universal/hooks').useRoutes as jest.Mock).mockReturnValue({
+            const mockRoutes = [{path: '*', component: MockComponent}]
+            ;(
+                jest.requireMock('@salesforce/pwa-kit-react-sdk/ssr/universal/hooks')
+                    .useRoutes as jest.Mock
+            ).mockReturnValue({
                 routes: mockRoutes,
                 setRoutes: jest.fn()
             })
 
             // Mock useUrlMapping to ensure it's called
-            const mockRefetch = jest.fn();
-            (jest.requireMock('@salesforce/commerce-sdk-react').useUrlMapping as jest.Mock).mockReturnValue({
+            const mockRefetch = jest.fn()
+            ;(
+                jest.requireMock('@salesforce/commerce-sdk-react').useUrlMapping as jest.Mock
+            ).mockReturnValue({
                 refetch: mockRefetch
             })
 
@@ -136,5 +146,3 @@ describe('SeoHOC', () => {
         })
     })
 })
-
-

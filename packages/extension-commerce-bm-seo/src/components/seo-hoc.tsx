@@ -58,17 +58,13 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
         const {setIsNavigationBlocked, siteLocale} = useApplicationExtensionsStore((state) => {
             return state.state['@salesforce/extension-commerce-bm-seo']
         })
+        const resolveRef = useRef<(result?: object) => void>()
 
         // The `matchingStrategy` configuration determines whether we check the CACHE (AKA the predefined route config) first or the `getUrlMapping` API
         // `matchingStrategy == CACHE_FIRST`: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
         // `matchingStrategy == API_FIRST`: always call `getUrlMapping`
         const skipMappingCall =
             matchingStrategy === 'CACHE_FIRST' && isRouteDefined(location.pathname, routes)
-        if (skipMappingCall) {
-            return <WrappedComponent {...(props as P)} />
-        }
-
-        const resolveRef = useRef<(result?: object) => void>()
 
         const {refetch} = useUrlMapping(
             {
@@ -78,13 +74,14 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                 }
             },
             {
-                enabled: false
+                // Use enabled to control when the API call happens
+                enabled: !skipMappingCall
             }
         )
 
         useEffect(() => {
             const fetchData = async () => {
-                if (urlSegment) {
+                if (urlSegment && !skipMappingCall) {
                     const result = await refetch()
                     if (resolveRef.current) {
                         if (result.status === 'error') {
@@ -100,10 +97,14 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                 }
             }
             void fetchData().catch(console.error)
-        }, [urlSegment])
+        }, [urlSegment, skipMappingCall])
 
         const {isBlocked: isNavigationBlocked} = useBlockNavigation(
             async (location: Location, _: string) => {
+                if (skipMappingCall) {
+                    return
+                }
+
                 const urlMappingResponse = await new Promise<UrlMappingResponse | undefined>(
                     (resolve, __) => {
                         const nextSegment = location.pathname
