@@ -1,6 +1,5 @@
 {
     "enabled": true,
-    "path": "/sample-page",
     "commerceAPI": {
         "proxyPath": "/mobify/proxy/api",
         "parameters": {

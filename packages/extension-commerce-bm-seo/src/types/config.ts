@@ -29,8 +29,6 @@ type CommerceAPIConfig = {
  * This defines how your extension can be configured in the user's project. Please update it to your specific needs!
  */
 export interface UserConfig extends ApplicationExtensionConfig {
-    // react-router-style path to the new sample page
-    path?: string
     commerceAPI: CommerceAPIConfig
     commerceAPIAuth: {
         propertyNameInLocals: string
