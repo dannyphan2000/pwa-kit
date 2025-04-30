@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {UseMutationResult, DefaultError} from '@tanstack/react-query'
-import {ApiClients, ApiMethod, Argument, DataType, CacheUpdateGetter, MergedOptions, CacheUpdate} from './types'
+import {ApiClients, ApiMethod, Argument, DataType, CacheUpdateGetter} from './types'
 import useCommerceApi from './useCommerceApi'
 import {useMutation} from './useMutation'
 
@@ -34,8 +34,11 @@ export interface CreateUseMutationOptions<
     getCacheUpdates: (mutation: Mutation) => CacheUpdateGetter<any, any> | undefined
 }
 
-export type MutationHook<M extends ApiMethod<any, any>, TError = DefaultError> = 
-    UseMutationResult<DataType<M>, TError, Argument<M>>
+export type MutationHook<M extends ApiMethod<any, any>, TError = DefaultError> = UseMutationResult<
+    DataType<M>,
+    TError,
+    Argument<M>
+>
 
 /**
  * Creates a mutation hook for a specific API client.
@@ -43,28 +46,17 @@ export type MutationHook<M extends ApiMethod<any, any>, TError = DefaultError> =
 export function createUseMutation<
     ClientKey extends keyof ApiClients,
     Mutation extends MethodsOf<ApiClients[ClientKey]>
->({
-    clientKey,
-    getCacheUpdates
-}: CreateUseMutationOptions<ClientKey, Mutation>) {
+>({clientKey, getCacheUpdates}: CreateUseMutationOptions<ClientKey, Mutation>) {
     type MutateArgument = Argument<EnsureApiMethod<ApiClients[ClientKey][Mutation]>>
     type MutationData = DataType<EnsureApiMethod<ApiClients[ClientKey][Mutation]>>
     return function useMutationHook<M extends Mutation>(
         mutation: M
-    ): UseMutationResult<
-        MutationData, 
-        DefaultError,
-        MutateArgument
-    > {
+    ): UseMutationResult<MutationData, DefaultError, MutateArgument> {
         const commerceApi = useCommerceApi()
         const client = commerceApi[clientKey]
         const method = client[mutation].bind(client) as EnsureApiMethod<ApiClients[ClientKey][M]>
 
-        return useMutation<
-            ApiClients[ClientKey],
-            MutateArgument,
-            MutationData
-        >({
+        return useMutation<ApiClients[ClientKey], MutateArgument, MutationData>({
             client,
             method,
             getCacheUpdates: (customerId, options, data) => {

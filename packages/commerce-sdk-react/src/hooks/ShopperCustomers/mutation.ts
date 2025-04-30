@@ -106,8 +106,7 @@ export const ShopperCustomersMutations = {
  * @group ShopperCustomers
  * @category Mutation
  */
-export type ShopperCustomersMutation = 
-  MethodsOf<ApiClients['shopperCustomers']>
+export type ShopperCustomersMutation = MethodsOf<ApiClients['shopperCustomers']>
 
 /**
  * Mutation hook for Shopper Customers.

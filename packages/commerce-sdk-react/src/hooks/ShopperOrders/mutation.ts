@@ -10,8 +10,8 @@ import {UseMutationResult} from '@tanstack/react-query'
 import {NotImplementedError} from '../utils'
 import useCommerceApi from '../useCommerceApi'
 import {cacheUpdateMatrix} from './cache'
-import { MethodsOf } from '../createUseMutation'
-import { createUseMutation } from '../createUseMutation'
+import {MethodsOf} from '../createUseMutation'
+import {createUseMutation} from '../createUseMutation'
 
 type Client = ApiClients['shopperOrders']
 
@@ -49,18 +49,14 @@ The payment instrument is added with the provided details. The payment method mu
     UpdatePaymentInstrumentForOrder: 'updatePaymentInstrumentForOrder'
 } as const
 
-export type ShopperOrdersMutation =
-  MethodsOf<ApiClients['shopperOrders']>
+export type ShopperOrdersMutation = MethodsOf<ApiClients['shopperOrders']>
 
 /**
  * Mutation hook for Shopper Orders.
  * @group ShopperOrders
  * @category Mutation
  */
-export const useShopperOrdersMutation = createUseMutation<
-    'shopperOrders',
-    ShopperOrdersMutation
->({
+export const useShopperOrdersMutation = createUseMutation<'shopperOrders', ShopperOrdersMutation>({
     clientKey: 'shopperOrders',
     getCacheUpdates: (mutation) => cacheUpdateMatrix[mutation]
 })
