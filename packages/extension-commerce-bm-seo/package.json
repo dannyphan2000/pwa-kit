@@ -7,7 +7,8 @@
     "lint:fix": "npm run lint:js -- --fix",
     "lint:js": "pwa-kit-dev lint \"**/*.{js,jsx,ts,tsx}\"",
     "start": "npm --prefix ./dev start",
-    "start:inspect": "npm --prefix ./dev run start:inspect"
+    "start:inspect": "npm --prefix ./dev run start:inspect",
+    "test": "pwa-kit-dev test"
   },
   "peerDependencies": {
     "@loadable/component": "^5.15.3",
@@ -31,6 +32,9 @@
     "@salesforce/pwa-kit-extension-sdk": "4.0.0-extensibility-preview.4",
     "@salesforce/pwa-kit-react-sdk": "4.0.0-extensibility-preview.4",
     "@salesforce/pwa-kit-runtime": "4.0.0-extensibility-preview.4",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^14.0.0",
+    "@types/jest": "29.5.14",
     "@types/loadable__component": "^5.13.9",
     "@types/react": "~18.2.0",
     "@types/react-dom": "~18.2.1",
