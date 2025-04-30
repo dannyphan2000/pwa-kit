@@ -83,6 +83,8 @@ const Home = () => {
         dataCloud.sendViewPage(pathname)
     }, [])
 
+    return <div>Home Page</div>
+
     return (
         <Box data-testid="home-page" layerStyle="page">
             <Seo

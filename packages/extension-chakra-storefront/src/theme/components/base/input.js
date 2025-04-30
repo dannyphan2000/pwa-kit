@@ -4,16 +4,12 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-const mdSize = {height: 11, borderRadius: 'base'}
+import {defineRecipe} from '@chakra-ui/react'
 
-export default {
-    sizes: {
-        md: {
-            field: {...mdSize, px: 3},
-            addon: mdSize
-        }
-    },
-    baseStyle: {
+const mdSize = {height: 11, borderRadius: 'sm'}
+
+export default defineRecipe({
+    base: {
         field: {
             _focus: {
                 borderColor: 'blue.600'
@@ -21,30 +17,41 @@ export default {
         }
     },
     variants: {
-        outline: {
-            field: {
+        variant: {
+            outline: {
                 borderColor: 'gray.500'
-            }
-        },
-        filled: {
-            // we use filled variant for
-            // search input
-            field: {
+            },
+            filled: {
+                // we use filled variant for
+                // search input
                 borderColor: 'gray.600',
                 backgroundColor: 'gray.100',
+                border: '2px solid',
+                fontSize: 'md',
                 _focus: {
-                    backgroundColor: 'white'
+                    backgroundColor: 'white',
+                    borderColor: 'blue.600'
                 },
                 _hover: {
                     backgroundColor: 'gray.100',
                     _focus: {
-                        backgroundColor: 'white'
+                        backgroundColor: 'white',
+                        borderColor: 'blue.600'
                     }
                 },
                 _placeholder: {
                     color: 'gray.700'
                 }
+                // field: {
+                //
+                // }
+            }
+        },
+        size: {
+            md: {
+                ...mdSize,
+                px: 3
             }
         }
     }
-}
+})
