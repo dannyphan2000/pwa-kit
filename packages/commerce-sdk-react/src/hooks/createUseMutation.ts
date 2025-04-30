@@ -58,10 +58,8 @@ export function createUseMutation<
     > {
         const commerceApi = useCommerceApi()
         const client = commerceApi[clientKey]
-        const method = client[mutation] as EnsureApiMethod<ApiClients[ClientKey][M]>
-        // console.log(clientKey)
-        // console.log(client)
-        // console.log(mutation)
+        const method = client[mutation].bind(client) as EnsureApiMethod<ApiClients[ClientKey][M]>
+
         return useMutation<
             ApiClients[ClientKey],
             MutateArgument,
