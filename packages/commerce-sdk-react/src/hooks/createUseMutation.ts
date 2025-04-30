@@ -47,16 +47,13 @@ export function createUseMutation<
     ClientKey extends keyof ApiClients,
     Mutation extends MethodsOf<ApiClients[ClientKey]>
 >({clientKey, getCacheUpdates}: CreateUseMutationOptions<ClientKey, Mutation>) {
-    type MutateArgument = Argument<EnsureApiMethod<ApiClients[ClientKey][Mutation]>>
-    type MutationData = DataType<EnsureApiMethod<ApiClients[ClientKey][Mutation]>>
-    return function useMutationHook<M extends Mutation>(
-        mutation: M
-    ): UseMutationResult<MutationData, DefaultError, MutateArgument> {
+    return function useMutationHook<M extends Mutation>(mutation: M) {
         const commerceApi = useCommerceApi()
         const client = commerceApi[clientKey]
         const method = (client[mutation] as EnsureApiMethod<ApiClients[ClientKey][M]>).bind(client)
-
-        return useMutation<ApiClients[ClientKey], MutateArgument, MutationData>({
+        type MutateArgument = Argument<EnsureApiMethod<ApiClients[ClientKey][M]>>
+        type MutateData = DataType<EnsureApiMethod<ApiClients[ClientKey][M]>>
+        return useMutation<ApiClients[ClientKey], MutateArgument, MutateData>({
             client,
             method,
             getCacheUpdates: (customerId, options, data) => {

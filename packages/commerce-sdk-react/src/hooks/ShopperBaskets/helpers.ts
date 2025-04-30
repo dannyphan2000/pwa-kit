@@ -41,7 +41,7 @@ export function useShopperBasketsMutationHelper() {
         }
     )
     const createBasket = useShopperBasketsMutation('createBasket')
-    const addItemToBasketMutation = useShopperBasketsMutation('addItemToBasket')
+    const addItemToBasketMutation = useShopperBasketsMutation<'addItemToBasket'>('addItemToBasket')
     return {
         addItemToNewOrExistingBasket: async (
             productItem: Argument<Client['addItemToBasket']> extends {body: infer B} ? B : undefined
