@@ -12,14 +12,17 @@ const {
     answerConsentTrackingForm,
     navigateToPDPDesktop,
     addProductToCart,
-    checkoutProduct
+    checkoutProduct,
+    registeredUserHappyPath,
+    wishlistFlow,
+    loginShopper,
+    registerShopper
 } = require('../../scripts/pageHelpers')
 const {generateUserCredentials, runAccessibilityTest} = require('../../scripts/utils')
-const {registeredUserHappyPath} = require('./registered-shopper.spec')
-
-const GUEST_USER_CREDENTIALS = generateUserCredentials()
 
 test.describe('Accessibility Tests with Snapshots for guest user', () => {
+    const GUEST_USER_CREDENTIALS = generateUserCredentials()
+
     test('Homepage should not have new accessibility issues', async ({page}) => {
         // Go to the homepage
         await page.goto(config.RETAIL_APP_HOME)
@@ -93,10 +96,54 @@ test.describe('Accessibility Tests with Snapshots for guest user', () => {
     })
 })
 
-test.describe('Accessibility Tests with Snapshots for registered user', async () => {
-    test('Registered shopper checkout page should not have new accessibility issues', async ({
+test.describe('Accessibility Tests with Snapshots for a registered user', async () => {
+    let registeredUserCredentials = {}
+
+    test.beforeAll(async () => {
+        // Generate credentials once and use throughout tests to avoid creating a new account
+        registeredUserCredentials = generateUserCredentials()
+    })
+
+    test('Registered shopper happy path flow should not have new accessibility issues', async ({
         page
     }) => {
-        await registeredUserHappyPath({page, a11y: {checkA11y: true, snapShotName: 'registered'}})
+        await registeredUserHappyPath({
+            page,
+            registeredUserCredentials,
+            a11y: {checkA11y: true, snapShotName: 'registered'}
+        })
+    })
+
+    test('Wishlist page should not have any new a11y issues', async ({page}) => {
+        await wishlistFlow({
+            page,
+            registeredUserCredentials,
+            a11y: {checkA11y: true, snapShotName: 'registered'}
+        })
+    })
+
+    test('Account pages should not have any new a11y issues', async ({page}) => {
+        const isLoggedIn = await loginShopper({
+            page,
+            userCredentials: registeredUserCredentials
+        })
+
+        if (!isLoggedIn) {
+            await registerShopper({
+                page,
+                userCredentials: registeredUserCredentials
+            })
+        }
+        // The consent form does not stick after registration
+        await page.waitForLoadState()
+        await answerConsentTrackingForm(page)
+
+        await expect(page.getByRole('heading', {name: /Account Details/i})).toBeVisible()
+
+        await runAccessibilityTest(page, ['registered', 'account-details-a11y-violations.json'])
+
+        await page.getByRole('link', {name: 'Addresses'}).click()
+
+        await runAccessibilityTest(page, ['registered', 'account-addresses-a11y-violations.json'])
     })
 })

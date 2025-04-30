@@ -89,11 +89,9 @@ function sanitizeHtml(html) {
  */
 async function runAccessibilityTest(page, snapshotName) {
     // Run the accessibility audit
-    const accessibilityScanResults = await new AxeBuilder({page})
-        .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'])
-        .analyze()
+    const accessibilityScanResults = await new AxeBuilder({page}).analyze()
 
-    console.log(`Found ${accessibilityScanResults.violations.length} accessibility violations`)
+    // console.log(`Found ${accessibilityScanResults.violations.length} accessibility violations`)
 
     // Create simplified versions of violations for more stable snapshots
     const simplifiedViolations = simplifyViolations(accessibilityScanResults.violations)
