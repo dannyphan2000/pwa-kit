@@ -29,8 +29,9 @@ export const withPropsWrapper = (
     return hoistNonReactStatics(withPropsWrapper, WrappedComponent)
 }
 
+// TODO: fix the type for urlMapping
 export const getComponentForUrlMapping = (
-    urlMapping: any, // TODO: fix the type for urlMapping
+    urlMapping: any,
     resourceTypeToComponentMap: Config['resourceTypeToComponentMap']
 ): {component: React.ComponentType<any>; props: Record<string, any>} => {
     let component: React.ComponentType<any>
