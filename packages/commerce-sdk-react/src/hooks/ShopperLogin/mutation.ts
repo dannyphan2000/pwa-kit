@@ -105,10 +105,7 @@ export type ShopperLoginMutation = MethodsOf<ApiClients['shopperLogin']>
  * @group ShopperLogin
  * @category Mutation
  */
-export const useShopperLoginMutation = createUseMutation<
-    'shopperLogin',
-    ShopperLoginMutation
->({
+export const useShopperLoginMutation = createUseMutation<'shopperLogin', ShopperLoginMutation>({
     clientKey: 'shopperLogin',
     getCacheUpdates: (mutation) => cacheUpdateMatrix[mutation]
 })

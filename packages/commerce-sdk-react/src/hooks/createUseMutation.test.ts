@@ -18,7 +18,7 @@ jest.mock('./useMutation')
 describe('createUseMutation', () => {
     // Define the ShopperBasketsMutation type
     type ShopperBasketsMutation = MethodsOf<ApiClients['shopperBaskets']>
-    
+
     // Mock API client and method
     const mockApiMethod = jest.fn().mockResolvedValue({data: 'test-data'})
     const mockClient = {
@@ -60,10 +60,7 @@ describe('createUseMutation', () => {
 
     it('calls useMutation with the correct arguments', () => {
         // Create the mutation hook
-        const useTestMutation = createUseMutation<
-            'shopperBaskets',
-            ShopperBasketsMutation
-        >({
+        const useTestMutation = createUseMutation<'shopperBaskets', ShopperBasketsMutation>({
             clientKey: 'shopperBaskets',
             getCacheUpdates: mockCacheUpdateGetter
         })
@@ -73,16 +70,16 @@ describe('createUseMutation', () => {
 
         // Verify useMutation was called with correct parameters
         expect(mockUseMutation).toHaveBeenCalledTimes(1)
-        
+
         const useMutationCallArgs = mockUseMutation.mock.calls[0][0]
-        
+
         // Verify client is correctly passed
         expect(useMutationCallArgs.client).toBe(mockClient)
-        
+
         // Verify method is correctly bound to the client
         expect(useMutationCallArgs.method).toBeDefined()
         expect(typeof useMutationCallArgs.method).toBe('function')
-        
+
         // Verify getCacheUpdates function is passed
         expect(useMutationCallArgs.getCacheUpdates).toBeDefined()
         expect(typeof useMutationCallArgs.getCacheUpdates).toBe('function')
