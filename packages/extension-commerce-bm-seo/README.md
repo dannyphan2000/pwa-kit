@@ -1,108 +1,91 @@
-:loudspeaker: Hey there, Salesforce Commerce Cloud community!
+# SEO Extension
 
-We’re excited to hear your thoughts on your developer experience with PWA Kit and the Composable Storefront generally! Your feedback is incredibly valuable in helping us guide our roadmap and improve our offering.
+A [PWA Kit](https://github.com/SalesforceCommerceCloud/pwa-kit) extension that adds SEO functionality to your application through the [Shopper SEO URL Mapping API](https://developer.salesforce.com/docs/commerce/commerce-api/references/shopper-seo?meta=getUrlMapping). This extension provides features like:
 
-:clipboard: Take our quick survey here: [Survey](https://forms.gle/bUZNxQ3QKUcrjhV18) 
+- Integrate routes managed in Business Manager with the PWA Kit
+- Integration with SCAPI Shopper SEO URL Mapping API
+- Support for multiple resource types (products, categories)
 
-Feel free to share this survey link with your colleagues, partners, or anyone who has experience with PWA Kit. Your input will help us shape the future of our development tools.
+## Installation
 
-Thank you for being a part of our community and for your continuous support! :raised_hands:
+```sh
+npm install @salesforce/extension-commerce-bm-seo
 
-# Description
-
-This is a sample PWA-Kit Application Extension. The purpose of this application extensions is to show how
-the Application Extensions API can be used to enhance your PWA-Kit base project.
-
-# Folder Structure
-
-This directory contains the PWA Kit Application Extension base files and structure. It includes the following files:
-```
-├── src
-│   ├── setup-server.ts
-│   └── setup-client.ts
-└── dev
+# Also: 
+# - install the peer dependencies listed in the package.json
+# - see the Peer Dependancies section below for any other steps (e.g. make sure your app uses CommerceApiProvider component)
 ```
 
-1. `src/setup-server.ts`: The server-side setup function for the extension.
-2. `src/setup-client.ts`: The client-side setup function for the extension.
-3. `dev/`: PWA Kit App TypeScript template project used for developing the generated PWA Kit App Extension.
-
-# Peer Dependencies
+## Peer Dependencies
 
 PWA-Kit Application Extensions are NPM packages at their most simplest form, and as such you can define
-what peer dependencies are required when using it. Because this sample application extension provides
-UI via a new "Sample" page, it requires that the below dependencies are installed at a minimum. 
+what peer dependencies are required when using it. Because this application extension provides
+Chakra UI via a page and components, it requires that the some peer dependencies are installed.
 
 Depending on what features your application extensions provides it's recommended you include any third-party
 packages as peer dependencies so that your base application doesn't end up having multiple versions of a 
-given package.
+given package. See package.json for the full list of peer dependencies.
 
-"react": "^18.2.0",
-"react-dom": "^18.2.0"
+## Configuration
 
-# Configuration
+The SEO extension is configured via the `mobify.app.extensions` property in your config files or `package.json`:
 
-This section is optional and will depend on your application extensions implementation. If you have features
-that are configurable, then list those configurations here so that the PWA-Kit project implementor can configure
-the extension as they like. 
-
-```
+```json
 {
-    path: '/sample-page'
+  "mobify": {
+    "app": {
+      "extensions": [
+        [
+          "@salesforce/extension-commerce-bm-seo",
+          {
+            "enabled": true,
+            "commerceAPI": {
+              "proxyPath": "/mobify/proxy/api",
+              "parameters": {
+                "shortCode": "8o7m175y",
+                "clientId": "c9c45bfd-0ed3-4aa2-9971-40f88962b836",
+                "organizationId": "f_ecom_zzrf_001",
+                "siteId": "RefArchGlobal"
+              }
+            },
+            "commerceAPIAuth": {
+              "propertyNameInLocals": "commerceAPIAuth"
+            },
+            "resourceTypeToComponentMap": {
+              "category": "ProductList",
+              "product": "ProductDetail",
+            }
+          }
+        ]
+      ]
+    }
+  }
 }
 ```
 
-# Installation
+### Configuration Options
 
-```
-> npm install @salesforce/extension-starter<br/>
-> Downloading npm package... <br/>
-> Installing extension... <br/>
-> Finished. <br/>
-> Congratulations! The Sample extension was successfully installed! Please visit https://www.npmjs.com/package/@salesforce/extension-starter for more information on how to use this extension.
-```
+- `commerceAPI`: Settings for connecting to the Commerce API
+  - `proxyPath`: The proxy path for API requests
+  - `parameters`: Commerce API connection parameters
+    - `clientId`: Your Commerce API client ID
+    - `organizationId`: Your organization ID
+    - `shortCode`: Your short code
+    - `siteId`: Your site ID
+- `commerceAPIAuth`: Authentication configuration
+  - `propertyNameInLocals`: Property name for storing auth in locals
+- `resourceTypeToComponentMap`: Maps resource types to component names
+  - `category`: Component name for category pages
+  - `product`: Component name for product pages
+  - `content_asset`: Component name for content assets
 
-# State Management
+## How It Works
 
-By default all extensions are enhanced with state management using the `withApplicationExtensionStore` higher-order component. Under the hood
-the state is provided using [Zustand](https://www.npmjs.com/package/zustand) as a global store for the entire PWA-Kit application. 
-Each Application Extension inserts a "slice" into this global store following the 
-[slicing pattern](https://github.com/pmndrs/zustand/blob/37e1e3f193a5e5dec6fbd0f07514aec59a187e01/docs/guides/slices-pattern.md). 
-This allows you to have data separation from one extension to the other, but also allows you to access state and associated actions of other extensions when needed. 
+The SEO extension works by:
 
-You can access the state of other extensions via the global store. Below is an example of why you might want to access state and actions from another extensions. In the following snippet we use the global store to access actions from the store locator. You can then use these actions as you please.
+1. Intercepting incoming requests
+2. Querying the Shopper SEO API for URL mappings
+3. Dynamically routing to the appropriate component based on the resource type
+4. Passing the relevant props to the component
 
-This is how you would do something like this.
-
-```
-// /base-project/app/components/my-component.jsx
-import {useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
-
-export MyComponent = () => {
-    // Zustand V5 requires stable selector outputs. E.g. Do NOT return a new reference in your selectors return value. This will
-    // cause infinite re-renders.
-    const defaultState = {}
-
-    // Grab the slice of the extension state for "extension-a"
-    const {toggleMapsModal} = useApplicationExtensionsStore(
-        (state) =>
-            state.state['@salesforce/extension-store-locator'] || defaultState
-    )
-
-    return (
-        <div>
-            <button onClick={() => toggleMapsModal()}/>
-        </div>
-    )
-}
-```
-
-# Advanced Usage
-
-As an application extension developer you are responsible for documenting how your extension works including basic usage, its configuration, and advanced customization via overrides. Use this section to explain how your extension can use overrides to accomplish this. Make should to include what files are overridable as well as their expected inputs and outputs.
-
-## Overridable Files
-
-```
-/src/path/to/overridable/files.ts
-```
+The extension uses the Commerce API's Shopper SEO URL Mapping endpoint to handle SEO-friendly URLs and ensure proper routing within your PWA Kit application.
