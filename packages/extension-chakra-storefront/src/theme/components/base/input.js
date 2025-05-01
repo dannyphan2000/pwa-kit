@@ -19,32 +19,29 @@ export default defineRecipe({
     variants: {
         variant: {
             outline: {
-                borderColor: 'gray.500'
+                field: {
+                    borderColor: 'gray.500'
+                }
             },
             filled: {
                 // we use filled variant for
                 // search input
-                borderColor: 'gray.600',
-                backgroundColor: 'gray.100',
-                border: '2px solid',
-                fontSize: 'md',
-                _focus: {
-                    backgroundColor: 'white',
-                    borderColor: 'blue.600'
-                },
-                _hover: {
+                field: {
+                    borderColor: 'gray.600',
                     backgroundColor: 'gray.100',
                     _focus: {
-                        backgroundColor: 'white',
-                        borderColor: 'blue.600'
+                        backgroundColor: 'white'
+                    },
+                    _hover: {
+                        backgroundColor: 'gray.100',
+                        _focus: {
+                            backgroundColor: 'white'
+                        }
+                    },
+                    _placeholder: {
+                        color: 'gray.700'
                     }
-                },
-                _placeholder: {
-                    color: 'gray.700'
                 }
-                // field: {
-                //
-                // }
             }
         },
         size: {
