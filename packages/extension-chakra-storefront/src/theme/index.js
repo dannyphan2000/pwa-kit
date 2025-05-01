@@ -69,6 +69,9 @@ export const overrides = defineConfig({
                 mono: `SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace`
             }
         },
+        semanticTokens: {
+            shadows
+        },
         recipes: {
             // Built-in components
             badge,

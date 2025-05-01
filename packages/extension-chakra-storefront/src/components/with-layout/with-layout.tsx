@@ -232,29 +232,28 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
             trackPage()
         }, [location])
 
-        // Ensure styles.container is an object
-        const containerStyles = (styles.container as React.CSSProperties) || {}
+        // const containerStyles = (styles.container as React.CSSProperties) || {}
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        const headerWrapperStyles = styles.headerWrapper || {}
+        // const headerWrapperStyles = styles.headerWrapper || {}
 
         // Get the colors Map
         const colorsMap = system.tokens.categoryMap.get('colors')!
-
-        // Convert to an array for rendering
         const colorEntries = Array.from(colorsMap.entries())
 
         // Get the spacing Map
         const spacingMap = system.tokens.categoryMap.get('spacing')!
-
-        // Convert to an array for rendering
         const spacingEntries = Array.from(spacingMap.entries())
 
-        // Get the spacing Map
         const sizesMap = system.tokens.categoryMap.get('sizes')!
+        const sizesEntries = Array.from(sizesMap.entries())
+
+        // Get the boxshadow Map
+        const shadowMap = system.tokens.categoryMap.get('shadows')!
 
         // Convert to an array for rendering
-        const sizesEntries = Array.from(sizesMap.entries())
+        const shadowsEntries = Array.from(shadowMap.entries())
+        console.log('system', system)
         return (
             <Box className="sf-app" css={styles.container}>
                 <Helmet>
@@ -308,7 +307,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 <Box id="app" display="flex" flexDirection="column" flex={1}>
                     <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>
                     <Box css={styles.headerWrapper}>
-                        <Flex>
+                        <Flex gap={1}>
                             <Box>
                                 <Heading>Colors</Heading>
                                 {colorEntries.map(([tokenPath, colorValue]) => (
@@ -328,6 +327,14 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                                 <Heading>Sizes</Heading>
                                 {sizesEntries.map(([tokenPath, colorValue]) => (
                                     <Box>{`${tokenPath}: ${colorValue.value}`}</Box>
+                                ))}
+                            </Box>
+                            <Box>
+                                <Heading>box shadow</Heading>
+                                {shadowsEntries.map(([tokenPath, colorValue]) => (
+                                    <Box
+                                        boxShadow={colorValue.value}
+                                    >{`${tokenPath}: ${colorValue.value}`}</Box>
                                 ))}
                             </Box>
                         </Flex>
