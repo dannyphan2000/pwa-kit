@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {UseMutationResult, DefaultError} from '@tanstack/react-query'
 import {ApiClients, ApiMethod, Argument, DataType, CacheUpdateGetter} from './types'
 import useCommerceApi from './useCommerceApi'
 import {useMutation} from './useMutation'
@@ -52,7 +51,7 @@ export function createUseMutation<
             method,
             getCacheUpdates: (customerId, options, data) => {
                 const updates = getCacheUpdates(mutation)
-                const DEFAULT_CACHE_UPDATES = { update: [], invalidate: [], remove: [], clear: false }
+                const DEFAULT_CACHE_UPDATES = {update: [], invalidate: [], remove: [], clear: false}
                 return updates ? updates(customerId, options, data) : DEFAULT_CACHE_UPDATES
             }
         })
