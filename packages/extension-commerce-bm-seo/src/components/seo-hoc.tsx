@@ -29,24 +29,20 @@ const getComponent = (
     return ComponentClass
 }
 
-const CATCH_ALL_PATH = '*'
-
 /**
  * Checks whether the given URL path matches a predefined route defined in the application's routes config, excluding the catch-all route (e.g., path='*')
  */
 const isRouteDefined = (routeToMatch: string, routes: Array<{path: string}>): boolean => {
-    // Exclude any catch-all (404) routes
-    const validRoutes = routes.filter((route) => route.path !== CATCH_ALL_PATH)
+    // Exclude any catch-all (404) routes and paths ending with wildcards
+    const validRoutes = routes.filter((route) => !route.path.endsWith('*'))
 
-    const isMatch = validRoutes.some(({path}) => {
-        return (
-            matchPath(routeToMatch, {
-                path,
-                exact: true
-            }) !== null
-        )
-    })
-    return isMatch
+    const matchingRoute = validRoutes.find(({path}) =>
+        matchPath(routeToMatch, {
+            path,
+            exact: true
+        })
+    )
+    return matchingRoute !== undefined
 }
 
 const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
@@ -74,8 +70,7 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                 }
             },
             {
-                // Use enabled to control when the API call happens
-                enabled: !skipMappingCall
+                enabled: false
             }
         )
 
