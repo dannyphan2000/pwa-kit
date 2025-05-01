@@ -34,12 +34,6 @@ export interface CreateUseMutationOptions<
     getCacheUpdates: (mutation: Mutation) => CacheUpdateGetter<any, any> | undefined
 }
 
-export type MutationHook<M extends ApiMethod<any, any>, TError = DefaultError> = UseMutationResult<
-    DataType<M>,
-    TError,
-    Argument<M>
->
-
 /**
  * Creates a mutation hook for a specific API client.
  */
