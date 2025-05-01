@@ -62,7 +62,7 @@ export {
     // Cart,
     // Checkout,
     // CheckoutConfirmation,
-    Home,
+    Home
     // Login,
     // Registration,
     // ResetPassword,
