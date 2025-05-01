@@ -11,7 +11,6 @@ import styles from './foundations/styles'
 import colors from './foundations/colors'
 import gradients from './foundations/gradients'
 import sizes from './foundations/sizes'
-import space from './foundations/space'
 import layerStyles from './foundations/layerStyles'
 import shadows from './foundations/shadows'
 
@@ -62,7 +61,6 @@ export const overrides = defineConfig({
         tokens: {
             colors,
             sizes,
-            space,
             gradients,
             shadows,
             fonts: {
@@ -71,7 +69,6 @@ export const overrides = defineConfig({
                 mono: `SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace`
             }
         },
-        semanticTokens: {},
         recipes: {
             // Built-in components
             badge,

@@ -27,20 +27,20 @@ import {
 import Hero from '../../components/hero'
 import Seo from '../../components/seo'
 import Section from '../../components/section'
-import ProductScroller from '../../components/product-scroller'
+// import ProductScroller from '../../components/product-scroller'
 
 // Others
 import {getStaticAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
-import {heroFeatures, features} from '../../pages/home/data'
+// import {heroFeatures, features} from '../../pages/home/data'
 
 //Hooks
-import useEinstein from '../../hooks/use-einstein'
-import useDataCloud from '../../hooks/use-datacloud'
+// import useEinstein from '../../hooks/use-einstein'
+// import useDataCloud from '../../hooks/use-datacloud'
 
 // Constants
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
-import {useProductSearch} from '@salesforce/commerce-sdk-react'
-import {useExtensionConfig} from '../../hooks'
+// import {useProductSearch} from '@salesforce/commerce-sdk-react'
+// import {useExtensionConfig} from '../../hooks'
 
 /**
  * This is the home page for Retail React App.
@@ -49,39 +49,39 @@ import {useExtensionConfig} from '../../hooks'
  * categories and products, data is from local file.
  */
 const Home = () => {
-    const intl = useIntl()
-    const einstein = useEinstein()
-    const dataCloud = useDataCloud()
-    const {pathname} = useLocation()
-    const {
-        pages: {Home: homeConfig},
-        maxCacheAge: MAX_CACHE_AGE,
-        staleWhileRevalidate: STALE_WHILE_REVALIDATE
-    } = useExtensionConfig()
-    const {res} = useServerContext()
-    if (res) {
-        res.set(
-            'Cache-Control',
-            `s-maxage=${MAX_CACHE_AGE}, stale-while-revalidate=${STALE_WHILE_REVALIDATE}`
-        )
-    }
-
-    const {data: productSearchResult, isLoading} = useProductSearch({
-        parameters: {
-            allImages: true,
-            allVariationProperties: true,
-            expand: ['promotions', 'variations', 'prices', 'images', 'custom_properties'],
-            limit: homeConfig.productLimit,
-            perPricebook: true,
-            refine: [`cgid=${homeConfig.mainCategory}`, 'htype=master']
-        }
-    })
-
-    /**************** Einstein ****************/
-    useEffect(() => {
-        einstein.sendViewPage(pathname)
-        dataCloud.sendViewPage(pathname)
-    }, [])
+    // const intl = useIntl()
+    // const einstein = useEinstein()
+    // const dataCloud = useDataCloud()
+    // const {pathname} = useLocation()
+    // const {
+    //     pages: {Home: homeConfig},
+    //     maxCacheAge: MAX_CACHE_AGE,
+    //     staleWhileRevalidate: STALE_WHILE_REVALIDATE
+    // } = useExtensionConfig()
+    // const {res} = useServerContext()
+    // if (res) {
+    //     res.set(
+    //         'Cache-Control',
+    //         `s-maxage=${MAX_CACHE_AGE}, stale-while-revalidate=${STALE_WHILE_REVALIDATE}`
+    //     )
+    // }
+    //
+    // const {data: productSearchResult, isLoading} = useProductSearch({
+    //     parameters: {
+    //         allImages: true,
+    //         allVariationProperties: true,
+    //         expand: ['promotions', 'variations', 'prices', 'images', 'custom_properties'],
+    //         limit: homeConfig.productLimit,
+    //         perPricebook: true,
+    //         refine: [`cgid=${homeConfig.mainCategory}`, 'htype=master']
+    //     }
+    // })
+    //
+    // /**************** Einstein ****************/
+    // useEffect(() => {
+    //     einstein.sendViewPage(pathname)
+    //     dataCloud.sendViewPage(pathname)
+    // }, [])
 
     return <div>Home Page</div>
 

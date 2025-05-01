@@ -5,10 +5,8 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 export default {
-    11: {
-        value: '2.75rem'
-    },
-
+    // in chakra v2, we were overriding default sizes,
+    // in V3, this config were removed, so this becomes custom styles for sizes
     container: {
         sm: {
             value: '640px'
