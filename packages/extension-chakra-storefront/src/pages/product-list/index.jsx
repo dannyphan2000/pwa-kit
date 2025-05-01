@@ -20,30 +20,30 @@ import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hook
 
 // Components
 import {
-    // Box,
-    // Flex,
-    // SimpleGrid,
-    // Grid,
-    // Select,
-    // Heading,
-    // Text,
-    // FormControl,
-    // Stack,
-    // useDisclosure,
-    // Button,
-    // Modal,
-    // ModalHeader,
-    // ModalBody,
-    // ModalFooter,
-    // ModalContent,
-    // ModalCloseButton,
-    // ModalOverlay,
-    // Drawer,
-    // DrawerBody,
-    // DrawerHeader,
-    // DrawerOverlay,
-    // DrawerContent,
-    // DrawerCloseButton
+    Box,
+    Flex,
+    SimpleGrid,
+    Grid,
+    Select,
+    Heading,
+    Text,
+    FormControl,
+    Stack,
+    useDisclosure,
+    Button,
+    Modal,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    ModalContent,
+    ModalCloseButton,
+    ModalOverlay,
+    Drawer,
+    DrawerBody,
+    DrawerHeader,
+    DrawerOverlay,
+    DrawerContent,
+    DrawerCloseButton
 } from '@chakra-ui/react'
 
 // Project Components
@@ -408,8 +408,6 @@ const ProductList = (props) => {
             }
         }
     }, [productSearchResult])
-
-    return <div>ProductList</div>
 
     return (
         <Box
