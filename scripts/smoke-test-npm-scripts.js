@@ -9,7 +9,6 @@
 const sh = require('shelljs')
 const program = require('commander')
 const path = require('path')
-const fs = require('fs')
 
 sh.set('-e')
 
@@ -27,18 +26,10 @@ program.parse(process.argv)
 
 const main = () => {
     const opts = program.opts()
+
     const cwd = path.resolve(opts.dir)
 
-    let pkg
-    const packageJson = path.join(cwd, 'package.json')
-
-    try {
-        pkg = JSON.parse(fs.readFileSync(packageJson))
-    } catch (err) {
-        console.error(`Error reading or parsing ${packageJson}:`)
-        console.error(err)
-        sh.exit(1)
-    }
+    const pkg = JSON.parse(sh.cat(path.join(cwd, 'package.json')))
 
     // The excluded scripts are either already part of our CI steps or are not safe to run.
     const exclude = [
