@@ -310,32 +310,43 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                         <Flex gap={1}>
                             <Box>
                                 <Heading>Colors</Heading>
-                                {colorEntries.map(([tokenPath, colorValue]) => (
-                                    <Box
-                                        key={tokenPath}
-                                        bg={tokenPath}
-                                    >{`${tokenPath}: ${colorValue.value}`}</Box>
-                                ))}
+                                {
+                                    // @ts-ignore
+                                    colorEntries.map(([tokenPath, colorValue]) => (
+                                        <Box key={tokenPath} bg={tokenPath}>
+                                            {`${tokenPath}: ${colorValue.value}`}
+                                        </Box>
+                                    ))
+                                }
                             </Box>
                             <Box>
                                 <Heading>Spacing</Heading>
-                                {spacingEntries.map(([tokenPath, colorValue]) => (
-                                    <Box>{`${tokenPath}: ${colorValue.value}`}</Box>
-                                ))}
+                                {
+                                    // @ts-ignore
+                                    spacingEntries.map(([tokenPath, colorValue]) => (
+                                        <Box
+                                            key={tokenPath}
+                                        >{`${tokenPath}: ${colorValue.value}`}</Box>
+                                    ))
+                                }
                             </Box>
                             <Box>
                                 <Heading>Sizes</Heading>
                                 {sizesEntries.map(([tokenPath, colorValue]) => (
-                                    <Box>{`${tokenPath}: ${colorValue.value}`}</Box>
+                                    <Box key={tokenPath}>{`${tokenPath}: ${colorValue.value}`}</Box>
                                 ))}
                             </Box>
                             <Box>
                                 <Heading>box shadow</Heading>
-                                {shadowsEntries.map(([tokenPath, colorValue]) => (
-                                    <Box
-                                        boxShadow={colorValue.value}
-                                    >{`${tokenPath}: ${colorValue.value}`}</Box>
-                                ))}
+                                {
+                                    // @ts-ignore
+                                    shadowsEntries.map(([tokenPath, colorValue]) => (
+                                        <Box
+                                            key={tokenPath}
+                                            boxShadow={colorValue.value}
+                                        >{`${tokenPath}: ${colorValue.value}`}</Box>
+                                    ))
+                                }
                             </Box>
                         </Flex>
                         {!isCheckout ? (
