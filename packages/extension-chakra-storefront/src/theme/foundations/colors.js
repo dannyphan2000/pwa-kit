@@ -193,7 +193,9 @@ const baseColors = {
         white: {value: '#FFFFFF'},
         yellow: {value: '#fbe85a'},
         gold: {value: '#ffd700'},
-        miscellaneous: {value: 'linear-gradient(to right, orange , yellow, green, cyan, blue, violet)'}
+        miscellaneous: {
+            value: 'linear-gradient(to right, orange , yellow, green, cyan, blue, violet)'
+        }
     }
 }
 

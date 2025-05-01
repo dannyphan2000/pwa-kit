@@ -60,7 +60,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
                 path: config.pages.Home && config.pages.Home.path,
                 component: Pages.Home,
                 exact: true
-            },
+            }
             // {
             //     path: [
             //         config.pages.Login && config.pages.Login.path,
