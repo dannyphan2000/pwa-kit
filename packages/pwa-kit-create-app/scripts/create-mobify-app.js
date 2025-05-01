@@ -878,10 +878,7 @@ const processAppExtensions = (
             const appExtensionDestDir = p.join(appExtensionsDir, appExtensionName.replace('/', '_'))
             sh.mkdir('-p', appExtensionDestDir)
 
-            // Copy hidden files
-            sh.cp('-rf', p.join(appExtensionTmpPath, '.*'), appExtensionDestDir)
-            // Copy regular files
-            sh.cp('-rf', p.join(appExtensionTmpPath, '*'), appExtensionDestDir)
+            copyAllFiles(appExtensionTmpPath, appExtensionDestDir)
 
             // Clean up the temporary Application Extension directory
             sh.rm('-rf', appExtensionTmp)
@@ -932,6 +929,20 @@ const fetchAvailableAppExtensions = () => {
 }
 
 /**
+ * Copy all files, including subdirectories and hidden files
+ */
+const copyAllFiles = (fromDirectory, targetDirectory) => {
+    try {
+        fs.cpSync(fromDirectory, targetDirectory, {recursive: true, force: true})
+        // NOTE: we've tried using `sh.cp` but it errors out when copying hidden files on Windows machine.
+        // See: https://github.com/shelljs/shelljs/issues/711
+    } catch (err) {
+        console.error(`Error copying files from ${fromDirectory} to ${targetDirectory}:`, err)
+        process.exit(1)
+    }
+}
+
+/**
  * This function does the bulk of the project generation given the project config
  * object and the answers returned from the survey process.
  *
@@ -939,7 +950,7 @@ const fetchAvailableAppExtensions = () => {
  * @param {*} answers
  * @param {*} param2
  */
-const runGenerator = async (
+const runGenerator = (
     context,
     {outputDir, templateVersion, verbose, installDependencies = true}
 ) => {
@@ -989,7 +1000,7 @@ const runGenerator = async (
     })
 
     // Copy the base template either from the package or npm.
-    sh.cp('-rf', p.join(packagePath, '{*,.*}'), outputDir)
+    copyAllFiles(packagePath, outputDir)
 
     // Copy template specific assets over.
     const assetsDir = p.join(ASSETS_TEMPLATES_DIR, id)
@@ -1027,7 +1038,7 @@ const runGenerator = async (
             answers: {project: {type: 'PWAKitAppProject', name: 'local-dev-project'}}
         }
 
-        await runGenerator(localDevProjectContext, {
+        runGenerator(localDevProjectContext, {
             outputDir: devOutputDir,
             templateVersion,
             verbose,
