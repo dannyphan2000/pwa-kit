@@ -1,6 +1,6 @@
 ## v4.0.0-dev (Mar 07, 2025)
 - Upgrade `@tanstack/react-query` to v5 [#2303](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2303)
-- Refactor all API hooks to use the new `createUseQuery` hook [#2353](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2353)
+- Refactor all API hooks to use the new `createUseQuery` and `createUseMutation` hook [#2353](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2353)
 
 ## v3.2.0-extensibility-preview.4 (Feb 12, 2025)
 - Add `ServerContext` type for `useServerContext` hook [#2239](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2239)
