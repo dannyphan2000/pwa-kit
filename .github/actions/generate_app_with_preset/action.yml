@@ -10,37 +10,6 @@ runs:
   steps:
     - run: |-
         node packages/pwa-kit-create-app/scripts/create-mobify-app-dev.js --outputDir ${{ inputs.output_dir }}
-
-        # DEBUG
-        # --- Configuration ---
-        # Set the name of the generated project directory you want to inspect
-        PROJECT_DIR="${{ inputs.output_dir }}"
-        # --- End Configuration ---
-
-        # Get the current working directory
-        CURRENT_DIR=$(pwd)
-
-        echo "--------------------------------------------------"
-        echo "Listing contents of the current directory:"
-        echo "$CURRENT_DIR"
-        echo "--------------------------------------------------"
-        ls -la # Use 'ls -la' for a detailed listing including hidden files
-
-        echo # Add a blank line for separation
-
-        # Check if the project directory exists in the current directory
-        if [ -d "$PROJECT_DIR" ]; then
-          echo "--------------------------------------------------"
-          echo "Listing contents of the project directory:"
-          echo "$CURRENT_DIR/$PROJECT_DIR"
-          echo "--------------------------------------------------"
-          ls -la "$PROJECT_DIR" # List contents of the specific project directory
-        else
-          echo "--------------------------------------------------"
-          echo "Project directory '$PROJECT_DIR' not found in the current directory:"
-          echo "$CURRENT_DIR"
-          echo "--------------------------------------------------"
-        fi
       shell: bash
       env:
         GENERATOR_PRESET: ${{ inputs.preset }}
