@@ -19,6 +19,8 @@ export default defineRecipe({
         headerWrapper: {
             position: 'sticky',
             top: 0,
+            // can't import theme object in Chakra V3, Let's use a hardcode value for now.
+            // Will circle back when we start working on fixing component styling
             zIndex: 1100
         }
     }
