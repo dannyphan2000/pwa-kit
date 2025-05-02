@@ -1,5 +1,5 @@
 {
-  "version": "3.10.0-dev.1",
+  "version": "3.10.0-nightly-20250502080212",
   "packages": [
     "packages/*"
   ]
