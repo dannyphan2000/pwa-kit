@@ -1,21 +1,5 @@
 [
   {
-    "id": "color-contrast",
-    "impact": "serious",
-    "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
-    "help": "Elements must meet minimum color contrast ratio thresholds",
-    "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=playwright",
-    "nodes": [
-      {
-        "html": "<div id=\"...\" role=\"tooltip\" class=\"...\" >",
-        "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.89 (foreground color: #d3dfea, background color: #3c6fa2, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
-        "target": [
-          "#tooltip-\\:r2q\\:"
-        ]
-      }
-    ]
-  },
-  {
     "id": "page-has-heading-one",
     "impact": "moderate",
     "description": "Ensure that the page, or at least one of its frames contains a level-one heading",
@@ -43,13 +27,6 @@
         "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
         "target": [
           ".css-1k2aozt"
-        ]
-      },
-      {
-        "html": "<div class=\"...\">",
-        "failureSummary": "Fix any of the following:\n  Some page content is not contained by landmarks",
-        "target": [
-          ".chakra-portal:nth-child(10)"
         ]
       }
     ]
