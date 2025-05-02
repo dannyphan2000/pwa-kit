@@ -1,34 +1,22 @@
-# SEO Extension
+# Commerce Business Manager SEO Extension
 
-A [PWA Kit](https://github.com/SalesforceCommerceCloud/pwa-kit) extension that adds SEO functionality to your application through the [Shopper SEO URL Mapping API](https://developer.salesforce.com/docs/commerce/commerce-api/references/shopper-seo?meta=getUrlMapping). This extension provides features like:
+A [PWA Kit](https://github.com/SalesforceCommerceCloud/pwa-kit) extension that synchronizes Business Manager-managed routes with your PWA Kit application using the [Shopper SEO URL Mapping API](https://developer.salesforce.com/docs/commerce/commerce-api/references/shopper-seo?meta=getUrlMapping). This extension provides the following capabilities:
 
 - Integrate routes managed in Business Manager with the PWA Kit
-- Integration with SCAPI Shopper SEO URL Mapping API
-- Support for multiple resource types (products, categories)
+- Integration with the SCAPI Shopper SEO URL Mapping API
+- Support for multiple resource types including products, categories, and redirects
+
+Note: Using this extension will impact performance as it requires API calls during navigation.
 
 ## Installation
 
 ```sh
 npm install @salesforce/extension-commerce-bm-seo
-
-# Also: 
-# - install the peer dependencies listed in the package.json
-# - see the Peer Dependancies section below for any other steps (e.g. make sure your app uses CommerceApiProvider component)
 ```
-
-## Peer Dependencies
-
-PWA-Kit Application Extensions are NPM packages at their most simplest form, and as such you can define
-what peer dependencies are required when using it. Because this application extension provides
-Chakra UI via a page and components, it requires that the some peer dependencies are installed.
-
-Depending on what features your application extensions provides it's recommended you include any third-party
-packages as peer dependencies so that your base application doesn't end up having multiple versions of a 
-given package. See package.json for the full list of peer dependencies.
 
 ## Configuration
 
-The SEO extension is configured via the `mobify.app.extensions` property in your config files or `package.json`:
+The SEO extension is configured via your config file (e.g. `app/config/default.json`) or the key `mobify.app.extensions` in your `package.json`:
 
 ```json
 {
@@ -53,7 +41,7 @@ The SEO extension is configured via the `mobify.app.extensions` property in your
             },
             "resourceTypeToComponentMap": {
               "category": "ProductList",
-              "product": "ProductDetail",
+              "product": "ProductDetail"
             }
           }
         ]
@@ -75,17 +63,15 @@ The SEO extension is configured via the `mobify.app.extensions` property in your
 - `commerceAPIAuth`: Authentication configuration
   - `propertyNameInLocals`: Property name for storing auth in locals
 - `resourceTypeToComponentMap`: Maps resource types to component names
-  - `category`: Component name for category pages
-  - `product`: Component name for product pages
-  - `content_asset`: Component name for content assets
+  - `category`: Name of component for category pages
+  - `product`: Name of component for product pages
+  - `content_asset`: Name of component for content assets
 
 ## How It Works
 
 The SEO extension works by:
 
-1. Intercepting incoming requests
+1. Blocking navigation
 2. Querying the Shopper SEO API for URL mappings
-3. Dynamically routing to the appropriate component based on the resource type
-4. Passing the relevant props to the component
-
-The extension uses the Commerce API's Shopper SEO URL Mapping endpoint to handle SEO-friendly URLs and ensure proper routing within your PWA Kit application.
+3. Routing to the appropriate component based on the resource type
+4. Passing relevant props to the component
