@@ -11,11 +11,7 @@ import {RouteProps} from 'react-router-dom'
 
 // Platform Imports
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
-import {
-    ApplicationExtension,
-    SliceInitializer,
-    withApplicationExtensionStore
-} from '@salesforce/pwa-kit-extension-sdk/react'
+import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {
     AsyncRouteProps,
@@ -36,20 +32,6 @@ import {getShopperSeoClient} from './utils/shopper-seo-utils'
 // Others
 import extensionMeta from '../extension-meta.json'
 
-interface StoreSlice {
-    count: number
-    increment: () => void
-    decrement: () => void
-}
-
-// This is safe to delete if your extension does not use state. If you aren't using this, ensure you remove the
-// `withApplicationExtensionStore` usage below as well.
-const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
-    count: 0,
-    increment: () => set((state) => ({count: state.count + 1})),
-    decrement: () => set((state) => ({count: state.count - 1}))
-})
-
 class CommerceBmSeo extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 
@@ -61,14 +43,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
     extendApp<T extends React.ComponentType<T>>(
         App: React.ComponentType<T>
     ): React.ComponentType<T> {
-        const HOCs = [
-            // Optionally include state for this extension using `withApplicationExtensionStore`
-            (component: React.ComponentType<any>) =>
-                withApplicationExtensionStore(component, {
-                    id: extensionMeta.id,
-                    initializer: sliceInitializer
-                })
-        ]
+        const HOCs: any[] = []
 
         return applyHOCs(App, HOCs)
     }
@@ -82,16 +57,11 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      */
     async getRoutesAsync({locals}: GetRoutesParams): Promise<AsyncRouteProps[]> {
         let urlMapping
+        const config = this.getConfig()
         const appOrigin = getAppOrigin()
-
-        // TODO: do we need this check?
-        if (!locals.originalUrl) {
-            return Promise.resolve([])
-        }
 
         // Make SEO GET Url Mapping API call
         const urlSegment: string = locals.originalUrl.split('?')[0]
-        const config = this.getConfig()
         const shopperSeo = await getShopperSeoClient(locals, config)
         try {
             urlMapping = await shopperSeo.getUrlMapping({
@@ -109,6 +79,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             urlMapping,
             config.resourceTypeToComponentMap
         )
+
         const requestURL = new URL(urlSegment, appOrigin)
         return Promise.resolve([
             {
@@ -140,7 +111,9 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             )?.component
 
             if (!actualComponent) {
-                throw new Error(`Could not find component with displayName "${componentName}"`)
+                throw new Error(
+                    `Could not find component with displayName containing "${componentName}"`
+                )
             }
 
             const componentProps = route.componentProps || {}

@@ -193,7 +193,9 @@ export class ApplicationExtension<
             let component: React.ComponentType<any> = (props: Record<string, any>) => (
                 <Component {...props} {...route.componentProps} />
             )
+            // Include any non-react statics that are required like getComponent()
             component = hoistNonReactStatics(component, Component)
+            // Set the display name to what it was before serialization
             component.displayName = componentName
 
             return {
