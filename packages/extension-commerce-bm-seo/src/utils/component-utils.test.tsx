@@ -10,6 +10,7 @@ import {render, screen} from '@testing-library/react'
 import {
     createPlaceholderComponent,
     getComponentForUrlMapping,
+    PlaceholderComponent,
     withPropsWrapper
 } from './component-utils'
 
@@ -73,7 +74,7 @@ describe('getComponentForUrlMapping', () => {
             )
 
             expect(component.displayName).toBe(expectedComponent)
-            expect(component.isPlaceholder).toBe(true)
+            expect((component as PlaceholderComponent).isPlaceholder).toBe(true)
             expect(props).toEqual(expectedProps)
         }
     )
@@ -90,4 +91,3 @@ describe('createPlaceholderComponent', () => {
         expect(() => Component({})).toThrow('Placeholder component cannot be rendered')
     })
 })
-
