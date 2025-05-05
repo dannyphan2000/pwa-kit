@@ -73,7 +73,7 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     }
 
     // Lets use the compiler configuration to ensure we are resolving the correct file extensions.
-    const extensions = options?.resolveExtensions
+    const fileExtensions = options?.resolveExtensions
     const basedir = options?.baseDir || process.cwd()
     const applicationExtensions = options?.extensions || compiler?.custom?.extensions || []
 
@@ -87,7 +87,7 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     // Also include the base override path and the path from the extension doing the import.
     const resolvedResourcePath = resolve.sync(projectRelPath, {
         basedir,
-        extensions,
+        extensions: fileExtensions,
         packageIterator: () => paths,
         ...options?.resolveOptions
     })

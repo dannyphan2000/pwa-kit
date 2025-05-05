@@ -92,7 +92,8 @@ export const renderTemplate = (data: ApplicationExtensionsLoaderOptions) => {
 }
 
 /**
- * PRIVATE: Reads and parses a .force_overrides file into a list of clean override entries.
+ * @private
+ * Reads and parses a .force_overrides file into a list of clean override entries.
  * - Skips empty lines
  * - Skips full-line comments (`// comment`)
  * - Supports inline comments (`override // comment`)
@@ -135,14 +136,12 @@ export const getForceOverridesFilePaths = (
 ): string[] => {
     return [
         path.join(projectDir, OVERRIDABLE_FILE_NAME),
-        ...extensions
-            .map((ext) => {
-                const name = typeof ext === 'string' ? ext : ext[0]
-                return [
-                    path.join(projectDir, LOCAL_EXTENSIONS_DIR, name, OVERRIDABLE_FILE_NAME),
-                    path.join(projectDir, NODE_MODULES_FOLDER, name, OVERRIDABLE_FILE_NAME)
-                ]
-            })
-            .flat()
+        ...extensions.flatMap((ext) => {
+            const name = typeof ext === 'string' ? ext : ext[0]
+            return [
+                path.join(projectDir, LOCAL_EXTENSIONS_DIR, name, OVERRIDABLE_FILE_NAME),
+                path.join(projectDir, NODE_MODULES_FOLDER, name, OVERRIDABLE_FILE_NAME)
+            ]
+        })
     ]
 }
