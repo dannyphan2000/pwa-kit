@@ -36,9 +36,6 @@ The SEO extension is configured via your config file (e.g. `app/config/default.j
                 "siteId": "RefArchGlobal"
               }
             },
-            "commerceAPIAuth": {
-              "propertyNameInLocals": "commerceAPIAuth"
-            },
             "resourceTypeToComponentMap": {
               "category": "ProductList",
               "product": "ProductDetail"
@@ -60,8 +57,6 @@ The SEO extension is configured via your config file (e.g. `app/config/default.j
     - `organizationId`: Your organization ID
     - `shortCode`: Your short code
     - `siteId`: Your site ID
-- `commerceAPIAuth`: Authentication configuration
-  - `propertyNameInLocals`: Property name for storing auth in locals
 - `resourceTypeToComponentMap`: Maps resource types to component names
   - `category`: Name of component for category pages
   - `product`: Name of component for product pages

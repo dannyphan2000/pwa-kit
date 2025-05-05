@@ -9,9 +9,6 @@
             "siteId": "RefArchGlobal"
         }
     },
-    "commerceAPIAuth": {
-        "propertyNameInLocals": "commerceAPIAuth"
-    },
     "resourceTypeToComponentMap": {
         "category": "ProductList",
         "product": "ProductDetail"

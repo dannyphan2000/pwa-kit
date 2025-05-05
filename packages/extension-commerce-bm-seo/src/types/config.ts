@@ -30,9 +30,6 @@ type CommerceAPIConfig = {
  */
 export interface UserConfig extends ApplicationExtensionConfig {
     commerceAPI: CommerceAPIConfig
-    commerceAPIAuth: {
-        propertyNameInLocals: string
-    }
     resourceTypeToComponentMap: ResourceTypeToComponentMap
 }
 

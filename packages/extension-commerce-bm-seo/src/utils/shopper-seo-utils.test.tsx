@@ -30,9 +30,6 @@ describe('getShopperSeoClient', () => {
             },
             proxyPath: '/api'
         },
-        commerceAPIAuth: {
-            propertyNameInLocals: 'commerceAPIAuth'
-        },
         resourceTypeToComponentMap: {}
     }
 
@@ -66,13 +63,13 @@ describe('getShopperSeoClient', () => {
     })
 
     it('should reuse an existing Auth client on locals', async () => {
-        locals['commerceAPIAuth'] = {
+        locals['__commerceAPIAuth'] = {
             ready: jest.fn().mockResolvedValue({access_token: 'existing-token'})
         }
 
         await getShopperSeoClient(locals, mockConfig)
 
         expect(Auth).not.toHaveBeenCalled()
-        expect(locals['commerceAPIAuth'].ready).toHaveBeenCalled()
+        expect(locals['__commerceAPIAuth'].ready).toHaveBeenCalled()
     })
 })

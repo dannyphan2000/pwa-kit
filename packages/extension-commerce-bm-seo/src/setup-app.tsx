@@ -10,6 +10,7 @@ import React from 'react'
 import {RouteProps} from 'react-router-dom'
 
 // Platform Imports
+import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
 import {
     ApplicationExtension,
     SliceInitializer,
@@ -30,7 +31,7 @@ import {
     getComponentForUrlMapping,
     withPropsWrapper
 } from './utils/component-utils'
-import {getAppOrigin, getShopperSeoClient} from './utils/shopper-seo-utils'
+import {getShopperSeoClient} from './utils/shopper-seo-utils'
 
 // Others
 import extensionMeta from '../extension-meta.json'
@@ -81,6 +82,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      */
     async getRoutesAsync({locals}: GetRoutesParams): Promise<AsyncRouteProps[]> {
         let urlMapping
+        const appOrigin = getAppOrigin()
 
         // TODO: do we need this check?
         if (!locals.originalUrl) {
@@ -107,7 +109,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             urlMapping,
             config.resourceTypeToComponentMap
         )
-        const requestURL = new URL(urlSegment, getAppOrigin(locals))
+        const requestURL = new URL(urlSegment, appOrigin)
         return Promise.resolve([
             {
                 path: requestURL.pathname,
