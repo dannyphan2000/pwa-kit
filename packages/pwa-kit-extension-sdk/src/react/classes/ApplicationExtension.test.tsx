@@ -8,7 +8,12 @@ import React from 'react'
 import {RouteProps} from 'react-router-dom'
 
 import {ApplicationExtension} from './ApplicationExtension'
-import {ApplicationExtensionConfig, ComponentMap, SerializedRouteProps} from '../../types'
+import {
+    ApplicationExtensionConfig,
+    AsyncRouteProps,
+    ComponentMap,
+    SerializedRouteProps
+} from '../../types'
 import {NOT_CACHED} from '../utils/helpers'
 
 const MockComponent: React.ComponentType<any> = () => {
@@ -16,7 +21,7 @@ const MockComponent: React.ComponentType<any> = () => {
 }
 MockComponent.displayName = 'MockComponent'
 
-const mockRoutes: RouteProps[] = [
+const mockRoutes: AsyncRouteProps[] = [
     {
         path: '/test',
         component: MockComponent
@@ -25,6 +30,14 @@ const mockRoutes: RouteProps[] = [
         path: '/test-route-with-exact',
         component: MockComponent,
         exact: true
+    },
+    {
+        path: '/test-route-with-props',
+        component: MockComponent,
+        componentProps: {
+            prop1: 'test1',
+            prop2: 'test2'
+        }
     }
 ]
 
@@ -39,6 +52,15 @@ const mockSerializedRoutes: SerializedRouteProps[] = [
         componentName: 'MockComponent',
         exact: true,
         component: MockComponent
+    },
+    {
+        path: '/test-route-with-props',
+        componentName: 'MockComponent',
+        component: MockComponent,
+        componentProps: {
+            prop1: 'test1',
+            prop2: 'test2'
+        }
     }
 ]
 
@@ -223,7 +245,18 @@ describe('ApplicationExtension', () => {
                 __EXTENSIONS__: {TestExtensionAsyncRoutes: {routes: mockSerializedRoutes}}
             }
             extension = new TestExtensionAsyncRoutes(new TestConfig())
-            expect(extension['_cachedRoutes']).toEqual(mockRoutes)
+
+            // Verify each route's fields match
+            const cachedRoutes = extension['_cachedRoutes'] as AsyncRouteProps[]
+            mockRoutes.forEach((expectedRoute, index) => {
+                const actualRoute = cachedRoutes[index]
+                expect(actualRoute.path).toBe(expectedRoute.path)
+                expect(actualRoute.exact).toBe(expectedRoute.exact)
+                expect(actualRoute.componentProps).toEqual(expectedRoute.componentProps)
+                const actualComponent = actualRoute.component as React.ComponentType<any>
+                const expectedComponent = expectedRoute.component as React.ComponentType<any>
+                expect(actualComponent.displayName).toBe(expectedComponent.displayName)
+            })
         })
 
         it('should throw an error when getComponentMap is not implemented', () => {
