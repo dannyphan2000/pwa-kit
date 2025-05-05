@@ -61,7 +61,7 @@ const main = () => {
 const publishPackages = ({packages = [], isNightly = false, npmTag} = {}) => {
     verifyCleanWorkingTree()
 
-    const publicPackages = JSON.parse(sh.exec('lerna list --json', {silent: true}))
+    const publicPackages = JSON.parse(sh.exec('npx lerna list --json', {silent: true}))
     const packagesToIgnore = publicPackages.filter(
         (pkg) => !packages.includes(pkg.name.replace('@salesforce/', ''))
     )
@@ -96,7 +96,7 @@ const publishPackages = ({packages = [], isNightly = false, npmTag} = {}) => {
           '--registry http://localhost:4873/'
 
     const {stderr, code} = sh.exec(
-        `npm run lerna -- publish from-package --yes --no-verify-access ${tagOption} ${registryOption}`
+        `npx lerna publish from-package --yes --no-verify-access ${tagOption} ${registryOption}`
     )
     // Why do we still want `lerna publish`? It turns out that we do need it. Sometimes we wanted some behaviour that's unique to Lerna.
     // For example: we have `publishConfig.directory` in some package.json files that only Lerna knows what to do with it.
