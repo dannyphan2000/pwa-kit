@@ -32,4 +32,3 @@ describe('UpdatePasswordFields component', () => {
         expect(confirmNewPasswordInput).toHaveAttribute('type', 'password')
     })
 })
-
