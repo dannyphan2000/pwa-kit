@@ -70,6 +70,7 @@ export class ApplicationExtension<
      * @protected
      * @returns new routes to be added
      */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getRoutes(params: GetRoutesParams): RouteProps[] {
         return []
     }
