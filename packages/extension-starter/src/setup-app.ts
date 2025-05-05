@@ -16,7 +16,9 @@ import {
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
 import {
+    AsyncRouteProps,
     BeforeRouteMatchParams,
+    ComponentMap,
     GetRoutesParams,
     RouteProps
 } from '@salesforce/pwa-kit-extension-sdk/types'
@@ -79,14 +81,19 @@ class Sample extends ApplicationExtension<Config> {
      *
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
-    getRoutes(params: GetRoutesParams): RouteProps[] {
-        return [
+    getRoutesAsync(params: GetRoutesParams): Promise<AsyncRouteProps[]> {
+        return Promise.resolve([
             {
                 exact: true,
                 path: this.getConfig().path,
-                component: SamplePage
+                component: SamplePage,
+                componentProps: {title: 'A custom title from the extension'}
             }
-        ]
+        ])
+    }
+
+    getComponentMap(): ComponentMap {
+        return {SamplePage}
     }
 
     /**
