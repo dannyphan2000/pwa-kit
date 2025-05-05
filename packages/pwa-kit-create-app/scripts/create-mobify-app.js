@@ -259,7 +259,7 @@ const RETAIL_REACT_APP_QUESTIONS = [
     }
 ]
 
-// Project dictionary describing details and how the gerator should ask questions etc.
+// Project dictionary describing details and how the generator should ask questions etc.
 const PRESETS = [
     {
         id: 'retail-react-app',
@@ -304,10 +304,50 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: false
+    },
+    {
+        id: 'retail-react-app-demo-site-internal',
+        name: 'Retail React App Demo Store',
+        description: `
+            Generates a project using the settings for a special B2C Commerce instance that is used
+            for demo purposes. The demo site is accessible at https://pwa-kit.mobify-storefront.com/
+
+            This environment uses a SLAS private client and has social and passwordless login enabled.
+            This environment is set up to use multiple locales.
+            Future features that are enabled for the demo environment may be added to this preset.
+        `,
+        shortDescription:
+            'The Retail app with demo Commerce Cloud instance and a private SLAS client',
+        templateSource: {
+            type: TEMPLATE_SOURCE_NPM,
+            id: '@salesforce/retail-react-app'
+        },
+        questions: [...RETAIL_REACT_APP_QUESTIONS],
+        answers: {
+            ['project.extend']: false, // Intentionally not an extensible project so that the correct logos appear on demo site
+            ['project.hybrid']: false,
+            ['project.name']: 'demo-storefront',
+            ['project.commerce.instanceUrl']: 'https://zzrf-001.dx.commercecloud.salesforce.com',
+            ['project.commerce.clientId']: '083859f2-5d93-4209-b999-a112266d63a0',
+            ['project.commerce.siteId']: 'RefArchGlobal',
+            ['project.commerce.organizationId']: 'f_ecom_zzrf_001',
+            ['project.commerce.shortCode']: 'kv7kzm78',
+            ['project.commerce.isSlasPrivate']: true,
+            ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: true // True only for presets deployed to demo environments like pwa-kit.mobify-storefront.com
+        },
+        assets: ['translations'],
+        private: true
     },
     {
         id: 'retail-react-app-test-project',
@@ -335,7 +375,10 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: false,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -359,7 +402,38 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'kv7kzm78',
             ['project.commerce.isSlasPrivate']: true,
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
-            ['project.einstein.siteId']: 'aaij-MobileFirst'
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
+        },
+        assets: ['translations'],
+        private: true
+    },
+    {
+        id: 'retail-react-app-bug-bounty',
+        name: 'Retail React App Bug Bounty Project',
+        description: '',
+        templateSource: {
+            type: TEMPLATE_SOURCE_NPM,
+            id: '@salesforce/retail-react-app'
+        },
+        questions: [...RETAIL_REACT_APP_QUESTIONS],
+        answers: {
+            ['project.extend']: true,
+            ['project.hybrid']: false,
+            ['project.name']: 'retail-react-app',
+            ['project.commerce.instanceUrl']: 'https://zzec-006.dx.commercecloud.salesforce.com',
+            ['project.commerce.clientId']: 'b56e7ad3-2237-42c9-8f55-41e63ebca420',
+            ['project.commerce.siteId']: 'RefArch',
+            ['project.commerce.organizationId']: 'f_ecom_zzec_006',
+            ['project.commerce.shortCode']: 'staging-001',
+            ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
+            ['project.einstein.siteId']: 'aaij-MobileFirst',
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.commerce.isSlasPrivate']: true,
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -383,7 +457,10 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'xitgmcd3',
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.commerce.isSlasPrivate']: true
+            ['project.commerce.isSlasPrivate']: true,
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -407,7 +484,10 @@ const PRESETS = [
             ['project.commerce.shortCode']: 'performance-001',
             ['project.einstein.clientId']: '1ea06c6e-c936-4324-bcf0-fada93f83bb1',
             ['project.einstein.siteId']: 'aaij-MobileFirst',
-            ['project.commerce.isSlasPrivate']: false
+            ['project.commerce.isSlasPrivate']: false,
+            ['project.dataCloud.appSourceId']: 'fb81edab-24c6-4b40-8684-b67334dfdf32',
+            ['project.dataCloud.tenantId']: 'mmyw8zrxhfsg09lfmzrd1zjqmg',
+            ['project.demo.enableDemoSettings']: false
         },
         assets: ['translations'],
         private: true
@@ -776,9 +856,12 @@ const processAppExtensions = (
             const appExtensionTmp = p.join(os.tmpdir(), `extract-${appExtensionName}`)
             fs.mkdirSync(appExtensionTmp, {recursive: true})
             const appExtensionTarFile = sh
-                .exec(`npm pack ${appExtensionName} --pack-destination="${appExtensionTmp}"`, {
-                    silent: true
-                })
+                .exec(
+                    `npm pack ${appExtensionName}@latest --pack-destination="${appExtensionTmp}"`,
+                    {
+                        silent: true
+                    }
+                )
                 .stdout.trim()
 
             const appExtensionTarPath = p.join(appExtensionTmp, appExtensionTarFile)
@@ -795,10 +878,7 @@ const processAppExtensions = (
             const appExtensionDestDir = p.join(appExtensionsDir, appExtensionName.replace('/', '_'))
             sh.mkdir('-p', appExtensionDestDir)
 
-            // Copy hidden files
-            sh.cp('-rf', p.join(appExtensionTmpPath, '.*'), appExtensionDestDir)
-            // Copy regular files
-            sh.cp('-rf', p.join(appExtensionTmpPath, '*'), appExtensionDestDir)
+            copyAllFiles(appExtensionTmpPath, appExtensionDestDir)
 
             // Clean up the temporary Application Extension directory
             sh.rm('-rf', appExtensionTmp)
@@ -807,31 +887,58 @@ const processAppExtensions = (
 }
 
 /**
- * Fetch available Application Extensions using npm search command.
- * The command searches for packages starting with '@salesforce/extension-'.
- *
- * Currently, the npm search command is not returning the expected results for known extension packages.
- * Therefore, we are using a static value to ensure the correct extensions are available.
- *
- * @returns {Array} A list of available Application Extension names and their versions.
+ * Fetches the latest version of a package using npm view.
+ * @param {string} packageName - The name of the package (e.g., '@salesforce/extension-chakra-storefront').
+ * @returns {string} - The latest version number (e.g., '1.0.0') or 'latest' if fetching fails.
+ */
+const getLatestVersion = (packageName) => {
+    try {
+        const result = child_proc.execSync(`npm view ${packageName} --json`, {encoding: 'utf8'})
+        const json = JSON.parse(result)
+        const latestVersion = json['dist-tags']?.latest
+        if (!latestVersion) {
+            throw new Error(`No 'dist-tags.latest' found for ${packageName}`)
+        }
+        return latestVersion
+    } catch (err) {
+        console.warn(`Failed to fetch version for ${packageName}: ${err.message}. Using 'latest'.`)
+        return 'latest'
+    }
+}
+
+/**
+ * Fetches available Application Extensions and their latest versions using npm view.
+ * @returns {Array} - A list of objects containing name, value, and version of available extensions.
  */
 const fetchAvailableAppExtensions = () => {
     const filePath = p.join(__dirname, '..', 'assets', 'available-app-extensions.json')
     try {
         const data = fs.readFileSync(filePath)
         const staticResult = JSON.parse(data)
-
-        // Use the static result for names but always use the npm label "latest" for versions
-        return staticResult.map((pkg) => {
-            return {
-                name: pkg.name,
-                value: pkg.name,
-                version: 'latest'
-            }
+        const extensionsWithVersions = staticResult.map((pkg) => {
+            const version = getLatestVersion(pkg.name)
+            // Prepend caret (^) to the version unless it's 'latest'
+            const caretVersion = version === 'latest' ? version : `^${version}`
+            return {name: pkg.name, value: pkg.name, version: caretVersion}
         })
+        return extensionsWithVersions
     } catch (error) {
         console.error('Failed to fetch Application Extensions:', error.message)
         return []
+    }
+}
+
+/**
+ * Copy all files, including subdirectories and hidden files
+ */
+const copyAllFiles = (fromDirectory, targetDirectory) => {
+    try {
+        fs.cpSync(fromDirectory, targetDirectory, {recursive: true, force: true})
+        // NOTE: we've tried using `sh.cp` but it errors out when copying hidden files on Windows machine.
+        // See: https://github.com/shelljs/shelljs/issues/711
+    } catch (err) {
+        console.error(`Error copying files from ${fromDirectory} to ${targetDirectory}:`, err)
+        process.exit(1)
     }
 }
 
@@ -843,7 +950,7 @@ const fetchAvailableAppExtensions = () => {
  * @param {*} answers
  * @param {*} param2
  */
-const runGenerator = async (
+const runGenerator = (
     context,
     {outputDir, templateVersion, verbose, installDependencies = true}
 ) => {
@@ -893,7 +1000,7 @@ const runGenerator = async (
     })
 
     // Copy the base template either from the package or npm.
-    sh.cp('-rf', p.join(packagePath, '{*,.*}'), outputDir)
+    copyAllFiles(packagePath, outputDir)
 
     // Copy template specific assets over.
     const assetsDir = p.join(ASSETS_TEMPLATES_DIR, id)
@@ -931,7 +1038,7 @@ const runGenerator = async (
             answers: {project: {type: 'PWAKitAppProject', name: 'local-dev-project'}}
         }
 
-        await runGenerator(localDevProjectContext, {
+        runGenerator(localDevProjectContext, {
             outputDir: devOutputDir,
             templateVersion,
             verbose,
@@ -984,7 +1091,7 @@ const runGenerator = async (
         devDependencies: selectedAppExtensions.reduce((acc, appExtensionName) => {
             // Find the corresponding Application Extension details
             const appExtensionDetails = context?.availableAppExtensions?.find(
-                (ext) => ext.value === `${appExtensionName}@latest`
+                (ext) => ext.value === appExtensionName
             )
             const version = appExtensionDetails ? appExtensionDetails.version : 'latest'
 

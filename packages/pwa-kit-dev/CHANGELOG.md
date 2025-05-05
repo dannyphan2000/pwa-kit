@@ -4,10 +4,12 @@
 ## v4.0.0-extensibility-preview.3 (Jan 14, 2025)
 - Ensure build command works on windows when path includes spaces. [#2204](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2204)
 - Add loader rule for `override-resolver-loader`. [#2207](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2207)
+
 ## v4.0.0-extensibility-preview.2 (Dec 09, 2024)
+
 ## v4.0.0-extensibility-preview.1 (Dec 09, 2024)
+
 ## v4.0.0-extensibility-preview.0 (Nov 28, 2024)
-## v4.0.0-dev (Jun 21, 2024)
 - Fix build script execution on windows when spaces exists in users home path. [#2156](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2156)
 - Integrate Application Extensions Project. (#2099)[https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2099]
 - Overrides in `disabled` Application Extensions will take no effect. [#2051](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2051)
@@ -16,6 +18,20 @@
 - Replace `IApplicationExtension` with `ApplicationExtension` abstract class. [#2019](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2019)
 - Change Webpack logic to include all installed Application Extensions in the app bundle. [#2004](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2004)
 - Support the tuples way of configuring the app extensions [#2010](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2010)
+
+## v3.10.0 (Feb 18, 2025)
+- Support source map for both client and server on MRT [#240](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2240)
+- Fix dependencies vulnerabilities [#2338](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2338)
+
+## v3.9.2 (Mar 07, 2025)
+- Update PWA-Kit SDKs to v3.9.2 [#2304](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2304)
+
+## v3.9.1 (Mar 05, 2025)
+- Update PWA-Kit SDKs to v3.9.1 [#2301](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2301)
+
+## v3.9.0 (Feb 18, 2025)
+- Support Node 22 [#2218](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2218) 
+- Set minimum target node version [#2241](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2241)
 
 ## v3.8.0 (Oct 28, 2024)
 

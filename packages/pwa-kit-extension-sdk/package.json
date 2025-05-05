@@ -17,6 +17,7 @@
     "LICENSE",
     "+(configs|express|react|shared)/**/!(*.test*).{ts,js}",
     "*.{js,d.ts}",
+    "bin/**/*.js",
     "!*.test*.{js,d.ts}",
     "!test*.*",
     "!+(jest|babel).config.js",
@@ -25,9 +26,13 @@
   "publishConfig": {
     "directory": "dist"
   },
+  "bin": {
+    "pwa-kit-extension-sdk": "bin/pwa-kit-extension-sdk.js"
+  },
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "cross-env NODE_ENV=production internal-lib-build build && tsc && npm run check-dependencies",
+    "build:watch": "nodemon --watch 'src/**' --watch 'bin/**' --ext 'js,jsx,ts,tsx' --exec 'npm run build'",
     "check-dependencies": "node scripts/check-dependencies.js",
     "prepare": "npm run build",
     "lint": "npm run lint:js",
@@ -36,6 +41,7 @@
     "test": "pwa-kit-dev test"
   },
   "dependencies": {
+    "chalk": "^4.1.2",
     "cross-env": "^5.2.1",
     "dedent": "^1.5.3",
     "fs-extra": "^11.2.0",
@@ -67,6 +73,7 @@
     "express": "^4.19.2",
     "internal-lib-build": "4.0.0-extensibility-preview.4",
     "memfs": "^4.14.0",
+    "nodemon": "^2.0.22",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^5.3.4",
