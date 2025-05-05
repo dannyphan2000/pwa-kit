@@ -8467,6 +8467,34 @@
       "value": "]"
     }
   ],
+  "use_update_password_fields.error.password_mismatch": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Ƥȧȧşşẇǿǿřḓş ḓǿǿ ƞǿǿŧ ḿȧȧŧƈħ."
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
+  "use_update_password_fields.error.required_confirm_password": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Ƥŀḗḗȧȧşḗḗ ƈǿǿƞƒīřḿ ẏǿǿŭŭř ƥȧȧşşẇǿǿřḓ."
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
   "use_update_password_fields.error.required_new_password": [
     {
       "type": 0,
@@ -8517,6 +8545,20 @@
     {
       "type": 0,
       "value": "Ƥȧȧşşẇǿǿřḓ ḿŭŭşŧ ƈǿǿƞŧȧȧīƞ ȧȧŧ ŀḗḗȧȧşŧ ǿǿƞḗḗ ŭŭƥƥḗḗřƈȧȧşḗḗ ŀḗḗŧŧḗḗř."
+    },
+    {
+      "type": 0,
+      "value": "]"
+    }
+  ],
+  "use_update_password_fields.label.confirm_new_password": [
+    {
+      "type": 0,
+      "value": "["
+    },
+    {
+      "type": 0,
+      "value": "Ƈǿǿƞƒīřḿ Ƞḗḗẇ Ƥȧȧşşẇǿǿřḓ"
     },
     {
       "type": 0,
