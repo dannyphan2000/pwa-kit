@@ -28,7 +28,6 @@ import {
     Heading,
     Spinner,
     useDisclosure,
-    // useStyleConfig
     useSlotRecipe,
     useToken
 } from '@chakra-ui/react'
@@ -237,23 +236,6 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         // @ts-ignore
         // const headerWrapperStyles = styles.headerWrapper || {}
 
-        // Get the colors Map
-        const colorsMap = system.tokens.categoryMap.get('colors')!
-        const colorEntries = Array.from(colorsMap.entries())
-
-        // Get the spacing Map
-        const spacingMap = system.tokens.categoryMap.get('spacing')!
-        const spacingEntries = Array.from(spacingMap.entries())
-
-        const sizesMap = system.tokens.categoryMap.get('sizes')!
-        const sizesEntries = Array.from(sizesMap.entries())
-
-        // Get the boxshadow Map
-        const shadowMap = system.tokens.categoryMap.get('shadows')!
-
-        // Convert to an array for rendering
-        const shadowsEntries = Array.from(shadowMap.entries())
-        console.log('system', system)
         return (
             <Box className="sf-app" css={styles.container}>
                 <Helmet>
@@ -307,48 +289,6 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 <Box id="app" display="flex" flexDirection="column" flex={1}>
                     <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>
                     <Box css={styles.headerWrapper}>
-                        <Flex gap={1}>
-                            <Box>
-                                <Heading>Colors</Heading>
-                                {
-                                    // @ts-ignore
-                                    colorEntries.map(([tokenPath, colorValue]) => (
-                                        <Box key={tokenPath} bg={tokenPath}>
-                                            {`${tokenPath}: ${colorValue.value}`}
-                                        </Box>
-                                    ))
-                                }
-                            </Box>
-                            <Box>
-                                <Heading>Spacing</Heading>
-                                {
-                                    // @ts-ignore
-                                    spacingEntries.map(([tokenPath, colorValue]) => (
-                                        <Box
-                                            key={tokenPath}
-                                        >{`${tokenPath}: ${colorValue.value}`}</Box>
-                                    ))
-                                }
-                            </Box>
-                            <Box>
-                                <Heading>Sizes</Heading>
-                                {sizesEntries.map(([tokenPath, colorValue]) => (
-                                    <Box key={tokenPath}>{`${tokenPath}: ${colorValue.value}`}</Box>
-                                ))}
-                            </Box>
-                            <Box>
-                                <Heading>box shadow</Heading>
-                                {
-                                    // @ts-ignore
-                                    shadowsEntries.map(([tokenPath, colorValue]) => (
-                                        <Box
-                                            key={tokenPath}
-                                            boxShadow={colorValue.value}
-                                        >{`${tokenPath}: ${colorValue.value}`}</Box>
-                                    ))
-                                }
-                            </Box>
-                        </Flex>
                         {!isCheckout ? (
                             <>
                                 <AboveHeader />
