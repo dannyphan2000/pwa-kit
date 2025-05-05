@@ -24,29 +24,40 @@ const main = () => {
     console.log('--- Given the current branch:', branchName)
 
     const isNightly = branchName === 'nightly-releases'
+    const isNextBranch = branchName === 'next'
 
     if (isNightly) {
         console.log('--- Nightly release detected. Releasing all packages...')
-        publishPackages([], true)
-    } else {
-        const matched = branchName.match(RELEASE_ONE_PACKAGE)
-        const packageName = matched && matched[1]
-
-        if (packageName) {
-            console.log(`--- Releasing ${packageName}...`)
-            publishPackages([packageName])
-        } else {
-            console.log('--- Releasing all packages...')
-            publishPackages()
-        }
+        publishPackages({isNightly: true})
+        return
     }
+
+    if (isNextBranch) {
+        console.log('--- The `next` branch detected. Releasing all packages with `next` tag...')
+        publishPackages({npmTag: 'next'})
+        return
+    }
+
+    const matched = branchName.match(RELEASE_ONE_PACKAGE)
+    const packageName = matched && matched[1]
+
+    if (packageName) {
+        console.log(`--- Releasing ${packageName}...`)
+        publishPackages({packages: [packageName]})
+        return
+    }
+
+    console.log('--- Releasing all packages...')
+    publishPackages()
 }
 
 /**
- * @param {string[]} packages - a list of package names without the "@salesforce" namespace
- * @param {boolean} isNightly - boolean value suggesting if packages are being published as a nightly release (affects NPM tag)
+ * @param {Object} options - The options object
+ * @param {string[]} [options.packages=[]] - a list of package names without the "@salesforce" namespace
+ * @param {boolean} [options.isNightly=false] - boolean value suggesting if packages are being published as a nightly release (affects NPM tag)
+ * @param {string} [options.npmTag] - the npm tag to use for publishing
  */
-const publishPackages = (packages = [], isNightly = false) => {
+const publishPackages = ({packages = [], isNightly = false, npmTag}) => {
     verifyCleanWorkingTree()
 
     const publicPackages = JSON.parse(sh.exec('lerna list --json', {silent: true}))
@@ -73,15 +84,23 @@ const publishPackages = (packages = [], isNightly = false) => {
         sh.exec('git commit -m "temporary commit to have clean working tree"', {silent: true})
     }
 
+    const tagOption = npmTag
+        ? // Force the npm tag to be the given `npmTag`
+          `--dist-tag ${npmTag}`
+        : // Otherwise, set a default pre-release tag (which will apply only when the version is considered to be pre-release)
+          `--pre-dist-tag ${isNightly ? 'nightly-next' : 'next'}`
+    const registryOption = process.env.CI
+        ? ''
+        : // Local verdaccio registry
+          '--registry http://localhost:4873/'
+
+    const {stderr, code} = sh.exec(
+        `npm run lerna -- publish from-package --yes --no-verify-access ${tagOption} ${registryOption}`
+    )
     // Why do we still want `lerna publish`? It turns out that we do need it. Sometimes we wanted some behaviour that's unique to Lerna.
     // For example: we have `publishConfig.directory` in some package.json files that only Lerna knows what to do with it.
     // https://github.com/lerna/lerna/tree/main/libs/commands/publish#publishconfigdirectory
 
-    const {stderr, code} = sh.exec(
-        `npm run lerna -- publish from-package --yes --no-verify-access --pre-dist-tag ${
-            isNightly ? 'nightly-next' : 'next'
-        } ${process.env.CI ? '' : '--registry http://localhost:4873/'}`
-    )
     // DEBUG
     // console.log('--- Would publish these public packages to npm:')
     // sh.exec('lerna list --long')
