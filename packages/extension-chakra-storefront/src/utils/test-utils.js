@@ -138,7 +138,7 @@ export const TestProviders = ({
                         >
                             <CurrencyProvider currency={DEFAULT_CURRENCY}>
                                 <Router>
-                                    <ChakraProvider theme={theme}>
+                                    <ChakraProvider value={theme}>
                                         <AddToCartModalProvider>{children}</AddToCartModalProvider>
                                     </ChakraProvider>
                                 </Router>
