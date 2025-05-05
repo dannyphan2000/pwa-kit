@@ -58,7 +58,7 @@ const main = () => {
  * @param {boolean} [options.isNightly=false] - boolean value suggesting if packages are being published as a nightly release (affects NPM tag)
  * @param {string} [options.npmTag] - the npm tag to use for publishing
  */
-const publishPackages = ({packages = [], isNightly = false, npmTag}) => {
+const publishPackages = ({packages = [], isNightly = false, npmTag} = {}) => {
     verifyCleanWorkingTree()
 
     const publicPackages = JSON.parse(sh.exec('lerna list --json', {silent: true}))
