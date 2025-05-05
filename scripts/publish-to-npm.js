@@ -9,7 +9,7 @@
 const sh = require('shelljs')
 
 // The branch naming convention for releasing a particular package is: release-<package-name>-1.1.x
-// For example: 'release-retail-react-app-1.1.x'
+// For example: 'release-commerce-sdk-react-10.0.x'
 const RELEASE_ONE_PACKAGE = /release-([-a-z]+)-\d+\./i
 
 const main = () => {
@@ -18,8 +18,9 @@ const main = () => {
 
     const branchName = sh.exec('git branch --show-current', {silent: true}).trim()
     // DEBUG
+    // const branchName = 'next'
     // const branchName = 'release-3.0.x'
-    // const branchName = 'release-retail-react-app-1.0.x'
+    // const branchName = 'release-commerce-sdk-react-10.0.x'
 
     console.log('--- Given the current branch:', branchName)
 
@@ -100,10 +101,6 @@ const publishPackages = ({packages = [], isNightly = false, npmTag}) => {
     // Why do we still want `lerna publish`? It turns out that we do need it. Sometimes we wanted some behaviour that's unique to Lerna.
     // For example: we have `publishConfig.directory` in some package.json files that only Lerna knows what to do with it.
     // https://github.com/lerna/lerna/tree/main/libs/commands/publish#publishconfigdirectory
-
-    // DEBUG
-    // console.log('--- Would publish these public packages to npm:')
-    // sh.exec('lerna list --long')
 
     // Make sure to clean up, no matter if there's an error or not
     if (publishSomePackagesOnly) {
