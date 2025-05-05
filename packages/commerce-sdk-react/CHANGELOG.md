@@ -1,6 +1,11 @@
 ## v3.3.0-extensibility-preview.4 (Feb 12, 2025)
 - Add `ServerContext` type for `useServerContext` hook [#2239](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2239)
 
+## v3.3.0-dev (Feb 18, 2025)
+- Invalidate cache instead of removing cache when triggering logout [#2323](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2323)
+- Fix dependencies vulnerabilities [#2338](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2338)
+- Allow custom parameters/body to be passed to SLAS authorize/authenticate calls via commerce-sdk-react auth helpers [#2358](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2358)
+
 ## v3.2.1 (Mar 05, 2025)
 - Update PWA-Kit SDKs to v3.9.1 [#2301](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2301)
 
