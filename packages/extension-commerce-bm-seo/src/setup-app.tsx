@@ -17,14 +17,17 @@ import {
     AsyncRouteProps,
     ComponentMap,
     GetRoutesParams,
-    BeforeRouteMatchParams
+    BeforeRouteMatchParams,
+    SerializedRouteProps
 } from '@salesforce/pwa-kit-extension-sdk/types'
+import {ShopperSeo} from 'commerce-sdk-isomorphic'
 
 // Local Imports
-import {Config} from './types'
+import {Config, CommerceAPIConfig} from './types'
 import {
     createPlaceholderComponent,
     getComponentForUrlMapping,
+    PlaceholderComponent,
     withPropsWrapper
 } from './utils/component-utils'
 import {getShopperSeoClient} from './utils/shopper-seo-utils'
@@ -56,7 +59,9 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
      * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
      */
     async getRoutesAsync({locals}: GetRoutesParams): Promise<AsyncRouteProps[]> {
-        let urlMapping
+        let urlMapping:
+            | Awaited<ReturnType<ShopperSeo<CommerceAPIConfig['parameters']>['getUrlMapping']>>
+            | undefined
         const config = this.getConfig()
         const appOrigin = getAppOrigin()
 
@@ -92,20 +97,29 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
     }
 
     /**
-     * TODO: update comment to make it clearer that beforeRouteMatch is also called on the client side
-     * This method is used on the server during the rendering pipeline. It's provided a list of all the routes that your application
+     * This method is used on the server and client during the rendering pipeline. It's provided a list of all the routes that your application
      * is configured with, including those defined in the base application and those added by all the extensions. You can use this
      * method to modify these routes in any way you want, but you must return an array of routes as a result.
      */
     beforeRouteMatch({allRoutes}: BeforeRouteMatchParams): RouteProps[] {
         const updatedRoutes = [...allRoutes]
-        const filteredRoutes = updatedRoutes.filter((route) => !route.component?.isPlaceholder)
+        const filteredRoutes = updatedRoutes.filter(
+            (route) => !(route.component as PlaceholderComponent)?.isPlaceholder
+        )
 
         for (let i = 0; i < updatedRoutes.length; i++) {
             const route = updatedRoutes[i]
-            if (!route.component.isPlaceholder) continue
+            if (!(route.component as PlaceholderComponent).isPlaceholder) continue
 
-            const componentName: string = route.component.displayName
+            const componentName: string | undefined = route.component?.displayName
+            if (!componentName) {
+                throw new Error(
+                    `Display name is undefined for component in route with path: ${
+                        route.path as string
+                    }`
+                )
+            }
+
             const actualComponent = filteredRoutes.find((r) =>
                 r.component?.displayName?.includes(componentName)
             )?.component
@@ -116,7 +130,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
                 )
             }
 
-            const componentProps = route.componentProps || {}
+            const componentProps = (route as SerializedRouteProps).componentProps || {}
 
             // We need to wrap the component using withPropsWrapper to ensure that the non-react
             // specific statics are copied over such as getComponent().

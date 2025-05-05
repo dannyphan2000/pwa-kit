@@ -9,9 +9,10 @@
 import React from 'react'
 import {Redirect} from 'react-router-dom'
 import hoistNonReactStatics from 'hoist-non-react-statics'
+import {ShopperSeo} from 'commerce-sdk-isomorphic'
 
 // Local Imports
-import {Config} from '../types'
+import {Config, CommerceAPIConfig} from '../types'
 
 export const withPropsWrapper = (
     WrappedComponent: React.ComponentType<any>,
@@ -29,20 +30,14 @@ export const withPropsWrapper = (
     return hoistNonReactStatics(withPropsWrapper, WrappedComponent)
 }
 
-// TODO: fix the type for urlMapping
 export const getComponentForUrlMapping = (
-    urlMapping: any,
+    urlMapping: Awaited<ReturnType<ShopperSeo<CommerceAPIConfig['parameters']>['getUrlMapping']>>,
     resourceTypeToComponentMap: Config['resourceTypeToComponentMap']
 ): {component: React.ComponentType<any>; props: Record<string, any>} => {
     let component: React.ComponentType<any>
     let props: Record<string, any>
 
-    const isRedirect = !urlMapping.resourceType
-    if (isRedirect && urlMapping.destinationUrl) {
-        props = {to: urlMapping.destinationUrl}
-        component = () => <Redirect {...props} />
-        component.displayName = 'Redirect'
-    } else {
+    if ('resourceType' in urlMapping) {
         const componentName =
             resourceTypeToComponentMap[
                 urlMapping.resourceType as keyof typeof resourceTypeToComponentMap
@@ -55,6 +50,16 @@ export const getComponentForUrlMapping = (
         // Deserialization will be handled in beforeRouteMatch, where all routes from other extensions are accessible.
         component = createPlaceholderComponent()
         component.displayName = componentName
+    } else if ('destinationUrl' in urlMapping) {
+        props = {to: urlMapping.destinationUrl}
+        component = () => <Redirect to={urlMapping.destinationUrl as string} />
+        component.displayName = 'Redirect'
+    } else {
+        throw new Error(
+            `Cannot map urlMapping to a component: expected either resourceType or destinationUrl. Received: ${JSON.stringify(
+                urlMapping
+            )}`
+        )
     }
     return {component, props}
 }
@@ -63,7 +68,7 @@ interface PlaceholderMeta {
     isPlaceholder: true
 }
 
-type PlaceholderComponent = React.FC<any> & PlaceholderMeta
+export type PlaceholderComponent = React.FC<any> & PlaceholderMeta
 
 export const createPlaceholderComponent = (): PlaceholderComponent => {
     const Placeholder: React.FC<any> = () => {

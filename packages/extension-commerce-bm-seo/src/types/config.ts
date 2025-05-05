@@ -15,7 +15,7 @@ type ResourceTypeToComponentMap = {
 }
 
 // Configuration settings for connecting to the Commerce API.
-type CommerceAPIConfig = {
+export type CommerceAPIConfig = {
     proxyPath: string
     parameters: {
         clientId: string

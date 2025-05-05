@@ -25,7 +25,6 @@ export const getShopperSeoClient = async (locals: Record<string, any>, config: C
             ...commerceAPI.parameters,
             proxy: `${appOrigin}${commerceAPI.proxyPath}`,
             redirectURI: `${appOrigin}/callback`,
-            // TODO: proper logger
             logger: console
         })
 

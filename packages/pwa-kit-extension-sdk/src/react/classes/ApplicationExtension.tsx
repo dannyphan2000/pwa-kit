@@ -36,7 +36,7 @@ export type ReactApplicationExtensionConfig = ApplicationExtensionConfig
 export class ApplicationExtension<
     Config extends ReactApplicationExtensionConfig
 > extends ApplicationExtensionBase<Config> {
-    protected _cachedRoutes: RouteProps[] | typeof NOT_CACHED = NOT_CACHED
+    protected _cachedRoutes: SerializedRouteProps[] | typeof NOT_CACHED = NOT_CACHED
 
     constructor(config: Config) {
         super(config)
