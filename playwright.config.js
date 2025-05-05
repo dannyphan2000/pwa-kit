@@ -31,7 +31,7 @@ module.exports = defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
   },
-
+  snapshotPathTemplate: 'e2e/{testFileDir}/__snapshots__/{arg}{ext}',
   /* Configure projects for major browsers */
   projects: [
     {
@@ -45,6 +45,6 @@ module.exports = defineConfig({
       name: "Mobile Chrome",
       use: { ...devices["Pixel 5"] },
       testIgnore: "**/desktop/**",
-    },
+    }
   ],
 });
