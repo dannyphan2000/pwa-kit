@@ -140,6 +140,18 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         return updatedRoutes
     }
 
+    /**
+     * Returns a map of component names to placeholder components.
+     * Each placeholder component's displayName is set to its corresponding component name.
+     *
+     * Example:
+     * ```
+     * {
+     *     ProductList: createPlaceholderComponent('ProductList'),
+     *     ProductDetail: createPlaceholderComponent('ProductDetail')
+     * }
+     * ```
+     */
     getComponentMap(): ComponentMap {
         // This extension handles deserialization of routes in beforeRouteMatch instead
         // of using the component map. This is because this extension relies on components

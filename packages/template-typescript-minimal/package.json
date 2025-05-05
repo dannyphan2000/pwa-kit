@@ -70,6 +70,7 @@
         [
           "@salesforce/extension-starter"
         ],
+        ["@salesforce/extension-commerce-bm-seo", {}],
         [
           "@salesforce/extension-chakra-storefront",
           {
