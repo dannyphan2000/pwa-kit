@@ -231,8 +231,8 @@ describe('updating password', function () {
         const el = within(screen.getByTestId('sf-toggle-card-password'))
         await user.click(el.getByText(/edit/i))
         await user.type(el.getByLabelText(/current password/i), 'Password!12345')
-        await user.type(el.getByLabelText("New Password"), 'Password!98765')
-        await user.type(el.getByLabelText("Confirm New Password"), 'Password!98765')
+        await user.type(el.getByLabelText('New Password'), 'Password!98765')
+        await user.type(el.getByLabelText('Confirm New Password'), 'Password!98765')
         await user.click(el.getByText(/Forgot password/i))
         await user.click(el.getByText(/save/i))
 
@@ -251,8 +251,8 @@ describe('updating password', function () {
         const el = within(screen.getByTestId('sf-toggle-card-password'))
         await user.click(el.getByText(/edit/i))
         await user.type(el.getByLabelText(/current password/i), 'Password!123456')
-        await user.type(el.getByLabelText("New Password"), 'Password!98765')
-        await user.type(el.getByLabelText("Confirm New Password"), 'Password!98765')
+        await user.type(el.getByLabelText('New Password'), 'Password!98765')
+        await user.type(el.getByLabelText('Confirm New Password'), 'Password!98765')
         await user.click(el.getByText(/save/i))
 
         expect(await screen.findByTestId('password-update-error')).toBeInTheDocument()
