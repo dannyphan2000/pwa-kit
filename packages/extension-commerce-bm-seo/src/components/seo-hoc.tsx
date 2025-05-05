@@ -45,6 +45,11 @@ const isRouteDefined = (routeToMatch: string, routes: Array<{path: string}>): bo
     return matchingRoute !== undefined
 }
 
+enum MatchingStrategy {
+    ROUTER_FIRST = 'ROUTER_FIRST',
+    API_FIRST = 'API_FIRST'
+}
+
 const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const SeoHOC: React.FC<P> = (props: SeoHOCProps) => {
         const location = useLocation()
@@ -56,11 +61,11 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
         })
         const resolveRef = useRef<(result?: object) => void>()
 
-        // The `matchingStrategy` configuration determines whether we check the CACHE (AKA the predefined route config) first or the `getUrlMapping` API
-        // `matchingStrategy == CACHE_FIRST`: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
+        // The `matchingStrategy` configuration determines whether we check the ROUTER (AKA the predefined route config) first or the `getUrlMapping` API
+        // `matchingStrategy == ROUTER_FIRST`: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
         // `matchingStrategy == API_FIRST`: always call `getUrlMapping`
         const skipMappingCall =
-            matchingStrategy === 'CACHE_FIRST' && isRouteDefined(location.pathname, routes)
+            matchingStrategy === MatchingStrategy.ROUTER_FIRST && isRouteDefined(location.pathname, routes)
 
         const {refetch} = useUrlMapping(
             {
@@ -76,17 +81,25 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
 
         useEffect(() => {
             const fetchData = async () => {
-                if (urlSegment && !skipMappingCall) {
-                    const result = await refetch()
-                    if (resolveRef.current) {
-                        if (result.status === 'error') {
-                            resolveRef.current(undefined)
+                if (!urlSegment) {
+                    return
+                }
+                if (skipMappingCall) {
+                    return
+                }
+                if (!resolveRef.current) {
+                    return
+                }
+                const result = await refetch()
+                console.log('(yuna) API RESPONSE', result)
+                if (resolveRef.current) {
+                    if (result.status === 'error') {
+                        resolveRef.current(undefined)
+                    } else {
+                        if (result.data?.destinationUrl) {
+                            resolveRef.current(result.data)
                         } else {
-                            if (result.data?.destinationUrl) {
-                                resolveRef.current(result.data)
-                            } else {
-                                resolveRef.current(undefined)
-                            }
+                            resolveRef.current(undefined)
                         }
                     }
                 }
@@ -96,6 +109,7 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
 
         const {isBlocked: isNavigationBlocked} = useBlockNavigation(
             async (location: Location, _: string) => {
+                // Early exit if configured to check the Router Context first and found a matching route
                 if (skipMappingCall) {
                     return
                 }
