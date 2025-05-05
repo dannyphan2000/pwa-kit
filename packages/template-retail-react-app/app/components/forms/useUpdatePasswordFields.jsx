@@ -105,7 +105,8 @@ export default function useUpdatePasswordFields({
                         val === getValues(`${prefix}password`) ||
                         formatMessage({
                             defaultMessage: 'Passwords do not match.',
-                            id: 'use_update_password_fields.error.password_mismatch'})
+                            id: 'use_update_password_fields.error.password_mismatch'
+                        })
                 }
             },
             error: errors[`${prefix}confirmPassword`],
