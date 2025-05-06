@@ -33,6 +33,15 @@ const getComponent = (
  * Checks whether the given URL path matches a predefined route defined in the application's routes config, excluding the catch-all route (e.g., path='*')
  */
 const isRouteDefined = (routeToMatch: string, routes: Array<{path: string}>): boolean => {
+    // Check for multiple wildcard routes
+    const wildcardRoutes = routes.filter((route) => route.path.endsWith('*'))
+    if (wildcardRoutes.length > 1) {
+        console.warn(
+            `Multiple wildcard routes detected (${wildcardRoutes.length}). This may cause unexpected routing behavior. Wildcard routes:`,
+            wildcardRoutes.map(route => route.path)
+        )
+    }
+
     // Exclude any catch-all (404) routes and paths ending with wildcards
     const validRoutes = routes.filter((route) => !route.path.endsWith('*'))
 
