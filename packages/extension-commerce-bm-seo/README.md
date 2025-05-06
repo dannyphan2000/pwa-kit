@@ -10,12 +10,12 @@ A [PWA Kit](https://github.com/SalesforceCommerceCloud/pwa-kit) extension that a
 
 ```sh
  npm install @salesforce/extension-commerce-bm-seo
+```
+Also: 
+ - install the peer dependencies listed in the package.json
+ - see the Peer Dependancies section below for any other steps (e.g. make sure your app uses CommerceApiProvider component)
 
- # Also: 
- # - install the peer dependencies listed in the package.json
- # - see the Peer Dependancies section below for any other steps (e.g. make sure your app uses CommerceApiProvider component)
-
- ## Peer Dependencies
+## Peer Dependencies
 
 PWA-Kit Application Extensions are NPM packages at their most simplest form, and as such you can define
 what peer dependencies are required when using it. Because this application extension provides
@@ -28,36 +28,35 @@ given package. See package.json for the full list of peer dependencies.
 ## Configuration
 
 The SEO extension is configured via the `mobify.app.extensions` property in your config files or `package.json`:
-
 ```json
 {
     "mobify": {
         "app": {
-        "extensions": [
-            [
-            "@salesforce/extension-commerce-bm-seo",
-            {
-                "enabled": true,
-                "routingMode": "router_first",
-                "commerceAPI": {
-                "proxyPath": "/mobify/proxy/api",
-                "parameters": {
-                    "shortCode": "8o7m175y",
-                    "clientId": "c9c45bfd-0ed3-4aa2-9971-40f88962b836",
-                    "organizationId": "f_ecom_zzrf_001",
-                    "siteId": "RefArchGlobal"
+            "extensions": [
+                [
+                "@salesforce/extension-commerce-bm-seo",
+                {
+                  "enabled": true,
+                  "routingMode": "router_first",
+                  "commerceAPI": {
+                    "proxyPath": "/mobify/proxy/api",
+                    "parameters": {
+                      "shortCode": "8o7m175y",
+                      "clientId": "c9c45bfd-0ed3-4aa2-9971-40f88962b836",
+                      "organizationId": "f_ecom_zzrf_001",
+                      "siteId": "RefArchGlobal"
+                    }
+                  },
+                  "commerceAPIAuth": {
+                    "propertyNameInLocals": "commerceAPIAuth"
+                  },
+                  "resourceTypeToComponentMap": {
+                    "category": "ProductList",
+                    "product": "ProductDetail",
+                  }
                 }
-                },
-                "commerceAPIAuth": {
-                "propertyNameInLocals": "commerceAPIAuth"
-                },
-                "resourceTypeToComponentMap": {
-                "category": "ProductList",
-                "product": "ProductDetail",
-                }
-            }
+                ]
             ]
-        ]
         }
     }
 }
@@ -108,7 +107,7 @@ The extension uses the Commerce API's Shopper SEO URL Mapping endpoint to handle
 
 ## Usage of `isNavigationBlocked` and `siteLocale`
 
-### `isNavigationBlocked`
+### isNavigationBlocked
 
 - The SEO extension provides an `isNavigationBlocked` state via the application extension store.
 - Downstream extensions (such as `@salesforce/extension-chakra-storefront`) should read this value to determine whether navigation is being blocked (e.g., while waiting for SEO URL mapping to resolve).
@@ -122,21 +121,17 @@ const {isNavigationBlocked} = useApplicationExtensionsStore((state) =>
 if (isNavigationBlocked) {
   // Show loading spinner or block navigation
 }
-
 ```
-
 ### siteLocale and setSiteLocale
 
 The SEO extension also provides a `setSiteLocale` function in the application extension store.
 `siteLocale` represents the current locale for the site and used in the SEO Url Mapping API to ensure that the SEO extension are kept in sync with the current locale. It is set and managed by downstream extensions (such as your storefront) using the `setSiteLocale` function.
-
 
 **Example usage**
 ```typescript
 const {setSiteLocale} = useApplicationExtensionsStore((state) =>
   state.state['@salesforce/extension-commerce-bm-seo'] || {setSiteLocale: () => {}}
 )
-
 useEffect(() => {
   setSiteLocale(currentLocale) // currentLocale is determined by your app logic
 }, [currentLocale])
