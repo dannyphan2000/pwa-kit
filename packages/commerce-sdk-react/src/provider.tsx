@@ -48,6 +48,13 @@ export interface CommerceApiProviderProps extends ApiClientConfigParams {
     refreshTokenGuestCookieTTL?: number
     OCAPISessionsURL?: string
 }
+export interface ApiClientConfig {
+    proxy: string
+    headers?: Record<string, string>
+    parameters: ApiClientConfigParams
+    fetchOptions?: ShopperBasketsTypes.FetchOptions
+    enablePWAKitPrivateClient?: boolean
+}
 
 /**
  * @internal
@@ -63,6 +70,30 @@ export const ConfigContext = React.createContext({} as Omit<CommerceApiProviderP
  * @internal
  */
 export const AuthContext = React.createContext({} as Auth)
+
+export const buildCommerceApiClients = (config: ApiClientConfig): ApiClients => {
+    console.log('buildCommerceApiClients config', config)
+    const clientConfig = {...config, throwOnBadResponse: true}
+    const baseUrl = config.proxy.split(MOBIFY_PATH)[0]
+    const privateClientEndpoint = `${baseUrl}${SLAS_PRIVATE_PROXY_PATH}`
+    return {
+        shopperBaskets: new ShopperBaskets(clientConfig),
+        shopperContexts: new ShopperContexts(clientConfig),
+        shopperCustomers: new ShopperCustomers(clientConfig),
+        shopperExperience: new ShopperExperience(clientConfig),
+        shopperGiftCertificates: new ShopperGiftCertificates(clientConfig),
+        shopperLogin: new ShopperLogin({
+            ...clientConfig,
+            proxy: clientConfig.enablePWAKitPrivateClient ? privateClientEndpoint : clientConfig.proxy
+        }),
+        shopperOrders: new ShopperOrders(clientConfig),
+        shopperProducts: new ShopperProducts(clientConfig),
+        shopperPromotions: new ShopperPromotions(clientConfig),
+        shopperSearch: new ShopperSearch(clientConfig),
+        shopperSeo: new ShopperSeo(clientConfig),
+        shopperStores: new ShopperStores(clientConfig)
+    }
+}
 
 /**
  * Initialize a set of Commerce API clients and make it available to all of descendant components
@@ -191,31 +222,12 @@ const CommerceApiProvider = (props: CommerceApiProviderProps): ReactElement => {
             locale,
             currency
         },
-        throwOnBadResponse: true,
-        fetchOptions
+        fetchOptions,
+        enablePWAKitPrivateClient
     }
 
-    const baseUrl = config.proxy.split(MOBIFY_PATH)[0]
-    const privateClientEndpoint = `${baseUrl}${SLAS_PRIVATE_PROXY_PATH}`
-
     const apiClients = useMemo(() => {
-        return {
-            shopperBaskets: new ShopperBaskets(config),
-            shopperContexts: new ShopperContexts(config),
-            shopperCustomers: new ShopperCustomers(config),
-            shopperExperience: new ShopperExperience(config),
-            shopperGiftCertificates: new ShopperGiftCertificates(config),
-            shopperLogin: new ShopperLogin({
-                ...config,
-                proxy: enablePWAKitPrivateClient ? privateClientEndpoint : config.proxy
-            }),
-            shopperOrders: new ShopperOrders(config),
-            shopperProducts: new ShopperProducts(config),
-            shopperPromotions: new ShopperPromotions(config),
-            shopperSearch: new ShopperSearch(config),
-            shopperSeo: new ShopperSeo(config),
-            shopperStores: new ShopperStores(config)
-        }
+        return buildCommerceApiClients(config)
     }, [
         clientId,
         organizationId,

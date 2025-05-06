@@ -59,7 +59,8 @@ class Sample extends ApplicationExtension<Config> {
      * or add things like providers and contexts to be used throughout your app.
      */
     extendApp<T extends React.ComponentType<T>>(
-        App: React.ComponentType<T>
+        App: React.ComponentType<T>,
+        locals: Record<string, any>
     ): React.ComponentType<T> {
         const HOCs = [
             // Example higher-order component, this can be safely removed.

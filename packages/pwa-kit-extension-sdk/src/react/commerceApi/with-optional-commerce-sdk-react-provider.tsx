@@ -7,9 +7,14 @@
 
 import React from 'react'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
-import {CommerceApiProvider, useCommerceApi} from '@salesforce/commerce-sdk-react'
-import {UserConfig} from '../types/config'
-import {logger} from '../logger'
+import {
+    CommerceApiProvider,
+    useCommerceApi,
+    buildCommerceApiClients,
+    ApiClientConfig
+} from '@salesforce/commerce-sdk-react'
+import {CommerceApiConfig} from '../../types'
+import {logger} from '../../../src/logger'
 
 /**
  * Checks if the CommerceApiProvider is already installed in the component tree.
@@ -44,13 +49,26 @@ type WithOptionalCommerceSdkReactProvider = React.ComponentPropsWithoutRef<any>
  */
 export const withOptionalCommerceSdkReactProvider = <P extends object>(
     WrappedComponent: React.ComponentType<P>,
-    config: UserConfig
+    config: CommerceApiConfig,
+    locals: Record<string, any>
 ) => {
+    // Commerce API clients are stored in locals so it can be reused across multiple extensions outside of a React context.
+    let clients = locals.__commerceApi
+    if (!clients) {
+        const appOrigin = getAppOrigin()
+        const clientConfig: ApiClientConfig = {
+            ...config,
+            proxy: `${appOrigin}${config.proxyPath}`,
+        }
+        clients = buildCommerceApiClients(clientConfig)
+        locals.__commerceApi = clients
+    }
+
     const HOC: React.FC<P> = (props: WithOptionalCommerceSdkReactProvider) => {
         if (useHasCommerceApiProvider()) {
             return <WrappedComponent {...(props as P)} />
         }
-        if (!config.commerceApi || !config.commerceApi?.parameters) {
+        if (!config || !config?.parameters) {
             logger.error(
                 'CommerceApiProvider is not installed and no commerceApi config is provided, this extension may not work as expected.'
             )
@@ -59,14 +77,14 @@ export const withOptionalCommerceSdkReactProvider = <P extends object>(
         const appOrigin = getAppOrigin()
         return (
             <CommerceApiProvider
-                shortCode={config.commerceApi.parameters.shortCode}
-                clientId={config.commerceApi.parameters.clientId}
-                organizationId={config.commerceApi.parameters.organizationId}
-                siteId={config.commerceApi.parameters.siteId}
-                locale={config.commerceApi.parameters.locale}
-                currency={config.commerceApi.parameters.currency}
+                shortCode={config.parameters.shortCode}
+                clientId={config.parameters.clientId}
+                organizationId={config.parameters.organizationId}
+                siteId={config.parameters.siteId}
+                locale={config.parameters.locale ?? ''}
+                currency={config.parameters.currency ?? ''}
                 redirectURI={`${appOrigin}/callback`}
-                proxy={`${appOrigin}${config.commerceApi.proxyPath}`}
+                proxy={`${appOrigin}${config.proxyPath}`}
             >
                 <WrappedComponent {...(props as P)} />
             </CommerceApiProvider>
