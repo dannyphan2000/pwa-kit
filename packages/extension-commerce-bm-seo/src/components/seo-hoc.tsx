@@ -62,11 +62,10 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
         const resolveRef = useRef<(result?: object) => void>()
 
         // The `routingMode` configuration determines whether we check the ROUTER (AKA the predefined route config) first or the `getUrlMapping` API
-        // `routingMode == ROUTER_FIRST`: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
-        // `routingMode == API_FIRST`: always call `getUrlMapping`
+        // RoutingMode.ROUTER_FIRST: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
+        // RoutingMode.API_FIRST: always call `getUrlMapping`
         const skipMappingCall =
             routingMode === RoutingMode.ROUTER_FIRST && isRouteDefined(location.pathname, routes)
-
         const {refetch} = useUrlMapping(
             {
                 parameters: {
@@ -87,11 +86,7 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                 if (skipMappingCall) {
                     return
                 }
-                if (!resolveRef.current) {
-                    return
-                }
                 const result = await refetch()
-                console.log('(yuna) API RESPONSE', result)
                 if (resolveRef.current) {
                     if (result.status === 'error') {
                         resolveRef.current(undefined)

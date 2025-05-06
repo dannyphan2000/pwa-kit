@@ -68,11 +68,11 @@ describe('SeoHOC', () => {
         })
     })
 
-    describe('CACHE_FIRST strategy', () => {
-        it('should skip URL mapping when route is defined and strategy is CACHE_FIRST', () => {
-            // Mock useExtensionConfig to return CACHE_FIRST strategy
+    describe('router_first strategy', () => {
+        it('should skip URL mapping when route is defined and strategy is router_first', () => {
+            // Mock useExtensionConfig to return router_first strategy
             ;(useExtensionConfig as jest.Mock).mockReturnValue({
-                routingMode: 'cache_first',
+                routingMode: 'router_first',
                 resourceTypeToComponentMap: {}
             })
 
@@ -110,10 +110,10 @@ describe('SeoHOC', () => {
             expect(mockRefetch).not.toHaveBeenCalled()
         })
 
-        it('should proceed with URL mapping when route is not defined and strategy is CACHE_FIRST', () => {
-            // Mock useExtensionConfig to return CACHE_FIRST strategy
+        it('should proceed with URL mapping when route is not defined and strategy is router_first', () => {
+            // Mock useExtensionConfig to return router_first strategy
             ;(useExtensionConfig as jest.Mock).mockReturnValue({
-                routingMode: 'cache_first',
+                routingMode: 'router_first',
                 resourceTypeToComponentMap: {}
             })
 
