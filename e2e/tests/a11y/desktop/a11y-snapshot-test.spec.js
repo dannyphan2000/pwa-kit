@@ -6,7 +6,7 @@
  */
 
 const {test, expect} = require('@playwright/test')
-const config = require('../../config')
+const config = require('../../../config')
 const {
     answerConsentTrackingForm,
     navigateToPDPDesktop,
@@ -16,8 +16,8 @@ const {
     wishlistFlow,
     loginShopper,
     registerShopper
-} = require('../../scripts/pageHelpers')
-const {generateUserCredentials, runAccessibilityTest} = require('../../scripts/utils')
+} = require('../../../scripts/pageHelpers')
+const {generateUserCredentials, runAccessibilityTest} = require('../../../scripts/utils')
 
 test.describe('Accessibility Tests with Snapshots for guest user', () => {
     const GUEST_USER_CREDENTIALS = generateUserCredentials()
