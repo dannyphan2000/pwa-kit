@@ -140,10 +140,6 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Run specific command for Node 22 with npm 11
-        if: matrix.node == 22 && matrix.npm == 11
-        run: test:e2e:a11y
-
       # this will not include a11y tests
       - name: Run Playwright tests
         run: npm run test:e2e
@@ -260,6 +256,10 @@ jobs:
 
       - name: Run Playwright tests
         run: npm run test:e2e
+
+      - name: Run specific command for Node 22 with npm 11
+        if: matrix.node == 22 && matrix.npm == 11
+        run: test:e2e:a11y
 
   notify-slack-pwa-ext:
     needs: [run-generator-retail-app-ext]
