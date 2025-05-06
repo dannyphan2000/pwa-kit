@@ -7,6 +7,7 @@
 
 import fse from 'fs-extra'
 import path from 'path'
+import {PathLike} from 'fs'
 
 import * as extensionUtils from './extensibility'
 
@@ -165,6 +166,41 @@ describe('extensibilityUtils', () => {
     })
 
     describe('validateExtensionDependencies', () => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        let originalIsExtensionPackage: typeof extensionUtils.isExtensionPackage
+
+        beforeEach(() => {
+            // Reset any mocks
+            jest.restoreAllMocks()
+
+            // Save the original function
+            originalIsExtensionPackage = extensionUtils.isExtensionPackage
+
+            // Mock isExtensionPackage function
+            jest.spyOn(extensionUtils, 'isExtensionPackage').mockImplementation((packagePath) => {
+                // Only consider packages with names containing the test packages as extensions
+                const packageName = packagePath.toString().split('/').pop() || ''
+                return ['my-extension', 'package-one', 'package-two'].includes(packageName)
+            })
+
+            // Mock existsSync - for extension metadata check
+            mockedFse.existsSync.mockImplementation((filePath) => {
+                // This simulates packages that have extension-meta.json
+                const packageName = filePath.toString().split(path.sep).slice(-2)[0] || ''
+                if (
+                    filePath.toString().endsWith('extension-meta.json') &&
+                    ['my-extension', 'package-one', 'package-two'].includes(packageName)
+                ) {
+                    return true
+                }
+                return false
+            })
+        })
+
+        afterEach(() => {
+            jest.restoreAllMocks()
+        })
+
         test('returns success if given an empty list of extensions', () => {
             const result = extensionUtils.validateExtensionDependencies([])
             expect(result).toStrictEqual({
@@ -174,13 +210,14 @@ describe('extensibilityUtils', () => {
 
         test('returns success if the given extensions do NOT depend on other extensions', () => {
             mockPackageJson({
-                'extension-test': {
+                'my-extension': {
                     peerDependencies: {
                         react: '^18.2.0'
                     }
                 }
             })
-            const result = extensionUtils.validateExtensionDependencies(['extension-test'])
+
+            const result = extensionUtils.validateExtensionDependencies(['my-extension'])
             expect(result).toStrictEqual({
                 success: true
             })
@@ -188,21 +225,22 @@ describe('extensibilityUtils', () => {
 
         test('returns success if the given extensions do depend on other extensions and they are all loaded', () => {
             mockPackageJson({
-                'extension-test': {
+                'package-one': {
                     peerDependencies: {
                         react: '^18.2.0'
                     }
                 },
-                'extension-test-2': {
+                'package-two': {
                     peerDependencies: {
                         react: '^18.2.0',
-                        'extension-test': '1.0.0'
+                        'package-one': '1.0.0'
                     }
                 }
             })
+
             const result = extensionUtils.validateExtensionDependencies([
-                'extension-test',
-                'extension-test-2'
+                'package-one',
+                'package-two'
             ])
             expect(result).toStrictEqual({
                 success: true
@@ -211,24 +249,94 @@ describe('extensibilityUtils', () => {
 
         test('returns failure if the given extensions do depend on other extensions and some are NOT loaded', () => {
             mockPackageJson({
-                'extension-test': {
+                'package-one': {
                     peerDependencies: {
                         react: '^18.2.0'
                     }
                 },
-                'extension-test-2': {
+                'package-two': {
                     peerDependencies: {
                         react: '^18.2.0',
-                        'extension-test': '1.0.0'
+                        'package-one': '1.0.0'
                     }
                 }
             })
+
             const result = extensionUtils.validateExtensionDependencies([
-                ['extension-test', {enabled: false}],
-                'extension-test-2'
+                ['package-one', {enabled: false}],
+                'package-two'
             ])
             expect(result.success).toBe(false)
             expect(Array.isArray(result.errors) && result.errors.length > 0).toBe(true)
+        })
+    })
+
+    describe('isExtensionPackage', () => {
+        beforeEach(() => {
+            // Reset mocks
+            mockedFse.existsSync.mockReset()
+        })
+
+        test('returns true when extension-meta.json file exists in the package root', () => {
+            // Create a more specific mock that checks exactly for the test paths
+            mockedFse.existsSync.mockImplementation((filePath: PathLike) => {
+                const pathStr = filePath.toString()
+
+                // Handle the specific test cases we expect
+                if (
+                    pathStr === path.join('/path/to/standard-package', 'extension-meta.json') ||
+                    pathStr ===
+                        path.join('/path/to/@scoped/standard-package', 'extension-meta.json') ||
+                    pathStr === path.join('/path/to/extension-old-naming', 'extension-meta.json')
+                ) {
+                    return true
+                }
+
+                return false
+            })
+
+            // Test with packages using different naming conventions
+            expect(extensionUtils.isExtensionPackage('/path/to/standard-package')).toBe(true)
+            expect(extensionUtils.isExtensionPackage('/path/to/@scoped/standard-package')).toBe(
+                true
+            )
+            expect(extensionUtils.isExtensionPackage('/path/to/extension-old-naming')).toBe(true)
+        })
+
+        test('returns false when extension-meta.json file does not exist', () => {
+            // Mock the existsSync to return false for all paths
+            mockedFse.existsSync.mockReturnValue(false)
+
+            expect(extensionUtils.isExtensionPackage('/path/to/non-extension-package')).toBe(false)
+            expect(extensionUtils.isExtensionPackage('/path/to/extension-like-name')).toBe(false)
+        })
+
+        test('returns false when there is an error checking for extension-meta.json', () => {
+            // Mock the existsSync to throw an error
+            mockedFse.existsSync.mockImplementation(() => {
+                throw new Error('Test error')
+            })
+
+            expect(extensionUtils.isExtensionPackage('/path/to/package')).toBe(false)
+        })
+
+        test('handles path with or without trailing slash', () => {
+            // Mock existsSync for the specific test paths with and without trailing slash
+            mockedFse.existsSync.mockImplementation((filePath: PathLike) => {
+                const pathStr = filePath.toString()
+
+                if (
+                    pathStr === path.join('/path/to/package', 'extension-meta.json') ||
+                    path.join('/path/to/package/', 'extension-meta.json').replace(/\/+/g, '/')
+                ) {
+                    return true
+                }
+
+                return false
+            })
+
+            expect(extensionUtils.isExtensionPackage('/path/to/package/')).toBe(true)
+            expect(extensionUtils.isExtensionPackage('/path/to/package')).toBe(true)
         })
     })
 })
