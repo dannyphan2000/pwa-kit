@@ -122,7 +122,9 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         const authModal = useAuthModal()
         const [siteLocale, _] = useState(siteConfig.locale)
         const {isNavigationBlocked, setSiteLocale} = useApplicationExtensionsStore((state) => {
-            return state.state['@salesforce/extension-commerce-bm-seo'] || SEO_STATE_WITHOUT_EXTENSION
+            return (
+                state.state['@salesforce/extension-commerce-bm-seo'] || SEO_STATE_WITHOUT_EXTENSION
+            )
         })
         useEffect(() => {
             setSiteLocale(siteLocale)

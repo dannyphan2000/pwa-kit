@@ -19,7 +19,6 @@ import {withOptionalCommerceSdkReactProvider} from './components/with-optional-c
 // Local Imports
 import {Config} from './types'
 import {SliceInitializer} from '@salesforce/pwa-kit-extension-sdk/react'
-import SamplePage from './pages/sample'
 
 // Overridable Imports
 // Using the `overridable` loader means that you are opting in to the override module resolution flow. As a result this module
@@ -74,24 +73,6 @@ class Sample extends ApplicationExtension<Config> {
         ]
 
         return applyHOCs(App, HOCs)
-    }
-
-    /**
-     * This method is used to make changes to the PWA-Kit application routes. If your extension adds a new page to the application
-     * then you can add it to the router here. The routes passed to this method is an accrued list of routes that have been added
-     * from extensions applied before it. It is called during the `getRoutes` phase on both the server and the client.
-     *
-     * NOTE: If you instead want to modify a list of all the routes, refer to the `beforeRouteMatch` below.
-     */
-    extendRoutes(routes: RouteProps[]): RouteProps[] {
-        return [
-            {
-                exact: true,
-                path: this.getConfig().path,
-                component: SamplePage
-            },
-            ...routes
-        ]
     }
 
     /**
