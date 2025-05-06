@@ -61,6 +61,11 @@ sh.set('-e')
 Handlebars.registerHelper('script', (object) => object.replaceAll('"', '\\"'))
 
 Handlebars.registerHelper('pascalcase', function(str) {
+    const result = str
+    .replace(/(^\w|-\w)/g, function(txt) {
+        return txt.replace(/-/, '').toUpperCase();
+    });
+    console.log('>>> CALLING pascalcase', result)
     return str
         .replace(/(^\w|-\w)/g, function(txt) {
             return txt.replace(/-/, '').toUpperCase();
