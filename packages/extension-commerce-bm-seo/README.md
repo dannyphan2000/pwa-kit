@@ -36,7 +36,6 @@ The SEO extension is configured via the `mobify.app.extensions` property in your
                 [
                 "@salesforce/extension-commerce-bm-seo",
                 {
-<<<<<<< HEAD
                   "enabled": true,
                   "routingMode": "router_first",
                   "commerceAPI": {
@@ -55,25 +54,6 @@ The SEO extension is configured via the `mobify.app.extensions` property in your
                     "category": "ProductList",
                     "product": "ProductDetail",
                   }
-=======
-                    "enabled": true,
-                    "commerceAPI": {
-                    "proxyPath": "/mobify/proxy/api",
-                    "parameters": {
-                        "shortCode": "8o7m175y",
-                        "clientId": "c9c45bfd-0ed3-4aa2-9971-40f88962b836",
-                        "organizationId": "f_ecom_zzrf_001",
-                        "siteId": "RefArchGlobal"
-                    }
-                    },
-                    "commerceAPIAuth": {
-                    "propertyNameInLocals": "commerceAPIAuth"
-                    },
-                    "resourceTypeToComponentMap": {
-                    "category": "ProductList",
-                    "product": "ProductDetail",
-                    }
->>>>>>> 9f028ed523b002f1e97e0473994090bc9b104148
                 }
                 ]
             ]

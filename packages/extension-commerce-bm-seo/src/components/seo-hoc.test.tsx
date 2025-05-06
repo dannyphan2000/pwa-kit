@@ -5,13 +5,8 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React from 'react'
-<<<<<<< HEAD
-import {render, screen} from '@testing-library/react'
-import {BrowserRouter, useLocation} from 'react-router-dom'
-=======
 import {render, screen, waitFor, act} from '@testing-library/react'
-import {useLocation} from 'react-router-dom'
->>>>>>> 9f028ed523b002f1e97e0473994090bc9b104148
+import {BrowserRouter, useLocation} from 'react-router-dom'
 import SeoHOC from './seo-hoc'
 import {useExtensionConfig} from '../hooks/use-extension-config'
 
@@ -26,29 +21,7 @@ jest.mock('../hooks/use-extension-config', () => ({
     useExtensionConfig: jest.fn()
 }))
 
-// Mock the useApplicationExtensionsStore hook
-<<<<<<< HEAD
-jest.mock('@salesforce/pwa-kit-extension-sdk/react', () => ({
-    useApplicationExtensionsStore: jest.fn().mockImplementation((selector) => {
-        const state = {
-            state: {
-                '@salesforce/extension-commerce-bm-seo': {
-                    setIsNavigationBlocked: jest.fn(),
-                    siteLocale: 'en-US'
-                }
-            }
-        }
-        return selector(state)
-    })
-}))
-
-// Mock the useUrlMapping hook
-jest.mock('@salesforce/commerce-sdk-react', () => ({
-    useUrlMapping: jest.fn()
-}))
-
 // Mock useRoutes and useBlockNavigation
-=======
 let mockSetIsNavigationBlocked: jest.Mock
 jest.mock('@salesforce/pwa-kit-extension-sdk/react', () => {
     mockSetIsNavigationBlocked = jest.fn()
@@ -83,40 +56,26 @@ jest.mock('@salesforce/commerce-sdk-react', () => {
 
 // Mock useRoutes and useBlockNavigation
 let navCallback: ((location: any, action: string) => Promise<void>) | undefined
->>>>>>> 9f028ed523b002f1e97e0473994090bc9b104148
 jest.mock('@salesforce/pwa-kit-react-sdk/ssr/universal/hooks', () => {
     const originalModule = jest.requireActual('@salesforce/pwa-kit-react-sdk/ssr/universal/hooks')
     return {
         ...originalModule,
         useRoutes: jest.fn(),
-<<<<<<< HEAD
-        useBlockNavigation: jest.fn().mockReturnValue({
-            isBlocked: false,
-            blockNavigation: jest.fn(),
-            unblockNavigation: jest.fn()
-=======
         useBlockNavigation: jest.fn().mockImplementation((cb) => {
             const isBlocked = true
             navCallback = cb
-            return {isBlocked}
->>>>>>> 9f028ed523b002f1e97e0473994090bc9b104148
+            return {isBlocked, blockNavigation: jest.fn(), unblockNavigation: jest.fn()}
         })
     }
 })
 
-<<<<<<< HEAD
-describe('SeoHOC', () => {
-    const MockComponent = () => <div>Test Component</div>
-    const WrappedComponent = SeoHOC(MockComponent)
-
-=======
 let setRoutesMock: jest.Mock
 const setupForSetRoutesTests = () => {
     const ProductDetail = () => <div>Test Component</div>
     const insideComponent = () => <div>Inner Component</div>
     ProductDetail.displayName = 'ProductDetail'
     ;(useExtensionConfig as jest.Mock).mockReturnValue({
-        matchingStrategy: 'ROUTER_FIRST',
+        routingMode: 'router_first',
         resourceTypeToComponentMap: {}
     })
 
@@ -140,7 +99,6 @@ const setupForSetRoutesTests = () => {
 }
 
 describe('SeoHOC', () => {
->>>>>>> 9f028ed523b002f1e97e0473994090bc9b104148
     beforeEach(() => {
         // Reset all mocks before each test
         jest.clearAllMocks()
@@ -150,9 +108,10 @@ describe('SeoHOC', () => {
         })
     })
 
-<<<<<<< HEAD
     describe('router_first strategy', () => {
         it('should skip URL mapping when route is defined and strategy is router_first', () => {
+            const MockComponent = () => <div>Test Component</div>
+            const WrappedComponent = SeoHOC(MockComponent)
             // Mock useExtensionConfig to return router_first strategy
             ;(useExtensionConfig as jest.Mock).mockReturnValue({
                 routingMode: 'router_first',
@@ -194,6 +153,8 @@ describe('SeoHOC', () => {
         })
 
         it('should proceed with URL mapping when route is not defined and strategy is router_first', () => {
+            const MockComponent = () => <div>Test Component</div>
+            const WrappedComponent = SeoHOC(MockComponent)
             // Mock useExtensionConfig to return router_first strategy
             ;(useExtensionConfig as jest.Mock).mockReturnValue({
                 routingMode: 'router_first',
@@ -226,7 +187,9 @@ describe('SeoHOC', () => {
 
             // Verify that URL mapping is called when route is not defined
             expect(mockRefetch).toHaveBeenCalled()
-=======
+        })
+    })
+
     describe('setRoutes and isNavigationBlocked call', () => {
         it('renders the wrapped component and passes props', () => {
             const {WrappedComponent} = setupForSetRoutesTests()
@@ -244,7 +207,7 @@ describe('SeoHOC', () => {
         it('calls setRoutes with Redirect component if resourceType is undefined', async () => {
             const {WrappedComponent} = setupForSetRoutesTests()
             ;(useExtensionConfig as jest.Mock).mockReturnValue({
-                matchingStrategy: 'ROUTER_FIRST',
+                routingMode: 'router_first',
                 resourceTypeToComponentMap: {
                     category: 'ProductList',
                     product: 'ProductDetail',
@@ -270,7 +233,7 @@ describe('SeoHOC', () => {
         it('calls setRoutes with custom component if urlMappingResponse has resourceType', async () => {
             const {WrappedComponent} = setupForSetRoutesTests()
             ;(useExtensionConfig as jest.Mock).mockReturnValue({
-                matchingStrategy: 'ROUTER_FIRST',
+                routingMode: 'router_first',
                 resourceTypeToComponentMap: {
                     category: 'ProductList',
                     product: 'ProductDetail',
@@ -341,7 +304,6 @@ describe('SeoHOC', () => {
         it('does not call setRoutes if navCallback is not set', () => {
             // navCallback is set by useBlockNavigation mock, so we can test the absence by not rendering
             expect(navCallback).toBeDefined()
->>>>>>> 9f028ed523b002f1e97e0473994090bc9b104148
         })
     })
 })

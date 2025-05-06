@@ -38,7 +38,7 @@ const isRouteDefined = (routeToMatch: string, routes: Array<{path: string}>): bo
     if (wildcardRoutes.length > 1) {
         console.warn(
             `Multiple wildcard routes detected (${wildcardRoutes.length}). This may cause unexpected routing behavior. Wildcard routes:`,
-            wildcardRoutes.map(route => route.path)
+            wildcardRoutes.map((route) => route.path)
         )
     }
 
