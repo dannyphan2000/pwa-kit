@@ -1,6 +1,7 @@
-## v3.3.0-dev (Feb 18, 2025)
+## v3.3.0-dev (Mar 20, 2025)
 - Invalidate cache instead of removing cache when triggering logout [#2323](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2323)
 - Fix dependencies vulnerabilities [#2338](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2338)
+- Clear access token in the cookie before storing the latest access token
 
 ## v3.2.1 (Mar 05, 2025)
 - Update PWA-Kit SDKs to v3.9.1 [#2301](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2301)
