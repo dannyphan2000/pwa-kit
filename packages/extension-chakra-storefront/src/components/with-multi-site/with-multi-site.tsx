@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+import {ServerContext} from '@salesforce/commerce-sdk-react/hooks/types'
 
 // Platform Imports
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
@@ -22,7 +23,7 @@ type WithMultiSiteProps = React.ComponentPropsWithoutRef<any>
 // Define the HOC function
 const withMultiSite = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const WithMultiSite: React.FC<P> = (props: WithMultiSiteProps) => {
-        const {req} = useServerContext()
+        const {req} = useServerContext() as ServerContext
         const path = req?.originalUrl || `${window.location.pathname}${window.location.search}`
 
         const config: any = useExtensionConfig()

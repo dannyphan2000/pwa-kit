@@ -35,25 +35,35 @@ export const useApplicationExtensionsStore = create<BaseStore>()(
          * Dynamically adds a slice to the store.
          */
         addSlice: <T,>(name: string, initializer: SliceInitializer<T>) => {
+            const currentState = useApplicationExtensionsStore.getState()
+
+            const slice = initializer(
+                (action: (state: T) => Partial<T>) => {
+                    set((state: {state: Record<string, any>}) => ({
+                        state: {
+                            ...state.state,
+                            [name]: {
+                                ...state.state[name],
+                                ...action(state.state[name])
+                            }
+                        }
+                    }))
+                },
+                () => get().state[name]
+            )
+
+            // TEMPORARY BUG FIX: This fixes the issue where the slices initial state not available immediately after for use after store creation.
+            // We should seek to understand why the slice is not available rather than accessing the state directly. I believe it has to do with the
+            // above call to the initialize function.
+            currentState.state = {
+                ...currentState.state,
+                [name]: slice
+            }
+
             set((state: {state: Record<string, any>}) => ({
                 state: {
                     ...state.state,
-                    [name]: initializer(
-                        // Narrowed version of set. Which allows setting state of the current slice only.
-                        (action: (state: T) => Partial<T>) => {
-                            set((state: {state: Record<string, any>}) => ({
-                                state: {
-                                    ...state.state,
-                                    [name]: {
-                                        ...state.state[name],
-                                        ...action(state.state[name])
-                                    }
-                                }
-                            }))
-                        },
-                        // Narrowed version of get. Which returns state of the current slice.
-                        () => get().state[name]
-                    )
+                    [name]: slice // Ensure the initializer's result is stored immediately
                 }
             }))
         },

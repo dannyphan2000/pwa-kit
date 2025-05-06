@@ -7,21 +7,27 @@
 
 // Third-Party
 import dedent from 'dedent'
+import fse from 'fs-extra'
 import Handlebars from 'handlebars'
+import path from 'path'
 
 // Local
-import {kebabToUpperCamelCase, nameRegex} from '../shared/utils'
+import {kebabToUpperCamelCase} from '../shared/utils'
 
 // Types
 import {ApplicationExtensionsLoaderOptions} from './webpack/types'
+import type {ApplicationExtensionEntry} from '../types'
+
+// Constants
+import {LOCAL_EXTENSIONS_DIR, OVERRIDABLE_FILE_NAME, NODE_MODULES_FOLDER} from './constants'
 
 // Register Handlebars helpers
 Handlebars.registerHelper('getInstanceName', (aString: string) => {
-    const match = aString.match(nameRegex)
-
-    // Explicitly define `namespace` and `name` as strings with fallback values
-    const namespace = match?.[1] ?? ''
-    const name = match?.[2] ?? ''
+    // Extract namespace and name from the package identifier
+    const hasNamespace = aString.startsWith('@') && aString.includes('/')
+    const [namespace, name] = hasNamespace
+        ? [aString.slice(1).split('/')[0], aString.split('/')[1]]
+        : ['', aString]
 
     return kebabToUpperCamelCase(`${namespace ? `${namespace}-` : ''}${name}`)
 })
@@ -83,4 +89,59 @@ export const renderTemplate = (data: ApplicationExtensionsLoaderOptions) => {
 
     // Apply data to the compiled template
     return template(data).trim()
+}
+
+/**
+ * @private
+ * Reads and parses a .force_overrides file into a list of clean override entries.
+ * - Skips empty lines
+ * - Skips full-line comments (`// comment`)
+ * - Supports inline comments (`override // comment`)
+ */
+export const getOverridesFromFile = (filePath: string): string[] => {
+    try {
+        const content = fse.readFileSync(filePath, 'utf8')
+        return content
+            .split(/\r?\n/)
+            .map((line) => line.trim())
+            .filter((line) => line && !line.startsWith('//'))
+            .map((line) => line.split('//')[0].trim()) // remove inline comments
+            .filter(Boolean)
+    } catch (e: any) {
+        if (e.code !== 'ENOENT') {
+            console.warn(`Error reading override file at ${filePath}:`, e)
+        }
+        return []
+    }
+}
+
+/**
+ * PRIVATE: Returns a list of potential file paths where `.force_overrides` files might exist.
+ *
+ * These paths include:
+ * - A top-level `.force_overrides` file in the root of the project.
+ * - One per extension, prioritized with the local package version first.
+ *
+ * Note:
+ * - Each extension is assumed to be either a string or a tuple, where the first item is the extension name.
+ * - This function does not check if the files actually exist; it simply builds candidate paths.
+ *
+ * @param projectDir - The root directory of the project.
+ * @param extensions - A list of extension names or tuples where the first element is the extension name.
+ * @returns An array of string file paths to check for overrides.
+ */
+export const getForceOverridesFilePaths = (
+    projectDir: string,
+    extensions: ApplicationExtensionEntry[]
+): string[] => {
+    return [
+        path.join(projectDir, OVERRIDABLE_FILE_NAME),
+        ...extensions.flatMap((ext) => {
+            const name = typeof ext === 'string' ? ext : ext[0]
+            return [
+                path.join(projectDir, LOCAL_EXTENSIONS_DIR, name, OVERRIDABLE_FILE_NAME),
+                path.join(projectDir, NODE_MODULES_FOLDER, name, OVERRIDABLE_FILE_NAME)
+            ]
+        })
+    ]
 }

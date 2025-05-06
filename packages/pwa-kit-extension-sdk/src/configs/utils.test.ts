@@ -7,11 +7,15 @@
 import * as fse from 'fs-extra'
 import * as path from 'path'
 import {buildBabelExtensibilityArgs} from './babel/utils'
-import {ApplicationExtensionEntryTuple} from '../types'
+import {ApplicationExtensionEntry, ApplicationExtensionEntryTuple} from '../types'
+import {LOCAL_EXTENSIONS_DIR, OVERRIDABLE_FILE_NAME, NODE_MODULES_FOLDER} from './constants'
+import {getOverridesFromFile, getForceOverridesFilePaths} from './utils'
+import e from 'express'
 
 jest.mock('fs-extra', () => ({
     ...jest.requireActual('fs-extra'),
-    realpathSync: jest.fn()
+    realpathSync: jest.fn(),
+    readFileSync: jest.fn()
 }))
 
 const EXTENSIONS: ApplicationExtensionEntryTuple[] = [
@@ -83,5 +87,82 @@ describe('buildBabelExtensibilityArgs', () => {
         expect(result).toBe(expectedArgs)
         const result2 = buildBabelExtensibilityArgs({app: {}})
         expect(result2).toBe(expectedArgs)
+    })
+})
+
+describe('getOverridesFromFile', () => {
+    const readFileSyncMock = jest.spyOn(fse, 'readFileSync') as jest.Mock
+
+    test('returns parsed override entries, skipping comments and blank lines', () => {
+        readFileSyncMock.mockReturnValue(`
+            // This is a comment
+            override1
+            override2 // inline comment
+              
+            // Another comment
+            override3
+        `)
+
+        const result = getOverridesFromFile('mock/path/.force_overrides')
+
+        expect(result).toEqual(['override1', 'override2', 'override3'])
+    })
+
+    test('returns an empty array if file not found (ENOENT)', () => {
+        const error = new Error('File not found') as any
+        error.code = 'ENOENT'
+        readFileSyncMock.mockImplementation(() => {
+            throw error
+        })
+
+        const result = getOverridesFromFile('nonexistent/path')
+        expect(result).toEqual([])
+    })
+
+    test('logs warning for other read errors and returns empty array', () => {
+        const error = new Error('Permission denied') as any
+        error.code = 'EACCES'
+        const warnSpy = jest.spyOn(console, 'warn').mockImplementation()
+
+        readFileSyncMock.mockImplementation(() => {
+            throw error
+        })
+
+        const result = getOverridesFromFile('bad/path')
+        expect(warnSpy).toHaveBeenCalledWith(
+            expect.stringContaining('Error reading override file at'),
+            error
+        )
+        expect(result).toEqual([])
+
+        warnSpy.mockRestore()
+    })
+})
+
+describe('getForceOverridesFilePaths', () => {
+    const projectDir = '/project'
+    const extensions: ApplicationExtensionEntry[] = [
+        ['ext-a', {enabled: true}],
+        ['ext-b', {enabled: true}],
+        ['ext-c', {enabled: true}]
+    ]
+
+    test('returns all potential override paths', () => {
+        const result = getForceOverridesFilePaths(projectDir, extensions)
+
+        expect(result).toEqual([
+            path.join(projectDir, OVERRIDABLE_FILE_NAME),
+            path.join(projectDir, LOCAL_EXTENSIONS_DIR, 'ext-a', OVERRIDABLE_FILE_NAME),
+            path.join(projectDir, NODE_MODULES_FOLDER, 'ext-a', OVERRIDABLE_FILE_NAME),
+            path.join(projectDir, LOCAL_EXTENSIONS_DIR, 'ext-b', OVERRIDABLE_FILE_NAME),
+            path.join(projectDir, NODE_MODULES_FOLDER, 'ext-b', OVERRIDABLE_FILE_NAME),
+            path.join(projectDir, LOCAL_EXTENSIONS_DIR, 'ext-c', OVERRIDABLE_FILE_NAME),
+            path.join(projectDir, NODE_MODULES_FOLDER, 'ext-c', OVERRIDABLE_FILE_NAME)
+        ])
+    })
+
+    test('handles an empty extensions array', () => {
+        const result = getForceOverridesFilePaths(projectDir, [])
+        expect(result).toEqual([path.join(projectDir, OVERRIDABLE_FILE_NAME)])
     })
 })

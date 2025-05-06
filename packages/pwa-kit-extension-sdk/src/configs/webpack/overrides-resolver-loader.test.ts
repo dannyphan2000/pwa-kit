@@ -8,6 +8,60 @@
 import path from 'path'
 import {runWebpackCompiler} from './test-utils'
 import {validateOverrideSource, __OVERRIDABLE_CACHE__} from './overrides-resolver-loader'
+import OverrideStatsPlugin, {OverrideStatsEntry} from './override-stats-plugin'
+import * as utils from '../../shared/utils'
+import {ApplicationExtensionEntryTuple, ApplicationExtensionConfig} from '../../types'
+
+// Define mock for isExtensionPackage
+jest.mock('../../shared/utils', () => {
+    const original = jest.requireActual('../../shared/utils')
+
+    // Implementation of expand function from shared/utils/helpers.ts
+    const expand = (extensions: unknown[] = []): ApplicationExtensionEntryTuple[] => {
+        const DEFAULT_CONFIG: ApplicationExtensionConfig & Record<string, unknown> = {enabled: true}
+
+        return extensions
+            .filter((extension) => Boolean(extension))
+            .map((extension) => {
+                const tuple: [string, ApplicationExtensionConfig & Record<string, unknown>] =
+                    Array.isArray(extension)
+                        ? [extension[0], {...DEFAULT_CONFIG, ...extension[1]}]
+                        : [extension as string, DEFAULT_CONFIG]
+                return tuple
+            })
+            .filter(([nameRef, config]) => {
+                const isValid = typeof nameRef === 'string' && typeof config === 'object'
+                return isValid
+            })
+    }
+
+    return {
+        ...original,
+        expand,
+        mergeWithDefaultConfig: jest.fn().mockImplementation((extension) => extension),
+        isExtensionPackage: (packagePath: string) => {
+            // Simulate these packages having extension-meta.json files
+            return [
+                'extension-sample',
+                '@salesforce/extension-sample',
+                'packages/extension-sample',
+                'extension-sample-no-mono',
+                'extension-this',
+                '@salesforce/extension-this',
+                'extension-that',
+                '@salesforce/extension-that',
+                'extension-other',
+                '@salesforce/extension-other'
+            ].some((name) => packagePath.toString().includes(name))
+        }
+    }
+})
+
+declare module 'webpack' {
+    interface Compilation {
+        overrideStats?: OverrideStatsEntry[]
+    }
+}
 
 // DEVELOPER NOTE:
 // This loader is intended to be used as an "inline" loader, meaning that you don't typically see it configured
@@ -50,6 +104,11 @@ describe('Overrides Resolver Loader', () => {
                 files: {
                     // Virtual Project Files
 
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-other/extension-meta.json': '{}',
+
                     // Overrides
 
                     // Local project with overrides
@@ -77,6 +136,16 @@ describe('Overrides Resolver Loader', () => {
             },
             expects: (output: any) => {
                 expect(output.modules[1].source).toBe('// Base Project - Sample Page')
+                // Verify stats
+                const stats = output.overrideStats
+                expect(stats).toHaveLength(1)
+                expect(stats[0]).toMatchObject({
+                    sourceExtension: '@salesforce/extension-this',
+                    original: expect.stringContaining('extension-this/src/pages/sample-page'),
+                    resolved: expect.stringContaining(
+                        'app/overrides/@salesforce/extension-this/pages/sample-page'
+                    )
+                })
             }
         },
         {
@@ -93,6 +162,11 @@ describe('Overrides Resolver Loader', () => {
                 ],
                 files: {
                     // Virtual Project Files
+
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-other/extension-meta.json': '{}',
 
                     // Overrides
 
@@ -117,6 +191,15 @@ describe('Overrides Resolver Loader', () => {
             },
             expects: (output: any) => {
                 expect(output.modules[1].source).toBe('// @salesforce/extension-other')
+                const stats = output.overrideStats
+                expect(stats).toHaveLength(1)
+                expect(stats[0]).toMatchObject({
+                    sourceExtension: '@salesforce/extension-this',
+                    original: expect.stringContaining('extension-this/src/pages/sample-page'),
+                    resolved: expect.stringContaining(
+                        'extension-other/src/overrides/@salesforce/extension-this/pages/sample-page'
+                    )
+                })
             }
         },
         {
@@ -133,6 +216,11 @@ describe('Overrides Resolver Loader', () => {
                 ],
                 files: {
                     // Virtual Project Files
+
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-other/extension-meta.json': '{}',
 
                     // Overrides
 
@@ -174,6 +262,11 @@ describe('Overrides Resolver Loader', () => {
                 files: {
                     // Virtual Project Files
 
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-other/extension-meta.json': '{}',
+
                     // Overrides
 
                     // Extension using overridable import
@@ -205,6 +298,10 @@ describe('Overrides Resolver Loader', () => {
                 ],
                 files: {
                     // Virtual Project Files
+
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
 
                     // Overrides
 
@@ -240,6 +337,75 @@ describe('Overrides Resolver Loader', () => {
             expects: (output: any) => {
                 expect(output.modules[2].source).toContain('// Should Be Referenced')
             }
+        },
+        {
+            bypassWindows: true,
+            description: 'records override stats correctly',
+            entryPoint: '/node_modules/@salesforce/extension-this/src/setup-app.js',
+            loaderTest: /node_modules\/@salesforce\/extension-this\/src\/pages\/sample-page/i,
+            compilerConfig: {
+                extensions: [
+                    ['@salesforce/extension-this', {enabled: true}],
+                    ['@salesforce/extension-that', {enabled: true}]
+                ],
+                files: {
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
+
+                    '/node_modules/@salesforce/extension-that/src/overrides/@salesforce/extension-this/pages/sample-page.jsx':
+                        '// @salesforce/extension-that',
+                    '/node_modules/@salesforce/extension-this/src/pages/sample-page.jsx':
+                        '// @salesforce/extension-this',
+                    '/node_modules/@salesforce/extension-this/package.json':
+                        '{"name": "@salesforce/extension-this"}',
+                    '/node_modules/@salesforce/extension-this/src/setup-app.js':
+                        'import Page from "./pages/sample-page"',
+                    [`${path.resolve(__dirname, './overrides-resolver-loader.ts')}`]: ''
+                },
+                recordStats: true
+            },
+            expects: (output: any) => {
+                expect(output.overrideStats).toHaveLength(1)
+                expect(output.overrideStats[0]).toMatchObject({
+                    sourceExtension: '@salesforce/extension-this',
+                    original: expect.stringContaining('extension-this/src/pages/sample-page'),
+                    resolved: expect.stringContaining(
+                        'extension-that/src/overrides/@salesforce/extension-this/pages/sample-page'
+                    )
+                })
+            }
+        },
+        {
+            bypassWindows: true,
+            description: 'does not record stats when overrideStats is not present',
+            entryPoint: '/node_modules/@salesforce/extension-this/src/setup-app.js',
+            loaderTest: /node_modules\/@salesforce\/extension-this\/src\/pages\/sample-page/i,
+            compilerConfig: {
+                extensions: [
+                    ['@salesforce/extension-this', {enabled: true}],
+                    ['@salesforce/extension-that', {enabled: true}]
+                ],
+                files: {
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
+
+                    '/node_modules/@salesforce/extension-that/src/overrides/@salesforce/extension-this/pages/sample-page.jsx':
+                        '// @salesforce/extension-that',
+                    '/node_modules/@salesforce/extension-this/src/pages/sample-page.jsx':
+                        '// @salesforce/extension-this',
+                    '/node_modules/@salesforce/extension-this/package.json':
+                        '{"name": "@salesforce/extension-this"}',
+                    '/node_modules/@salesforce/extension-this/src/setup-app.js':
+                        'import Page from "./pages/sample-page"',
+                    [`${path.resolve(__dirname, './overrides-resolver-loader.ts')}`]: ''
+                },
+                recordStats: false
+            },
+            expects: (output: any) => {
+                expect(output.overrideStats).toBeUndefined()
+            }
         }
     ]
 
@@ -247,7 +413,7 @@ describe('Overrides Resolver Loader', () => {
         testCases.forEach((options: any) => {
             const {compilerConfig, description, entryPoint, expects, loaderTest, bypassWindows} =
                 options
-            const {extensions, files} = compilerConfig
+            const {extensions, files, recordStats = true} = compilerConfig
 
             test(`${description as string}`, async () => {
                 let output, error
@@ -256,9 +422,8 @@ describe('Overrides Resolver Loader', () => {
                     const stats = await runWebpackCompiler(entryPoint, {
                         files,
                         buildPlugins: () => [
-                            new ApplicationExtensionConfigPlugin({
-                                extensions
-                            })
+                            new ApplicationExtensionConfigPlugin({extensions}),
+                            ...(recordStats ? [new OverrideStatsPlugin()] : [])
                         ],
                         buildLoaders: ({fileSystem}: any) => [
                             {
@@ -270,6 +435,7 @@ describe('Overrides Resolver Loader', () => {
                                     ),
                                     options: {
                                         baseDir: '/',
+                                        resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
                                         resolveOptions: {
                                             // Override the `fs` methods used by `resolve` to point to the virtual file system
                                             existsSync: (filePath: string) => {
@@ -323,6 +489,7 @@ describe('Overrides Resolver Loader', () => {
 
                     // Here we are looking at the first module imported via an overridable import and testing that it's right.
                     output = stats?.toJson({source: true})
+                    output.overrideStats = stats.compilation.overrideStats
                 } catch (e) {
                     error = e
                 }
@@ -349,6 +516,10 @@ describe('validateOverrideSource', () => {
         __OVERRIDABLE_CACHE__.web = []
     })
 
+    afterEach(() => {
+        jest.clearAllMocks()
+    })
+
     it('should return false if the file has already been processed', () => {
         const source = path.join(
             path.sep,
@@ -362,7 +533,7 @@ describe('validateOverrideSource', () => {
             'home.js'
         )
 
-        // Mock the file being processed bup adding it to the cache
+        // Mock the file being processed by adding it to the cache
         __OVERRIDABLE_CACHE__.node.push(source)
 
         const result = validateOverrideSource(source, {
@@ -457,13 +628,18 @@ describe('validateOverrideSource', () => {
             'projects',
             'pwa',
             'node_modules',
-            'extension-sample',
+            'extension-sample-no-mono',
             'src',
             'pages',
             'home.js'
         )
         const overridables = [
-            `./node_modules/${path.posix.join('extension-sample', 'src', 'pages', 'home.js')}`
+            `./node_modules/${path.posix.join(
+                'extension-sample-no-mono',
+                'src',
+                'pages',
+                'home.js'
+            )}`
         ]
 
         const result = validateOverrideSource(source, {

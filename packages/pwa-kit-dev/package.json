@@ -1,6 +1,6 @@
 {
   "name": "@salesforce/pwa-kit-dev",
-  "version": "4.0.0-extensibility-preview.3",
+  "version": "4.0.0-extensibility-preview.4",
   "description": "Build tools for pwa-kit",
   "homepage": "https://github.com/SalesforceCommerceCloud/pwa-kit/tree/develop/packages/pwa-kit-dev#readme",
   "bugs": {
@@ -58,15 +58,15 @@
     "@loadable/server": "^5.15.3",
     "@loadable/webpack-plugin": "^5.15.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
-    "@salesforce/pwa-kit-extension-sdk": "4.0.0-extensibility-preview.3",
-    "@salesforce/pwa-kit-runtime": "4.0.0-extensibility-preview.3",
+    "@salesforce/pwa-kit-extension-sdk": "4.0.0-extensibility-preview.4",
+    "@salesforce/pwa-kit-runtime": "4.0.0-extensibility-preview.4",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
     "archiver": "1.3.0",
     "babel-jest": "^27.1.0",
     "babel-loader": "^8.3.0",
     "babel-plugin-dynamic-import-node-babel-7": "^2.0.7",
-    "babel-plugin-formatjs": "10.4.0",
+    "babel-plugin-formatjs": "10.5.36",
     "babel-plugin-module-resolver": "^5.0.2",
     "chalk": "^4.1.2",
     "commander": "^9.5.0",
@@ -105,6 +105,7 @@
     "source-map-loader": "^4.0.1",
     "speed-measure-webpack-plugin": "^1.5.0",
     "svg-sprite-loader": "^6.0.11",
+    "thread-loader": "^4.0.4",
     "validator": "^13.9.0",
     "webpack": "^5.76.3",
     "webpack-bundle-analyzer": "^4.8.0",
@@ -123,7 +124,7 @@
     "@types/node": "~16.0.3",
     "@types/node-fetch": "~2.6.3",
     "@types/validator": "~13.7.14",
-    "internal-lib-build": "4.0.0-extensibility-preview.3",
+    "internal-lib-build": "4.0.0-extensibility-preview.4",
     "nock": "^13.3.0",
     "nodemon": "^2.0.22",
     "superagent": "^6.1.0",
@@ -143,8 +144,8 @@
     }
   },
   "engines": {
-    "node": "^16.11.0 || ^18.0.0 || ^20.0.0",
-    "npm": "^8.0.0 || ^9.0.0 || ^10.0.0"
+    "node": "^16.11.0 || ^18.0.0 || ^20.0.0 || ^22.0.0",
+    "npm": "^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0"
   },
   "publishConfig": {
     "directory": "dist"

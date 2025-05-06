@@ -18,7 +18,7 @@ import {bundleBasePath} from '@salesforce/pwa-kit-runtime/utils/ssr-namespace-pa
 
 const onClient = typeof window !== 'undefined'
 
-const EXTENIONS_NAMESPACE = '__extensions'
+const EXTENSIONS_NAMESPACE = '__extensions'
 const STATIC_FOLDER = 'static'
 
 type GetAssetUrlOptions = {
@@ -43,7 +43,7 @@ export const getAssetUrl = (path: string) => {
 }
 
 // TODO: Once we establish that we have a new @salesforce/pwa-kit-extensibility package, we can move this utility to
-// it as to not have direct references to extensibilty in the sdk. This will also reduce duplicate code.
+// it as to not have direct references to extensibility in the sdk. This will also reduce duplicate code.
 /**
  * Get the URL that should be used to load a static asset from the bundle.
  *
@@ -53,22 +53,23 @@ export const getAssetUrl = (path: string) => {
  * @function
  * @returns {string} The full URL to the static asset.
  */
-export const getStaticAssetUrl = (path: string, opts: GetAssetUrlOptions) => {
+export const getStaticAssetUrl = (path = '', opts: GetAssetUrlOptions = {}) => {
     const {appExtensionPackageName = ''} = opts || {}
 
     /* istanbul ignore next */
-    const publicPath = onClient
-        ? // @ts-ignore
-          `${window.Progressive.buildOrigin as string}`
-        : `${bundleBasePath}/${process.env.BUNDLE_ID || 'development'}/`
+    let publicPath = getAssetUrl('')
 
     // Ensure all defined path arguments start with `/`.
     if (path && !path.startsWith('/')) {
         path = `/${path}`
     }
 
-    return `${publicPath}/${STATIC_FOLDER}${
-        appExtensionPackageName ? `/${EXTENIONS_NAMESPACE}/${appExtensionPackageName}` : ''
+    if (publicPath && !publicPath.endsWith('/')) {
+        publicPath = `${publicPath}/`
+    }
+
+    return `${publicPath}${STATIC_FOLDER}${
+        appExtensionPackageName ? `/${EXTENSIONS_NAMESPACE}/${appExtensionPackageName}` : ''
     }${path ? path : ''}`
 }
 

@@ -24,6 +24,7 @@ import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
 
 // Local Project Components
 import {DrawerMenu} from '../drawer-menu'
+import {getPathWithLocale} from '../../utils/url'
 import {HideOnDesktop, HideOnMobile} from '../responsive'
 import {ListMenu, ListMenuContent} from '../list-menu'
 import {withCommerceSdkReactHookData} from '../with-commerce-sdk-react-hook-data'
@@ -44,26 +45,29 @@ import {useExtensionConfig, useCurrentCustomer, useCurrentBasket} from '../../ho
 import {watchOnlineStatus, flatten} from '../../utils/utils'
 import useActiveData from '../../hooks/use-active-data'
 import useMultiSite from '../../hooks/use-multi-site'
+import {DntNotification, useDntNotification} from '../../hooks/use-dnt-notification'
 import {useTheme} from '@chakra-ui/react'
+
+import {UserConfig} from '../../types/config'
 
 // Define a type for the HOC props
 type WithAppLayoutProps = React.ComponentPropsWithoutRef<any>
 
-const PlaceholderComponent = () => (
+const PlaceholderComponent: React.FC = () => (
     <Center p="2">
         <Spinner size="lg" />
     </Center>
 )
 
 const DrawerMenuItemWithData = withCommerceSdkReactHookData(
-    ({itemComponent: ItemComponent, data, ...rest}) => (
+    ({itemComponent: ItemComponent, data, ...rest}: any) => (
         <Fade in={true}>
             <ItemComponent {...rest} item={data} itemComponent={DrawerMenuItemWithData} />
         </Fade>
     ),
     {
         hook: useCategory,
-        queryOptions: ({item}) => ({
+        queryOptions: ({item}: {item: {id: string}}) => ({
             parameters: {
                 id: item.id
             }
@@ -73,14 +77,14 @@ const DrawerMenuItemWithData = withCommerceSdkReactHookData(
 )
 
 const ListMenuContentWithData = withCommerceSdkReactHookData(
-    ({data, ...rest}) => (
+    ({data, ...rest}: any) => (
         <Fade in={true}>
             <ListMenuContent {...rest} item={data} />
         </Fade>
     ),
     {
         hook: useCategory,
-        queryOptions: ({item}) => ({
+        queryOptions: ({item}: {item: {id: string}}) => ({
             parameters: {
                 id: item.id,
                 levels: 2
@@ -93,9 +97,9 @@ const ListMenuContentWithData = withCommerceSdkReactHookData(
 // Define the HOC function
 const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const WithLayout: React.FC<P> = (props: WithAppLayoutProps) => {
-        const config = useExtensionConfig()
+        const config = useExtensionConfig() as UserConfig
 
-        const CAT_MENU_DEFAULT_ROOT_CATEGORY = config.categoryNav.defaultRootCategory
+        const CAT_MENU_DEFAULT_ROOT_CATEGORY = String(config.categoryNav.defaultRootCategory)
         const CAT_MENU_DEFAULT_NAV_SSR_DEPTH = config.categoryNav.defaultNavSsrDepth
         const {data: categoriesTree} = useCategory({
             parameters: {
@@ -109,8 +113,9 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         const history = useHistory()
         const location = useLocation()
         const authModal = useAuthModal()
+        const dntNotification = useDntNotification()
         const {site, locale, buildUrl} = useMultiSite()
-        const [isOnline, setIsOnline] = useState(true)
+        const [isOnline, setIsOnline] = useState<boolean>(true)
         const styles = useStyleConfig('App')
         const {colors} = useTheme()
         const {isOpen, onOpen, onClose} = useDisclosure()
@@ -126,6 +131,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         // customer.
         const {data: customer} = useCurrentCustomer()
         const {data: basket} = useCurrentBasket()
+        const basketId = basket?.basketId || ''
 
         const updateBasket = useShopperBasketsMutation('updateBasket')
         const updateCustomerForBasket = useShopperBasketsMutation('updateCustomerForBasket')
@@ -134,7 +140,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
             // update the basket currency if it doesn't match the current locale currency
             if (basket?.currency && basket?.currency !== currency) {
                 updateBasket.mutate({
-                    parameters: {basketId: basket.basketId},
+                    parameters: {basketId},
                     body: {currency}
                 })
             }
@@ -149,7 +155,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 customer?.email !== basket?.customerInfo?.email
             ) {
                 updateCustomerForBasket.mutate({
-                    parameters: {basketId: basket.basketId},
+                    parameters: {basketId},
                     body: {
                         email: customer.email
                     }
@@ -159,7 +165,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
         useEffect(() => {
             // Listen for online status changes.
-            watchOnlineStatus((isOnline) => {
+            watchOnlineStatus((isOnline: boolean) => {
                 setIsOnline(isOnline)
             })
         }, [])
@@ -172,7 +178,9 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
         const onLogoClick = () => {
             // Goto the home page.
-            const path = buildUrl(config.pages.Home.path)
+            const path = config.pages?.Home
+                ? buildUrl(config.pages.Home.path, site.id, locale.id)
+                : '/'
 
             history.push(path)
 
@@ -181,7 +189,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         }
 
         const onCartClick = () => {
-            const path = buildUrl('/cart')
+            const path = buildUrl('/cart', site.id, locale.id)
             history.push(path)
 
             // Close the drawer.
@@ -190,13 +198,13 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
         const onAccountClick = () => {
             // Link to account page if registered; Header component will show auth modal for guest users
-            const path = buildUrl('/account')
+            const path = buildUrl('/account', site.id, locale.id)
             history.push(path)
         }
 
         const onWishlistClick = () => {
             // Link to wishlist page if registered; Header component will show auth modal for guest users
-            const path = buildUrl('/account/wishlist')
+            const path = buildUrl('/account/wishlist', site.id, locale.id)
             history.push(path)
         }
 
@@ -208,8 +216,14 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
             trackPage()
         }, [location])
 
+        // Ensure styles.container is an object
+        const containerStyles = (styles.container as React.CSSProperties) || {}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        const headerWrapperStyles = styles.headerWrapper || {}
+
         return (
-            <Box className="sf-app" {...styles.container}>
+            <Box className="sf-app" {...(containerStyles as any)}>
                 <Helmet>
                     {config.activeDataEnabled && (
                         <script
@@ -228,11 +242,16 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
                     {/* Urls for all localized versions of this page (including current page)
                     For more details on hrefLang, see https://developers.google.com/search/docs/advanced/crawling/localized-versions */}
-                    {site.l10n?.supportedLocales.map((locale: any) => (
+                    {site.l10n?.supportedLocales.map((locale) => (
                         <link
                             rel="alternate"
                             hrefLang={locale.id.toLowerCase()}
-                            href={`${appOrigin}${buildUrl(location.pathname) as string}`}
+                            href={`${appOrigin}${getPathWithLocale(locale.id, buildUrl, {
+                                location: {
+                                    ...location,
+                                    search: ''
+                                }
+                            })}`}
                             key={locale.id}
                         />
                     ))}
@@ -240,7 +259,12 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     <link
                         rel="alternate"
                         hrefLang={site.l10n.defaultLocale.slice(0, 2)}
-                        href={`${appOrigin}${buildUrl(location.pathname) as string}`}
+                        href={`${appOrigin}${getPathWithLocale(locale.id, buildUrl, {
+                            location: {
+                                ...location,
+                                search: ''
+                            }
+                        })}`}
                     />
                     {/* A wider fallback for user locales that the app does not support */}
                     <link rel="alternate" hrefLang="x-default" href={`${appOrigin}/`} />
@@ -250,7 +274,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
                 <Box id="app" display="flex" flexDirection="column" flex={1}>
                     <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>
-                    <Box {...styles.headerWrapper}>
+                    <Box {...headerWrapperStyles}>
                         {!isCheckout ? (
                             <>
                                 <AboveHeader />
@@ -313,7 +337,8 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
 
                         {!isCheckout ? <Footer /> : <CheckoutFooter />}
 
-                        <AuthModal {...authModal} />
+                        <AuthModal {...(authModal as any)} />
+                        <DntNotification {...dntNotification} />
                     </AddToCartModalProvider>
                 </Box>
                 {(config.activeDataEnabled as boolean) && (
@@ -323,7 +348,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                             appExtensionPackageName: '@salesforce/extension-chakra-storefront'
                         })}
                         id="dwanalytics"
-                        async="async"
+                        async={true}
                         onLoad={trackPage}
                     ></script>
                 )}
@@ -334,7 +359,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                         })}
                         type="text/javascript"
                         id="dwac"
-                        async="async"
+                        async={true}
                     ></script>
                 )}
             </Box>

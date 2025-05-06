@@ -1,6 +1,6 @@
 {
   "name": "typescript-minimal",
-  "version": "4.0.0-extensibility-preview.3",
+  "version": "4.0.0-extensibility-preview.4",
   "private": true,
   "scripts": {
     "analyze-build": "cross-env MOBIFY_ANALYZE=true npm run build",
@@ -9,9 +9,10 @@
     "lint": "npm run lint:js && npm run typecheck",
     "lint:fix": "npm run lint:js -- --fix",
     "lint:js": "pwa-kit-dev lint \"**/*.{js,jsx,ts,tsx}\"",
+    "list-overrides": "cross-env RECORD_OVERRIDES=true npm run build && pwa-kit-dev list-overrides",
     "push": "npm run build && pwa-kit-dev push",
     "save-credentials": "pwa-kit-dev save-credentials",
-    "start": "pwa-kit-dev start",
+    "start": "cross-env NODE_ICU_DATA=node_modules/full-icu pwa-kit-dev start",
     "start:inspect": "npm run start -- --inspect",
     "tail-logs": "pwa-kit-dev tail-logs",
     "test": "pwa-kit-dev test",
@@ -22,10 +23,10 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@loadable/component": "^5.15.3",
-    "@salesforce/pwa-kit-dev": "4.0.0-extensibility-preview.3",
-    "@salesforce/pwa-kit-extension-sdk": "4.0.0-extensibility-preview.3",
-    "@salesforce/pwa-kit-react-sdk": "4.0.0-extensibility-preview.3",
-    "@salesforce/pwa-kit-runtime": "4.0.0-extensibility-preview.3",
+    "@salesforce/pwa-kit-dev": "4.0.0-extensibility-preview.4",
+    "@salesforce/pwa-kit-extension-sdk": "4.0.0-extensibility-preview.4",
+    "@salesforce/pwa-kit-react-sdk": "4.0.0-extensibility-preview.4",
+    "@salesforce/pwa-kit-runtime": "4.0.0-extensibility-preview.4",
     "@tanstack/react-query": "^4.28.0",
     "@types/loadable__component": "~5.13.4",
     "@types/react": "~18.2.0",
@@ -33,6 +34,7 @@
     "@types/react-router-dom": "~5.3.3",
     "cross-env": "^5.2.1",
     "framer-motion": "^11.5.4",
+    "full-icu": "^1.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
@@ -42,8 +44,8 @@
     "zustand": "5.0.3"
   },
   "engines": {
-    "node": "^16.11.0 || ^18.0.0 || ^20.0.0",
-    "npm": "^8.0.0 || ^9.0.0 || ^10.0.0"
+    "node": "^16.11.0 || ^18.0.0 || ^20.0.0 || ^22.0.0",
+    "npm": "^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0"
   },
   "mobify": {
     "app": {
@@ -63,7 +65,7 @@
       "**/*.json"
     ],
     "ssrParameters": {
-      "ssrFunctionNodeVersion": "20.x",
+      "ssrFunctionNodeVersion": "22.x",
       "proxyConfigs": [
         {
           "host": "kv7kzm78.api.commercecloud.salesforce.com",
