@@ -24,7 +24,6 @@ extendedConfig.ignore = [
 
         // If it's in an allowed package, DO NOT ignore it
         if (allowlist.some((pkg) => normalizedPath.includes(`node_modules${path.sep}${pkg}`))) {
-            console.log('allow----')
             return false
         }
 
