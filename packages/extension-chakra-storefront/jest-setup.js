@@ -137,6 +137,7 @@ jest.mock('@salesforce/cc-datacloud-typescript', () => ({
 // from nodejs util in testing environment.
 global.TextEncoder = require('util').TextEncoder
 global.TextDecoder = require('util').TextDecoder
+global.structuredClone = (v) => JSON.parse(JSON.stringify(v))
 
 // This file consists of global mocks for jsdom.
 class StorageMock {

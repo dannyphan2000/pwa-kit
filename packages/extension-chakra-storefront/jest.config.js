@@ -7,7 +7,6 @@
 
 const path = require('path')
 const base = require('@salesforce/pwa-kit-dev/configs/jest/jest.config.js')
-
 module.exports = {
     ...base,
     moduleNameMapper: {
@@ -18,7 +17,16 @@ module.exports = {
             '<rootDir>/node_modules/@tanstack/react-query/build/lib/index.js',
         '^is-what$': '<rootDir>/node_modules/is-what/dist/cjs/index.cjs',
         '^copy-anything$': '<rootDir>/node_modules/copy-anything/dist/cjs/index.cjs',
-        "^@salesforce/cc-datacloud-typescript$": "<rootDir>/node_modules/@salesforce/cc-datacloud-typescript/dist/index.js",
+        '^@salesforce/cc-datacloud-typescript$':
+            '<rootDir>/node_modules/@salesforce/cc-datacloud-typescript/dist/index.js',
+        '^@ark-ui/react/(.*)$': [
+            '<rootDir>/node_modules/@ark-ui/react/dist/components/$1/index.cjs',
+            '<rootDir>/node_modules/@ark-ui/react/dist/components/$1.cjs',
+            '<rootDir>/node_modules/@ark-ui/react/dist/components/$1.mjs',
+            '<rootDir>/node_modules/@ark-ui/react/dist/providers/$1/index.cjs',
+            '<rootDir>/node_modules/@ark-ui/react/dist/providers/$1.cjs',
+            '<rootDir>/node_modules/@ark-ui/react/dist/providers/$1.mjs'
+        ],
         // handle pwa-kit extensibility special import
         '^overridable!(.*)': '$1'
     },
@@ -47,6 +55,6 @@ module.exports = {
             lines: 74
         }
     },
-    // Increase to: 6 x default timeout of 5 seconds
+    transformIgnorePatterns: ['/node_modules/(?!(@chakra-ui|uqr|proxy-compare)/)'],
     ...(process.env.CI ? {testTimeout: 30000} : {})
 }
