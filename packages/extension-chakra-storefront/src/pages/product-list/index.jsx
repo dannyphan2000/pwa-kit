@@ -10,6 +10,7 @@ import PropTypes from 'prop-types'
 import {useHistory, useLocation, useParams} from 'react-router-dom'
 import {FormattedMessage, useIntl} from 'react-intl'
 import {Helmet} from 'react-helmet'
+import {keepPreviousData} from '@tanstack/react-query'
 import {
     useCategory,
     useCustomerId,
@@ -172,7 +173,7 @@ const ProductList = (props) => {
             }
         },
         {
-            keepPreviousData: true
+            placeholderData: keepPreviousData
         }
     )
 
