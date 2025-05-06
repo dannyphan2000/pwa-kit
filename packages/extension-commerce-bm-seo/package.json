@@ -10,35 +10,28 @@
     "start:inspect": "npm --prefix ./dev run start:inspect",
     "test": "pwa-kit-dev test"
   },
-  "peerDependencies": {
-    "@loadable/component": "^5.15.3",
-    "@salesforce/pwa-kit-extension-sdk": "4.0.0-extensibility-preview.4",
-    "@salesforce/pwa-kit-react-sdk": "4.0.0-extensibility-preview.4",
-    "@salesforce/commerce-sdk-react": "^3.2.0-extensibility-preview.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "peerDependenciesMeta": {
-    "@salesforce/pwa-kit-extension-sdk": {
-      "optional": true
-    },
-    "@salesforce/pwa-kit-react-sdk": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@loadable/component": "^5.15.3",
     "@salesforce/pwa-kit-dev": "4.0.0-extensibility-preview.4",
     "@salesforce/pwa-kit-extension-sdk": "4.0.0-extensibility-preview.4",
     "@salesforce/pwa-kit-react-sdk": "4.0.0-extensibility-preview.4",
     "@salesforce/pwa-kit-runtime": "4.0.0-extensibility-preview.4",
+    "@salesforce/commerce-sdk-react": "^3.2.0-extensibility-preview.4",
+    "@types/loadable__component": "^5.13.9",
+    "@types/react-router-dom": "^5.3.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
-    "@types/jest": "29.5.14",
-    "@types/loadable__component": "^5.13.9",
     "@types/react": "~18.2.0",
     "@types/react-dom": "~18.2.1",
-    "@types/react-router-dom": "^5.3.3",
+    "@types/jest": "29.5.14",
+    "express": "^4.19.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "peerDependencies": {
+    "@loadable/component": "^5.15.3",
+    "@salesforce/pwa-kit-extension-sdk": "^4.0.0-extensibility-preview.0",
+    "@salesforce/pwa-kit-react-sdk": "^4.0.0-extensibility-preview.0",
     "express": "^4.19.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

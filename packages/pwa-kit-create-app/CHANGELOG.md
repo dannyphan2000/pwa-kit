@@ -1,3 +1,6 @@
+## 4.0.0-extensibility-preview.4
+- Generating a project now works successfully on Windows machine [#2377](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2377#pullrequestreview-2809224585)
+
 ## v4.0.0-extensibility-preview.2 (Dec 09, 2024)
 ## v4.0.0-extensibility-preview.1 (Dec 09, 2024)
 ## v4.0.0-extensibility-preview.0 (Dec 02, 2024)
@@ -6,6 +9,7 @@
 
 ## v3.10.0 (Feb 18, 2025)
 - Add Data Cloud API configuration to `default.js`. [#2318] (https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2229)
+- Fix dependencies vulnerabilities [#2338](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2338)
 
 ## v3.9.1 (Mar 05, 2025)
 - Update PWA-Kit SDKs to v3.9.1 [#2301](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2301)
