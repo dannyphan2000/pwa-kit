@@ -1,6 +1,6 @@
 {
     "enabled": true,
-    "matchingStrategy": "API_FIRST",
+    "routingMode": "api_first",
     "commerceApi": {
         "proxyPath": "/mobify/proxy/api",
         "parameters": {

@@ -64,7 +64,7 @@
                     "siteId": "RefArchGlobal"
                 }
             },
-            "matchingStrategy": "CACHE_FIRST",
+            "routingMode": "cache_first",
             "resourceTypeToComponentMap": {
               "category": "ProductList",
               "product": "ProductDetail",

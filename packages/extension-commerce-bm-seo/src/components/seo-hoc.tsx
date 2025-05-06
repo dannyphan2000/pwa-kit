@@ -45,27 +45,27 @@ const isRouteDefined = (routeToMatch: string, routes: Array<{path: string}>): bo
     return matchingRoute !== undefined
 }
 
-enum MatchingStrategy {
-    ROUTER_FIRST = 'ROUTER_FIRST',
-    API_FIRST = 'API_FIRST'
+enum RoutingMode {
+    ROUTER_FIRST = 'router_first',
+    API_FIRST = 'api_first'
 }
 
 const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const SeoHOC: React.FC<P> = (props: SeoHOCProps) => {
         const location = useLocation()
         const {routes, setRoutes} = useRoutes()
-        const {resourceTypeToComponentMap, matchingStrategy} = useExtensionConfig()
+        const {resourceTypeToComponentMap, routingMode} = useExtensionConfig()
         const [urlSegment, setUrlSegment] = useState(location.pathname)
         const {setIsNavigationBlocked, siteLocale} = useApplicationExtensionsStore((state) => {
             return state.state['@salesforce/extension-commerce-bm-seo']
         })
         const resolveRef = useRef<(result?: object) => void>()
 
-        // The `matchingStrategy` configuration determines whether we check the ROUTER (AKA the predefined route config) first or the `getUrlMapping` API
-        // `matchingStrategy == ROUTER_FIRST`: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
-        // `matchingStrategy == API_FIRST`: always call `getUrlMapping`
+        // The `routingMode` configuration determines whether we check the ROUTER (AKA the predefined route config) first or the `getUrlMapping` API
+        // `routingMode == ROUTER_FIRST`: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
+        // `routingMode == API_FIRST`: always call `getUrlMapping`
         const skipMappingCall =
-            matchingStrategy === MatchingStrategy.ROUTER_FIRST && isRouteDefined(location.pathname, routes)
+            routingMode === RoutingMode.ROUTER_FIRST && isRouteDefined(location.pathname, routes)
 
         const {refetch} = useUrlMapping(
             {
