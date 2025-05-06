@@ -106,7 +106,7 @@ jobs:
           
           # Check the installed version of @playwright/test
           echo "@playwright/test version: $(npm list @playwright/test --depth=0)"
-        
+
       - name: Get Template Version
         run: |-
           version=`jq -r ".version" packages/template-retail-react-app/package.json`
@@ -117,7 +117,7 @@ jobs:
         with:
           PROJECT_KEY: "retail-app-no-ext"
           TEMPLATE_VERSION: ${{ env.retail_app_template_version }}
-          
+
       - name: Validate Retail App Without Extensibility
         uses: ./.github/actions/e2e_validate_generated_app
         with:
@@ -139,6 +139,10 @@ jobs:
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+
+      - name: Run specific command for Node 22 with npm 11
+        if: matrix.node == 22 && matrix.npm == 11
+        run: echo "Running command for Node 22 and npm 11"
 
       - name: Run Playwright tests
         run: npm run test:e2e
@@ -345,7 +349,7 @@ jobs:
         uses: ./.github/actions/e2e_validate_generated_app
         with:
           PROJECT_KEY: "retail-app-private-client"
-          TEMPLATE_VERSION: ${{ env.retail_app_template_version }}          
+          TEMPLATE_VERSION: ${{ env.retail_app_template_version }}
 
       - name: Create MRT credentials file
         uses: "./.github/actions/create_mrt"
@@ -362,7 +366,7 @@ jobs:
 
       - name: Set Retail App Private Client Home
         run: export RETAIL_APP_HOME=https://scaffold-pwa-e2e-pwa-kit-private.mobify-storefront.com/
-    
+
       - name: Set PWA Kit E2E Test User
         run: export PWA_E2E_USER_EMAIL=e2e.pwa.kit@gmail.com PWA_E2E_USER_PASSWORD=hpv_pek-JZK_xkz0wzf
 
