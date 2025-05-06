@@ -50,7 +50,7 @@ const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
     decrement: () => set((state) => ({count: state.count - 1}))
 })
 
-class {{pascalcase answers.project.name}}App extends ApplicationExtension<Config> {
+class {{{pascalcase answers.project.name}}}App extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 
     /**
@@ -101,4 +101,4 @@ class {{pascalcase answers.project.name}}App extends ApplicationExtension<Config
     }
 }
 
-export default {{pascalcase answers.project.name}}App
+export default {{{pascalcase answers.project.name}}}App

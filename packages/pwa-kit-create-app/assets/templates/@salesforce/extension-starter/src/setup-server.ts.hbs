@@ -15,7 +15,7 @@ import {ApplicationExtension} from '@salesforce/pwa-kit-extension-sdk/express'
 import {Config} from './types'
 import extensionMeta from '../extension-meta.json'
 
-class {{pascalcase answers.project.name}}Server extends ApplicationExtension<Config> {
+class {{{pascalcase answers.project.name}}}Server extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 
     /**
@@ -34,4 +34,4 @@ class {{pascalcase answers.project.name}}Server extends ApplicationExtension<Con
     }
 }
 
-export default {{pascalcase answers.project.name}}Server
+export default {{{pascalcase answers.project.name}}}Server
