@@ -64,15 +64,6 @@ export default {
         function (filepath) {
             const normalizedPath = path.normalize(filepath)
 
-            // allowlist these ESM packages so they're NOT ignored
-            const allowlist = ['@chakra-ui', '@ark-ui', 'proxy-compare', 'uqr']
-
-            // If it's in an allowed package, DO NOT ignore it
-            if (allowlist.some((pkg) => normalizedPath.includes(`node_modules${path.sep}${pkg}`))) {
-                console.log('allow----')
-                return false
-            }
-
             const extensionRegex = new RegExp(
                 `node_modules\\${path.sep}[^\\${path.sep}]+\\${path.sep}(pwa-kit-extension-sdk|@[^\\${path.sep}]+\\${path.sep}extension-|extension-)`
             )
