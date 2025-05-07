@@ -1059,6 +1059,12 @@ const runGenerator = (
             installDependencies: false
         })
 
+        // Update the typescript-minimal dev package.json with dependencies
+        updatePackageJson(p.resolve(devOutputDir, 'package.json'), {
+            devDependencies: {[answers.project.name]: 'file:../'},
+            mobify: {app: {extensions: [answers.project.name]}}
+        })
+
         // Create the .npmignore file, excluding the typescript-minimal local dev project folder
         createNpmIgnoreFile(outputDir, [`${LOCAL_DEV_PROJECT_DIR}/`])
 
