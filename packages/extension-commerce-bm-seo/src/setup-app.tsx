@@ -25,6 +25,7 @@ import {
     SerializedRouteProps
 } from '@salesforce/pwa-kit-extension-sdk/types'
 import {ShopperSeo} from 'commerce-sdk-isomorphic'
+import {initializeAuth} from '@salesforce/commerce-sdk-react'
 
 // Local Imports
 import {Config} from './types'
@@ -75,9 +76,13 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
 
         // Make SEO GET Url Mapping API call
         const urlSegment: string = locals.originalUrl.split('?')[0]
-        console.log('CommerceBmSeo locals', locals)
+        const access_token: string = await initializeAuth({
+            ...config.commerceApi,
+            proxy: `${appOrigin}${config.commerceApi.proxyPath}`,
+            redirectURI: `${appOrigin}/callback`
+        })
         const shopperSeo = locals.__commerceApi.shopperSeo
-        console.log('CommerceBmSeo shopperSeo', shopperSeo)
+        shopperSeo.clientConfig.headers = {authorization: `Bearer ${access_token}`}
         try {
             urlMapping = await shopperSeo.getUrlMapping({
                 parameters: {urlSegment}

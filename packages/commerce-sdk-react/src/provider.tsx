@@ -50,8 +50,9 @@ export interface CommerceApiProviderProps extends ApiClientConfigParams {
 }
 export interface ApiClientConfig {
     proxy: string
-    headers?: Record<string, string>
+    redirectURI: string
     parameters: ApiClientConfigParams
+    headers?: Record<string, string>
     fetchOptions?: ShopperBasketsTypes.FetchOptions
     enablePWAKitPrivateClient?: boolean
 }
@@ -71,9 +72,22 @@ export const ConfigContext = React.createContext({} as Omit<CommerceApiProviderP
  */
 export const AuthContext = React.createContext({} as Auth)
 
+export const initializeAuth = async (config: ApiClientConfig): Promise<string> => {
+    const auth = new Auth({
+        ...config.parameters,
+        proxy: config.proxy,
+        redirectURI: config.redirectURI,
+        logger: console
+    })
+    const {access_token} = await auth.ready()
+    return access_token
+}
+
 export const buildCommerceApiClients = (config: ApiClientConfig): ApiClients => {
-    console.log('buildCommerceApiClients config', config)
-    const clientConfig = {...config, throwOnBadResponse: true}
+    const clientConfig = {
+        ...config,
+        throwOnBadResponse: true
+    }
     const baseUrl = config.proxy.split(MOBIFY_PATH)[0]
     const privateClientEndpoint = `${baseUrl}${SLAS_PRIVATE_PROXY_PATH}`
     return {
@@ -84,7 +98,9 @@ export const buildCommerceApiClients = (config: ApiClientConfig): ApiClients => 
         shopperGiftCertificates: new ShopperGiftCertificates(clientConfig),
         shopperLogin: new ShopperLogin({
             ...clientConfig,
-            proxy: clientConfig.enablePWAKitPrivateClient ? privateClientEndpoint : clientConfig.proxy
+            proxy: clientConfig.enablePWAKitPrivateClient
+                ? privateClientEndpoint
+                : clientConfig.proxy
         }),
         shopperOrders: new ShopperOrders(clientConfig),
         shopperProducts: new ShopperProducts(clientConfig),
@@ -210,6 +226,7 @@ const CommerceApiProvider = (props: CommerceApiProviderProps): ReactElement => {
 
     const config = {
         proxy,
+        redirectURI,
         headers: {
             ...headers,
             ...serverAffinityHeader

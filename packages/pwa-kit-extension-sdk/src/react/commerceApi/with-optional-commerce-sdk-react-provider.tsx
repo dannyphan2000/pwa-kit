@@ -11,7 +11,7 @@ import {
     CommerceApiProvider,
     useCommerceApi,
     buildCommerceApiClients,
-    ApiClientConfig
+    ApiClients
 } from '@salesforce/commerce-sdk-react'
 import {CommerceApiConfig} from '../../types'
 import {logger} from '../../../src/logger'
@@ -40,6 +40,16 @@ const useHasCommerceApiProvider = () => {
 
 type WithOptionalCommerceSdkReactProvider = React.ComponentPropsWithoutRef<any>
 
+const initializeCommerceApi = (config: CommerceApiConfig): ApiClients => {
+    const appOrigin = getAppOrigin()
+    const clientConfig = {
+        ...config,
+        proxy: `${appOrigin}${config.proxyPath}`,
+        redirectURI: `${appOrigin}/callback`
+    }
+    return buildCommerceApiClients(clientConfig)
+}
+
 /**
  * Higher-order component that conditionally installs the CommerceApiProvider if the config is provided.
  *
@@ -53,15 +63,8 @@ export const withOptionalCommerceSdkReactProvider = <P extends object>(
     locals: Record<string, any>
 ) => {
     // Commerce API clients are stored in locals so it can be reused across multiple extensions outside of a React context.
-    let clients = locals.__commerceApi
-    if (!clients) {
-        const appOrigin = getAppOrigin()
-        const clientConfig: ApiClientConfig = {
-            ...config,
-            proxy: `${appOrigin}${config.proxyPath}`,
-        }
-        clients = buildCommerceApiClients(clientConfig)
-        locals.__commerceApi = clients
+    if (!locals.__commerceApi) {
+        locals.__commerceApi = initializeCommerceApi(config)
     }
 
     const HOC: React.FC<P> = (props: WithOptionalCommerceSdkReactProvider) => {
