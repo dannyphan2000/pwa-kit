@@ -20,7 +20,6 @@ describe('matchPath', () => {
 
     it('should return the matching route', () => {
         const result = matchPath('/about', routes)
-        console.log('result', result)
         expect(result).toEqual({path: '/about', component: NullComponent})
     })
 
