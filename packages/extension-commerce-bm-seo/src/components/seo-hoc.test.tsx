@@ -6,7 +6,7 @@
  */
 import React from 'react'
 import {render, screen, waitFor, act} from '@testing-library/react'
-import {useLocation} from 'react-router-dom'
+import {BrowserRouter, useLocation} from 'react-router-dom'
 import SeoHOC from './seo-hoc'
 import {useExtensionConfig} from '../hooks/use-extension-config'
 
@@ -64,7 +64,7 @@ jest.mock('@salesforce/pwa-kit-react-sdk/ssr/universal/hooks', () => {
         useBlockNavigation: jest.fn().mockImplementation((cb) => {
             const isBlocked = true
             navCallback = cb
-            return {isBlocked}
+            return {isBlocked, blockNavigation: jest.fn(), unblockNavigation: jest.fn()}
         })
     }
 })
@@ -75,8 +75,15 @@ const setupForSetRoutesTests = () => {
     const insideComponent = () => <div>Inner Component</div>
     ProductDetail.displayName = 'ProductDetail'
     ;(useExtensionConfig as jest.Mock).mockReturnValue({
-        matchingStrategy: 'ROUTER_FIRST',
-        resourceTypeToComponentMap: {}
+        routingMode: 'router_first',
+        resourceTypeToComponentMap: {
+            category: 'ProductList',
+            product: 'ProductDetail',
+            content_asset: 'ProductList'
+        }
+    })
+    ;(useLocation as jest.Mock).mockReturnValue({
+        pathname: '/another-path'
     })
 
     // Mock useRoutes to return predefined routes
@@ -123,15 +130,12 @@ describe('SeoHOC', () => {
         })
 
         it('calls setRoutes with Redirect component if resourceType is undefined', async () => {
-            const {WrappedComponent} = setupForSetRoutesTests()
-            ;(useExtensionConfig as jest.Mock).mockReturnValue({
-                matchingStrategy: 'ROUTER_FIRST',
-                resourceTypeToComponentMap: {
-                    category: 'ProductList',
-                    product: 'ProductDetail',
-                    content_asset: 'ProductList'
-                }
+            // Set the mockRefetch response for this test BEFORE setupForSetRoutesTests
+            mockRefetch.mockResolvedValue({
+                status: 'success',
+                data: {destinationUrl: '/redirect'}
             })
+            const {WrappedComponent} = setupForSetRoutesTests()
 
             render(<WrappedComponent />)
             await act(async () => {
@@ -142,28 +146,18 @@ describe('SeoHOC', () => {
             })
             const call = setRoutesMock.mock.calls[0][0][0]
             expect(call.path).toBe('/some-path')
-            // The component should be a function that renders a Redirect
             expect(call.component().type.displayName || call.component().type.name).toMatch(
                 /Redirect/
             )
         })
 
         it('calls setRoutes with custom component if urlMappingResponse has resourceType', async () => {
-            const {WrappedComponent} = setupForSetRoutesTests()
-            ;(useExtensionConfig as jest.Mock).mockReturnValue({
-                matchingStrategy: 'ROUTER_FIRST',
-                resourceTypeToComponentMap: {
-                    category: 'ProductList',
-                    product: 'ProductDetail',
-                    content_asset: 'ProductList'
-                }
-            })
-
             // Set the mockRefetch response for this test
             mockRefetch.mockResolvedValue({
                 status: 'success',
                 data: {destinationUrl: '/redirect', resourceType: 'product'}
             })
+            const {WrappedComponent} = setupForSetRoutesTests()
             render(<WrappedComponent />)
             await act(async () => {
                 await navCallback?.({pathname: '/some-path'}, 'PUSH')
