@@ -34,6 +34,7 @@ describe('applyApplicationExtensions Middleware with Express App', () => {
         ;(getApplicationExtensions as jest.Mock).mockReturnValue([])
         createAppWithMiddleware()
 
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         const response = await supertest(app).get('/test')
 
         expect(response.status).toBe(200)
@@ -45,6 +46,7 @@ describe('applyApplicationExtensions Middleware with Express App', () => {
         ;(getApplicationExtensions as jest.Mock).mockReturnValue(mockExtensions)
         createAppWithMiddleware()
 
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         const response = await supertest(app).get('/test')
 
         expect(response.status).toBe(200)
@@ -60,6 +62,7 @@ describe('applyApplicationExtensions Middleware with Express App', () => {
         ;(getApplicationExtensions as jest.Mock).mockReturnValue([mockExtension])
         createAppWithMiddleware()
 
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         const response = await supertest(app).get('/test')
 
         expect(mockExtension.isEnabled).toHaveBeenCalled()
@@ -80,6 +83,7 @@ describe('applyApplicationExtensions Middleware with Express App', () => {
         ;(getApplicationExtensions as jest.Mock).mockReturnValue([firstExtension, secondExtension])
         createAppWithMiddleware()
 
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         const response = await supertest(app).get('/test')
 
         expect(firstExtension.extendApp).toHaveBeenCalledWith(app)
