@@ -73,11 +73,10 @@ export const useOrigin = ({fromXForwardedHeader = false}) => {
 }
 
 /**
- * Blocks the navigation to run a provided function whenever there is a new page being navigated to
- * The function must return false to unblock the navigation
+ * Blocks navigation and runs a provided async function whenever a new page is being navigated to.
  *
- * @param {function} func
- * @returns {boolean} State that is set to true during blocking, false otherwise.
+ * @param {function} func - Async function to run on navigation. Receives (location, action).
+ * @returns {{isBlocked: boolean}} An object with isBlocked set to true during navigation blocking, false otherwise.
  */
 export const useBlockNavigation = (func) => {
     const {block, push, location} = useHistory()
@@ -92,12 +91,11 @@ export const useBlockNavigation = (func) => {
                 setIsBlocked(true)
                 await funcRef.current(location, action)
                 setIsBlocked(false)
-                unblock()
                 push(location?.pathname)
             }
         })
         return () => unblock()
-    }, [location])
+    }, [])
 
     return {isBlocked}
 }

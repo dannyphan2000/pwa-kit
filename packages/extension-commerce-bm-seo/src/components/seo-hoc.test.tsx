@@ -70,7 +70,7 @@ jest.mock('@salesforce/pwa-kit-react-sdk/ssr/universal/hooks', () => {
 })
 
 let setRoutesMock: jest.Mock
-const setupForSetRoutesTests = () => {
+const setupForSetRoutesTests = ({pathname}: {pathname: string}) => {
     const ProductDetail = () => <div>Test Component</div>
     const insideComponent = () => <div>Inner Component</div>
     ProductDetail.displayName = 'ProductDetail'
@@ -83,7 +83,7 @@ const setupForSetRoutesTests = () => {
         }
     })
     ;(useLocation as jest.Mock).mockReturnValue({
-        pathname: '/another-path'
+        pathname: pathname
     })
 
     // Mock useRoutes to return predefined routes
@@ -117,14 +117,14 @@ describe('SeoHOC', () => {
 
     describe('setRoutes and isNavigationBlocked call', () => {
         it('renders the wrapped component and passes props', () => {
-            const {WrappedComponent} = setupForSetRoutesTests()
+            const {WrappedComponent} = setupForSetRoutesTests({pathname: '/another-path'})
             render(<WrappedComponent />)
             // expect the component to render
             expect(screen.getByText('Inner Component')).toBeInTheDocument()
         })
 
         it('calls setIsNavigationBlocked when isBlocked changes', () => {
-            const {WrappedComponent} = setupForSetRoutesTests()
+            const {WrappedComponent} = setupForSetRoutesTests({pathname: '/another-path'})
             render(<WrappedComponent />)
             expect(mockSetIsNavigationBlocked).toHaveBeenCalledWith(true)
         })
@@ -135,7 +135,7 @@ describe('SeoHOC', () => {
                 status: 'success',
                 data: {destinationUrl: '/redirect'}
             })
-            const {WrappedComponent} = setupForSetRoutesTests()
+            const {WrappedComponent} = setupForSetRoutesTests({pathname: '/another-path'})
 
             render(<WrappedComponent />)
             await act(async () => {
@@ -157,7 +157,7 @@ describe('SeoHOC', () => {
                 status: 'success',
                 data: {destinationUrl: '/redirect', resourceType: 'product'}
             })
-            const {WrappedComponent} = setupForSetRoutesTests()
+            const {WrappedComponent} = setupForSetRoutesTests({pathname: '/another-path'})
             render(<WrappedComponent />)
             await act(async () => {
                 await navCallback?.({pathname: '/some-path'}, 'PUSH')
@@ -172,7 +172,7 @@ describe('SeoHOC', () => {
         })
 
         it('handles refetch error status gracefully', async () => {
-            const {WrappedComponent} = setupForSetRoutesTests()
+            const {WrappedComponent} = setupForSetRoutesTests({pathname: '/another-path'})
             mockRefetch.mockResolvedValueOnce({
                 status: 'error',
                 data: undefined
@@ -186,7 +186,7 @@ describe('SeoHOC', () => {
         })
 
         it('handles error status from refetch', async () => {
-            const {WrappedComponent} = setupForSetRoutesTests()
+            const {WrappedComponent} = setupForSetRoutesTests({pathname: '/another-path'})
             mockRefetch.mockResolvedValueOnce({
                 status: 'error',
                 data: undefined
@@ -200,7 +200,7 @@ describe('SeoHOC', () => {
         })
 
         it('handles empty data from refetch', async () => {
-            const {WrappedComponent} = setupForSetRoutesTests()
+            const {WrappedComponent} = setupForSetRoutesTests({pathname: '/another-path'})
             mockRefetch.mockResolvedValueOnce({
                 status: 'success',
                 data: undefined
@@ -216,6 +216,17 @@ describe('SeoHOC', () => {
         it('does not call setRoutes if navCallback is not set', () => {
             // navCallback is set by useBlockNavigation mock, so we can test the absence by not rendering
             expect(navCallback).toBeDefined()
+        })
+
+        it('does not call refetch if urlSegment is falsy', async () => {
+            // Set up useLocation to return a falsy pathname
+            const {WrappedComponent} = setupForSetRoutesTests({pathname: ''})
+            render(<WrappedComponent />)
+            // Wait for effects to run
+            await waitFor(() => {
+                // refetch should not be called at all
+                expect(mockRefetch).not.toHaveBeenCalled()
+            })
         })
     })
 })

@@ -33,7 +33,7 @@ interface StoreSlice {
     isNavigationBlocked: boolean
     setIsNavigationBlocked: (newIsNavigationBlocked: boolean) => void
     siteLocale: string | undefined
-    setSiteLocale: (config: object) => void
+    setSiteLocale: (newSiteLocale: string) => void
 }
 
 // This is safe to delete if your extension does not use state. If you aren't using this, ensure you remove the
@@ -43,7 +43,7 @@ export const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
     setIsNavigationBlocked: (newIsNavigationBlocked) =>
         set((state) => ({...state, isNavigationBlocked: newIsNavigationBlocked})),
     siteLocale: undefined,
-    setSiteLocale: (config) => set((state) => config)
+    setSiteLocale: (newSiteLocale) => set((state) => ({...state, siteLocale: newSiteLocale}))
 })
 
 class Sample extends ApplicationExtension<Config> {

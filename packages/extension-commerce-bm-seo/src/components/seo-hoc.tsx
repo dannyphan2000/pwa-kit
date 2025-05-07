@@ -40,7 +40,7 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
         })
 
         const resolveRef = useRef<(result?: object) => void>()
-
+        // Disabling the hook on render so it's only called when refetch is called
         const {refetch} = useUrlMapping(
             {
                 parameters: {
@@ -55,19 +55,17 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
 
         useEffect(() => {
             const fetchData = async () => {
-                if (urlSegment) {
-                    const result = await refetch()
-                    if (resolveRef.current) {
-                        if (result.status === 'error') {
-                            resolveRef.current(undefined)
-                        } else {
-                            if (result.data?.destinationUrl) {
-                                resolveRef.current(result.data)
-                            } else {
-                                resolveRef.current(undefined)
-                            }
-                        }
-                    }
+                if (!urlSegment) return
+                const result = await refetch()
+                if (!resolveRef.current) return
+                if (!result || result.status === 'error') {
+                    resolveRef.current(undefined)
+                    return
+                }
+                if (result.data?.destinationUrl) {
+                    resolveRef.current(result.data)
+                } else {
+                    resolveRef.current(undefined)
                 }
             }
             void fetchData().catch(console.error)
@@ -115,6 +113,7 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
             }
         )
 
+        // Inform other areas of the app (e.g. other extensions) when navigation is being blocked by SEO logic
         useEffect(() => {
             setIsNavigationBlocked(isNavigationBlocked)
         }, [isNavigationBlocked])
