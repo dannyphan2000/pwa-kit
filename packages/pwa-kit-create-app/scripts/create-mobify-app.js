@@ -1065,6 +1065,45 @@ const runGenerator = (
             mobify: {app: {extensions: [answers.project.name]}}
         })
 
+        // TODO: The generator is growing, we should refactor this to be more maintainable.
+        const processGeneratedExtension = () => {
+            // do a file content replacement for extension-meta.json in the outputDir
+            // find all instances of "@salesforce/extension-starter" and replace with answers.project.name
+            // const extensionMetaJsonPath = p.join(outputDir, 'extension-meta.json')
+            // if (fs.existsSync(extensionMetaJsonPath)) {
+            //     let extensionMetaJsonContent = fs.readFileSync(extensionMetaJsonPath, 'utf8')
+            //     extensionMetaJsonContent = extensionMetaJsonContent.replace(
+            //         /@salesforce\/extension-starter/g,
+            //         answers.project.name
+            //     )
+            //     fs.writeFileSync(extensionMetaJsonPath, extensionMetaJsonContent)
+            // }
+            // if (fs.existsSync(p.join(outputDir, 'src', 'setup-app.ts'))) {
+            //     let setupAppTsContent = fs.readFileSync(p.join(outputDir, 'src', 'setup-app.ts'), 'utf8')
+            //     setupAppTsContent = setupAppTsContent.replace(
+            //         /class\ Sample\ extends/g,
+            //         `class ${answers.project.name}App extends`
+            //     ).replace(
+            //         /default Sample/g,
+            //         `default ${answers.project.name}App`
+            //     )
+            //     fs.writeFileSync(p.join(outputDir, 'src', 'setup-app.ts'), setupAppTsContent)
+            // }
+            // if (fs.existsSync(p.join(outputDir, 'src', 'setup-server.ts'))) {
+            //     let setupServerTsContent = fs.readFileSync(p.join(outputDir, 'src', 'setup-server.ts'), 'utf8')
+            //     setupServerTsContent = setupServerTsContent.replace(
+            //         /class\ StarterExtension\ extends/g,
+            //         `class ${answers.project.name}Server extends`
+            //     ).replace(
+            //         /default StarterExtension/g,
+            //         `default ${answers.project.name}Server`
+            //     )
+            //     fs.writeFileSync(p.join(outputDir, 'src', 'setup-server.ts'), setupServerTsContent)
+            // }
+        }
+
+        processGeneratedExtension()
+
         // Create the .npmignore file, excluding the typescript-minimal local dev project folder
         createNpmIgnoreFile(outputDir, [`${LOCAL_DEV_PROJECT_DIR}/`])
 
