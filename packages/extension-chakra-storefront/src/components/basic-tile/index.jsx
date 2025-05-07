@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
 import {Box, Img, Text, AspectRatio, useTheme} from '@chakra-ui/react'
 import {Link} from 'react-router-dom'
 
-// import {ChevronRightIcon} from '../../components/icons'
+import {ChevronRightIcon} from '../../components/icons'
 
 /**
  * BasicTile component is used on content pages like home page.
@@ -19,8 +19,7 @@ import {Link} from 'react-router-dom'
  */
 const BasicTile = ({img, href, title, ...props}) => {
     const {src, alt} = img
-    // const theme = useTheme()
-    return <div>Basic Tile</div>
+    const theme = useTheme()
     return (
         <Box {...props}>
             <Box paddingBottom="4">
