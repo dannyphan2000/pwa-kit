@@ -7,9 +7,12 @@
 import React, {useState, useEffect, useRef} from 'react'
 import {useBlockNavigation, useRoutes} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useUrlMapping} from '@salesforce/commerce-sdk-react'
-import {useLocation, Redirect, matchPath} from 'react-router-dom'
+import {useLocation, Redirect} from 'react-router-dom'
 import {useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
 import {useExtensionConfig} from '../hooks/use-extension-config'
+import {matchPath} from '../utils/route-match-utils'
+import {ROUTING_MODE} from '../constants'
+
 type SeoHOCProps = React.ComponentPropsWithoutRef<any>
 
 interface UrlMappingResponse {
@@ -29,36 +32,6 @@ const getComponent = (
     return ComponentClass
 }
 
-/**
- * Checks whether the given URL path matches a predefined route defined in the application's routes config, excluding the catch-all route (e.g., path='*')
- */
-const isRouteDefined = (routeToMatch: string, routes: Array<{path: string}>): boolean => {
-    // Check for multiple wildcard routes
-    const wildcardRoutes = routes.filter((route) => route.path.endsWith('*'))
-    if (wildcardRoutes.length > 1) {
-        console.warn(
-            `Multiple wildcard routes detected (${wildcardRoutes.length}). This may cause unexpected routing behavior. Wildcard routes:`,
-            wildcardRoutes.map((route) => route.path)
-        )
-    }
-
-    // Exclude any catch-all (404) routes and paths ending with wildcards
-    const validRoutes = routes.filter((route) => !route.path.endsWith('*'))
-
-    const matchingRoute = validRoutes.find(({path}) =>
-        matchPath(routeToMatch, {
-            path,
-            exact: true
-        })
-    )
-    return matchingRoute !== undefined
-}
-
-enum RoutingMode {
-    ROUTER_FIRST = 'router_first',
-    API_FIRST = 'api_first'
-}
-
 const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const SeoHOC: React.FC<P> = (props: SeoHOCProps) => {
         const location = useLocation()
@@ -74,7 +47,9 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
         // RoutingMode.ROUTER_FIRST: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
         // RoutingMode.API_FIRST: always call `getUrlMapping`
         const skipMappingCall =
-            routingMode === RoutingMode.ROUTER_FIRST && isRouteDefined(location.pathname, routes)
+            routingMode === ROUTING_MODE.ROUTER_FIRST &&
+            matchPath(location.pathname, routes, {filterWildcardRoutes: true})
+
         const {refetch} = useUrlMapping(
             {
                 parameters: {
