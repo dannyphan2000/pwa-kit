@@ -64,6 +64,5 @@ module.exports = {
             // lines: 74
         }
     },
-    transformIgnorePatterns: ['/node_modules/(?!(@chakra-ui)/)'],
     ...(process.env.CI ? {testTimeout: 30000} : {})
 }
