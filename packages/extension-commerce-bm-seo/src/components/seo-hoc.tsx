@@ -44,8 +44,8 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
         const resolveRef = useRef<(result?: object) => void>()
 
         // The `routingMode` configuration determines whether we check the ROUTER (AKA the predefined route config) first or the `getUrlMapping` API
-        // RoutingMode.ROUTER_FIRST: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
-        // RoutingMode.API_FIRST: always call `getUrlMapping`
+        // ROUTING_MODE.ROUTER_FIRST: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
+        // ROUTING_MODE.API_FIRST: always call `getUrlMapping`
         const skipMappingCall =
             routingMode === ROUTING_MODE.ROUTER_FIRST &&
             matchPath(location.pathname, routes, {filterWildcardRoutes: true})
