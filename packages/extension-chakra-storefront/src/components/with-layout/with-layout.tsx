@@ -31,7 +31,6 @@ import {
     useSlotRecipe,
     useToken
 } from '@chakra-ui/react'
-// import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
 
 // Local Project Components
 import {DrawerMenu} from '../drawer-menu'
@@ -286,6 +285,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 <ScrollToTop />
 
                 <Box id="app" display="flex" flexDirection="column" flex={1}>
+                    {/*TODO: recreating this component because @chakra-ui/skip-nav does not have V3 version*/}
                     {/*<SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>*/}
                     <Box css={styles.headerWrapper}>
                         {!isCheckout ? (
@@ -328,14 +328,15 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     </Box>
                     {/*{!isOnline && <OfflineBanner />}*/}
                     {/*<AddToCartModalProvider>*/}
-                    <SkipNavContent
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            flex: 1,
-                            outline: 0
-                        }}
-                    >
+                    {/*TODO: recreating this component because @chakra-ui/skip-nav does not have V3 version*/}
+                    {/*<SkipNavContent*/}
+                    {/*    style={{*/}
+                    {/*        display: 'flex',*/}
+                    {/*        flexDirection: 'column',*/}
+                    {/*        flex: 1,*/}
+                    {/*        outline: 0*/}
+                    {/*    }}*/}
+                    {/*>*/}
                         <Box
                             as="main"
                             id="app-main"
@@ -349,7 +350,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                             <WrappedComponent {...(props as P)} />
                             {/*</OfflineBoundary>*/}
                         </Box>
-                    </SkipNavContent>
+                    {/*</SkipNavContent>*/}
 
                     {/*{!isCheckout ? <Footer /> : <CheckoutFooter />}*/}
 
