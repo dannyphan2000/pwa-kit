@@ -138,7 +138,8 @@ jest.mock('@salesforce/cc-datacloud-typescript', () => ({
 global.TextEncoder = require('util').TextEncoder
 global.TextDecoder = require('util').TextDecoder
 
-// Jest's JSDOM environment doesn't natively implement this modern Web API function.
+// JSDOM environment doesn't natively implement this modern Web API function.
+// Chakra v3 is using it, so we need to mock it here
 global.structuredClone = (v) => JSON.parse(JSON.stringify(v))
 
 // This file consists of global mocks for jsdom.
