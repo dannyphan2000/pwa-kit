@@ -31,6 +31,7 @@ import {
     withPropsWrapper
 } from './utils/component-utils'
 import {getShopperSeoClient} from './utils/shopper-seo-utils'
+import {ROUTING_MODE} from './constants'
 
 // Others
 import extensionMeta from '../extension-meta.json'
