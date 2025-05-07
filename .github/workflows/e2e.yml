@@ -257,6 +257,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      # this will not include a11y tests
       - name: Run Playwright tests
         run: npm run test:e2e
 
@@ -377,6 +378,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
+      # this will not include a11y tests
       - name: Run Playwright tests
         run: npm run test:e2e
 
