@@ -35,6 +35,6 @@ module.exports = {
         }
     },
     transform: {
-        '^.+\\.(js|jsx|ts|tsx|mjs)$': path.join(__dirname, 'jest-babel-transform.js')
+        '^.+\\.(js|jsx|ts|tsx)$': path.join(__dirname, 'jest-babel-transform.js')
     }
 }

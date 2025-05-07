@@ -22,11 +22,19 @@ module.exports = {
         '^@ark-ui/react/(.*)$': [
             '<rootDir>/node_modules/@ark-ui/react/dist/components/$1/index.cjs',
             '<rootDir>/node_modules/@ark-ui/react/dist/components/$1.cjs',
-            '<rootDir>/node_modules/@ark-ui/react/dist/components/$1.mjs',
             '<rootDir>/node_modules/@ark-ui/react/dist/providers/$1/index.cjs',
             '<rootDir>/node_modules/@ark-ui/react/dist/providers/$1.cjs',
-            '<rootDir>/node_modules/@ark-ui/react/dist/providers/$1.mjs'
         ],
+        '^@chakra-ui/react/(.*)$': [
+            '<rootDir>/node_modules/@chakra-ui/react/dist/cjs/$1/index.cjs',
+            '<rootDir>/node_modules/@chakra-ui/react/dist/cjs/index.cjs',
+        ],
+        '^@chakra-ui/skip-nav/(.*)$': [
+            '<rootDir>/node_modules/@chakra-ui/skip-nav/dist/index.js',
+            '<rootDir>/node_modules/@chakra-ui/skip-nav/dist/$1.js',
+        ],
+        '^proxy-compare$': '<rootDir>/node_modules/proxy-compare/dist/cjs/index.js',
+        '^uqr$': '<rootDir>/node_modules/uqr/dist/index.cjs',
         // handle pwa-kit extensibility special import
         '^overridable!(.*)': '$1'
     },
@@ -56,6 +64,6 @@ module.exports = {
             // lines: 74
         }
     },
-    transformIgnorePatterns: ['/node_modules/(?!(@chakra-ui|uqr|proxy-compare)/)'],
+    transformIgnorePatterns: ['/node_modules/(?!(@chakra-ui)/)'],
     ...(process.env.CI ? {testTimeout: 30000} : {})
 }

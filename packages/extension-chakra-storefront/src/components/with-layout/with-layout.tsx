@@ -31,8 +31,7 @@ import {
     useSlotRecipe,
     useToken
 } from '@chakra-ui/react'
-import system from '../../theme'
-import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
+// import {SkipNavLink, SkipNavContent} from '@chakra-ui/skip-nav'
 
 // Local Project Components
 import {DrawerMenu} from '../drawer-menu'
@@ -287,7 +286,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                 <ScrollToTop />
 
                 <Box id="app" display="flex" flexDirection="column" flex={1}>
-                    <SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>
+                    {/*<SkipNavLink zIndex="skipLink">Skip to Content</SkipNavLink>*/}
                     <Box css={styles.headerWrapper}>
                         {!isCheckout ? (
                             <>

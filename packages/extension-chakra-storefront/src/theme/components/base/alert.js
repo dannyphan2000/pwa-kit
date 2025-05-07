@@ -5,10 +5,10 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {defineRecipe} from '@chakra-ui/react/'
-import {alertAnatomy} from '@chakra-ui/react/dist/esm/anatomy'
 
+// TODO: How can we import these keys without hardcoding
 export default defineRecipe({
-    slots: alertAnatomy.keys(),
+    slots: ['title', 'description', 'root', 'indicator', 'content'],
     variants: {
         variant: {
             subtle: {
