@@ -1,3 +1,4 @@
+## v4.0.0-extensibility-preview.5 (May 06, 2025)
 ## v4.0.0-extensibility-preview.4 (Feb 12, 2025)
 - Add useBlockNavigation hook (#2288)[https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2288]
 - Replace `event-emitter` in favor of the native `EventTarget` [#2289](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2289)
