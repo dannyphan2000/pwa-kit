@@ -337,19 +337,19 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     {/*        outline: 0*/}
                     {/*    }}*/}
                     {/*>*/}
-                        <Box
-                            as="main"
-                            id="app-main"
-                            role="main"
-                            display="flex"
-                            flexDirection="column"
-                            flex="1"
-                        >
-                            {/*<OfflineBoundary isOnline={false}>*/}
+                    <Box
+                        as="main"
+                        id="app-main"
+                        role="main"
+                        display="flex"
+                        flexDirection="column"
+                        flex="1"
+                    >
+                        {/*<OfflineBoundary isOnline={false}>*/}
 
-                            <WrappedComponent {...(props as P)} />
-                            {/*</OfflineBoundary>*/}
-                        </Box>
+                        <WrappedComponent {...(props as P)} />
+                        {/*</OfflineBoundary>*/}
+                    </Box>
                     {/*</SkipNavContent>*/}
 
                     {/*{!isCheckout ? <Footer /> : <CheckoutFooter />}*/}
