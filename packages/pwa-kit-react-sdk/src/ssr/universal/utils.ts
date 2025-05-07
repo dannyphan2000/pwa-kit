@@ -34,19 +34,16 @@ type GetAssetUrlOptions = {
  */
 export const getAssetUrl = (path: string) => {
     /* istanbul ignore next */
-    let publicPath = onClient
+    const publicPath = onClient
         ? // @ts-ignore
           `${window.Progressive.buildOrigin as string}`
-        : `${bundleBasePath}/${process.env.BUNDLE_ID || 'development'}`
+        : `${bundleBasePath}/${process.env.BUNDLE_ID || 'development'}/`
 
-    // Normalize the public path by removing the trailing slash
-    publicPath = publicPath.replace(/\/$/, '')
-
-    return path ? `${publicPath}/${path}` : publicPath
+    return path ? `${publicPath}${path}` : publicPath
 }
 
 // TODO: Once we establish that we have a new @salesforce/pwa-kit-extensibility package, we can move this utility to
-// it as to not have direct references to extensibilty in the sdk. This will also reduce duplicate code.
+// it as to not have direct references to extensibility in the sdk. This will also reduce duplicate code.
 /**
  * Get the URL that should be used to load a static asset from the bundle.
  *
@@ -56,31 +53,24 @@ export const getAssetUrl = (path: string) => {
  * @function
  * @returns {string} The full URL to the static asset.
  */
-export const getStaticAssetUrl = (path = '', opts: GetAssetUrlOptions) => {
+export const getStaticAssetUrl = (path = '', opts: GetAssetUrlOptions = {}) => {
     const {appExtensionPackageName = ''} = opts || {}
-    const extensionPrefix = `${
-        appExtensionPackageName ? `/${EXTENSIONS_NAMESPACE}/${appExtensionPackageName}` : ''
-    }`
 
     /* istanbul ignore next */
-    let publicPath = onClient
-        ? // @ts-ignore
-          `${window.Progressive.buildOrigin as string}`
-        : `${bundleBasePath}/${process.env.BUNDLE_ID || 'development'}`
+    let publicPath = getAssetUrl('')
 
-    // Normalize the public path by removing the trailing slash
-    publicPath = publicPath.replace(/\/$/, '')
+    // Ensure all defined path arguments start with `/`.
+    if (path && !path.startsWith('/')) {
+        path = `/${path}`
+    }
 
-    // Ensure path starts with `/`.
-    path = `${path && !path.startsWith('/') ? `/${path}` : path}`
+    if (publicPath && !publicPath.endsWith('/')) {
+        publicPath = `${publicPath}/`
+    }
 
-    // Prepend the extension namespace and package if applicable.
-    path = `${extensionPrefix ? `${extensionPrefix}${path}` : path}`
-
-    // Prefix public assets path and static folder.
-    path = `${publicPath}/${STATIC_FOLDER}${path}`
-
-    return path
+    return `${publicPath}${STATIC_FOLDER}${
+        appExtensionPackageName ? `/${EXTENSIONS_NAMESPACE}/${appExtensionPackageName}` : ''
+    }${path ? path : ''}`
 }
 
 /**
