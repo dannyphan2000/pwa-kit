@@ -31,6 +31,7 @@ import {
     withPropsWrapper
 } from './utils/component-utils'
 import {getShopperSeoClient} from './utils/shopper-seo-utils'
+import {matchPath} from './utils/route-match-utils'
 import {ROUTING_MODE} from './constants'
 
 // Others
@@ -66,15 +67,26 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         const config = this.getConfig()
         const appOrigin = getAppOrigin()
 
-        // Make SEO GET Url Mapping API call
         const urlSegment: string = locals.originalUrl.split('?')[0]
+
+        const {routingMode} = config
+
+        if (routingMode === ROUTING_MODE.ROUTER_FIRST) {
+            // Only call matchPath if routingMode is ROUTER_FIRST
+            const matchedPath = matchPath(urlSegment, this.getRoutes({locals}), {filterWildcardRoutes: true})
+            if (matchedPath) {
+                return matchedPath
+            }
+        }
+
+        // Make SEO GET Url Mapping API call
         const shopperSeo = await getShopperSeoClient(locals, config)
         try {
             urlMapping = await shopperSeo.getUrlMapping({
                 parameters: {urlSegment}
             })
         } catch (e) {
-            console.error(`Couldn't find mapping for given segement: ${urlSegment}`)
+            console.error(`Couldn't find mapping for given segment: ${urlSegment}`)
         }
 
         if (!urlMapping) {
