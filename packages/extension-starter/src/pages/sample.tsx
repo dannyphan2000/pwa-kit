@@ -5,23 +5,17 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React, {Fragment} from 'react'
-import PropTypes from 'prop-types'
 import {getStaticAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
 import extensionMeta from '../../extension-meta.json'
 
-interface SampleProps {
-    title: string
-    [key: string]: any
-}
-
-const Sample = ({title, ...props}: SampleProps) => {
+const Sample = () => {
     const logoUrl = getStaticAssetUrl('salesforce-logo.svg', {
         appExtensionPackageName: extensionMeta.id
     })
 
     return (
         <Fragment>
-            <h1>{title}</h1>
+            <h1>Welcome to the Sample Page 👋</h1>
             <hr />
             <img alt="logo" src={logoUrl} width={200} />
 
@@ -34,9 +28,5 @@ const Sample = ({title, ...props}: SampleProps) => {
 }
 
 Sample.getTemplateName = () => 'sample'
-Sample.displayName = 'SamplePage'
-Sample.propTypes = {
-    title: PropTypes.string
-}
 
 export default Sample
