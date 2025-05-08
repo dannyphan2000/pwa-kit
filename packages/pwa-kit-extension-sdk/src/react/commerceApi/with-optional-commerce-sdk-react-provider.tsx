@@ -11,7 +11,8 @@ import {
     CommerceApiProvider,
     useCommerceApi,
     buildCommerceApiClients,
-    ApiClients
+    ApiClients,
+    initializeAuth
 } from '@salesforce/commerce-sdk-react'
 import {CommerceApiConfig} from '../../types'
 import {logger} from '../../../src/logger'
@@ -40,14 +41,25 @@ const useHasCommerceApiProvider = () => {
 
 type WithOptionalCommerceSdkReactProvider = React.ComponentPropsWithoutRef<any>
 
-const initializeCommerceApi = (config: CommerceApiConfig): ApiClients => {
+const initializeCommerceApi = async (config: CommerceApiConfig, locals: Record<string, any>): Promise<ApiClients> => {
     const appOrigin = getAppOrigin()
     const clientConfig = {
         ...config,
         proxy: `${appOrigin}${config.proxyPath}`,
         redirectURI: `${appOrigin}/callback`
     }
-    return buildCommerceApiClients(clientConfig)
+    
+    // Initialize auth and get access token if not already set
+    if (!locals.__commerceApiAccessToken) {
+        locals.__commerceApiAccessToken = await initializeAuth(clientConfig)
+    }
+
+    // Build API clients if not already set
+    if (!locals.__commerceApiClients) {
+        locals.__commerceApiClients = buildCommerceApiClients(clientConfig)
+    }
+
+    return locals.__commerceApiClients
 }
 
 /**
@@ -62,9 +74,11 @@ export const withOptionalCommerceSdkReactProvider = <P extends object>(
     config: CommerceApiConfig,
     locals: Record<string, any>
 ) => {
-    // Commerce API clients are stored in locals so it can be reused across multiple extensions outside of a React context.
-    if (!locals.__commerceApi) {
-        locals.__commerceApi = initializeCommerceApi(config)
+    // Initialize only if initialization hasn't started yet
+    if (!locals.__commerceApiInitStarted) {
+        locals.__commerceApiInitStarted = true
+        console.log('CommerceApiProvider config.parameters.clientId', config.parameters.clientId)
+        locals.__commerceApiInitPromise = initializeCommerceApi(config, locals)
     }
 
     const HOC: React.FC<P> = (props: WithOptionalCommerceSdkReactProvider) => {
@@ -78,6 +92,7 @@ export const withOptionalCommerceSdkReactProvider = <P extends object>(
             return <WrappedComponent {...(props as P)} />
         }
         const appOrigin = getAppOrigin()
+        console.log('CommerceApiProvider locals.__commerceApiAccessToken', locals.__commerceApiAccessToken)
         return (
             <CommerceApiProvider
                 shortCode={config.parameters.shortCode}
@@ -88,6 +103,7 @@ export const withOptionalCommerceSdkReactProvider = <P extends object>(
                 currency={config.parameters.currency ?? ''}
                 redirectURI={`${appOrigin}/callback`}
                 proxy={`${appOrigin}${config.proxyPath}`}
+                fetchedToken={locals.__commerceApiAccessToken}
             >
                 <WrappedComponent {...(props as P)} />
             </CommerceApiProvider>

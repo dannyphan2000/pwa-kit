@@ -68,9 +68,55 @@
   "mobify": {
     "app": {
       "extensions": [
-        ["@salesforce/extension-chakra-store-locator"],
+        ["@salesforce/extension-chakra-store-locator", {
+    "enabled": true,
+    "path": "/store-locator",
+    "radius": 100,
+    "radiusUnit": "km",
+    "defaultPageSize": 10,
+    "defaultPostalCode": "10178",
+    "defaultCountry": "Germany",
+    "defaultCountryCode": "DE",
+    "supportedCountries": [
+        {
+            "countryCode": "US",
+            "countryName": "United States"
+        },
+        {
+            "countryCode": "DE",
+            "countryName": "Germany"
+        }
+    ],
+    "commerceApi": {
+        "proxyPath": "/mobify/proxy/api",
+        "parameters": {
+            "shortCode": "8o7m175y",
+            "clientId": "faed469c-f8b1-4427-af87-715fcd8c3240",
+            "organizationId": "f_ecom_zzrf_001",
+            "siteId": "RefArchGlobal",
+            "locale": "en-GB",
+            "currency": "USD"
+        }
+    }
+}
+],
 
-        ["@salesforce/extension-commerce-bm-seo"],
+        ["@salesforce/extension-commerce-bm-seo", {
+          "enabled": true,
+          "commerceApi": {
+              "proxyPath": "/mobify/proxy/api",
+              "parameters": {
+                  "clientId": "c9c45bfd-0ed3-4aa2-9971-40f88962b836",
+                  "organizationId": "f_ecom_zzrf_001",
+                  "shortCode": "8o7m175y",
+                  "siteId": "RefArchGlobal"
+              }
+          },
+          "resourceTypeToComponentMap": {
+              "category": "ProductList",
+              "product": "ProductDetail"
+          }
+      }],
         [
           "@salesforce/extension-chakra-storefront",
           {
