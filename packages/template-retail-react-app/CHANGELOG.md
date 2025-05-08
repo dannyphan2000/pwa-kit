@@ -6,6 +6,7 @@
 - Fix dependencies vulnerabilities [#2338](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2338)
 - Fix accessibility issues [#2375](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2375)
 - Update cc-datacloud-typescript package to use a fixed lock version [#2392](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2392)
+- Add Confirm New Password input field to Reset & Change Password flows [#2395](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2395)
 
 ## v6.0.1 (Mar 05, 2025)
 - Update PWA-Kit SDKs to v3.9.1 [#2301](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2301)

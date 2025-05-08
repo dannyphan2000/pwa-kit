@@ -1711,6 +1711,12 @@
   "use_update_password_fields.error.minimum_characters": {
     "defaultMessage": "Password must contain at least 8 characters."
   },
+  "use_update_password_fields.error.password_mismatch": {
+    "defaultMessage": "Passwords do not match."
+  },
+  "use_update_password_fields.error.required_confirm_password": {
+    "defaultMessage": "Please confirm your password."
+  },
   "use_update_password_fields.error.required_new_password": {
     "defaultMessage": "Please provide a new password."
   },
@@ -1722,6 +1728,9 @@
   },
   "use_update_password_fields.error.uppercase_letter": {
     "defaultMessage": "Password must contain at least one uppercase letter."
+  },
+  "use_update_password_fields.label.confirm_new_password": {
+    "defaultMessage": "Confirm New Password"
   },
   "use_update_password_fields.label.current_password": {
     "defaultMessage": "Current Password"
