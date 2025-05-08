@@ -35,6 +35,9 @@ const ProductDetail = loadable(() => import('overridable!./product-detail'), {fa
 const ProductList = loadable(() => import('overridable!./product-list'), {
     fallback
 })
+const ProductListDecomposed = loadable(() => import('overridable!./product-list-decomposed'), {
+    fallback
+})
 const SocialLoginRedirect = loadable(() => import('overridable!./social-login-redirect'), {
     fallback
 })
@@ -69,5 +72,6 @@ export {
     LoginRedirect,
     ProductDetail,
     ProductList,
-    SocialLoginRedirect
+    SocialLoginRedirect,
+    ProductListDecomposed
 }

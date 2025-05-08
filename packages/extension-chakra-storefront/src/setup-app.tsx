@@ -120,7 +120,7 @@ class ChakraStorefront extends ApplicationExtension<Config> {
             },
             {
                 path: "/c/:categoryId",
-                component: Pages.ProductList
+                component: Pages.ProductListDecomposed
             }
         ].filter((route) => route.path !== false)
 

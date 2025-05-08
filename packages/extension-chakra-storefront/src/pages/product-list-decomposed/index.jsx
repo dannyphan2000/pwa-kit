@@ -418,6 +418,7 @@ const ProductList = (props) => {
             paddingTop={{base: 6, lg: 8}}
             {...rest}
         >
+            test
             <Helmet>
                 <title>{category?.pageTitle ?? searchQuery}</title>
                 <meta name="description" content={category?.pageDescription ?? searchQuery} />
