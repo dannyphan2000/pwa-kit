@@ -435,6 +435,7 @@ describe('Overrides Resolver Loader', () => {
                                     ),
                                     options: {
                                         baseDir: '/',
+                                        resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
                                         resolveOptions: {
                                             // Override the `fs` methods used by `resolve` to point to the virtual file system
                                             existsSync: (filePath: string) => {
