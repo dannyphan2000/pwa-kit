@@ -19,6 +19,7 @@ module.exports = {
         '^copy-anything$': '<rootDir>/node_modules/copy-anything/dist/cjs/index.cjs',
         '^@salesforce/cc-datacloud-typescript$':
             '<rootDir>/node_modules/@salesforce/cc-datacloud-typescript/dist/index.js',
+        // Chakra v3 use ESM by default, but we need to use CJS for jest 27
         '^@ark-ui/react/(.*)$': [
             '<rootDir>/node_modules/@ark-ui/react/dist/components/$1/index.cjs',
             '<rootDir>/node_modules/@ark-ui/react/dist/components/$1.cjs',
