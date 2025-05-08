@@ -90,7 +90,8 @@ export function useAuthHelper<Mutation extends AuthHelper>(
     type Data = PromisedData extends Promise<infer D> ? D : never
     type Variables = [] extends Parameters<Method> ? void : Parameters<Method>[0]
     const method = auth[mutation].bind(auth) as MutationFunction<Data, Variables>
-    return useMutation(auth.whenReady(method), {
+    return useMutation({
+        mutationFn: auth.whenReady(method),
         onSuccess(data, options) {
             const getCacheUpdates = cacheUpdateMatrix[mutation]
 
@@ -107,7 +108,7 @@ const cacheUpdateMatrix: CacheUpdateMatrix = {
     loginGuestUser: noop,
     logout() {
         return {
-            remove: [{queryKey: ['/commerce-sdk-react']}]
+            invalidate: [{queryKey: ['/commerce-sdk-react']}]
         }
     },
     register: noop,
