@@ -87,7 +87,7 @@ const GettingStarted = () => {
                                 </ul>
                             </>
                         ) : (
-                            <p>Hello world You currently do not have any extensions installed.</p>
+                            <p> TE Hello world You currently do not have any extensions installed.</p>
                         )}
                     </div>
                 </div>
