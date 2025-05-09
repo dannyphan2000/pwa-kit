@@ -73,10 +73,11 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     }
 
     // Lets use the compiler configuration to ensure we are resolving the correct file extensions.
-    const fileExtensions = options?.resolveExtensions
+    const fileExtensions = compiler.options?.resolve?.extensions || options?.resolveExtensions
     const basedir = options?.baseDir || process.cwd()
-    const applicationExtensions = options?.extensions || compiler?.custom?.extensions || []
 
+    const applicationExtensions = options?.extensions || compiler?.custom?.extensions || []
+    console.log('----> fileExtensions: ', fileExtensions)
     // Get the master list of all possible candidate paths based on your current extension configuration.
     const paths = buildCandidatePaths(projectRelPath, packageName, {
         canonicalSource: resourcePath,
