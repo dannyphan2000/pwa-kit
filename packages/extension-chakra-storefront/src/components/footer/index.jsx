@@ -9,31 +9,32 @@ import PropTypes from 'prop-types'
 import {
     Box,
     Text,
-    Divider,
+    Separator,
     SimpleGrid,
-    useMultiStyleConfig,
     Select as ChakraSelect,
     Heading,
     Input,
     InputGroup,
-    InputRightElement,
-    createStylesContext,
+    // InputRightElement,
     Button,
-    FormControl
+    // FormControl,
+    useRecipe,
+    useSlotRecipe,
+    GridItem
 } from '@chakra-ui/react'
 import {useIntl} from 'react-intl'
 
 import LinksList from '../../components/links-list'
 import SocialIcons from '../../components/social-icons'
-import {HideOnDesktop, HideOnMobile} from '../../components/responsive'
+import {HideOnDesktop, HideOnMobile} from '../responsive'
 import {getPathWithLocale} from '../../utils/url'
 import LocaleText from '../../components/locale-text'
 import useMultiSite from '../../hooks/use-multi-site'
-import styled from '@emotion/styled'
 
-const [StylesProvider, useStyles] = createStylesContext('Footer')
+// const [StylesProvider, useStyles] = createStylesContext('Footer')
 const Footer = ({...otherProps}) => {
-    const styles = useMultiStyleConfig('Footer')
+    const recipe = useSlotRecipe({key: 'footer'})
+    const styles = recipe()
     const intl = useIntl()
     const [locale, setLocale] = useState(intl.locale)
     const {site, buildUrl} = useMultiSite()
@@ -44,10 +45,10 @@ const Footer = ({...otherProps}) => {
     // NOTE: this is a workaround to fix hydration error, by making sure that the `option.selected` property is set.
     // For some reason, adding some styles prop (to the option element) prevented `selected` from being set.
     // So now we add the styling to the parent element instead.
-    const Select = styled(ChakraSelect)({
-        // Targeting the child element
-        option: styles.localeDropdownOption
-    })
+    // const Select = styled(ChakraSelect)({
+    //     // Targeting the child element
+    //     option: styles.localeDropdownOption
+    // })
     const makeOurCompanyLinks = () => {
         const links = []
         links.push({
@@ -61,11 +62,11 @@ const Footer = ({...otherProps}) => {
     }
 
     return (
-        <Box as="footer" {...styles.container} {...otherProps}>
-            <Box {...styles.content} as="section">
-                <StylesProvider value={styles}>
-                    <HideOnMobile>
-                        <SimpleGrid columns={4} spacing={3}>
+        <Box as="footer" css={styles.container} {...otherProps}>
+            <Box css={styles.content} as="section">
+                <SimpleGrid columns={{base: 1, lg: 4}} gap={3}>
+                    <GridItem colSpan={{base: 1, md: 3}}>
+                        <SimpleGrid columns={{base: 1, lg: 3}} gap={3}>
                             <LinksList
                                 heading={intl.formatMessage({
                                     id: 'footer.column.customer_support',
@@ -117,73 +118,67 @@ const Footer = ({...otherProps}) => {
                                 })}
                                 links={makeOurCompanyLinks()}
                             />
-                            <Box>
-                                <Subscribe />
-                            </Box>
                         </SimpleGrid>
-                    </HideOnMobile>
+                    </GridItem>
+                    <GridItem colSpan={{base: 1, md: 1}}>
+                        <Subscribe />
+                    </GridItem>
+                </SimpleGrid>
+                {/*<HideOnDesktop>*/}
+                {/*    <Subscribe />*/}
+                {/*</HideOnDesktop>*/}
+                {/*{showLocaleSelector && (*/}
+                {/*    <Box css={styles.localeSelector}>*/}
+                {/*        <FormControl*/}
+                {/*            data-testid="sf-footer-locale-selector"*/}
+                {/*            id="locale_selector"*/}
+                {/*            width="auto"*/}
+                {/*            {...otherProps}*/}
+                {/*        >*/}
+                {/*            <Select*/}
+                {/*                defaultValue={locale}*/}
+                {/*                onChange={({target}) => {*/}
+                {/*                    setLocale(target.value)*/}
+                {/*                    // Update the `locale` in the URL.*/}
+                {/*                    const newUrl = getPathWithLocale(target.value, buildUrl, {*/}
+                {/*                        disallowParams: ['refine']*/}
+                {/*                    })*/}
+                {/*                    window.location = newUrl*/}
+                {/*                }}*/}
+                {/*                variant="filled"*/}
+                {/*                aria-label={intl.formatMessage({*/}
+                {/*                    id: 'footer.locale_selector.assistive_msg',*/}
+                {/*                    defaultMessage: 'Select Language'*/}
+                {/*                })}*/}
+                {/*                {...styles.localeDropdown}*/}
+                {/*            >*/}
+                {/*                {supportedLocaleIds.map((locale) => (*/}
+                {/*                    <option key={locale} value={locale}>*/}
+                {/*                        <LocaleText shortCode={locale} />*/}
+                {/*                    </option>*/}
+                {/*                ))}*/}
+                {/*            </Select>*/}
+                {/*        </FormControl>*/}
+                {/*    </Box>*/}
+                {/*)}*/}
+                <Separator {...styles.horizontalRule} />
+                <Box css={styles.legalSection}>
+                    <Text css={styles.copyright}>
+                        &copy; {new Date().getFullYear()}{' '}
+                        {intl.formatMessage({
+                            id: 'footer.message.copyright',
+                            defaultMessage:
+                                'Salesforce or its affiliates. All rights reserved. This is a demo store only. Orders made WILL NOT be processed.'
+                        })}
+                    </Text>
 
                     <HideOnDesktop>
-                        <Subscribe />
+                        <LegalLinks variant="vertical" />
                     </HideOnDesktop>
-
-                    {showLocaleSelector && (
-                        <Box {...styles.localeSelector}>
-                            <FormControl
-                                data-testid="sf-footer-locale-selector"
-                                id="locale_selector"
-                                width="auto"
-                                {...otherProps}
-                            >
-                                <Select
-                                    defaultValue={locale}
-                                    onChange={({target}) => {
-                                        setLocale(target.value)
-
-                                        // Update the `locale` in the URL.
-                                        const newUrl = getPathWithLocale(target.value, buildUrl, {
-                                            disallowParams: ['refine']
-                                        })
-
-                                        window.location = newUrl
-                                    }}
-                                    variant="filled"
-                                    aria-label={intl.formatMessage({
-                                        id: 'footer.locale_selector.assistive_msg',
-                                        defaultMessage: 'Select Language'
-                                    })}
-                                    {...styles.localeDropdown}
-                                >
-                                    {supportedLocaleIds.map((locale) => (
-                                        <option key={locale} value={locale}>
-                                            <LocaleText shortCode={locale} />
-                                        </option>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Box>
-                    )}
-
-                    <Divider {...styles.horizontalRule} />
-
-                    <Box {...styles.bottomHalf}>
-                        <Text {...styles.copyright}>
-                            &copy; {new Date().getFullYear()}{' '}
-                            {intl.formatMessage({
-                                id: 'footer.message.copyright',
-                                defaultMessage:
-                                    'Salesforce or its affiliates. All rights reserved. This is a demo store only. Orders made WILL NOT be processed.'
-                            })}
-                        </Text>
-
-                        <HideOnDesktop>
-                            <LegalLinks variant="vertical" />
-                        </HideOnDesktop>
-                        <HideOnMobile>
-                            <LegalLinks variant="horizontal" />
-                        </HideOnMobile>
-                    </Box>
-                </StylesProvider>
+                    <HideOnMobile>
+                        <LegalLinks variant="horizontal" />
+                    </HideOnMobile>
+                </Box>
             </Box>
         </Box>
     )
@@ -192,17 +187,18 @@ const Footer = ({...otherProps}) => {
 export default Footer
 
 const Subscribe = ({...otherProps}) => {
-    const styles = useStyles()
+    const recipe = useSlotRecipe({key: 'footer'})
+    const styles = recipe()
     const intl = useIntl()
     return (
-        <Box {...styles.subscribe} {...otherProps}>
+        <Box css={styles.subscribe} {...otherProps}>
             <Heading as="h1" {...styles.subscribeHeading}>
                 {intl.formatMessage({
                     id: 'footer.subscribe.heading.first_to_know',
                     defaultMessage: 'Be the first to know'
                 })}
             </Heading>
-            <Text {...styles.subscribeMessage}>
+            <Text css={styles.subscribeMessage}>
                 {intl.formatMessage({
                     id: 'footer.subscribe.description.sign_up',
                     defaultMessage: 'Sign up to stay in the loop about the hottest deals'
@@ -215,14 +211,14 @@ const Subscribe = ({...otherProps}) => {
                         to avoid the hydration error due to mismatched html between server and client side.
                         This is a workaround for Lastpass plugin that automatically injects its icon for input fields.
                     */}
-                    <InputRightElement {...styles.subscribeButtonContainer}>
-                        <Button variant="footer">
-                            {intl.formatMessage({
-                                id: 'footer.subscribe.button.sign_up',
-                                defaultMessage: 'Sign Up'
-                            })}
-                        </Button>
-                    </InputRightElement>
+                    {/*<InputRightElement css={styles.subscribeButtonContainer}>*/}
+                    {/*    <Button variant="footer">*/}
+                    {/*        {intl.formatMessage({*/}
+                    {/*            id: 'footer.subscribe.button.sign_up',*/}
+                    {/*            defaultMessage: 'Sign Up'*/}
+                    {/*        })}*/}
+                    {/*    </Button>*/}
+                    {/*</InputRightElement>*/}
                     <Input
                         type="email"
                         placeholder="you@email.com"
@@ -236,7 +232,7 @@ const Subscribe = ({...otherProps}) => {
                 </InputGroup>
             </Box>
 
-            <SocialIcons variant="flex-start" pinterestInnerColor="black" {...styles.socialIcons} />
+            <SocialIcons variant="flex-start" pinterestInnerColor="black" />
         </Box>
     )
 }

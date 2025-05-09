@@ -41,7 +41,7 @@ import {withCommerceSdkReactHookData} from '../with-commerce-sdk-react-hook-data
 import AboveHeader from '../above-header'
 // import CheckoutHeader from '../../pages/checkout/partials/checkout-header'
 // import CheckoutFooter from '../../pages/checkout/partials/checkout-footer'
-// import Footer from '../footer'
+import Footer from '../footer'
 // import Header from '../header'
 // import OfflineBanner from '../offline-banner'
 // import OfflineBoundary from '../offline-boundary'
@@ -126,9 +126,6 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
         const {site, locale, buildUrl} = useMultiSite()
         const [isOnline, setIsOnline] = useState<boolean>(true)
 
-        // Apply styles from the theme
-        const recipe = useSlotRecipe({key: 'app'})
-        const styles = recipe()
         // https://www.chakra-ui.com/docs/theming/overview#tokens-1
         const [themeColor] = useToken('colors.blue', '600')
         const {open, onOpen, onClose} = useDisclosure()
@@ -229,10 +226,9 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
             trackPage()
         }, [location])
 
-        // const containerStyles = (styles.container as React.CSSProperties) || {}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        // const headerWrapperStyles = styles.headerWrapper || {}
+        // Apply styles from the theme
+        const recipe = useSlotRecipe({key: 'app'})
+        const styles = recipe()
 
         return (
             <Box className="sf-app" css={styles.container}>
@@ -352,8 +348,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     </Box>
                     {/*</SkipNavContent>*/}
 
-                    {/*{!isCheckout ? <Footer /> : <CheckoutFooter />}*/}
-
+                    {!isCheckout ? <Footer /> : <div>Check out footer</div>}
                     {/*<AuthModal {...(authModal as any)} />*/}
                     {/*<DntNotification {...dntNotification} />*/}
                     {/*</AddToCartModalProvider>*/}

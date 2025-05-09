@@ -10,11 +10,12 @@ import PropTypes from 'prop-types'
 
 // Components
 import {
+    Box,
     Flex,
     IconButton,
 
     // Hooks
-    useMultiStyleConfig
+    useSlotRecipe
 } from '@chakra-ui/react'
 
 // Icons
@@ -24,19 +25,19 @@ import {
     SocialPinterestIcon,
     SocialTwitterIcon,
     SocialYoutubeIcon
-} from '../../components/icons'
+} from '../icons'
 
 /**
  *
  */
 const SocialIcons = ({variant, pinterestInnerColor = 'white', ...otherProps}) => {
-    const styles = useMultiStyleConfig('SocialIcons', {variant})
-
+    const recipe = useSlotRecipe({key: 'socialIcons'})
+    const styles = recipe({variant})
+    console.log('social stypes', styles)
     return (
-        <Flex
+        <Box
             className="sf-social-icons"
-            {...styles.container}
-            sx={{'--pinterest-icon-inner': pinterestInnerColor}}
+            css={{...styles.container, '--pinterest-icon-inner': pinterestInnerColor}}
             {...otherProps}
         >
             {/* Social Links */}
@@ -66,19 +67,20 @@ const SocialIcons = ({variant, pinterestInnerColor = 'white', ...otherProps}) =>
                     icon: SocialFacebookIcon,
                     ariaLabel: 'Facebook'
                 }
-            ].map(({href, icon, ariaLabel}) => (
+            ].map(({href, icon: Icon, ariaLabel}) => (
                 <IconButton
-                    {...styles.item}
+                    css={styles.item}
                     key={href}
-                    icon={React.createElement(icon, styles.icon)}
                     variant="unstyled"
                     onClick={() => {
                         window.open(href)
                     }}
                     aria-label={ariaLabel}
-                />
+                >
+                    <Icon styles={styles.icon} />
+                </IconButton>
             ))}
-        </Flex>
+        </Box>
     )
 }
 

@@ -33,20 +33,20 @@ import tooltip from './components/base/tooltip'
 import popover from './components/base/popover'
 //
 // // Project Component style overrides
-import appRecipe from './components/project/_app'
+import app from './components/project/_app'
 // import Breadcrumb from './components/project/breadcrumb'
-import headerRecipe from './components/project/header'
+import header from './components/project/header'
 // import ListMenu from './components/project/list-menu'
-// import Footer from './components/project/footer'
+import footer from './components/project/footer'
 // import CheckoutFooter from './components/project/checkout-footer'
-// import LinksList from './components/project/links-list'
+import linkList from './components/project/links-list'
 // import DrawerMenu from './components/project/drawer-menu'
 // import NestedAccordion from './components/project/nested-accordion'
 // import LocaleSelector from './components/project/locale-selector'
-import offlineBannerRecipe from './components/project/offline-banner'
+import offlineBanner from './components/project/offline-banner'
 // import Pagination from './components/project/pagination'
 // import ProductTile from './components/project/product-tile'
-// import SocialIcons from './components/project/social-icons'
+import socialIcons from './components/project/social-icons'
 // import SwatchGroup from './components/project/swatch-group'
 // import ImageGallery from './components/project/image-gallery'
 
@@ -95,9 +95,12 @@ export const overrides = defineConfig({
             tooltip,
 
             // project components
-            app: appRecipe,
-            header: headerRecipe,
-            offlineBanner: offlineBannerRecipe
+            app,
+            header,
+            offlineBanner,
+            footer,
+            linkList,
+            socialIcons
         }
         // components: {
         //     // base components
