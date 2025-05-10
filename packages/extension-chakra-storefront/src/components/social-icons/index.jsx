@@ -33,7 +33,6 @@ import {
 const SocialIcons = ({variant, pinterestInnerColor = 'white', ...otherProps}) => {
     const recipe = useSlotRecipe({key: 'socialIcons'})
     const styles = recipe({variant})
-    console.log('social stypes', styles)
     return (
         <Box
             className="sf-social-icons"
