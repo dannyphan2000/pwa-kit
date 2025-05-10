@@ -1,3 +1,6 @@
+## 4.0.0-extensibility-preview.5
+- Output parameterized class name values for `extension-starter` generated projects [#2419](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2419)
+
 ## 4.0.0-extensibility-preview.4
 - Generating a project now works successfully on Windows machine [#2377](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2377#pullrequestreview-2809224585)
 
