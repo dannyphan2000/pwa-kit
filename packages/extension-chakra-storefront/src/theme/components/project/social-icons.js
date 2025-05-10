@@ -18,9 +18,7 @@ export default defineSlotRecipe({
             height: 5
         },
         item: {
-            textAlign: 'center',
-            paddingLeft: 2,
-            paddingRight: 2
+            textAlign: 'center'
         }
     },
     variants: {

@@ -15,8 +15,11 @@ export default defineSlotRecipe({
         'subscribeButtonContainer',
         'subscribeHeading',
         'subscribeMessage',
-        'localeSelector',
-        'bottomHalf',
+        'localeSelectorWrapper',
+        'localeSelectorRoot',
+        'localeSelectorField',
+        'localeDropdownOption',
+        'legalSection',
         'horizontalRule',
         'copyright',
         'socialIcons'
@@ -54,11 +57,14 @@ export default defineSlotRecipe({
             fontSize: 'sm',
             marginBottom: 4
         },
-        localeSelector: {
-            display: 'inline-block',
+        localeSelectorWrapper: {
+            width: 'auto',
+            maxWidth: '246px',
             marginTop: 8
         },
-        localeDropdown: {
+        localeSelectorRoot: {},
+        localeSelectorField: {
+            fontSize: 'md',
             background: 'gray.800',
             _hover: {
                 background: 'whiteAlpha.500'

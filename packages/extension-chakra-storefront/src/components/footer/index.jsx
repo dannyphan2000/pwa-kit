@@ -11,14 +11,11 @@ import {
     Text,
     Separator,
     SimpleGrid,
-    Select as ChakraSelect,
+    Group,
+    NativeSelect,
     Heading,
     Input,
-    InputGroup,
-    // InputRightElement,
     Button,
-    // FormControl,
-    useRecipe,
     useSlotRecipe,
     GridItem
 } from '@chakra-ui/react'
@@ -31,7 +28,6 @@ import {getPathWithLocale} from '../../utils/url'
 import LocaleText from '../../components/locale-text'
 import useMultiSite from '../../hooks/use-multi-site'
 
-// const [StylesProvider, useStyles] = createStylesContext('Footer')
 const Footer = ({...otherProps}) => {
     const recipe = useSlotRecipe({key: 'footer'})
     const styles = recipe()
@@ -42,13 +38,6 @@ const Footer = ({...otherProps}) => {
     const supportedLocaleIds = l10n?.supportedLocales.map((locale) => locale.id)
     const showLocaleSelector = supportedLocaleIds?.length > 1
 
-    // NOTE: this is a workaround to fix hydration error, by making sure that the `option.selected` property is set.
-    // For some reason, adding some styles prop (to the option element) prevented `selected` from being set.
-    // So now we add the styling to the parent element instead.
-    // const Select = styled(ChakraSelect)({
-    //     // Targeting the child element
-    //     option: styles.localeDropdownOption
-    // })
     const makeOurCompanyLinks = () => {
         const links = []
         links.push({
@@ -64,9 +53,13 @@ const Footer = ({...otherProps}) => {
     return (
         <Box as="footer" css={styles.container} {...otherProps}>
             <Box css={styles.content} as="section">
-                <SimpleGrid columns={{base: 1, lg: 4}} gap={3}>
+                <SimpleGrid columns={{base: 1, lg: 4}} gap={{base: 0, lg: 3}}>
                     <GridItem colSpan={{base: 1, md: 3}}>
-                        <SimpleGrid columns={{base: 1, lg: 3}} gap={3}>
+                        <SimpleGrid
+                            columns={{base: 1, lg: 3}}
+                            gap={{base: 0, lg: 3}}
+                            display={{base: 'none', lg: 'grid'}}
+                        >
                             <LinksList
                                 heading={intl.formatMessage({
                                     id: 'footer.column.customer_support',
@@ -124,44 +117,42 @@ const Footer = ({...otherProps}) => {
                         <Subscribe />
                     </GridItem>
                 </SimpleGrid>
-                {/*<HideOnDesktop>*/}
-                {/*    <Subscribe />*/}
-                {/*</HideOnDesktop>*/}
-                {/*{showLocaleSelector && (*/}
-                {/*    <Box css={styles.localeSelector}>*/}
-                {/*        <FormControl*/}
-                {/*            data-testid="sf-footer-locale-selector"*/}
-                {/*            id="locale_selector"*/}
-                {/*            width="auto"*/}
-                {/*            {...otherProps}*/}
-                {/*        >*/}
-                {/*            <Select*/}
-                {/*                defaultValue={locale}*/}
-                {/*                onChange={({target}) => {*/}
-                {/*                    setLocale(target.value)*/}
-                {/*                    // Update the `locale` in the URL.*/}
-                {/*                    const newUrl = getPathWithLocale(target.value, buildUrl, {*/}
-                {/*                        disallowParams: ['refine']*/}
-                {/*                    })*/}
-                {/*                    window.location = newUrl*/}
-                {/*                }}*/}
-                {/*                variant="filled"*/}
-                {/*                aria-label={intl.formatMessage({*/}
-                {/*                    id: 'footer.locale_selector.assistive_msg',*/}
-                {/*                    defaultMessage: 'Select Language'*/}
-                {/*                })}*/}
-                {/*                {...styles.localeDropdown}*/}
-                {/*            >*/}
-                {/*                {supportedLocaleIds.map((locale) => (*/}
-                {/*                    <option key={locale} value={locale}>*/}
-                {/*                        <LocaleText shortCode={locale} />*/}
-                {/*                    </option>*/}
-                {/*                ))}*/}
-                {/*            </Select>*/}
-                {/*        </FormControl>*/}
-                {/*    </Box>*/}
-                {/*)}*/}
-                <Separator {...styles.horizontalRule} />
+                {showLocaleSelector && (
+                    <Box
+                        data-testid="sf-footer-locale-selector"
+                        id="locale_selector"
+                        css={styles.localeSelectorWrapper}
+                        {...otherProps}
+                    >
+                        <NativeSelect.Root css={styles.localeSelectorRoot} variant="filled">
+                            <NativeSelect.Field
+                                css={styles.localeSelectorField}
+                                defaultValue={locale}
+                                aria-label={intl.formatMessage({
+                                    id: 'footer.locale_selector.assistive_msg',
+                                    defaultMessage: 'Select Language'
+                                })}
+                                onChange={(e) => {
+                                    const newLocale = e.currentTarget.value
+                                    setLocale(newLocale)
+                                    // Update the `locale` in the URL.
+                                    const newUrl = getPathWithLocale(newLocale, buildUrl, {
+                                        disallowParams: ['refine']
+                                    })
+                                    window.location = newUrl
+                                }}
+                            >
+                                {supportedLocaleIds.map((locale) => (
+                                    <option key={locale} value={locale}>
+                                        <LocaleText shortCode={locale} />
+                                    </option>
+                                ))}
+                            </NativeSelect.Field>
+                            <NativeSelect.Indicator />
+                        </NativeSelect.Root>
+                    </Box>
+                )}
+                <Separator css={styles.horizontalRule} />
                 <Box css={styles.legalSection}>
                     <Text css={styles.copyright}>
                         &copy; {new Date().getFullYear()}{' '}
@@ -206,19 +197,7 @@ const Subscribe = ({...otherProps}) => {
             </Text>
 
             <Box>
-                <InputGroup>
-                    {/* Had to swap the following InputRightElement and Input
-                        to avoid the hydration error due to mismatched html between server and client side.
-                        This is a workaround for Lastpass plugin that automatically injects its icon for input fields.
-                    */}
-                    {/*<InputRightElement css={styles.subscribeButtonContainer}>*/}
-                    {/*    <Button variant="footer">*/}
-                    {/*        {intl.formatMessage({*/}
-                    {/*            id: 'footer.subscribe.button.sign_up',*/}
-                    {/*            defaultMessage: 'Sign Up'*/}
-                    {/*        })}*/}
-                    {/*    </Button>*/}
-                    {/*</InputRightElement>*/}
+                <Group attached w="full" maxW="sm">
                     <Input
                         type="email"
                         placeholder="you@email.com"
@@ -227,9 +206,15 @@ const Subscribe = ({...otherProps}) => {
                             defaultMessage: 'Email address for newsletter'
                         })}
                         id="subscribe-email"
-                        {...styles.subscribeField}
+                        css={styles.subscribeField}
                     />
-                </InputGroup>
+                    <Button variant="footer">
+                        {intl.formatMessage({
+                            id: 'footer.subscribe.button.sign_up',
+                            defaultMessage: 'Sign Up'
+                        })}
+                    </Button>
+                </Group>
             </Box>
 
             <SocialIcons variant="flex-start" pinterestInnerColor="black" />

@@ -27,7 +27,7 @@ import icon from './components/base/icon'
 import input from './components/base/input'
 import modal from './components/base/modal'
 import radio from './components/base/radio'
-import select from './components/base/select'
+import nativeSelect from './components/base/native-select'
 import skeleton from './components/base/skeleton'
 import tooltip from './components/base/tooltip'
 import popover from './components/base/popover'
@@ -82,7 +82,6 @@ export const overrides = defineConfig({
             input,
             modal,
             radio,
-            select,
             skeleton,
             popover
         },
@@ -93,6 +92,7 @@ export const overrides = defineConfig({
             drawer,
             checkbox,
             tooltip,
+            nativeSelect,
 
             // project components
             app,

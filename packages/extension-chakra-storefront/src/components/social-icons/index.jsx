@@ -77,7 +77,7 @@ const SocialIcons = ({variant, pinterestInnerColor = 'white', ...otherProps}) =>
                     }}
                     aria-label={ariaLabel}
                 >
-                    <Icon styles={styles.icon} />
+                    <Icon css={styles.icon} />
                 </IconButton>
             ))}
         </Box>

@@ -121,7 +121,6 @@ export const icon = (name, passProps, localizationAttributes, css) => {
                 passProps[key] = intl.formatMessage(localizationAttributes[key])
             })
         }
-        console.log('props', props)
         const {css = {}, ...restOfProps} = props
         return (
             <Icon
@@ -129,7 +128,7 @@ export const icon = (name, passProps, localizationAttributes, css) => {
                 role="img"
                 aria-label={name}
                 as="svg"
-                css={{...baseStyles, ...props.styles}}
+                css={{...baseStyles, ...props.css}}
                 {...restOfProps}
                 {...passProps}
             >
