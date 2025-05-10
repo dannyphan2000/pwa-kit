@@ -65,7 +65,6 @@ Handlebars.registerHelper('pascalcase', function(str) {
     .replace(/(^\w|-\w)/g, function(txt) {
         return txt.replace(/-/, '').toUpperCase();
     });
-    console.log('>>> CALLING pascalcase', result)
     return str
         .replace(/(^\w|-\w)/g, function(txt) {
             return txt.replace(/-/, '').toUpperCase();
@@ -1064,23 +1063,6 @@ const runGenerator = (
             devDependencies: {[answers.project.name]: 'file:../'},
             mobify: {app: {extensions: [answers.project.name]}}
         })
-
-        // TODO: The generator is growing, we should refactor this to be more maintainable.
-        const processGeneratedExtension = () => {
-            // do a file content replacement for extension-meta.json in the outputDir
-            // find all instances of "@salesforce/extension-starter" and replace with answers.project.name
-            const extensionMetaJsonPath = p.join(outputDir, 'extension-meta.json')
-            if (fs.existsSync(extensionMetaJsonPath)) {
-                let extensionMetaJsonContent = fs.readFileSync(extensionMetaJsonPath, 'utf8')
-                extensionMetaJsonContent = extensionMetaJsonContent.replace(
-                    /@salesforce\/extension-starter/g,
-                    answers.project.name
-                )
-                fs.writeFileSync(extensionMetaJsonPath, extensionMetaJsonContent)
-            }
-        }
-
-        processGeneratedExtension()
 
         // Create the .npmignore file, excluding the typescript-minimal local dev project folder
         createNpmIgnoreFile(outputDir, [`${LOCAL_DEV_PROJECT_DIR}/`])
