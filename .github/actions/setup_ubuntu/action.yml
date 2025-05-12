@@ -40,7 +40,7 @@ runs:
         # Build packages
         # npx lerna run build --stream
         # Install node dependencies
-        lerna bootstrap
+        npm i
 
         # Install Snyk CLI
         # TODO: Ticket W-12425059. Revisit Snyk CLI integration to monitor manifest files on generated projects.
