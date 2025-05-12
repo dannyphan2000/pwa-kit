@@ -37,6 +37,8 @@ runs:
     - name: Install Dependencies
       working-directory: ${{ inputs.cwd }}
       run: |-
+        # Build packages
+        npx lerna run build --stream
         # Install node dependencies
         npm ci
 
