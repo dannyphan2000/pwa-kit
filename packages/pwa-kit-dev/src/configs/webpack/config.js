@@ -38,8 +38,8 @@ import {
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {
     buildAliases,
-    nameRegex,
-    getConfiguredExtensions
+    getConfiguredExtensions,
+    isExtensionPackage
 } from '@salesforce/pwa-kit-extension-sdk/shared/utils'
 
 const projectDir = process.cwd()
@@ -145,11 +145,37 @@ const findDepInStack = (pkg) => {
     return candidate
 }
 
+// Helper function to detect extensions
+const detectExtensions = ({dependencies, projectDir} = {}) => {
+    const extensions = []
+
+    // Use provided dependencies or get them from package.json
+    const allDependencies = dependencies || [
+        ...Object.keys(pkg.dependencies || {}),
+        ...Object.keys(pkg.devDependencies || {})
+    ]
+
+    for (const dependency of allDependencies) {
+        const packagePath = path.join(projectDir || process.cwd(), 'node_modules', dependency)
+
+        if (isExtensionPackage(packagePath)) {
+            extensions.push(dependency)
+        }
+    }
+
+    return extensions
+}
+
+const detectedExtensions = detectExtensions({
+    projectDir
+})
+
 const baseConfig = (target) => {
     if (!['web', 'node'].includes(target)) {
         throw Error(`The value "${target}" is not a supported webpack target`)
     }
 
+    const extensions = getConfiguredExtensions(getConfig())
     class Builder {
         constructor() {
             this.config = {
@@ -198,14 +224,10 @@ const baseConfig = (target) => {
                                 [dep]: findDepInStack(dep)
                             }))
                         ),
-                        // Create alias's for "all" extensions, enabled or disabled, as they as they are being imported from the SDK package
+                        // Create alias's for "all" detected extensions, enabled or disabled, as they are being imported from the SDK package
                         // and cannot be resolved from that location. We create alias's for all because we do not know which extensions
                         // are configured at build time.
-                        ...buildAliases(
-                            Object.keys(pkg?.devDependencies || {}).filter((dependency) =>
-                                dependency.match(nameRegex)
-                            )
-                        )
+                        ...buildAliases(detectedExtensions)
                     },
                     ...(target === 'web' ? {fallback: {crypto: false}} : {})
                 },
@@ -218,7 +240,7 @@ const baseConfig = (target) => {
                 },
                 plugins: [
                     new ApplicationExtensionConfigPlugin({
-                        extensions: getConfiguredExtensions(getConfig())
+                        extensions
                     }),
                     new webpack.DefinePlugin({
                         DEBUG,
@@ -263,17 +285,23 @@ const baseConfig = (target) => {
                         },
                         ruleForApplicationExtensibility({
                             loaderOptions: {
-                                configured: getConfiguredExtensions(getConfig()),
+                                configured: extensions,
                                 target: 'web'
                             }
                         }),
                         ruleForApplicationExtensibility({
                             loaderOptions: {
-                                configured: getConfiguredExtensions(getConfig()),
+                                configured: extensions,
                                 target: 'node'
                             }
                         }),
-                        ruleForOverrideResolver({target, projectDir, isMonoRepo})
+                        ruleForOverrideResolver({
+                            extensions,
+                            resolveExtensions: SUPPORTED_FILE_EXTENSIONS,
+                            isMonoRepo,
+                            projectDir,
+                            target
+                        })
                     ].filter(Boolean)
                 }
             }
@@ -322,11 +350,10 @@ const staticFolderCopyPlugin = new CopyPlugin({
             from: 'app/static/',
             to: 'static/'
         },
-        ...getConfiguredExtensions(getConfig()).map((extension) => {
-            const packageName = extension[0]
+        ...detectedExtensions.map((extension) => {
             return {
-                from: `${projectDir}/node_modules/${packageName}/static`,
-                to: `static/${EXTENIONS_NAMESPACE}/${packageName}`,
+                from: `${projectDir}/node_modules/${extension}/static`,
+                to: `static/${EXTENIONS_NAMESPACE}/${extension}`,
                 // Add exclude for readme file.
                 noErrorOnMissing: true
             }
@@ -335,15 +362,53 @@ const staticFolderCopyPlugin = new CopyPlugin({
 })
 
 const ruleForBabelLoader = (babelPlugins) => {
+    // Handle the case when no extensions are detected
+    if (!detectedExtensions.length) {
+        return {
+            id: 'babel-loader',
+            test: /(\.js(x?)|\.ts(x?))$/,
+            exclude: /node_modules/,
+            use: [
+                {
+                    loader: findDepInStack('thread-loader'),
+                    options: {
+                        // eslint-disable-next-line @typescript-eslint/no-var-requires
+                        workers: Math.min(4, require('os').cpus().length),
+                        workerParallelJobs: 100
+                    }
+                },
+                {
+                    loader: findDepInStack('babel-loader'),
+                    options: {
+                        rootMode: 'upward',
+                        cacheDirectory: true,
+                        ...(babelPlugins ? {plugins: babelPlugins} : {})
+                    }
+                }
+            ]
+        }
+    }
+
+    // Pre-compute the paths to extensions for performance
+    const extensionPaths = detectedExtensions.map((ext) =>
+        path.normalize(`node_modules${path.sep}${ext}${path.sep}`)
+    )
+
     return {
         id: 'babel-loader',
         test: /(\.js(x?)|\.ts(x?))$/,
-        // NOTE: Because our extensions are just folders containing source code, we need to ensure that the babel-loader processes them.
-        // This regex exclude everything in node_modules, but node_modules/extensions-*/ folders
-        exclude: new RegExp(
-            `node_modules\\${path.sep}(?!(@?[^\\${path.sep}]+\\${path.sep})?extension-).*`,
-            'i'
-        ),
+        exclude: (modulePath) => {
+            // Not in node_modules. Include it (don't exclude)
+            if (!modulePath.includes('node_modules')) {
+                return false
+            }
+
+            // Normalize path for consistent comparison
+            const normalizedPath = path.normalize(modulePath)
+
+            // Check if the path includes any of our extension paths
+            return !extensionPaths.some((extPath) => normalizedPath.includes(extPath))
+        },
         use: [
             {
                 loader: findDepInStack('thread-loader'),

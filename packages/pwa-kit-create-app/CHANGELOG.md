@@ -1,5 +1,6 @@
 ## 4.0.0-extensibility-preview.4
 - Generating a project now works successfully on Windows machine [#2377](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2377#pullrequestreview-2809224585)
+- Remove the `extension-` prefix requirement for extension package names [#2390](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2390)
 
 ## v4.0.0-extensibility-preview.2 (Dec 09, 2024)
 ## v4.0.0-extensibility-preview.1 (Dec 09, 2024)

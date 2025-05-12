@@ -9,6 +9,53 @@ import path from 'path'
 import {runWebpackCompiler} from './test-utils'
 import {validateOverrideSource, __OVERRIDABLE_CACHE__} from './overrides-resolver-loader'
 import OverrideStatsPlugin, {OverrideStatsEntry} from './override-stats-plugin'
+import * as utils from '../../shared/utils'
+import {ApplicationExtensionEntryTuple, ApplicationExtensionConfig} from '../../types'
+
+// Define mock for isExtensionPackage
+jest.mock('../../shared/utils', () => {
+    const original = jest.requireActual('../../shared/utils')
+
+    // Implementation of expand function from shared/utils/helpers.ts
+    const expand = (extensions: unknown[] = []): ApplicationExtensionEntryTuple[] => {
+        const DEFAULT_CONFIG: ApplicationExtensionConfig & Record<string, unknown> = {enabled: true}
+
+        return extensions
+            .filter((extension) => Boolean(extension))
+            .map((extension) => {
+                const tuple: [string, ApplicationExtensionConfig & Record<string, unknown>] =
+                    Array.isArray(extension)
+                        ? [extension[0], {...DEFAULT_CONFIG, ...extension[1]}]
+                        : [extension as string, DEFAULT_CONFIG]
+                return tuple
+            })
+            .filter(([nameRef, config]) => {
+                const isValid = typeof nameRef === 'string' && typeof config === 'object'
+                return isValid
+            })
+    }
+
+    return {
+        ...original,
+        expand,
+        mergeWithDefaultConfig: jest.fn().mockImplementation((extension) => extension),
+        isExtensionPackage: (packagePath: string) => {
+            // Simulate these packages having extension-meta.json files
+            return [
+                'extension-sample',
+                '@salesforce/extension-sample',
+                'packages/extension-sample',
+                'extension-sample-no-mono',
+                'extension-this',
+                '@salesforce/extension-this',
+                'extension-that',
+                '@salesforce/extension-that',
+                'extension-other',
+                '@salesforce/extension-other'
+            ].some((name) => packagePath.toString().includes(name))
+        }
+    }
+})
 
 declare module 'webpack' {
     interface Compilation {
@@ -56,6 +103,11 @@ describe('Overrides Resolver Loader', () => {
                 ],
                 files: {
                     // Virtual Project Files
+
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-other/extension-meta.json': '{}',
 
                     // Overrides
 
@@ -111,6 +163,11 @@ describe('Overrides Resolver Loader', () => {
                 files: {
                     // Virtual Project Files
 
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-other/extension-meta.json': '{}',
+
                     // Overrides
 
                     // Extensions with overrides
@@ -160,6 +217,11 @@ describe('Overrides Resolver Loader', () => {
                 files: {
                     // Virtual Project Files
 
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-other/extension-meta.json': '{}',
+
                     // Overrides
 
                     // Extensions with overrides
@@ -200,6 +262,11 @@ describe('Overrides Resolver Loader', () => {
                 files: {
                     // Virtual Project Files
 
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-other/extension-meta.json': '{}',
+
                     // Overrides
 
                     // Extension using overridable import
@@ -231,6 +298,10 @@ describe('Overrides Resolver Loader', () => {
                 ],
                 files: {
                     // Virtual Project Files
+
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
 
                     // Overrides
 
@@ -278,6 +349,10 @@ describe('Overrides Resolver Loader', () => {
                     ['@salesforce/extension-that', {enabled: true}]
                 ],
                 files: {
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
+
                     '/node_modules/@salesforce/extension-that/src/overrides/@salesforce/extension-this/pages/sample-page.jsx':
                         '// @salesforce/extension-that',
                     '/node_modules/@salesforce/extension-this/src/pages/sample-page.jsx':
@@ -312,6 +387,10 @@ describe('Overrides Resolver Loader', () => {
                     ['@salesforce/extension-that', {enabled: true}]
                 ],
                 files: {
+                    // Extension metadata files to identify them as extensions
+                    '/node_modules/@salesforce/extension-this/extension-meta.json': '{}',
+                    '/node_modules/@salesforce/extension-that/extension-meta.json': '{}',
+
                     '/node_modules/@salesforce/extension-that/src/overrides/@salesforce/extension-this/pages/sample-page.jsx':
                         '// @salesforce/extension-that',
                     '/node_modules/@salesforce/extension-this/src/pages/sample-page.jsx':
@@ -356,6 +435,7 @@ describe('Overrides Resolver Loader', () => {
                                     ),
                                     options: {
                                         baseDir: '/',
+                                        resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
                                         resolveOptions: {
                                             // Override the `fs` methods used by `resolve` to point to the virtual file system
                                             existsSync: (filePath: string) => {
@@ -436,6 +516,10 @@ describe('validateOverrideSource', () => {
         __OVERRIDABLE_CACHE__.web = []
     })
 
+    afterEach(() => {
+        jest.clearAllMocks()
+    })
+
     it('should return false if the file has already been processed', () => {
         const source = path.join(
             path.sep,
@@ -449,7 +533,7 @@ describe('validateOverrideSource', () => {
             'home.js'
         )
 
-        // Mock the file being processed bup adding it to the cache
+        // Mock the file being processed by adding it to the cache
         __OVERRIDABLE_CACHE__.node.push(source)
 
         const result = validateOverrideSource(source, {
@@ -544,13 +628,18 @@ describe('validateOverrideSource', () => {
             'projects',
             'pwa',
             'node_modules',
-            'extension-sample',
+            'extension-sample-no-mono',
             'src',
             'pages',
             'home.js'
         )
         const overridables = [
-            `./node_modules/${path.posix.join('extension-sample', 'src', 'pages', 'home.js')}`
+            `./node_modules/${path.posix.join(
+                'extension-sample-no-mono',
+                'src',
+                'pages',
+                'home.js'
+            )}`
         ]
 
         const result = validateOverrideSource(source, {
