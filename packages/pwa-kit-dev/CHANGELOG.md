@@ -1,5 +1,8 @@
+## v4.0.0-extensibility-preview.5 (May 06, 2025)
+
 ## v4.0.0-extensibility-preview.4 (Feb 12, 2025)
 - Use Webpack thread-loader to run babel-loader in a worker pool. [2289](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2289)
+- Remove the `extension-` prefix requirement for extension package names [#2390](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2390)
 
 ## v4.0.0-extensibility-preview.3 (Jan 14, 2025)
 - Ensure build command works on windows when path includes spaces. [#2204](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2204)
