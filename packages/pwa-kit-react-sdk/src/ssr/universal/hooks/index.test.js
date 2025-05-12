@@ -42,7 +42,7 @@ describe('useBlockNavigation', () => {
 
     it('should call the callback and block/unblock navigation', async () => {
         const callback = jest.fn().mockResolvedValue(undefined)
-        render(<TestComponent callback={callback} />)
+        const {unmount} = render(<TestComponent callback={callback} />)
 
         // Simulate navigation to a new location
         await act(async () => {
@@ -51,10 +51,14 @@ describe('useBlockNavigation', () => {
 
         // The callback should have been called with the new location and action
         expect(callback).toHaveBeenCalledWith({pathname: '/new-path'}, 'PUSH')
-        // The unblock function should have been called (to remove the block)
-        expect(mockUnblock).toHaveBeenCalled()
         // The push function should have been called with the new pathname
         expect(mockPush).toHaveBeenCalledWith('/new-path')
+
+        // Unmount the component to trigger cleanup
+        unmount()
+
+        // The unblock function should have been called (to remove the block)
+        expect(mockUnblock).toHaveBeenCalled()
     })
 
     it('should set isBlocked to false after navigation', async () => {
