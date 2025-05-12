@@ -46,7 +46,7 @@ export const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
     setSiteLocale: (newSiteLocale) => set((state) => ({...state, siteLocale: newSiteLocale}))
 })
 
-class Sample extends ApplicationExtension<Config> {
+class CommerceBmSeo extends ApplicationExtension<Config> {
     static readonly id = extensionMeta.id
 
     /**
@@ -85,4 +85,4 @@ class Sample extends ApplicationExtension<Config> {
     }
 }
 
-export default Sample
+export default CommerceBmSeo
