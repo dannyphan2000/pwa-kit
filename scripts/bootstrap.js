@@ -28,7 +28,7 @@ const ciCommand = npmCmd === 'ci'
 const commandArgs = ciCommand ? '--ci' : '--no-ci'
 const environmentArgs = ciEnvironment ? '--concurrency 1 --loglevel debug' : ''
 const cmd = `npm run lerna -- bootstrap ${commandArgs} ${environmentArgs}`
-
+childProc.execSync('echo "Running lerna bootstrap"', {stdio: 'inherit'})
 childProc.execSync(cmd, {stdio: 'inherit'})
 
 // Symlink local dependencies
