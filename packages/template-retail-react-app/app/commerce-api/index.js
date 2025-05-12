@@ -12,7 +12,7 @@ import {detectStorefrontPreview} from 'pwa-kit-react-sdk/ssr/universal/component
 import ShopperBaskets from './shopper-baskets'
 import OcapiShopperOrders from './ocapi-shopper-orders'
 import {isError} from './utils'
-import Auth from './auth'
+import {Auth} from '@salesforce/commerce-sdk-react'
 import EinsteinAPI from './einstein'
 
 /**
@@ -58,7 +58,15 @@ class CommerceAPI {
 
         this._config = {proxy, ...restConfig}
 
-        this.auth = new Auth(this)
+        this._authConfig = {
+            redirectURI: `${getAppOrigin()}/callback`,
+            proxy,
+            locale: this._config.locale,
+            currency: this._config.currency,
+            ...this._config.parameters
+        }
+
+        this.auth = new Auth(this._authConfig)
 
         if (this._config.einsteinConfig?.einsteinId) {
             this.einstein = new EinsteinAPI(this)
@@ -112,12 +120,12 @@ class CommerceAPI {
             const SdkClass = apiConfigs[key].api
             self._sdkInstances = {
                 ...self._sdkInstances,
-                [key]: new Proxy(new SdkClass(this._config), {
+                [key]: new Proxy(new SdkClass(this._authConfig), {
                     get: function (obj, prop) {
                         if (typeof obj[prop] === 'function') {
                             return (...args) => {
                                 const fetchOptions = args[0]
-                                const {locale, currency} = self._config
+                                const {locale, currency} = self._authConfig
 
                                 if (fetchOptions.ignoreHooks) {
                                     return obj[prop](...args)
@@ -172,7 +180,7 @@ class CommerceAPI {
      * @returns {ClientConfig}
      */
     getConfig() {
-        return this._config
+        return this._authConfig
     }
 
     /**
@@ -193,9 +201,8 @@ class CommerceAPI {
             return params
         }
 
-        // If a login promise exists, we don't proceed unless it is resolved.
-        const pendingLogin = this.auth.pendingLogin
-        if (pendingLogin) {
+        const pendingLogin = this.auth.ready()
+        if (pendingLogin && typeof pendingLogin.then === 'function') {
             await pendingLogin
         }
 
@@ -211,7 +218,7 @@ class CommerceAPI {
         const [fetchOptions, ...restParams] = params
         const newFetchOptions = {
             ...fetchOptions,
-            headers: {...fetchOptions.headers, Authorization: this.auth.authToken},
+            headers: {...fetchOptions.headers, Authorization: `Bearer ${this.auth.get('access_token')}`},
             // In Storefront Preview mode, add cache breaker for all SCAPI's requests.
             // Otherwise, it's possible to get stale responses after the Shopper Context is set.
             // (i.e. in this case, we optimize for accurate data, rather than performance/caching)

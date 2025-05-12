@@ -5,6 +5,9 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+// Import the React 18 feature shim
+import '../../shim'
+
 import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {useHistory, useLocation} from 'react-router-dom'
@@ -310,7 +313,7 @@ App.getProps = async ({api, res}) => {
     const messages = await fetchTranslations(targetLocale)
 
     // Login as `guest` to get session.
-    await api.auth.login()
+    await api.auth.ready()
 
     // Get the root category, this will be used for things like the navigation.
     const rootCategory = await api.shopperProducts.getCategory({
@@ -324,7 +327,7 @@ App.getProps = async ({api, res}) => {
         const message =
             rootCategory.title === 'Unsupported Locale'
                 ? `
-It looks like the locale “${rootCategory.locale}” isn’t set up, yet. The locale settings in your package.json must match what is enabled in your Business Manager instance.
+It looks like the locale "${rootCategory.locale}" isn't set up, yet. The locale settings in your package.json must match what is enabled in your Business Manager instance.
 Learn more with our localization guide. https://sfdc.co/localization-guide
 `
                 : rootCategory.detail
