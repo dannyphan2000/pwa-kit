@@ -42,7 +42,7 @@ import AboveHeader from '../above-header'
 // import CheckoutHeader from '../../pages/checkout/partials/checkout-header'
 // import CheckoutFooter from '../../pages/checkout/partials/checkout-footer'
 import Footer from '../footer'
-// import Header from '../header'
+import Header from '../header'
 // import OfflineBanner from '../offline-banner'
 // import OfflineBoundary from '../offline-boundary'
 import Seo from '../seo'
@@ -287,35 +287,35 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                         {!isCheckout ? (
                             <>
                                 <AboveHeader />
-                                <div>Header</div>
-                                {/*<Header*/}
-                                {/*    onMenuClick={onOpen}*/}
-                                {/*    onLogoClick={onLogoClick}*/}
-                                {/*    onMyCartClick={onCartClick}*/}
-                                {/*    onMyAccountClick={onAccountClick}*/}
-                                {/*    onWishlistClick={onWishlistClick}*/}
-                                {/*>*/}
-                                {/*    <HideOnDesktop>*/}
-                                {/*        <DrawerMenu*/}
-                                {/*            isOpen={isOpen}*/}
-                                {/*            onClose={onClose}*/}
-                                {/*            onLogoClick={onLogoClick}*/}
-                                {/*            root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
-                                {/*            itemsKey="categories"*/}
-                                {/*            itemsCountKey="onlineSubCategoriesCount"*/}
-                                {/*            itemComponent={DrawerMenuItemWithData}*/}
-                                {/*        />*/}
-                                {/*    </HideOnDesktop>*/}
-
-                                {/*    <HideOnMobile>*/}
-                                {/*        <ListMenu*/}
-                                {/*            root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
-                                {/*            itemsKey="categories"*/}
-                                {/*            itemsCountKey="onlineSubCategoriesCount"*/}
-                                {/*            contentComponent={ListMenuContentWithData}*/}
-                                {/*        />*/}
-                                {/*    </HideOnMobile>*/}
-                                {/*</Header>*/}
+                                {/*<div>Header</div>*/}
+                                <Header
+                                    onMenuClick={onOpen}
+                                    onLogoClick={onLogoClick}
+                                    onMyCartClick={onCartClick}
+                                    onMyAccountClick={onAccountClick}
+                                    onWishlistClick={onWishlistClick}
+                                >
+                                    {/*    <HideOnDesktop>*/}
+                                    {/*        <DrawerMenu*/}
+                                    {/*            isOpen={isOpen}*/}
+                                    {/*            onClose={onClose}*/}
+                                    {/*            onLogoClick={onLogoClick}*/}
+                                    {/*            root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
+                                    {/*            itemsKey="categories"*/}
+                                    {/*            itemsCountKey="onlineSubCategoriesCount"*/}
+                                    {/*            itemComponent={DrawerMenuItemWithData}*/}
+                                    {/*        />*/}
+                                    {/*    </HideOnDesktop>*/}
+                                    {/*    <HideOnMobile>*/}
+                                    {/*        <ListMenu*/}
+                                    {/*            root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
+                                    {/*            itemsKey="categories"*/}
+                                    {/*            itemsCountKey="onlineSubCategoriesCount"*/}
+                                    {/*            contentComponent={ListMenuContentWithData}*/}
+                                    {/*        />*/}
+                                    {/*    </HideOnMobile>*/}
+                                    Header
+                                </Header>
                             </>
                         ) : (
                             <div>Checkout Header</div>

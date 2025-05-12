@@ -11,7 +11,6 @@ import PropTypes from 'prop-types'
 // Components
 import {
     Box,
-    Flex,
     IconButton,
 
     // Hooks

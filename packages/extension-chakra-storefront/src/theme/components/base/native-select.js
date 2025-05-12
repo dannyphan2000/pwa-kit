@@ -6,8 +6,9 @@
  */
 import {defineSlotRecipe} from '@chakra-ui/react'
 
-// Note: Chakra v3 no longer has filled variant,
-// we re-created it here so it will be used app-wise for native select
+// Note: Chakra v3 Native Select component is Chakra v2 Select Component.
+// Native Select no longer has "filled" variant for select
+// we re-created it here so it will be used app-wise for all the select component in the storefront
 export default defineSlotRecipe({
     variants: {
         variant: {
