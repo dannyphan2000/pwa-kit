@@ -38,7 +38,7 @@ import app from './components/project/_app'
 import header from './components/project/header'
 // import ListMenu from './components/project/list-menu'
 import footer from './components/project/footer'
-// import CheckoutFooter from './components/project/checkout-footer'
+import checkoutFooter from './components/project/checkout-footer'
 import linkList from './components/project/links-list'
 // import DrawerMenu from './components/project/drawer-menu'
 // import NestedAccordion from './components/project/nested-accordion'
@@ -96,12 +96,14 @@ export const overrides = defineConfig({
 
             // project components
             app,
-            header,
-            offlineBanner,
+            checkoutFooter,
             footer,
+            header,
             linkList,
+            offlineBanner,
             socialIcons
         }
+        // keep these here for reference til we finish the components
         // components: {
         //     // base components
         //     Accordion,

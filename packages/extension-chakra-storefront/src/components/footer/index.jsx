@@ -163,12 +163,7 @@ const Footer = ({...otherProps}) => {
                         })}
                     </Text>
 
-                    <HideOnDesktop>
-                        <LegalLinks variant="vertical" />
-                    </HideOnDesktop>
-                    <HideOnMobile>
-                        <LegalLinks variant="horizontal" />
-                    </HideOnMobile>
+                    <LegalLinks variant={{base: 'vertical', lg: 'horizontal'}} />
                 </Box>
             </Box>
         </Box>
