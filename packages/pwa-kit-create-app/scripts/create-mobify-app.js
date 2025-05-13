@@ -60,16 +60,14 @@ sh.set('-e')
 // will ensure those escaped double quotes are still escaped after processing the template.
 Handlebars.registerHelper('script', (object) => object.replaceAll('"', '\\"'))
 
-Handlebars.registerHelper('pascalcase', function(str) {
-    const result = str
-    .replace(/(^\w|-\w)/g, function(txt) {
-        return txt.replace(/-/, '').toUpperCase();
-    });
-    return str
-        .replace(/(^\w|-\w)/g, function(txt) {
-            return txt.replace(/-/, '').toUpperCase();
-        });
-});
+Handlebars.registerHelper('pascalcase', function (str) {
+    const result = str.replace(/(^\w|-\w)/g, function (txt) {
+        return txt.replace(/-/, '').toUpperCase()
+    })
+    return str.replace(/(^\w|-\w)/g, function (txt) {
+        return txt.replace(/-/, '').toUpperCase()
+    })
+})
 
 // Validations
 const validPreset = (preset) => {
