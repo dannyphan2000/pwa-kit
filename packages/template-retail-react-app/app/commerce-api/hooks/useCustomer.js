@@ -28,6 +28,8 @@ export default function useCustomer() {
     const logout = useAuthHelper(AuthHelpers.Logout)
     const register = useAuthHelper(AuthHelpers.Register)
     const updateCustomerMutation = useShopperCustomersMutation('updateCustomer')
+    const createCustomerAddress = useShopperCustomersMutation('createCustomerAddress')
+    const updateCustomerAddress = useShopperCustomersMutation('updateCustomerAddress')
 
     const self = useMemo(() => {
         return {
@@ -257,13 +259,10 @@ export default function useCustomer() {
                     ...address
                 }
 
-                await api.shopperCustomers.createCustomerAddress({
+                await createCustomerAddress.mutateAsync({
                     body,
                     parameters: {customerId: customer.customerId}
                 })
-
-                // This endpoint does not return the updated customer object, so we manually fetch it
-                await self.getCustomer()
             },
 
             /**
@@ -275,13 +274,13 @@ export default function useCustomer() {
             async updateSavedAddress(address) {
                 const body = address
 
-                await api.shopperCustomers.updateCustomerAddress({
-                    body,
-                    parameters: {customerId: customer.customerId, addressName: address.addressId}
+                await updateCustomerAddress.mutateAsync({
+                    body: address,
+                    parameters: {
+                        customerId: customer.customerId,
+                        addressName: address.addressId
+                    }
                 })
-
-                // This endpoint does not return the updated customer object, so we manually fetch it
-                await self.getCustomer()
             },
 
             /**
