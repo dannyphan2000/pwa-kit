@@ -25,6 +25,12 @@ import {getRuntime} from '@salesforce/pwa-kit-runtime/ssr/server/express'
 import {defaultPwaKitSecurityHeaders} from '@salesforce/pwa-kit-runtime/utils/middleware'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
+import {
+    helpers,
+    ShopperLogin
+} from 'commerce-sdk-isomorphic'
+
+console.log(helpers)
 
 const config = getConfig()
 
@@ -322,6 +328,46 @@ const {handler} = runtime.createHandler(options, (app) => {
         })
     )
 
+    // const refresh = 'SrdfAwiUciNqzqvwSn1tc5dCdG5kW-XKNHfZDReIsCY'
+    // const usid = '8dedf8ef-ce8c-488f-8585-de53b92459ac'
+    const clientId = 'c9c45bfd-0ed3-4aa2-9971-40f88962b836'
+    const shortCode = '8o7m175y'
+    const organizationId = 'f_ecom_zzrf_001'
+    const siteId = 'RefArchGlobal'
+
+    // http://localhost:3000/api/mcp/checkout?usid=8dedf8ef-ce8c-488f-8585-de53b92459ac
+    // https://scaffold-pwa-tdx.mobify-storefront.com/api/mcp/checkout?usid=8dedf8ef-ce8c-488f-8585-de53b92459ac
+    app.get('/api/mcp/checkout', async (req, res) => {
+        const appOrigin = getAppOrigin()
+        console.log(appOrigin)
+        // get usid from req parameters
+        const usid = req.query.usid
+        if (!usid) {
+            return res.status(400).json({error: 'usid is required'})
+        }
+
+        const config = {
+            parameters: {
+                clientId,
+                organizationId,
+                siteId,
+                shortCode
+            }
+        }
+        const shopperLogin = new ShopperLogin(config)
+        const tokenResponse = await helpers.loginGuestUser(
+            shopperLogin,
+            {
+                usid,
+                redirectURI: `${appOrigin}/callback`
+            }
+          );
+
+        console.log(tokenResponse)
+        res.setHeader('Set-Cookie', `cc-at_${siteId}=${tokenResponse.access_token}; Path=/; SameSite=Lax`)
+        // res.setHeader('Set-Cookie', `cc-force-refresh=true; Path=/; SameSite=Lax`)
+        res.redirect(`${appOrigin}/checkout`)
+    })
     // Handle the redirect from SLAS as to avoid error
     app.get('/callback?*', (req, res) => {
         // This endpoint does nothing and is not expected to change

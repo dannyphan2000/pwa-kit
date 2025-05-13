@@ -86,6 +86,7 @@
     "react-router-dom": "^5.3.4"
   },
   "devDependencies": {
+    "commerce-sdk-isomorphic": "^3.3.0",
     "cross-env": "^5.2.1"
   },
   "overrides": {

@@ -1176,14 +1176,16 @@ const prepNonProxyRequest = (req, res, next) => {
             if (header && header.toLowerCase() !== SET_COOKIE && value) {
                 setHeader.call(this, header, value)
             } /* istanbul ignore else */ else if (!remote) {
-                logger.warn(
-                    `Req ${res.locals.requestId}: ` +
-                        `Cookies cannot be set on responses sent from ` +
-                        `the SSR Server. Discarding "Set-Cookie: ${value}"`,
-                    {
-                        namespace: 'RemoteServerFactory.prepNonProxyRequest'
-                    }
-                )
+                console.log('Kevin POC', header, value)
+                setHeader.call(this, header, value)
+                // logger.warn(
+                //     `Req ${res.locals.requestId}: ` +
+                //         `Cookies cannot be set on responses sent from ` +
+                //         `the SSR Server. Discarding "Set-Cookie: ${value}"`,
+                //     {
+                //         namespace: 'RemoteServerFactory.prepNonProxyRequest'
+                //     }
+                // )
             }
         }
     }
