@@ -25,32 +25,37 @@ describe('matchPath', () => {
 
     it('should return the matching route', () => {
         const result = matchPath('/about', routes)
-        expect(result).toEqual({path: '/about', component: NullComponent})
+        expect(result).toEqual({path: '/about', isExact: true, params: {}, url: '/about'})
     })
 
     it('should return the matching route with wildcard if filterWildcardRoutes is false', () => {
         const result = matchPath('/products/123', routes)
-        expect(result).toEqual({path: '/products/*', component: NullComponent})
+        expect(result).toEqual({path: '/products/*', isExact: true, params: {"0": "123"}, url: '/products/123'})
     })
 
     it('should return the matching route without wildcard if filterWildcardRoutes is true', () => {
         const result = matchPath('/products/123', routes, {filterWildcardRoutes: true})
-        expect(result).toEqual({path: '/products/:id', component: NullComponent})
+        expect(result).toEqual({path: '/products/:id', isExact: true, params: {id: "123"}, url: '/products/123'})
     })
 
     it('should return undefined if no match is found and filterWildcardRoutes is true', () => {
         const result = matchPath('/none', routes, {filterWildcardRoutes: true})
-        expect(result).toBeUndefined()
+        expect(result).toBeNull()
     })
 
     it('should return undefined for an undefined path', () => {
         const result = matchPath(undefined, routes)
-        expect(result).toBeUndefined()
+        expect(result).toBeNull()
     })
 
     it('should ignore undefined paths in the routes array', () => {
         const result = matchPath('/about', routesWithUndefined, {filterWildcardRoutes: true})
-        expect(result).toEqual({path: '/about', component: NullComponent})
+        expect(result).toEqual({path: '/about', isExact: true, params: {}, url: '/about'})
+    })
+
+    it('should ignore undefined paths in the routes array when filterWildcardRoutes is false', () => {
+        const result = matchPath('/about', routesWithUndefined)
+        expect(result).toEqual({path: '/about', isExact: true, params: {}, url: '/about'})
     })
 
     it('should log a warning for undefined paths in the routes array', () => {

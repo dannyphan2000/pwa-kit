@@ -70,6 +70,7 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                     return
                 }
                 const result = await refetch()
+                console.log('result', result)
                 if (!resolveRef.current) return
                 if (!result || result.status === 'error') {
                     resolveRef.current(undefined)

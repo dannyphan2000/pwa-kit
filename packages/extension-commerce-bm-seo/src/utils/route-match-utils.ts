@@ -7,6 +7,8 @@
 import {matchPath as matchPathReactRouter} from 'react-router-dom'
 import {RouteProps} from '@salesforce/pwa-kit-extension-sdk/types'
 
+type Match<T = { [key: string]: string }> = ReturnType<typeof matchPathReactRouter<T>>
+
 /**
  * This is an enhanced version of matchPath that allows you to match to multiple routes as well as allowing you to filter out wildcard routes.
  * @param pathname - The URL path to check
@@ -18,7 +20,7 @@ export const matchPath = (
     pathname: string,
     routes: RouteProps[],
     options?: {filterWildcardRoutes: boolean}
-): {path: string} | undefined => {
+): Match | null => {
     let validRoutes = routes
     // Check for undefined paths and log a warning
     const undefinedPaths = routes.filter((route) => route.path === undefined)
@@ -41,11 +43,13 @@ export const matchPath = (
         validRoutes = routes.filter((route) => !route?.path?.endsWith('*'))
     }
 
-    const routeMatch = validRoutes.find(({path}) =>
-        matchPathReactRouter(pathname, {
+    for (const {path} of validRoutes) {
+        const match = matchPathReactRouter(pathname, {
             path,
-            exact: true
+            exact: true,
         })
-    )
-    return routeMatch
+        if (match) return match
+    }
+
+    return null
 }
