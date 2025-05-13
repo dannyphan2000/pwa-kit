@@ -82,10 +82,6 @@ class CommerceAPI {
         // - boolean, if you want to affect _all_ methods for a given API
         // - OR an array (listing the API's methods), if you want to affect only certain methods of an API
         const apiConfigs = {
-            shopperCustomers: {
-                api: sdk.ShopperCustomers,
-                sendLocale: false
-            },
             shopperBaskets: {
                 api: ShopperBaskets,
                 sendLocale: false,
@@ -97,7 +93,6 @@ class CommerceAPI {
             shopperGiftCertificates: {
                 api: sdk.ShopperGiftCertificates
             },
-            shopperLogin: {api: sdk.ShopperLogin, sendLocale: false},
             shopperOrders: {api: OcapiShopperOrders},
             shopperProducts: {
                 api: sdk.ShopperProducts,
@@ -111,6 +106,21 @@ class CommerceAPI {
                 sendCurrency: ['productSearch', 'getSearchSuggestions']
             }
         }
+
+        /** ************ Commerce SDK React Clients ************ */
+
+        const reactSdkConfig = {
+            proxy,
+            parameters: this._config.parameters,
+            headers: this._config.headers,
+        }
+        
+        this.reactSdkClients = {
+            shopperCustomers: new sdk.ShopperCustomers(reactSdkConfig),
+            shopperLogin: new sdk.ShopperLogin(reactSdkConfig),
+        }
+
+        /** ************ End Commerce SDK React Clients ************ */
 
         // Instantiate the SDK class proxies and create getters from our api mapping.
         // The proxy handlers are called when accessing any of the mapped SDK class

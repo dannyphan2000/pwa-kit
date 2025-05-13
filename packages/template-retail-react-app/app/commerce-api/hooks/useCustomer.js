@@ -4,11 +4,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {useContext, useMemo} from 'react'
+import {useMemo} from 'react'
 import {nanoid} from 'nanoid'
-import {useCommerceAPI, CustomerContext} from '../contexts'
-
-const AuthTypes = Object.freeze({GUEST: 'guest', REGISTERED: 'registered'})
+import {useCommerceAPI} from '../contexts'
 
 // This value represents the max age in milliseconds a customer can be before they are
 // no longer considered a "new" customer.
@@ -16,9 +14,16 @@ const AuthTypes = Object.freeze({GUEST: 'guest', REGISTERED: 'registered'})
 // a new customer.
 const NEW_CUSTOMER_MAX_AGE = 2 * 1000 // 2 seconds in milliseconds
 
+import {
+    AuthHelpers,
+    useAuthHelper,
+} from '@salesforce/commerce-sdk-react'
+import {useCurrentCustomer} from './useCurrentCustomer'
+
 export default function useCustomer() {
     const api = useCommerceAPI()
-    const {customer, setCustomer} = useContext(CustomerContext)
+    const {data: customer} = useCurrentCustomer()
+    const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
 
     const self = useMemo(() => {
         return {
@@ -35,21 +40,21 @@ export default function useCustomer() {
              * Returns boolean value whether the customer is of type `registered` or not.
              */
             get isRegistered() {
-                return customer?.authType === AuthTypes.REGISTERED
+                return customer?.isRegistered
             },
 
             /**
              * Returns boolean value whether the customer is of type `guest` or not.
              */
             get isGuest() {
-                return customer?.authType === AuthTypes.GUEST
+                return customer?.isGuest
             },
 
             /**
              * Returns if this customer is newly registered.
              */
             get isNew() {
-                if (!customer || customer.authType !== 'registered') return false
+                if (!customer || !customer?.isRegistered) return false
                 const lastLoginTimeStamp = Date.parse(customer.lastLoginTime)
                 const creationTimeStamp = Date.parse(customer.creationDate)
                 return lastLoginTimeStamp - creationTimeStamp < NEW_CUSTOMER_MAX_AGE
@@ -78,15 +83,7 @@ export default function useCustomer() {
              * @param {string} credentials.password
              */
             async login(credentials) {
-                const skeletonCustomer = await api.auth.login(credentials)
-                if (skeletonCustomer.authType === 'guest') {
-                    setCustomer(skeletonCustomer)
-                } else {
-                    const customer = await api.shopperCustomers.getCustomer({
-                        parameters: {customerId: skeletonCustomer.customerId}
-                    })
-                    setCustomer(customer)
-                }
+                await login.mutateAsync({username: credentials.email, password: credentials.password})
             },
 
             /**
@@ -95,18 +92,13 @@ export default function useCustomer() {
              */
             async logout() {
                 const customer = await api.auth.logout()
-                setCustomer(customer)
             },
 
             /**
              * Fetch current customer information.
              */
             async getCustomer() {
-                setCustomer(
-                    await api.shopperCustomers.getCustomer({
-                        parameters: {customerId: customer.customerId}
-                    })
-                )
+                return customer
             },
 
             /**
@@ -373,7 +365,7 @@ export default function useCustomer() {
                 return productMap
             }
         }
-    }, [customer, setCustomer])
+    }, [customer])
 
     return self
 }

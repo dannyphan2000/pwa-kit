@@ -25,6 +25,9 @@ import {resolveLocaleFromUrl} from '../../utils/utils'
 import {getConfig} from 'pwa-kit-runtime/utils/ssr-config'
 import {createUrlTemplate} from '../../utils/url'
 
+import {AuthContext, CommerceApiContext} from '@salesforce/commerce-sdk-react/provider'
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
+
 /**
  * Use the AppConfig component to inject extra arguments into the getProps
  * methods for all Route Components in the app – typically you'd want to do this
@@ -36,17 +39,24 @@ import {createUrlTemplate} from '../../utils/url'
 const AppConfig = ({children, locals = {}}) => {
     const [basket, setBasket] = useState(null)
     const [customer, setCustomer] = useState(null)
+    const queryClient = new QueryClient()
 
     return (
         <MultiSiteProvider site={locals.site} locale={locals.locale} buildUrl={locals.buildUrl}>
             <CommerceAPIProvider value={locals.api}>
-                <CustomerProvider value={{customer, setCustomer}}>
-                    <BasketProvider value={{basket, setBasket}}>
-                        <CustomerProductListsProvider>
-                            <ChakraProvider theme={theme}>{children}</ChakraProvider>
-                        </CustomerProductListsProvider>
-                    </BasketProvider>
-                </CustomerProvider>
+            <QueryClientProvider client={queryClient}>
+                <CommerceApiContext.Provider value={locals.api.reactSdkClients}>
+                    <AuthContext.Provider value={locals.api.auth}>
+                        <CustomerProvider value={{customer, setCustomer}}>
+                            <BasketProvider value={{basket, setBasket}}>
+                                <CustomerProductListsProvider>
+                                    <ChakraProvider theme={theme}>{children}</ChakraProvider>
+                                </CustomerProductListsProvider>
+                            </BasketProvider>
+                        </CustomerProvider>
+                        </AuthContext.Provider>
+                    </CommerceApiContext.Provider>
+                </QueryClientProvider>
             </CommerceAPIProvider>
         </MultiSiteProvider>
     )
