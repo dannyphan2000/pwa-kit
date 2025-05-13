@@ -38,9 +38,11 @@ runs:
       working-directory: ${{ inputs.cwd }}
       run: |-
         # Build packages
-        npx lerna run build --stream
+        # npx lerna run build --stream
         # Install node dependencies
-        npm ci
+        echo "Running npm i"
+        npm i
+        echo "finished running npm i"
 
         # Install Snyk CLI
         # TODO: Ticket W-12425059. Revisit Snyk CLI integration to monitor manifest files on generated projects.
