@@ -17,6 +17,7 @@ const NEW_CUSTOMER_MAX_AGE = 2 * 1000 // 2 seconds in milliseconds
 import {
     AuthHelpers,
     useAuthHelper,
+    useShopperCustomersMutation
 } from '@salesforce/commerce-sdk-react'
 import {useCurrentCustomer} from './useCurrentCustomer'
 
@@ -24,7 +25,9 @@ export default function useCustomer() {
     const api = useCommerceAPI()
     const {data: customer} = useCurrentCustomer()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
-    
+    const logout = useAuthHelper(AuthHelpers.Logout)
+    const updateCustomerMutation = useShopperCustomersMutation('updateCustomer')
+
     const self = useMemo(() => {
         return {
             ...customer,
@@ -83,7 +86,10 @@ export default function useCustomer() {
              * @param {string} credentials.password
              */
             async login(credentials) {
-                await login.mutateAsync({username: credentials.email, password: credentials.password})
+                await login.mutateAsync({
+                    username: credentials.email,
+                    password: credentials.password
+                })
             },
 
             /**
@@ -91,7 +97,7 @@ export default function useCustomer() {
              * and retrive a guest access token
              */
             async logout() {
-                const customer = await api.auth.logout()
+                await logout.mutateAsync()
             },
 
             /**
@@ -160,20 +166,24 @@ export default function useCustomer() {
                     login: data.email
                 }
 
-                const response = await api.shopperCustomers.updateCustomer({
-                    body,
-                    parameters: {customerId: customer.customerId}
-                })
-
-                // Check for error json response
-                if (response.detail && response.title && response.type) {
-                    throw new Error(response.detail)
+                try {
+                    updateCustomerMutation.mutate(
+                        {
+                            parameters: {customerId: customer.customerId},
+                            body
+                        },
+                        {
+                            onSuccess: (response) => {
+                                // Check for error json response
+                                if (response.detail && response.title && response.type) {
+                                    throw new Error(response.detail)
+                                }
+                            }
+                        }
+                    )
+                } catch (error) {
+                    throw new Error(error)
                 }
-
-                // This previous request does return the updated customer profile, however it does
-                // not include the 'entire' customer. It is missing address and payment methods.
-                // We need to refetch the customer to make sure everything is up to date.
-                await self.getCustomer()
             },
 
             /**
