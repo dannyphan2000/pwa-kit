@@ -26,6 +26,7 @@ export default function useCustomer() {
     const {data: customer} = useCurrentCustomer()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const logout = useAuthHelper(AuthHelpers.Logout)
+    const register = useAuthHelper(AuthHelpers.Register)
     const updateCustomerMutation = useShopperCustomersMutation('updateCustomer')
 
     const self = useMemo(() => {
@@ -131,14 +132,13 @@ export default function useCustomer() {
                     password: data.password
                 }
 
-                const response = await api.shopperCustomers.registerCustomer({body})
-                // Check for error json response
-                if (response.detail && response.title && response.type) {
-                    throw new Error(response.detail)
-                }
-
-                // Send a new login request with the given credentials to ensure tokens are updated.
-                await self.login({email: data.email, password: data.password})
+                await register.mutateAsync(body, {
+                    onSuccess: (response) => {
+                        if (response.detail && response.title && response.type) {
+                            throw new Error(response.detail)
+                        }
+                    }
+                })
             },
 
             /**
