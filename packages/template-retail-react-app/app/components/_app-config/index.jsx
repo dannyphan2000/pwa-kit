@@ -25,7 +25,11 @@ import {resolveLocaleFromUrl} from '../../utils/utils'
 import {getConfig} from 'pwa-kit-runtime/utils/ssr-config'
 import {createUrlTemplate} from '../../utils/url'
 
-import {AuthContext, CommerceApiContext} from '@salesforce/commerce-sdk-react/provider'
+import {
+    AuthContext,
+    CommerceApiContext,
+    ConfigContext
+} from '@salesforce/commerce-sdk-react/provider'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 
 /**
@@ -45,17 +49,21 @@ const AppConfig = ({children, locals = {}}) => {
         <MultiSiteProvider site={locals.site} locale={locals.locale} buildUrl={locals.buildUrl}>
             <CommerceAPIProvider value={locals.api}>
                 <QueryClientProvider client={queryClient}>
-                    <CommerceApiContext.Provider value={locals.api.reactSdkClients}>
-                        <AuthContext.Provider value={locals.api.auth}>
-                            <CustomerProvider value={{customer, setCustomer}}>
-                                <BasketProvider value={{basket, setBasket}}>
-                                    <CustomerProductListsProvider>
-                                        <ChakraProvider theme={theme}>{children}</ChakraProvider>
-                                    </CustomerProductListsProvider>
-                                </BasketProvider>
-                            </CustomerProvider>
-                        </AuthContext.Provider>
-                    </CommerceApiContext.Provider>
+                    <ConfigContext.Provider value={locals.api._authConfig}>
+                        <CommerceApiContext.Provider value={locals.api._reactSdkClients}>
+                            <AuthContext.Provider value={locals.api.auth}>
+                                <CustomerProvider value={{customer, setCustomer}}>
+                                    <BasketProvider value={{basket, setBasket}}>
+                                        <CustomerProductListsProvider>
+                                            <ChakraProvider theme={theme}>
+                                                {children}
+                                            </ChakraProvider>
+                                        </CustomerProductListsProvider>
+                                    </BasketProvider>
+                                </CustomerProvider>
+                            </AuthContext.Provider>
+                        </CommerceApiContext.Provider>
+                    </ConfigContext.Provider>
                 </QueryClientProvider>
             </CommerceAPIProvider>
         </MultiSiteProvider>

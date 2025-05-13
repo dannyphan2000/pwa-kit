@@ -24,7 +24,7 @@ export default function useCustomer() {
     const api = useCommerceAPI()
     const {data: customer} = useCurrentCustomer()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
-
+    
     const self = useMemo(() => {
         return {
             ...customer,

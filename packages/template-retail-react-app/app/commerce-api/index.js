@@ -63,10 +63,10 @@ class CommerceAPI {
             proxy,
             locale: this._config.locale,
             currency: this._config.currency,
-            ...this._config.parameters
+            ...this._config.parameters,
+            ...this._config.headers
         }
 
-        console.log('this._authConfig', this._authConfig)
         this.auth = new Auth(this._authConfig)
 
         if (this._config.einsteinConfig?.einsteinId) {
@@ -109,15 +109,15 @@ class CommerceAPI {
 
         /** ************ Commerce SDK React Clients ************ */
 
-        const reactSdkConfig = {
+        this._reactSdkConfig = {
             proxy,
             parameters: this._config.parameters,
             headers: this._config.headers,
         }
         
-        this.reactSdkClients = {
-            shopperCustomers: new sdk.ShopperCustomers(reactSdkConfig),
-            shopperLogin: new sdk.ShopperLogin(reactSdkConfig),
+        this._reactSdkClients = {
+            shopperCustomers: new sdk.ShopperCustomers(this._reactSdkConfig),
+            shopperLogin: new sdk.ShopperLogin(this._reactSdkConfig),
         }
 
         /** ************ End Commerce SDK React Clients ************ */
