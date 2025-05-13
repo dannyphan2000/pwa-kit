@@ -43,15 +43,12 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
         })
         const resolveRef = useRef<(result?: object) => void>()
 
-        // The `routingMode` configuration determines whether we check the ROUTER (AKA the predefined route config) first or the `getUrlMapping` API
-        // ROUTING_MODE.ROUTER_FIRST: if `location.pathname` matches a predefined route, skip the `getUrlMapping` API call
-        // ROUTING_MODE.API_FIRST: always call `getUrlMapping`
+        // If routingMode is "router_first" and a predefined route matches, skip the getUrlMapping API call.
         const skipMappingCall =
             routingMode === ROUTING_MODE.ROUTER_FIRST &&
             matchPath(location.pathname, routes, {filterWildcardRoutes: true})
 
         // Disabling the hook on render so it's only called when refetch is called
-
         const {refetch} = useUrlMapping(
             {
                 parameters: {

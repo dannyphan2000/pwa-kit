@@ -37,4 +37,9 @@ describe('matchPath', () => {
         const result = matchPath('/none', routes, {filterWildcardRoutes: true})
         expect(result).toBeUndefined()
     })
+
+    it('should return undefined for an undefined path', () => {
+        const result = matchPath(undefined, routes)
+        expect(result).toBeUndefined()
+    })
 })

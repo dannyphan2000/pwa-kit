@@ -8,8 +8,7 @@ import {matchPath as matchPathReactRouter} from 'react-router-dom'
 import {RouteProps} from '@salesforce/pwa-kit-extension-sdk/types'
 
 /**
- * Checks whether the given URL path matches a predefined route defined in the application's routes config.
- * Optionally filters out wildcard routes and warns if multiple wildcard routes are detected.
+ * This is an enhanced version of matchPath that allows you to match to multiple routes as well as allowing you to filter out wildcard routes.
  * @param pathname - The URL path to check
  * @param routes - Array of route configurations to check against
  * @param options - Optional configuration for filtering wildcard routes
