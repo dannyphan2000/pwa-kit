@@ -44,16 +44,16 @@ const AppConfig = ({children, locals = {}}) => {
     return (
         <MultiSiteProvider site={locals.site} locale={locals.locale} buildUrl={locals.buildUrl}>
             <CommerceAPIProvider value={locals.api}>
-            <QueryClientProvider client={queryClient}>
-                <CommerceApiContext.Provider value={locals.api.reactSdkClients}>
-                    <AuthContext.Provider value={locals.api.auth}>
-                        <CustomerProvider value={{customer, setCustomer}}>
-                            <BasketProvider value={{basket, setBasket}}>
-                                <CustomerProductListsProvider>
-                                    <ChakraProvider theme={theme}>{children}</ChakraProvider>
-                                </CustomerProductListsProvider>
-                            </BasketProvider>
-                        </CustomerProvider>
+                <QueryClientProvider client={queryClient}>
+                    <CommerceApiContext.Provider value={locals.api.reactSdkClients}>
+                        <AuthContext.Provider value={locals.api.auth}>
+                            <CustomerProvider value={{customer, setCustomer}}>
+                                <BasketProvider value={{basket, setBasket}}>
+                                    <CustomerProductListsProvider>
+                                        <ChakraProvider theme={theme}>{children}</ChakraProvider>
+                                    </CustomerProductListsProvider>
+                                </BasketProvider>
+                            </CustomerProvider>
                         </AuthContext.Provider>
                     </CommerceApiContext.Provider>
                 </QueryClientProvider>
