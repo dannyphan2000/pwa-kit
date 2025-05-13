@@ -5,9 +5,6 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-// Import the React 18 feature shim
-import '../../shim'
-
 import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {useHistory, useLocation} from 'react-router-dom'

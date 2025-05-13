@@ -95,7 +95,7 @@
     ],
     "dependencies": {
         "@salesforce/commerce-sdk-react": "^3.2.1",
-        "@tanstack/react-query": "^5.71.1",
+        "@tanstack/react-query": "4.28.0",
         "ajv": "^8.17.1",
         "ajv-keywords": "^5.1.0"
     }
