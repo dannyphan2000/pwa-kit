@@ -83,8 +83,6 @@ const Header = ({
     const customer = useCustomer()
     const navigate = useNavigation()
 
-    console.log('customer in header', customer)
-
     const {isOpen, onClose, onOpen} = useDisclosure()
     const [isDesktop] = useMediaQuery('(min-width: 992px)')
 
