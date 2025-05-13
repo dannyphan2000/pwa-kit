@@ -11,7 +11,7 @@ import {RouteProps} from '@salesforce/pwa-kit-extension-sdk/types'
  * This is an enhanced version of matchPath that allows you to match to multiple routes as well as allowing you to filter out wildcard routes.
  * @param pathname - The URL path to check
  * @param routes - Array of route configurations to check against
- * @param options - Optional configuration for filtering wildcard routes
+ * @param options - Optional configuration for filtering wildcard and undefined paths
  * @returns The matching route object or undefined if no match is found
  */
 export const matchPath = (
@@ -20,16 +20,25 @@ export const matchPath = (
     options?: {filterWildcardRoutes: boolean}
 ): {path: string} | undefined => {
     let validRoutes = routes
+    // Check for undefined paths and log a warning
+    const undefinedPaths = routes.filter((route) => route.path === undefined)
+    if (undefinedPaths.length > 0) {
+        console.warn(
+            `Undefined paths detected (${undefinedPaths.length}). This may cause unexpected routing behavior. Undefined paths:`,
+            undefinedPaths
+        )
+    }
+
     // Filter out routes ending with a wildcard if the option is set
     if (options?.filterWildcardRoutes) {
-        const wildcardRoutes = routes.filter((route) => route.path.endsWith('*'))
+        const wildcardRoutes = routes.filter((route) => !route.path || route.path.endsWith('*'))
         if (wildcardRoutes.length > 1) {
             console.warn(
                 `Multiple wildcard routes detected (${wildcardRoutes.length}). This may cause unexpected routing behavior. Wildcard routes:`,
                 wildcardRoutes.map((route) => route.path)
             )
         }
-        validRoutes = routes.filter((route) => !route.path.endsWith('*'))
+        validRoutes = routes.filter((route) => !route.path || !route.path.endsWith('*'))
     }
 
     const routeMatch = validRoutes.find(({path}) =>

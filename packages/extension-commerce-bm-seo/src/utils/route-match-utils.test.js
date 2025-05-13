@@ -42,4 +42,14 @@ describe('matchPath', () => {
         const result = matchPath(undefined, routes)
         expect(result).toBeUndefined()
     })
+
+    it('should ignore undefined paths in the routes array', () => {
+        const routesWithUndefined = [
+            {path: '/', component: NullComponent},
+            {path: undefined, component: NullComponent},
+            {path: '/about', component: NullComponent}
+        ]
+        const result = matchPath('/about', routesWithUndefined, {filterWildcardRoutes: true})
+        expect(result).toEqual({path: '/about', component: NullComponent})
+    })
 })
