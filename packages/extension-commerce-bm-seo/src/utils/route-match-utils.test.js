@@ -17,6 +17,11 @@ describe('matchPath', () => {
         {path: '/products/:id', component: NullComponent},
         {path: '*', component: NullComponent}
     ]
+    const routesWithUndefined = [
+        {path: '/', component: NullComponent},
+        {path: undefined, component: NullComponent},
+        {path: '/about', component: NullComponent}
+    ]
 
     it('should return the matching route', () => {
         const result = matchPath('/about', routes)
@@ -44,12 +49,17 @@ describe('matchPath', () => {
     })
 
     it('should ignore undefined paths in the routes array', () => {
-        const routesWithUndefined = [
-            {path: '/', component: NullComponent},
-            {path: undefined, component: NullComponent},
-            {path: '/about', component: NullComponent}
-        ]
         const result = matchPath('/about', routesWithUndefined, {filterWildcardRoutes: true})
         expect(result).toEqual({path: '/about', component: NullComponent})
+    })
+
+    it('should log a warning for undefined paths in the routes array', () => {
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+        matchPath('/about', routesWithUndefined, {filterWildcardRoutes: true})
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+            expect.stringContaining('Undefined paths detected'),
+            expect.arrayContaining([expect.objectContaining({path: undefined})])
+        )
+        consoleWarnSpy.mockRestore()
     })
 })

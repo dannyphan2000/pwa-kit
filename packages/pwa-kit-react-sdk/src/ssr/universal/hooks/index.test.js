@@ -42,7 +42,7 @@ describe('useBlockNavigation', () => {
 
     it('should call the callback and push navigation after callback resolves', async () => {
         const callback = jest.fn().mockResolvedValue(undefined)
-        const {unmount} = render(<TestComponent callback={callback} />)
+        render(<TestComponent callback={callback} />)
 
         // Simulate navigation to a new location
         await act(async () => {
