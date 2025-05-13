@@ -287,14 +287,14 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                         {!isCheckout ? (
                             <>
                                 <AboveHeader />
-                                {/*<div>Header</div>*/}
-                                <Header
-                                    onMenuClick={onOpen}
-                                    onLogoClick={onLogoClick}
-                                    onMyCartClick={onCartClick}
-                                    onMyAccountClick={onAccountClick}
-                                    onWishlistClick={onWishlistClick}
-                                >
+                                <div>Header</div>
+                                {/*<Header*/}
+                                {/*    onMenuClick={onOpen}*/}
+                                {/*    onLogoClick={onLogoClick}*/}
+                                {/*    onMyCartClick={onCartClick}*/}
+                                {/*    onMyAccountClick={onAccountClick}*/}
+                                {/*    onWishlistClick={onWishlistClick}*/}
+                                {/*>*/}
                                     {/*    <HideOnDesktop>*/}
                                     {/*        <DrawerMenu*/}
                                     {/*            isOpen={isOpen}*/}
@@ -314,8 +314,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                                     {/*            contentComponent={ListMenuContentWithData}*/}
                                     {/*        />*/}
                                     {/*    </HideOnMobile>*/}
-                                    Header
-                                </Header>
+                                {/*</Header>*/}
                             </>
                         ) : (
                             <div>Checkout Header</div>
