@@ -40,7 +40,7 @@ import {ListMenu, ListMenuContent} from '../list-menu'
 import {withCommerceSdkReactHookData} from '../with-commerce-sdk-react-hook-data'
 import AboveHeader from '../above-header'
 // import CheckoutHeader from '../../pages/checkout/partials/checkout-header'
-// import CheckoutFooter from '../../pages/checkout/partials/checkout-footer'
+import CheckoutFooter from '../../pages/checkout/partials/checkout-footer'
 import Footer from '../footer'
 import Header from '../header'
 // import OfflineBanner from '../offline-banner'
@@ -295,25 +295,25 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                                 {/*    onMyAccountClick={onAccountClick}*/}
                                 {/*    onWishlistClick={onWishlistClick}*/}
                                 {/*>*/}
-                                    {/*    <HideOnDesktop>*/}
-                                    {/*        <DrawerMenu*/}
-                                    {/*            isOpen={isOpen}*/}
-                                    {/*            onClose={onClose}*/}
-                                    {/*            onLogoClick={onLogoClick}*/}
-                                    {/*            root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
-                                    {/*            itemsKey="categories"*/}
-                                    {/*            itemsCountKey="onlineSubCategoriesCount"*/}
-                                    {/*            itemComponent={DrawerMenuItemWithData}*/}
-                                    {/*        />*/}
-                                    {/*    </HideOnDesktop>*/}
-                                    {/*    <HideOnMobile>*/}
-                                    {/*        <ListMenu*/}
-                                    {/*            root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
-                                    {/*            itemsKey="categories"*/}
-                                    {/*            itemsCountKey="onlineSubCategoriesCount"*/}
-                                    {/*            contentComponent={ListMenuContentWithData}*/}
-                                    {/*        />*/}
-                                    {/*    </HideOnMobile>*/}
+                                {/*    <HideOnDesktop>*/}
+                                {/*        <DrawerMenu*/}
+                                {/*            isOpen={isOpen}*/}
+                                {/*            onClose={onClose}*/}
+                                {/*            onLogoClick={onLogoClick}*/}
+                                {/*            root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
+                                {/*            itemsKey="categories"*/}
+                                {/*            itemsCountKey="onlineSubCategoriesCount"*/}
+                                {/*            itemComponent={DrawerMenuItemWithData}*/}
+                                {/*        />*/}
+                                {/*    </HideOnDesktop>*/}
+                                {/*    <HideOnMobile>*/}
+                                {/*        <ListMenu*/}
+                                {/*            root={categories?.[CAT_MENU_DEFAULT_ROOT_CATEGORY]}*/}
+                                {/*            itemsKey="categories"*/}
+                                {/*            itemsCountKey="onlineSubCategoriesCount"*/}
+                                {/*            contentComponent={ListMenuContentWithData}*/}
+                                {/*        />*/}
+                                {/*    </HideOnMobile>*/}
                                 {/*</Header>*/}
                             </>
                         ) : (
@@ -347,7 +347,7 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     </Box>
                     {/*</SkipNavContent>*/}
 
-                    {!isCheckout ? <Footer /> : <div>Check out footer</div>}
+                    {!isCheckout ? <Footer /> : <CheckoutFooter />}
                     {/*<AuthModal {...(authModal as any)} />*/}
                     {/*<DntNotification {...dntNotification} />*/}
                     {/*</AddToCartModalProvider>*/}
