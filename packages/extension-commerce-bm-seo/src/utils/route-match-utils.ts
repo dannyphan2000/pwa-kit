@@ -39,7 +39,6 @@ export const matchPath = (
             )
         }
         validRoutes = routes.filter((route) => !route?.path?.endsWith('*'))
-        console.log('validRoutes', validRoutes)
     }
 
     const routeMatch = validRoutes.find(({path}) =>
