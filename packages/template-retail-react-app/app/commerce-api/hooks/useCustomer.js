@@ -30,6 +30,10 @@ export default function useCustomer() {
     const updateCustomerMutation = useShopperCustomersMutation('updateCustomer')
     const createCustomerAddress = useShopperCustomersMutation('createCustomerAddress')
     const updateCustomerAddress = useShopperCustomersMutation('updateCustomerAddress')
+    const getResetPasswordToken = useShopperCustomersMutation('getResetPasswordToken')
+    const createCustomerPaymentInstrument = useShopperCustomersMutation('createCustomerPaymentInstrument')
+    const deleteCustomerPaymentInstrument = useShopperCustomersMutation('deleteCustomerPaymentInstrument')
+    const removeCustomerAddress = useShopperCustomersMutation('removeCustomerAddress')
 
     const self = useMemo(() => {
         return {
@@ -235,12 +239,11 @@ export default function useCustomer() {
              * @param {string} login - customer email address
              */
             async getResetPasswordToken(login) {
-                const response = await api.shopperCustomers.getResetPasswordToken({body: {login}})
-
-                // Check for error json response
-                if (response.detail && response.title && response.type) {
-                    throw new Error(response.detail)
-                }
+                await getResetPasswordToken.mutateAsync({body: {login}, onSuccess: (response) => {
+                    if (response.detail && response.title && response.type) {
+                        throw new Error(response.detail)
+                    }
+                }})
             },
 
             /**
@@ -299,13 +302,10 @@ export default function useCustomer() {
                         securityCode: undefined
                     }
                 }
-                await api.shopperCustomers.createCustomerPaymentInstrument({
+                await createCustomerPaymentInstrument.mutateAsync({
                     body,
                     parameters: {customerId: customer.customerId}
                 })
-
-                // This endpoint does not return the updated customer object, so we manually fetch it
-                await self.getCustomer()
             },
 
             /**
@@ -316,15 +316,12 @@ export default function useCustomer() {
             async removeSavedPaymentInstrument(paymentInstrumentId) {
                 // This SDK method must be called with `true` as second argument to avoid an error in
                 // the sdk where it tries parsing json from an empty http response.
-                await api.shopperCustomers.deleteCustomerPaymentInstrument(
+                await deleteCustomerPaymentInstrument.mutateAsync(
                     {
                         parameters: {customerId: customer.customerId, paymentInstrumentId}
                     },
                     true
                 )
-
-                // This endpoint does not return the updated customer object, so we manually fetch it
-                await self.getCustomer()
             },
 
             /**
@@ -335,15 +332,12 @@ export default function useCustomer() {
             async removeSavedAddress(addressId) {
                 // This SDK method must be called with `true` as second argument to avoid an error in
                 // the sdk where it tries parsing json from an empty http response.
-                await api.shopperCustomers.removeCustomerAddress(
+                await removeCustomerAddress.mutateAsync(
                     {
                         parameters: {customerId: customer.customerId, addressName: addressId}
                     },
                     true
                 )
-
-                // This endpoint does not return the updated customer object, so we manually fetch it
-                await self.getCustomer()
             },
 
             async getCustomerOrders(params) {
