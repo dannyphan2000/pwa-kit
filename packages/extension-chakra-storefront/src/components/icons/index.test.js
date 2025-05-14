@@ -5,24 +5,10 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React from 'react'
-import {useIntl} from 'react-intl'
-import {render, screen} from '@testing-library/react'
+import {defineMessage} from 'react-intl'
 import {renderWithChakraProvider, renderWithProviders} from '../../utils/test-utils'
 import * as Icons from '../../components/icons/index'
-
-// Mock the useIntl hook before importing components
-jest.mock('react-intl', () => {
-    const mockFormatMessage = jest.fn((message) => message.defaultMessage || 'translated-message')
-    const mockUseIntl = jest.fn(() => ({
-        formatMessage: mockFormatMessage
-    }))
-
-    return {
-        ...jest.requireActual('react-intl'),
-        useIntl: mockUseIntl
-    }
-})
-
+import {icon} from './index'
 beforeEach(() => {
     jest.clearAllMocks()
 })
@@ -31,10 +17,7 @@ test('renders svg icons with Chakra Icon component', () => {
     renderWithProviders(<Icons.CheckIcon />)
     const svg = document.querySelector('.chakra-icon')
 
-    // Use querySelector instead of getByRole since the SVG may not be properly accessible
     expect(svg).toBeInTheDocument()
-
-    // Check for the use element directly
     const use = svg.querySelector('use')
     expect(use).toBeInTheDocument()
     expect(svg).toHaveAttribute('viewBox', '0 0 24 24')
@@ -45,7 +28,6 @@ test('renders icon with correct aria attributes (with localed message)', () => {
     renderWithProviders(<Icons.LockIcon />)
     const svg = document.querySelector('.chakra-icon')
 
-    // Use querySelector instead of getByRole since the SVG may not be properly accessible
     expect(svg).toBeInTheDocument()
     expect(svg).toHaveAttribute('viewBox', '0 0 24 24')
     expect(svg).toHaveAttribute('aria-hidden', 'false')
@@ -60,11 +42,27 @@ test('uses intl from props when rendered outside provider tree', () => {
         formatMessage: jest.fn()
     }
 
-    // render without providers
-    renderWithChakraProvider(<Icons.LockIcon intl={mockIntl} />)
+    const Icons = icon(
+        'lock',
+        {
+            'aria-hidden': false,
+            focusable: true
+        },
+        {
+            'aria-label': defineMessage({
+                id: 'icons.assistive_msg.lock',
+                defaultMessage: 'Secure'
+            })
+        }
+    )
 
+    // render without providers
+    renderWithChakraProvider(<Icons intl={mockIntl} viewBox="0 0 40 40" />)
+    const svg = document.querySelector('.chakra-icon')
+    // confirm that the other prop are being render properly
     expect(mockIntl.formatMessage).toHaveBeenCalled()
-    expect(useIntl).not.toHaveBeenCalled()
+    expect(svg).toBeInTheDocument()
+    expect(svg).toHaveAttribute('viewBox', '0 0 40 40')
 })
 
 test('throws error when rendered outside provider tree and no intl prop is passed', async () => {
