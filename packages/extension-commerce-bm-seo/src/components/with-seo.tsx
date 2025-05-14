@@ -15,10 +15,10 @@ import {UrlMappingResponse} from '../types'
 import {matchPath} from '../utils/route-match-utils'
 import {ROUTING_MODE} from '../constants'
 
-type SeoHOCProps = React.ComponentPropsWithoutRef<any>
+type WithSeoProps = React.ComponentPropsWithoutRef<any>
 
-const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
-    const SeoHOC: React.FC<P> = (props: SeoHOCProps) => {
+const withSeo = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
+    const WithSeo: React.FC<P> = (props: WithSeoProps) => {
         const location = useLocation()
         const {routes, setRoutes} = useRoutes()
         const {resourceTypeToComponentMap, routingMode} = useExtensionConfig()
@@ -89,12 +89,12 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                 if (urlMappingResponse === undefined) {
                     return
                 }
-                let Component
-                let props
+                let Component: React.ComponentType<any> | undefined
+                let componentProps: Record<string, any> = {}
                 // If the Redirect type is URL do a Redirect, else load matching component
                 if (!urlMappingResponse.resourceType) {
                     Component = Redirect
-                    props = {
+                    componentProps = {
                         to: urlMappingResponse.destinationUrl
                     }
                 } else {
@@ -103,14 +103,14 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                         resourceTypeToComponentMap,
                         urlMappingResponse.resourceType
                     )
-                    props = {
+                    componentProps = {
                         [`${urlMappingResponse.resourceType}Id`]: urlMappingResponse.resourceId
                     }
                 }
                 setRoutes([
                     {
                         path: location.pathname,
-                        component: () => <Component {...props} />
+                        component: () => <Component {...componentProps} />
                     },
                     ...routes
                 ])
@@ -125,7 +125,7 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
         return <WrappedComponent {...(props as P)} />
     }
 
-    return SeoHOC
+    return WithSeo
 }
 
-export default seoHOC
+export default withSeo

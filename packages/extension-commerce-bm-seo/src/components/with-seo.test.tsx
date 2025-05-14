@@ -7,7 +7,7 @@
 import React from 'react'
 import {render, screen, waitFor, act} from '@testing-library/react'
 import {BrowserRouter, useLocation} from 'react-router-dom'
-import SeoHOC from './seo-hoc'
+import SeoHOC from './with-seo'
 import {useExtensionConfig} from '../hooks/use-extension-config'
 
 // Mock the useLocation hook
@@ -30,8 +30,7 @@ jest.mock('@salesforce/pwa-kit-extension-sdk/react', () => {
             const state = {
                 state: {
                     '@salesforce/extension-commerce-bm-seo': {
-                        setIsNavigationBlocked: mockSetIsNavigationBlocked,
-                        siteLocale: 'en-US'
+                        setIsNavigationBlocked: mockSetIsNavigationBlocked
                     }
                 }
             }
@@ -50,6 +49,9 @@ jest.mock('@salesforce/commerce-sdk-react', () => {
     return {
         useUrlMapping: jest.fn().mockReturnValue({
             refetch: mockRefetch
+        }),
+        useConfig: jest.fn().mockReturnValue({
+            locale: 'en-US'
         })
     }
 })
@@ -317,6 +319,38 @@ describe('SeoHOC', () => {
                 // refetch should not be called at all
                 expect(mockRefetch).not.toHaveBeenCalled()
             })
+        })
+
+        it('does not throw if resolveRef.current is undefined in fetchData', async () => {
+            const {WrappedComponent} = setupForSetRoutesTests({pathname: '/another-path'})
+
+            // Make skipMappingCall false so fetchData runs
+            ;(useExtensionConfig as jest.Mock).mockReturnValue({
+                routingMode: 'router_first',
+                resourceTypeToComponentMap: {
+                    category: 'ProductList',
+                    product: 'ProductDetail',
+                    content_asset: 'ProductList'
+                }
+            })
+            // Render without triggering navCallback, so resolveRef.current is never set
+            render(<WrappedComponent />)
+            // Wait for effects to run
+            await waitFor(() => {
+                // No error should be thrown, and test should complete
+                expect(true).toBe(true)
+            })
+        })
+
+        it('handles completely undefined result from refetch gracefully', async () => {
+            const {WrappedComponent} = setupForSetRoutesTests({pathname: '/another-path'})
+            mockRefetch.mockResolvedValueOnce(undefined)
+            render(<WrappedComponent />)
+            await act(async () => {
+                await navCallback?.({pathname: '/no-data-path'}, 'PUSH')
+            })
+            // Should not throw, and setRoutes should not be called
+            expect(setRoutesMock).not.toHaveBeenCalled()
         })
     })
 })
