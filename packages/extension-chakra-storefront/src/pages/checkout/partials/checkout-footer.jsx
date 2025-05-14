@@ -9,13 +9,14 @@ import PropTypes from 'prop-types'
 import {useIntl} from 'react-intl'
 import {
     Box,
-    StylesProvider,
-    useSlotRecipe,
-    Text,
-    HStack,
     Flex,
+    HStack,
     Spacer,
-    Separator
+    Separator,
+    Text,
+
+    // hooks
+    useSlotRecipe
 } from '@chakra-ui/react'
 import LinksList from '../../../components/links-list'
 import {VisaIcon, MastercardIcon, AmexIcon, DiscoverIcon} from '../../../components/icons'

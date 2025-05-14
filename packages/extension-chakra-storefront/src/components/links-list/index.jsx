@@ -6,7 +6,13 @@
  */
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Box, List, Heading, useSlotRecipe} from '@chakra-ui/react'
+import {
+    Box,
+    Heading,
+    List,
+    // hooks,
+    useSlotRecipe
+} from '@chakra-ui/react'
 import Link from '../../components/link'
 
 const LinksList = ({

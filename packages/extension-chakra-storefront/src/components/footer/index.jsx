@@ -8,16 +8,18 @@ import React, {useState} from 'react'
 import PropTypes from 'prop-types'
 import {
     Box,
-    Text,
-    Separator,
-    SimpleGrid,
+    Button,
+    GridItem,
     Group,
-    NativeSelect,
     Heading,
     Input,
-    Button,
-    useSlotRecipe,
-    GridItem
+    Separator,
+    SimpleGrid,
+    NativeSelect,
+    Text,
+
+    // hooks
+    useSlotRecipe
 } from '@chakra-ui/react'
 import {useIntl} from 'react-intl'
 
