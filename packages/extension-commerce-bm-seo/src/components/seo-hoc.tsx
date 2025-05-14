@@ -12,6 +12,8 @@ import {useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/r
 import {useExtensionConfig} from '../hooks/use-extension-config'
 import {getComponentForResourceType} from '../utils/routes-utils'
 import {UrlMappingResponse} from '../types'
+import {matchPath} from '../utils/route-match-utils'
+import {ROUTING_MODE} from '../constants'
 
 type SeoHOCProps = React.ComponentPropsWithoutRef<any>
 
@@ -19,14 +21,19 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const SeoHOC: React.FC<P> = (props: SeoHOCProps) => {
         const location = useLocation()
         const {routes, setRoutes} = useRoutes()
-        const {resourceTypeToComponentMap} = useExtensionConfig()
+        const {resourceTypeToComponentMap, routingMode} = useExtensionConfig()
         const siteConfig = useConfig()
         const [urlSegment, setUrlSegment] = useState(location.pathname)
         const {setIsNavigationBlocked} = useApplicationExtensionsStore((state) => {
             return state.state['@salesforce/extension-commerce-bm-seo']
         })
-
         const resolveRef = useRef<(result?: object) => void>()
+
+        // If routingMode is "router_first" and a predefined route matches, skip the getUrlMapping API call.
+        const skipMappingCall =
+            routingMode === ROUTING_MODE.ROUTER_FIRST &&
+            matchPath(location.pathname, routes, {filterWildcardRoutes: true})
+
         // Disabling the hook on render so it's only called when refetch is called
         const {refetch} = useUrlMapping(
             {
@@ -42,7 +49,12 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
 
         useEffect(() => {
             const fetchData = async () => {
-                if (!urlSegment) return
+                if (!urlSegment) {
+                    return
+                }
+                if (skipMappingCall) {
+                    return
+                }
                 const result = await refetch()
                 if (!resolveRef.current) return
                 if (!result || result.status === 'error') {
@@ -56,10 +68,15 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                 }
             }
             void fetchData().catch(console.error)
-        }, [urlSegment])
+        }, [urlSegment, skipMappingCall])
 
         const {isBlocked: isNavigationBlocked} = useBlockNavigation(
             async (location: Location, _: string) => {
+                // Early exit if configured to check the Router Context first and found a matching route
+                if (skipMappingCall) {
+                    return
+                }
+
                 const urlMappingResponse = await new Promise<UrlMappingResponse | undefined>(
                     (resolve, __) => {
                         const nextSegment = location.pathname

@@ -36,23 +36,24 @@ The SEO extension is configured via the `mobify.app.extensions` property in your
                 [
                 "@salesforce/extension-commerce-bm-seo",
                 {
-                    "enabled": true,
-                    "commerceAPI": {
+                  "enabled": true,
+                  "routingMode": "router_first",
+                  "commerceAPI": {
                     "proxyPath": "/mobify/proxy/api",
                     "parameters": {
-                        "shortCode": "8o7m175y",
-                        "clientId": "c9c45bfd-0ed3-4aa2-9971-40f88962b836",
-                        "organizationId": "f_ecom_zzrf_001",
-                        "siteId": "RefArchGlobal"
+                      "shortCode": "8o7m175y",
+                      "clientId": "c9c45bfd-0ed3-4aa2-9971-40f88962b836",
+                      "organizationId": "f_ecom_zzrf_001",
+                      "siteId": "RefArchGlobal"
                     }
-                    },
-                    "commerceAPIAuth": {
+                  },
+                  "commerceAPIAuth": {
                     "propertyNameInLocals": "commerceAPIAuth"
-                    },
-                    "resourceTypeToComponentMap": {
+                  },
+                  "resourceTypeToComponentMap": {
                     "category": "ProductList",
                     "product": "ProductDetail",
-                    }
+                  }
                 }
                 ]
             ]
@@ -67,6 +68,7 @@ set `isNavigationBlocked` back to a state to allow the rendering of `<WrappedCom
 
 ### Configuration Options
 
+- `routingMode`: Determines how the extension handles URL mapping
 - `commerceAPI`: Optional settings for connecting to the Commerce API. If a Commerce API Provider has been provided by another extension, 
   its instance will be used.
    - `proxyPath`: The proxy path for API requests
@@ -81,6 +83,18 @@ set `isNavigationBlocked` back to a state to allow the rendering of `<WrappedCom
    - `category`: Component name for category pages
    - `product`: Component name for product pages
    - `content_asset`: Component name for content assets
+
+### Routing Mode Configuration
+
+The `routingMode` configuration determines how the extension handles URL mapping and routing. There are two possible values:
+
+- `"api_first"`: Always calls the `getUrlMapping` API to resolve URLs, regardless of whether the route is predefined in the application's route configuration. This mode ensures that routes defined in Business Manager take precedence over any route defined in code, but it results in additional API calls.
+
+- `"router_first"`: First checks if the URL matches a predefined route in the application's route configuration. If a match is found, it skips the `getUrlMapping` API call. This mode can improve performance by reducing API calls for known routes, but requires careful route configuration to ensure all valid URLs are properly handled.
+
+Choose the routing mode based on your application's needs:
+- Use `"api_first"` when you need to ensure all URLs are resolved using the routes configured in Business Manager
+- Use `"router_first"` when you want to optimize performance by reducing API calls for known routes
 
 ## How It Works
 
