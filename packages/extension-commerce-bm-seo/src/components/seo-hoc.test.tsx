@@ -21,7 +21,7 @@ jest.mock('../hooks/use-extension-config', () => ({
     useExtensionConfig: jest.fn()
 }))
 
-// Mock the useApplicationExtensionsStore hook
+// Mock useRoutes and useBlockNavigation
 let mockSetIsNavigationBlocked: jest.Mock
 jest.mock('@salesforce/pwa-kit-extension-sdk/react', () => {
     mockSetIsNavigationBlocked = jest.fn()
@@ -112,6 +112,96 @@ describe('SeoHOC', () => {
         // Default mock for useLocation
         ;(useLocation as jest.Mock).mockReturnValue({
             pathname: '/products/123'
+        })
+    })
+
+    describe('router_first strategy', () => {
+        afterAll(() => {
+            ;(
+                jest.requireMock('@salesforce/commerce-sdk-react').useUrlMapping as jest.Mock
+            ).mockImplementation(() => ({
+                refetch: mockRefetch
+            }))
+        })
+
+        it('should skip URL mapping when route is defined and strategy is router_first', () => {
+            const MockComponent = () => <div>Test Component</div>
+            const WrappedComponent = SeoHOC(MockComponent)
+            // Mock useExtensionConfig to return router_first strategy
+            ;(useExtensionConfig as jest.Mock).mockReturnValue({
+                routingMode: 'router_first',
+                resourceTypeToComponentMap: {}
+            })
+
+            // Mock useRoutes to return predefined routes
+            const mockRoutes = [
+                {path: '/products/:id', component: MockComponent},
+                {path: '/category/:id', component: MockComponent},
+                {path: '*', component: MockComponent} // Catch-all route
+            ]
+
+            ;(
+                jest.requireMock('@salesforce/pwa-kit-react-sdk/ssr/universal/hooks')
+                    .useRoutes as jest.Mock
+            ).mockReturnValue({
+                routes: mockRoutes,
+                setRoutes: jest.fn()
+            })
+
+            // Mock useUrlMapping to ensure it's not called
+            const mockRefetch = jest.fn()
+            ;(
+                jest.requireMock('@salesforce/commerce-sdk-react').useUrlMapping as jest.Mock
+            ).mockReturnValue({
+                refetch: mockRefetch
+            })
+
+            render(
+                <BrowserRouter>
+                    <WrappedComponent />
+                </BrowserRouter>
+            )
+
+            // Verify that the component renders without calling URL mapping
+            expect(screen.getByText('Test Component')).toBeInTheDocument()
+            expect(mockRefetch).not.toHaveBeenCalled()
+        })
+
+        it('should proceed with URL mapping when route is not defined and strategy is router_first', () => {
+            const MockComponent = () => <div>Test Component</div>
+            const WrappedComponent = SeoHOC(MockComponent)
+            // Mock useExtensionConfig to return router_first strategy
+            ;(useExtensionConfig as jest.Mock).mockReturnValue({
+                routingMode: 'router_first',
+                resourceTypeToComponentMap: {}
+            })
+
+            // Mock useRoutes to return only catch-all route
+            const mockRoutes = [{path: '*', component: MockComponent}]
+            ;(
+                jest.requireMock('@salesforce/pwa-kit-react-sdk/ssr/universal/hooks')
+                    .useRoutes as jest.Mock
+            ).mockReturnValue({
+                routes: mockRoutes,
+                setRoutes: jest.fn()
+            })
+
+            // Mock useUrlMapping to ensure it's called
+            const mockRefetch = jest.fn()
+            ;(
+                jest.requireMock('@salesforce/commerce-sdk-react').useUrlMapping as jest.Mock
+            ).mockReturnValue({
+                refetch: mockRefetch
+            })
+
+            render(
+                <BrowserRouter>
+                    <WrappedComponent />
+                </BrowserRouter>
+            )
+
+            // Verify that URL mapping is called when route is not defined
+            expect(mockRefetch).toHaveBeenCalled()
         })
     })
 

@@ -7,7 +7,8 @@
     "lint:fix": "npm run lint:js -- --fix",
     "lint:js": "pwa-kit-dev lint \"**/*.{js,jsx,ts,tsx}\"",
     "start": "npm --prefix ./dev start",
-    "start:inspect": "npm --prefix ./dev run start:inspect"
+    "start:inspect": "npm --prefix ./dev run start:inspect",
+    "test": "pwa-kit-dev test"
   },
   "devDependencies": {
     "@loadable/component": "^5.15.3",
