@@ -77,7 +77,10 @@ LinksList.propTypes = {
         })
     ).isRequired,
     heading: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-    variant: PropTypes.oneOf(['vertical', 'horizontal']),
+    variant: PropTypes.oneOfType([
+        PropTypes.oneOf(['vertical', 'horizontal']),
+        PropTypes.object // For responsive variants like {base: 'vertical', lg: 'horizontal'}
+    ]),
     color: PropTypes.string,
     onLinkClick: PropTypes.func,
     headingLinkRef: PropTypes.object

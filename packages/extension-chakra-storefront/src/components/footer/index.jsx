@@ -23,7 +23,6 @@ import {useIntl} from 'react-intl'
 
 import LinksList from '../../components/links-list'
 import SocialIcons from '../../components/social-icons'
-import {HideOnDesktop, HideOnMobile} from '../responsive'
 import {getPathWithLocale} from '../../utils/url'
 import LocaleText from '../../components/locale-text'
 import useMultiSite from '../../hooks/use-multi-site'
@@ -250,5 +249,5 @@ const LegalLinks = ({variant}) => {
     )
 }
 LegalLinks.propTypes = {
-    variant: PropTypes.oneOf(['vertical', 'horizontal'])
+    variant: PropTypes.oneOfType([PropTypes.oneOf(['vertical', 'horizontal']), PropTypes.object])
 }
