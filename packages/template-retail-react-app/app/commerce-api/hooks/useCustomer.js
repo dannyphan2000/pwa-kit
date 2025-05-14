@@ -14,16 +14,25 @@ import {useCommerceAPI} from '../contexts'
 // a new customer.
 const NEW_CUSTOMER_MAX_AGE = 2 * 1000 // 2 seconds in milliseconds
 
+const isClient = typeof window !== 'undefined'
+
 import {
     AuthHelpers,
     useAuthHelper,
-    useShopperCustomersMutation
+    useShopperCustomersMutation,
+    useCustomerOrders
 } from '@salesforce/commerce-sdk-react'
 import {useCurrentCustomer} from './useCurrentCustomer'
 
 export default function useCustomer() {
     const api = useCommerceAPI()
     const {data: customer} = useCurrentCustomer()
+    const {data: {data: orders, ...paging} = {}} = useCustomerOrders(
+        {
+            parameters: {customerId: customer?.customerId, limit: 10, offset: 0}
+        },
+        {enabled: isClient && !!customer?.customerId}
+    )
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const logout = useAuthHelper(AuthHelpers.Logout)
     const register = useAuthHelper(AuthHelpers.Register)
@@ -340,11 +349,8 @@ export default function useCustomer() {
                 )
             },
 
-            async getCustomerOrders(params) {
-                const response = await api.shopperCustomers.getCustomerOrders({
-                    parameters: {customerId: customer.customerId, offset: 0, limit: 10, ...params}
-                })
-                return response
+            async getCustomerOrders() {
+                return {data: orders, ...paging}
             },
 
             async getOrder(orderNo) {

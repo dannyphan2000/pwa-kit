@@ -14,6 +14,7 @@ import OcapiShopperOrders from './ocapi-shopper-orders'
 import {isError} from './utils'
 import Auth from '@salesforce/commerce-sdk-react/auth'
 import EinsteinAPI from './einstein'
+import {DWSID_HEADER_KEY} from './constants'
 
 /**
  * The configuration details for the connecting to the API.
@@ -112,12 +113,12 @@ class CommerceAPI {
         this._reactSdkConfig = {
             proxy,
             parameters: this._config.parameters,
-            headers: this._config.headers,
+            headers: this._config.headers
         }
-        
+
         this._reactSdkClients = {
             shopperCustomers: new sdk.ShopperCustomers(this._reactSdkConfig),
-            shopperLogin: new sdk.ShopperLogin(this._reactSdkConfig),
+            shopperLogin: new sdk.ShopperLogin(this._reactSdkConfig)
         }
 
         /** ************ End Commerce SDK React Clients ************ */
@@ -203,13 +204,32 @@ class CommerceAPI {
      * @returns {Promise<Array>} - Updated arguments that will be passed to the SDK method
      */
     async willSendRequest(methodName, ...params) {
-        // We never need to modify auth request headers for these methods
+        // Apply the appropriate auth headers and return new options
+        const [fetchOptions, ...restParams] = params
+        let newFetchOptions = {}
+        let dwsidHeader = {}
+
+        // For hybrid stability improvements, we need to send the dwsid cookie with each request
+        // using the `sfdc_dwsid` header if the dwsid cookie is present.
+        if (this.auth.dwsid) {
+            dwsidHeader = {
+                [DWSID_HEADER_KEY]: this.auth.dwsid
+            }
+        }
+
         if (
             methodName === 'authenticateCustomer' ||
             methodName === 'authorizeCustomer' ||
             methodName === 'getAccessToken'
         ) {
-            return params
+            newFetchOptions = {
+                ...fetchOptions,
+                // We need to set credentials to 'same-origin' to allow cookies to be set.
+                // This is required as SLAS calls return a dwsid cookie for hybrid sites.
+                // The dwsid value is then passed to OCAPI/SCAPI as a header maintain the server affinity.
+                credentials: 'same-origin'
+            }
+            return [newFetchOptions, ...restParams]
         }
 
         const pendingLogin = this.auth.ready()
@@ -218,11 +238,11 @@ class CommerceAPI {
         }
 
         // Apply the appropriate auth headers and return new options
-        const [fetchOptions, ...restParams] = params
-        const newFetchOptions = {
+        newFetchOptions = {
             ...fetchOptions,
             headers: {
                 ...fetchOptions.headers,
+                ...dwsidHeader,
                 Authorization: `Bearer ${this.auth.get('access_token')}`
             },
             // In Storefront Preview mode, add cache breaker for all SCAPI's requests.

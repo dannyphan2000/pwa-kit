@@ -4,16 +4,22 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {useContext, useMemo} from 'react'
+import {useContext, useMemo, useEffect} from 'react'
 import useEinstein from './useEinstein'
 import {useCommerceAPI, BasketContext} from '../contexts'
 import useCustomer from './useCustomer'
 import {isError} from '../utils'
+import {useCurrentBasket} from './useCurrentBasket'
 
 export default function useBasket(opts = {}) {
     const {currency} = opts
     const api = useCommerceAPI()
     const customer = useCustomer()
+    const {
+        data: currentBasket,
+        isLoading: isLoadingCurrentBasket,
+        refetch: refetchCurrentBasket
+    } = useCurrentBasket()
     const einstein = useEinstein()
     const {basket, setBasket: _setBasket} = useContext(BasketContext)
 
@@ -21,6 +27,13 @@ export default function useBasket(opts = {}) {
         const _productItemsDetail = basket?._productItemsDetail
         _setBasket({_productItemsDetail, ...basketData})
     }
+
+    // Sync currentBasket with basket state when currentBasket changes
+    useEffect(() => {
+        if (!isLoadingCurrentBasket) {
+            setBasket(currentBasket)
+        }
+    }, [currentBasket, isLoadingCurrentBasket])
 
     const self = useMemo(() => {
         return {
@@ -57,26 +70,28 @@ export default function useBasket(opts = {}) {
              * ShopperBaskets API, which in our case, uses OCAPI rather than commerce sdk.
              */
             async getOrCreateBasket() {
-                const customerBaskets = await api.shopperCustomers.getCustomerBaskets({
-                    parameters: {customerId: customer?.customerId}
-                })
-
-                // Throw if there was a problem getting the customer baskets
-                if (isError(customerBaskets)) {
-                    throw new Error(customerBaskets)
+                // If we're still loading the current basket, return early
+                if (isLoadingCurrentBasket) {
+                    return null
                 }
 
-                // We only support single baskets for now. Grab the first one.
-                let basket = Array.isArray(customerBaskets?.baskets) && customerBaskets.baskets[0]
-
-                if (!basket) {
-                    // Back to using ShopperBaskets for all basket interaction.
-                    basket = await api.shopperBaskets.createBasket({})
-
-                    // Throw if there was a problem creating the basket
-                    if (isError(basket)) {
-                        throw new Error(basket)
+                // If we already have a current basket from react-query, use it
+                if (currentBasket?.basketId) {
+                    // Update basket currency if needed, this will also set the state
+                    if (currency && currentBasket.currency !== currency) {
+                        await this.updateBasketCurrency(currency, currentBasket.basketId)
+                    } else {
+                        setBasket(currentBasket)
                     }
+                    return currentBasket
+                }
+
+                // Back to using ShopperBaskets for all basket interaction.
+                let basket = await api.shopperBaskets.createBasket({})
+
+                // Throw if there was a problem creating the basket
+                if (isError(basket)) {
+                    throw new Error(basket)
                 }
 
                 // Update basket currency if it was created with the wrong one, this will also set the state.
