@@ -1,9 +1,0 @@
-# to keep the CI clean, we have initial skip all test in the `npm run test` command
-# now to enable back the tests while working on Chakra UI v3 upgrade
-# we keep list of components path here to re-enable the tests back.
-# this file will be removed once we get most the tests back and running
-src/components/footer
-src/components/links-list
-src/components/social-icons
-src/components/icons
-
