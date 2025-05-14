@@ -92,15 +92,15 @@ The SEO extension works by:
 
 The extension uses the Commerce API's Shopper SEO URL Mapping endpoint to handle SEO-friendly URLs and ensure proper routing within your PWA Kit application.
 
-## Usage of `isNavigationBlocked` and `siteLocale`
+## Usage of `isNavigationBlocked`
 
 ### isNavigationBlocked
 
 - The SEO extension provides an `isNavigationBlocked` state via the application extension store.
-- Downstream extensions (such as `@salesforce/extension-chakra-storefront`) should read this value to determine whether navigation is being blocked (e.g., while waiting for SEO URL mapping to resolve).
-- When `isNavigationBlocked` is `true`, the downstream extension can use the state to display a loading state until the SEO extension has finished processing the URL mapping.
+- Sibling extensions (such as `@salesforce/extension-chakra-storefront`) should read this value to determine whether navigation is being blocked (e.g., while waiting for SEO URL mapping to resolve).
+- When `isNavigationBlocked` is `true`, the sibling extension can use the state to display a loading state until the SEO extension has finished processing the URL mapping.
 
-**Example usage in a downstream extension:**
+**Example usage in a sibling extension:**
 ```typescript
 const {isNavigationBlocked} = useApplicationExtensionsStore((state) =>
   state.state['@salesforce/extension-commerce-bm-seo'] || {isNavigationBlocked: false}
@@ -108,18 +108,3 @@ const {isNavigationBlocked} = useApplicationExtensionsStore((state) =>
 if (isNavigationBlocked) {
   // Show loading spinner or block navigation
 }
-```
-### siteLocale and setSiteLocale
-
-The SEO extension also provides a `setSiteLocale` function in the application extension store.
-`siteLocale` represents the current locale for the site and used in the SEO Url Mapping API to ensure that the SEO extension are kept in sync with the current locale. It is set and managed by downstream extensions (such as your storefront) using the `setSiteLocale` function.
-
-**Example usage**
-```typescript
-const {setSiteLocale} = useApplicationExtensionsStore((state) =>
-  state.state['@salesforce/extension-commerce-bm-seo'] || {setSiteLocale: () => {}}
-)
-useEffect(() => {
-  setSiteLocale(currentLocale) // currentLocale is determined by your app logic
-}, [currentLocale])
-```

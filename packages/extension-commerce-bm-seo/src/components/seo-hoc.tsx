@@ -10,24 +10,10 @@ import {useUrlMapping, useConfig} from '@salesforce/commerce-sdk-react'
 import {useLocation, Redirect} from 'react-router-dom'
 import {useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
 import {useExtensionConfig} from '../hooks/use-extension-config'
+import {getComponentForResourceType} from '../utils/routes-utils'
+import {UrlMappingResponse} from '../types'
+
 type SeoHOCProps = React.ComponentPropsWithoutRef<any>
-
-interface UrlMappingResponse {
-    resourceType?: string
-    resourceId?: string
-    destinationUrl?: string
-}
-
-const getComponent = (
-    routes: Array<{component: React.ComponentType<any> | undefined; path: string}>,
-    resourceTypeToComponentMap: {[key: string]: string},
-    resourceType: string
-) => {
-    const ComponentClass = routes.find((_route) =>
-        _route.component?.displayName?.includes(resourceTypeToComponentMap[resourceType])
-    )?.component
-    return ComponentClass
-}
 
 const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const SeoHOC: React.FC<P> = (props: SeoHOCProps) => {
@@ -95,7 +81,7 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
                         to: urlMappingResponse.destinationUrl
                     }
                 } else {
-                    Component = getComponent(
+                    Component = getComponentForResourceType(
                         routes,
                         resourceTypeToComponentMap,
                         urlMappingResponse.resourceType

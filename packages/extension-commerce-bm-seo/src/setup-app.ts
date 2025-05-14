@@ -15,7 +15,7 @@ import {
     withApplicationExtensionStore
 } from '@salesforce/pwa-kit-extension-sdk/react'
 import {applyHOCs} from '@salesforce/pwa-kit-extension-sdk/react/utils'
-import {withOptionalCommerceSdkReactProvider} from './components/with-optional-commerce-sdk-react-provider'
+import {withOptionalCommerceSdkReactProvider} from './hooks/with-optional-commerce-sdk-react-provider'
 // Local Imports
 import {Config} from './types'
 import {SliceInitializer} from '@salesforce/pwa-kit-extension-sdk/react'
@@ -32,8 +32,6 @@ import extensionMeta from '../extension-meta.json'
 interface StoreSlice {
     isNavigationBlocked: boolean
     setIsNavigationBlocked: (newIsNavigationBlocked: boolean) => void
-    siteLocale: string | undefined
-    setSiteLocale: (newSiteLocale: string) => void
 }
 
 // This is safe to delete if your extension does not use state. If you aren't using this, ensure you remove the
@@ -41,9 +39,7 @@ interface StoreSlice {
 export const sliceInitializer: SliceInitializer<StoreSlice> = (set) => ({
     isNavigationBlocked: false,
     setIsNavigationBlocked: (newIsNavigationBlocked) =>
-        set((state) => ({...state, isNavigationBlocked: newIsNavigationBlocked})),
-    siteLocale: undefined,
-    setSiteLocale: (newSiteLocale) => set((state) => ({...state, siteLocale: newSiteLocale}))
+        set((state) => ({...state, isNavigationBlocked: newIsNavigationBlocked}))
 })
 
 class CommerceBmSeo extends ApplicationExtension<Config> {
