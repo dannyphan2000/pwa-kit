@@ -1,3 +1,6 @@
+## v3.3.0-nightly-20250514080216 (May 14, 2025)
+## v3.3.0-dev.1 (May 14, 2025)
+## v3.10.0-nightly-20250514080216 (May 14, 2025)
 ## v3.3.0-dev.1 (Apr 30, 2025)
 - Fix inconsistency between dwsid and access token for guest login when hybrid authentication is enabled [#2397](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2397)
 
