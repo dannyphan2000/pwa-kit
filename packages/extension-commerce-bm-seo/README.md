@@ -1,4 +1,4 @@
-# SEO Extension
+# Extension Commerce BM SEO
 
 A [PWA Kit](https://github.com/SalesforceCommerceCloud/pwa-kit) extension that adds SEO functionality to your application through the [Shopper SEO URL Mapping API](https://developer.salesforce.com/docs/commerce/commerce-api/references/shopper-seo?meta=getUrlMapping). This extension provides features like:
 
@@ -67,7 +67,8 @@ set `isNavigationBlocked` back to a state to allow the rendering of `<WrappedCom
 
 ### Configuration Options
 
-- `commerceAPI`: Settings for connecting to the Commerce API
+- `commerceAPI`: Optional settings for connecting to the Commerce API. If a Commerce API Provider has been provided by another extension, 
+  its instance will be used.
    - `proxyPath`: The proxy path for API requests
    - `parameters`: Commerce API connection parameters
      - `clientId`: Your Commerce API client ID

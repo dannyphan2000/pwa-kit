@@ -6,7 +6,7 @@
  */
 import React, {useState, useEffect, useRef} from 'react'
 import {useBlockNavigation, useRoutes} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
-import {useUrlMapping} from '@salesforce/commerce-sdk-react'
+import {useUrlMapping, useConfig} from '@salesforce/commerce-sdk-react'
 import {useLocation, Redirect} from 'react-router-dom'
 import {useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
 import {useExtensionConfig} from '../hooks/use-extension-config'
@@ -34,8 +34,9 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
         const location = useLocation()
         const {routes, setRoutes} = useRoutes()
         const {resourceTypeToComponentMap} = useExtensionConfig()
+        const siteConfig = useConfig()
         const [urlSegment, setUrlSegment] = useState(location.pathname)
-        const {setIsNavigationBlocked, siteLocale} = useApplicationExtensionsStore((state) => {
+        const {setIsNavigationBlocked} = useApplicationExtensionsStore((state) => {
             return state.state['@salesforce/extension-commerce-bm-seo']
         })
 
@@ -45,7 +46,7 @@ const seoHOC = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
             {
                 parameters: {
                     urlSegment: urlSegment,
-                    locale: siteLocale
+                    locale: siteConfig.locale
                 }
             },
             {
