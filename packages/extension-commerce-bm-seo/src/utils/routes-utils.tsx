@@ -5,9 +5,21 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-// This function is used to get the component for a given resource type from the routes array
+import {RouteProps} from 'react-router-dom'
+/**
+ * Finds and returns the React component associated with a given resource type from the list of routes.
+ *
+ * @param {RouteProps[]} routes
+ *   The array of route objects, each containing a component and a path.
+ * @param {{[key: string]: string}} resourceTypeToComponentMap
+ *   A mapping from resource type keys to component display names.
+ * @param {string} resourceType
+ *   The resource type to look up.
+ * @returns {React.ComponentType<any> | undefined}
+ *   The matching React component for the resource type, or undefined if not found.
+ */
 export const getComponentForResourceType = (
-    routes: Array<{component: React.ComponentType<any> | undefined; path: string}>,
+    routes: RouteProps[],
     resourceTypeToComponentMap: {[key: string]: string},
     resourceType: string
 ) : React.ComponentType<any> | undefined => {
