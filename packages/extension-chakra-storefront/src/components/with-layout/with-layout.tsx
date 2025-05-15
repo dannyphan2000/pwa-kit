@@ -55,9 +55,11 @@ import {UserConfig} from '../../types/config'
 type WithAppLayoutProps = React.ComponentPropsWithoutRef<any>
 
 const PlaceholderComponent: React.FC = () => {
-    return (<Center p="2">
-        <Spinner size="lg" />
-    </Center>)
+    return (
+        <Center p="2">
+            <Spinner size="lg" />
+        </Center>
+    )
 }
 
 const DrawerMenuItemWithData = withCommerceSdkReactHookData(
@@ -323,45 +325,45 @@ const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) 
                     </Box>
                     {!isOnline && <OfflineBanner />}
                     <AddToCartModalProvider>
-                    <SkipNavContent
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            flex: 1,
-                            outline: 0,
-                            position: 'relative' // Needed for overlay positioning
-                        }}
-                    >
-                        <Box
-                            as="main"
-                            id="app-main"
-                            role="main"
-                            display="flex"
-                            flexDirection="column"
-                            flex="1"
+                        <SkipNavContent
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                flex: 1,
+                                outline: 0,
+                                position: 'relative' // Needed for overlay positioning
+                            }}
                         >
-                            <OfflineBoundary isOnline={false}>
-                                <WrappedComponent {...(props as P)} />
-                            </OfflineBoundary>
-                        </Box>
-                        {isNavigationBlocked && (
                             <Box
-                                position="absolute"
-                                top={0}
-                                left={0}
-                                width="100%"
-                                height="40%"
-                                zIndex={9999}
-                                justifyContent="center"
-                                alignItems="flex-start"
-                                pt={400}
+                                as="main"
+                                id="app-main"
+                                role="main"
                                 display="flex"
-                                background="#fff"
+                                flexDirection="column"
+                                flex="1"
                             >
-                                <PlaceholderComponent />
+                                <OfflineBoundary isOnline={false}>
+                                    <WrappedComponent {...(props as P)} />
+                                </OfflineBoundary>
                             </Box>
-                        )}
-                    </SkipNavContent>
+                            {isNavigationBlocked && (
+                                <Box
+                                    position="absolute"
+                                    top={0}
+                                    left={0}
+                                    width="100%"
+                                    height="40%"
+                                    zIndex={9999}
+                                    justifyContent="center"
+                                    alignItems="flex-start"
+                                    pt={400}
+                                    display="flex"
+                                    background="#fff"
+                                >
+                                    <PlaceholderComponent />
+                                </Box>
+                            )}
+                        </SkipNavContent>
                         {!isCheckout ? <Footer /> : <CheckoutFooter />}
 
                         <AuthModal {...(authModal as any)} />
