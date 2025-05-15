@@ -120,55 +120,55 @@ const Footer = ({...otherProps}) => {
                                 <Subscribe />
                             </GridItem>
                         </SimpleGrid>
-                    </section>
-                    {showLocaleSelector && (
-                        <Box
-                            data-testid="sf-footer-locale-selector"
-                            id="locale_selector"
-                            css={styles.localeSelectorWrapper}
-                            {...otherProps}
-                        >
-                            <NativeSelect.Root css={styles.localeSelectorRoot} variant="filled">
-                                <NativeSelect.Field
-                                    css={styles.localeSelectorField}
-                                    defaultValue={locale}
-                                    aria-label={intl.formatMessage({
-                                        id: 'footer.locale_selector.assistive_msg',
-                                        defaultMessage: 'Select Language'
-                                    })}
-                                    onChange={(e) => {
-                                        const newLocale = e.currentTarget.value
-                                        setLocale(newLocale)
-                                        // Update the `locale` in the URL.
-                                        const newUrl = getPathWithLocale(newLocale, buildUrl, {
-                                            disallowParams: ['refine']
-                                        })
-                                        window.location = newUrl
-                                    }}
-                                >
-                                    {supportedLocaleIds.map((locale) => (
-                                        <option key={locale} value={locale}>
-                                            <LocaleText shortCode={locale} />
-                                        </option>
-                                    ))}
-                                </NativeSelect.Field>
-                                <NativeSelect.Indicator />
-                            </NativeSelect.Root>
-                        </Box>
-                    )}
-                    <Separator css={styles.horizontalRule} />
-                    <Box css={styles.legalSection}>
-                        <Text css={styles.copyright}>
-                            &copy; {new Date().getFullYear()}{' '}
-                            {intl.formatMessage({
-                                id: 'footer.message.copyright',
-                                defaultMessage:
-                                    'Salesforce or its affiliates. All rights reserved. This is a demo store only. Orders made WILL NOT be processed.'
-                            })}
-                        </Text>
+                        {showLocaleSelector && (
+                            <Box
+                                data-testid="sf-footer-locale-selector"
+                                id="locale_selector"
+                                css={styles.localeSelectorWrapper}
+                                {...otherProps}
+                            >
+                                <NativeSelect.Root css={styles.localeSelectorRoot} variant="filled">
+                                    <NativeSelect.Field
+                                        css={styles.localeSelectorField}
+                                        defaultValue={locale}
+                                        aria-label={intl.formatMessage({
+                                            id: 'footer.locale_selector.assistive_msg',
+                                            defaultMessage: 'Select Language'
+                                        })}
+                                        onChange={(e) => {
+                                            const newLocale = e.currentTarget.value
+                                            setLocale(newLocale)
+                                            // Update the `locale` in the URL.
+                                            const newUrl = getPathWithLocale(newLocale, buildUrl, {
+                                                disallowParams: ['refine']
+                                            })
+                                            window.location = newUrl
+                                        }}
+                                    >
+                                        {supportedLocaleIds.map((locale) => (
+                                            <option key={locale} value={locale}>
+                                                <LocaleText shortCode={locale} />
+                                            </option>
+                                        ))}
+                                    </NativeSelect.Field>
+                                    <NativeSelect.Indicator />
+                                </NativeSelect.Root>
+                            </Box>
+                        )}
+                        <Separator css={styles.horizontalRule} />
+                        <Box css={styles.legalSection}>
+                            <Text css={styles.copyright}>
+                                &copy; {new Date().getFullYear()}{' '}
+                                {intl.formatMessage({
+                                    id: 'footer.message.copyright',
+                                    defaultMessage:
+                                        'Salesforce or its affiliates. All rights reserved. This is a demo store only. Orders made WILL NOT be processed.'
+                                })}
+                            </Text>
 
-                        <LegalLinks variant={{base: 'vertical', lg: 'horizontal'}} />
-                    </Box>
+                            <LegalLinks variant={{base: 'vertical', lg: 'horizontal'}} />
+                        </Box>
+                    </section>
                 </Box>
             </footer>
         </Box>
