@@ -30,12 +30,22 @@ describe('matchPath', () => {
 
     it('should return the matching route with wildcard if filterWildcardRoutes is false', () => {
         const result = matchPath('/products/123', routes)
-        expect(result).toEqual({path: '/products/*', isExact: true, params: {"0": "123"}, url: '/products/123'})
+        expect(result).toEqual({
+            path: '/products/*',
+            isExact: true,
+            params: {0: '123'},
+            url: '/products/123'
+        })
     })
 
     it('should return the matching route without wildcard if filterWildcardRoutes is true', () => {
         const result = matchPath('/products/123', routes, {filterWildcardRoutes: true})
-        expect(result).toEqual({path: '/products/:id', isExact: true, params: {id: "123"}, url: '/products/123'})
+        expect(result).toEqual({
+            path: '/products/:id',
+            isExact: true,
+            params: {id: '123'},
+            url: '/products/123'
+        })
     })
 
     it('should return undefined if no match is found and filterWildcardRoutes is true', () => {

@@ -7,7 +7,7 @@
 import {matchPath as matchPathReactRouter} from 'react-router-dom'
 import {RouteProps} from '@salesforce/pwa-kit-extension-sdk/types'
 
-type Match<T = { [key: string]: string }> = ReturnType<typeof matchPathReactRouter<T>>
+type Match<T = {[key: string]: string}> = ReturnType<typeof matchPathReactRouter<T>>
 
 /**
  * This is an enhanced version of matchPath that allows you to match to multiple routes as well as allowing you to filter out wildcard routes.
@@ -46,7 +46,7 @@ export const matchPath = (
     for (const {path} of validRoutes) {
         const match = matchPathReactRouter(pathname, {
             path,
-            exact: true,
+            exact: true
         })
         if (match) return match
     }
