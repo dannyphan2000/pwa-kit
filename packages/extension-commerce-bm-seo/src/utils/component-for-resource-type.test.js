@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React from 'react'
-import {getComponentForResourceType} from './routes-utils'
+import {getComponentForResourceType} from './component-for-resource-type'
 
 // Mock components
 const ProductDetail = () => <div>Product</div>

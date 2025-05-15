@@ -7,11 +7,10 @@
 import React, {useState, useEffect, useRef} from 'react'
 import {useBlockNavigation, useRoutes} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useUrlMapping, useConfig} from '@salesforce/commerce-sdk-react'
-import {useLocation, Redirect} from 'react-router-dom'
+import {useLocation} from 'react-router-dom'
 import {useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
 import {useExtensionConfig} from '../hooks/use-extension-config'
-import {getComponentForResourceType} from '../utils/routes-utils'
-import {UrlMappingResponse} from '../types'
+import {handleNavigationBlock} from '../utils/route-utils'
 import {matchPath} from '../utils/route-match-utils'
 import {ROUTING_MODE} from '../constants'
 import type {Config} from '../types/config'
@@ -72,58 +71,17 @@ const withSeo = <P extends object>(WrappedComponent: React.ComponentType<P>) => 
             void fetchData().catch(console.error)
         }, [urlSegment, skipMappingCall])
 
-        // Helper to set the route for a given urlMappingResponse
-        const addComponentToRoutes = (location: Location, urlMappingResponse: any) => {
-            let Component: React.ComponentType<any> | undefined
-            let componentProps: Record<string, any> = {}
-            // If the Redirect type is URL do a Redirect, else load matching component
-            if (!urlMappingResponse.resourceType) {
-                Component = Redirect
-                componentProps = {
-                    to: urlMappingResponse.destinationUrl
-                }
-            } else {
-                Component = getComponentForResourceType(
+        const {isBlocked: isNavigationBlocked} = useBlockNavigation(
+            async (location: Location, _: string) =>
+                handleNavigationBlock(
+                    location,
+                    skipMappingCall,
+                    setUrlSegment,
+                    resolveRef,
                     routes,
                     resourceTypeToComponentMap,
-                    urlMappingResponse.resourceType
+                    setRoutes
                 )
-                componentProps = {
-                    [`${String(urlMappingResponse.resourceType)}Id`]: urlMappingResponse.resourceId
-                }
-            }
-            setRoutes([
-                {
-                    path: location.pathname,
-                    component: () => (Component ? <Component {...componentProps} /> : null)
-                },
-                ...routes
-            ])
-        }
-
-        // Call the Url Mapping API and add the mapped component to the routes
-        const handleNavigationBlock = async (location: Location) => {
-            // Early exit if configured to check the Router Context first and found a matching route
-            if (skipMappingCall) {
-                return
-            }
-            const urlMappingResponse = await new Promise<UrlMappingResponse | undefined>(
-                (resolve, __) => {
-                    const nextSegment = location.pathname
-                    // So that this promise can be resolved and navigation is unblocked outside this function
-                    resolveRef.current = resolve
-                    setUrlSegment(nextSegment)
-                }
-            )
-            // If no redirect rule exists, go to original url
-            if (urlMappingResponse === undefined) {
-                return
-            }
-            addComponentToRoutes(location, urlMappingResponse)
-        }
-
-        const {isBlocked: isNavigationBlocked} = useBlockNavigation(
-            async (location: Location, _: string) => handleNavigationBlock(location)
         )
 
         // Inform other areas of the app (e.g. other extensions) when navigation is being blocked by SEO logic

@@ -7,7 +7,7 @@
 
 import {RouteProps} from 'react-router-dom'
 /**
- * Finds and returns the React component associated with a given resource type from the list of routes.
+ * Finds and returns the React component associated with a given resource type from the router
  *
  * @param {RouteProps[]} routes
  *   The array of route objects, each containing a component and a path.
