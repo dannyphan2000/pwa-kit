@@ -21,7 +21,8 @@ export interface UserConfig extends ApplicationExtensionConfig {
             currency: string
         }
     }
-    resourceTypeToComponentMap?: object
+    routingMode: string
+    resourceTypeToComponentMap: {[key: string]: string}
 }
 
 /**

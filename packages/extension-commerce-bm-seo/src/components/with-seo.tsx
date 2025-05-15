@@ -14,6 +14,7 @@ import {getComponentForResourceType} from '../utils/routes-utils'
 import {UrlMappingResponse} from '../types'
 import {matchPath} from '../utils/route-match-utils'
 import {ROUTING_MODE} from '../constants'
+import type {Config} from '../types/config'
 
 type WithSeoProps = React.ComponentPropsWithoutRef<any>
 
@@ -21,7 +22,7 @@ const withSeo = <P extends object>(WrappedComponent: React.ComponentType<P>) => 
     const WithSeo: React.FC<P> = (props: WithSeoProps) => {
         const location = useLocation()
         const {routes, setRoutes} = useRoutes()
-        const {resourceTypeToComponentMap, routingMode} = useExtensionConfig()
+        const {resourceTypeToComponentMap, routingMode} = useExtensionConfig() as Config
         const siteConfig = useConfig()
         const [urlSegment, setUrlSegment] = useState(location.pathname)
         const {setIsNavigationBlocked} = useApplicationExtensionsStore((state) => {
@@ -30,9 +31,10 @@ const withSeo = <P extends object>(WrappedComponent: React.ComponentType<P>) => 
         const resolveRef = useRef<(result?: object) => void>()
 
         // If routingMode is "router_first" and a predefined route matches, skip the getUrlMapping API call.
-        const skipMappingCall =
+        const skipMappingCall = Boolean(
             routingMode === ROUTING_MODE.ROUTER_FIRST &&
-            matchPath(location.pathname, routes, {filterWildcardRoutes: true})
+                matchPath(location.pathname, routes, {filterWildcardRoutes: true})
+        )
 
         // Disabling the hook on render so it's only called when refetch is called
         const {refetch} = useUrlMapping(
@@ -70,51 +72,58 @@ const withSeo = <P extends object>(WrappedComponent: React.ComponentType<P>) => 
             void fetchData().catch(console.error)
         }, [urlSegment, skipMappingCall])
 
-        const {isBlocked: isNavigationBlocked} = useBlockNavigation(
-            async (location: Location, _: string) => {
-                // Early exit if configured to check the Router Context first and found a matching route
-                if (skipMappingCall) {
-                    return
+        // Helper to set the route for a given urlMappingResponse
+        const addComponentToRoutes = (location: Location, urlMappingResponse: any) => {
+            let Component: React.ComponentType<any> | undefined
+            let componentProps: Record<string, any> = {}
+            // If the Redirect type is URL do a Redirect, else load matching component
+            if (!urlMappingResponse.resourceType) {
+                Component = Redirect
+                componentProps = {
+                    to: urlMappingResponse.destinationUrl
                 }
-
-                const urlMappingResponse = await new Promise<UrlMappingResponse | undefined>(
-                    (resolve, __) => {
-                        const nextSegment = location.pathname
-                        // So that this promise can be resolved and navigation is unblocked outside this function
-                        resolveRef.current = resolve
-                        setUrlSegment(nextSegment)
-                    }
+            } else {
+                Component = getComponentForResourceType(
+                    routes,
+                    resourceTypeToComponentMap,
+                    urlMappingResponse.resourceType
                 )
-                // If no redirect rule exists, go to original url
-                if (urlMappingResponse === undefined) {
-                    return
+                componentProps = {
+                    [`${String(urlMappingResponse.resourceType)}Id`]: urlMappingResponse.resourceId
                 }
-                let Component: React.ComponentType<any> | undefined
-                let componentProps: Record<string, any> = {}
-                // If the Redirect type is URL do a Redirect, else load matching component
-                if (!urlMappingResponse.resourceType) {
-                    Component = Redirect
-                    componentProps = {
-                        to: urlMappingResponse.destinationUrl
-                    }
-                } else {
-                    Component = getComponentForResourceType(
-                        routes,
-                        resourceTypeToComponentMap,
-                        urlMappingResponse.resourceType
-                    )
-                    componentProps = {
-                        [`${urlMappingResponse.resourceType}Id`]: urlMappingResponse.resourceId
-                    }
-                }
-                setRoutes([
-                    {
-                        path: location.pathname,
-                        component: () => <Component {...componentProps} />
-                    },
-                    ...routes
-                ])
             }
+            setRoutes([
+                {
+                    path: location.pathname,
+                    component: () => (Component ? <Component {...componentProps} /> : null)
+                },
+                ...routes
+            ])
+        }
+
+        // Call the Url Mapping API and add the mapped component to the routes
+        const handleNavigationBlock = async (location: Location) => {
+            // Early exit if configured to check the Router Context first and found a matching route
+            if (skipMappingCall) {
+                return
+            }
+            const urlMappingResponse = await new Promise<UrlMappingResponse | undefined>(
+                (resolve, __) => {
+                    const nextSegment = location.pathname
+                    // So that this promise can be resolved and navigation is unblocked outside this function
+                    resolveRef.current = resolve
+                    setUrlSegment(nextSegment)
+                }
+            )
+            // If no redirect rule exists, go to original url
+            if (urlMappingResponse === undefined) {
+                return
+            }
+            addComponentToRoutes(location, urlMappingResponse)
+        }
+
+        const {isBlocked: isNavigationBlocked} = useBlockNavigation(
+            async (location: Location, _: string) => handleNavigationBlock(location)
         )
 
         // Inform other areas of the app (e.g. other extensions) when navigation is being blocked by SEO logic

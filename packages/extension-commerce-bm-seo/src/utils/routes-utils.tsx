@@ -22,7 +22,7 @@ export const getComponentForResourceType = (
     routes: RouteProps[],
     resourceTypeToComponentMap: {[key: string]: string},
     resourceType: string
-) : React.ComponentType<any> | undefined => {
+): React.ComponentType<any> | undefined => {
     const ComponentClass = routes.find((_route) =>
         _route.component?.displayName?.includes(resourceTypeToComponentMap[resourceType])
     )

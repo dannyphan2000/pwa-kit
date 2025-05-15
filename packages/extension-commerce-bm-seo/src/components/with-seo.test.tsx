@@ -205,6 +205,19 @@ describe('SeoHOC', () => {
             // Verify that URL mapping is called when route is not defined
             expect(mockRefetch).toHaveBeenCalled()
         })
+
+        it('does not call setRoutes when skipMappingCall is true in useBlockNavigation callback', async () => {
+            // Set up so that skipMappingCall will be true
+            const {WrappedComponent} = setupForSetRoutesTests({pathname: '/products/123'})
+            // The mock config and routes in setupForSetRoutesTests will make skipMappingCall true
+            render(<WrappedComponent />)
+            // Simulate navigation
+            await act(async () => {
+                await navCallback?.({pathname: '/products/123'}, 'PUSH')
+            })
+            // setRoutes should not be called because skipMappingCall is true
+            expect(setRoutesMock).not.toHaveBeenCalled()
+        })
     })
 
     describe('setRoutes and isNavigationBlocked call', () => {
