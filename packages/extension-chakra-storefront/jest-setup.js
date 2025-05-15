@@ -147,18 +147,14 @@ global.TextDecoder = require('util').TextDecoder
 // JSDOM environment doesn't natively implement this modern Web API function.
 // Chakra v3 is using it, so we need to mock it here
 global.structuredClone = (val) => {
-    // Handle undefined
     if (val === undefined) return undefined
 
-    // Handle null (which JSON.stringify can handle but including for clarity)
     if (val === null) return null
 
-    // Handle other primitive types directly
     if (typeof val !== 'object' && typeof val !== 'function') {
         return val
     }
 
-    // For objects and arrays, use JSON method but catch errors
     try {
         return JSON.parse(JSON.stringify(val))
     } catch (e) {
