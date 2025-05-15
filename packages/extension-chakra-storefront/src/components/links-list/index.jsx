@@ -10,7 +10,7 @@ import {
     Box,
     Heading,
     List,
-    // hooks,
+    // hooks
     useSlotRecipe
 } from '@chakra-ui/react'
 import Link from '../../components/link'
