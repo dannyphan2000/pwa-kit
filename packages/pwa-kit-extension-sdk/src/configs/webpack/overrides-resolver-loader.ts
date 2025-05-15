@@ -77,7 +77,7 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
     }
 
     // Lets use the compiler configuration to ensure we are resolving the correct file extensions.
-    const fileExtensions = options?.resolveExtensions
+    const fileExtensions = options?.resolveExtensions || compiler.options?.resolve?.extensions || []
     const basedir = options?.baseDir || process.cwd()
     const applicationExtensions = options?.extensions || compiler?.custom?.extensions || []
 
@@ -149,6 +149,32 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
 }
 
 /**
+ * Extracts the absolute path to an extension package root from a source file path.
+ *
+ * @param source - The source file path to analyze
+ * @returns The absolute path to an extension package root if found, undefined otherwise
+ */
+const getExtensionPath = (source: string): string | undefined => {
+    const isMonoRepoPath = source.includes(`${path.sep}${MONO_REPO_WORKSPACE_FOLDER}${path.sep}`)
+    const isNodeModulesPath = source.includes(`${path.sep}${NODE_MODULES_FOLDER}${path.sep}`)
+
+    if (!isMonoRepoPath && !isNodeModulesPath) {
+        return undefined
+    }
+
+    const folderType = isMonoRepoPath ? MONO_REPO_WORKSPACE_FOLDER : NODE_MODULES_FOLDER
+    const containerFolder = `${path.sep}${folderType}${path.sep}`
+    const [basePath, relativeExtensionPath] = source.split(containerFolder)
+
+    if (folderType === NODE_MODULES_FOLDER && relativeExtensionPath.startsWith('@')) {
+        const packageParts = relativeExtensionPath.split(path.sep)
+        return `${basePath}${containerFolder}${packageParts[0]}${path.sep}${packageParts[1]}`
+    }
+
+    return `${basePath}${containerFolder}${relativeExtensionPath.split(path.sep)[0]}`
+}
+
+/**
  * Return a boolean indicating if the source file should be processed by the override loader based on
  * various conditions including the cache state, the source file type, and the presence of an override file
  * in the provided overridables list.
@@ -161,50 +187,28 @@ const OverrideResolverLoader = function (this: LoaderContext<any>) {
  * @returns {boolean} - A boolean indicating if the source file should be processed by the override loader.
  */
 export const validateOverrideSource = (source: string, options: any = {}) => {
-    const {
-        isMonoRepo = false,
-        target = 'node',
-        overridables = [],
-        projectDir = process.cwd()
-    } = options
+    const {isMonoRepo = false, target = 'node', overridables = []} = options
     const isSetupFile = SETUP_FILE_REGEX.test(source)
     const targetCache = OVERRIDABLE_CACHE[target as keyof typeof OVERRIDABLE_CACHE]
 
-    // Extract package path from source to check if it's an extension
-    const folderPattern = `${path.sep}${
-        isMonoRepo ? MONO_REPO_WORKSPACE_FOLDER : NODE_MODULES_FOLDER
-    }${path.sep}`
-    const packagePath = source.split(folderPattern)[1]?.split(path.sep)[0]
-
-    if (!packagePath) {
-        return false
-    }
-
-    // Get full package path
-    const fullPackagePath = path.join(
-        projectDir,
-        isMonoRepo ? MONO_REPO_WORKSPACE_FOLDER : NODE_MODULES_FOLDER,
-        packagePath
-    )
-
-    // Check if this package is an extension by looking for extension-meta.json
-    const isExtensionFile = isExtensionPackage(fullPackagePath)
-
     // Exit early if we have:
     // 1. Processed this file already.
-    // 2. The file is not an extension file.
-    // 3. The file is an extension setup file.
-    if (targetCache.includes(source) || !isExtensionFile || isSetupFile) {
+    // 2. The file is an extension setup file.
+    if (targetCache.includes(source) || isSetupFile) {
         return false
     }
 
-    // Because our webpack configuration is setup to resolve symlinks, we need to normalize the source path because
-    // the source path passed to the loaded is not representative of what you would see in a generated project (e.g.
-    // it doesn't resolve to being in the node_modules folder).
-    let normalizedSource = ''
+    const extensionPath = getExtensionPath(source)
+    const isExtensionFile = extensionPath ? isExtensionPackage(extensionPath) : false
 
-    // We are only concerned with the source path relative to the extension package namespace.
-    normalizedSource = `${
+    // Exit if the source path doesn't belong to an extension package
+    if (!isExtensionFile) {
+        return false
+    }
+
+    // Normalize the source path
+    // We are only concerned with the source path relative to the extension package namespace
+    const packagePath =
         source
             .split(
                 `${path.sep}${isMonoRepo ? MONO_REPO_WORKSPACE_FOLDER : NODE_MODULES_FOLDER}${
@@ -212,16 +216,13 @@ export const validateOverrideSource = (source: string, options: any = {}) => {
                 }`
             )
             .pop() ?? ''
-    }`
 
     // At this point the path is either POSIX or windows, we need to normalize it to POSIX.
-    normalizedSource = normalizedSource.replace(/\\/g, '/')
+    let normalizedSource = path.posix.normalize(packagePath.replace(/\\/g, '/'))
 
-    // NOTE:
-    // For now we are going to make the assumption that all the extension projects in our mono repo
-    // are part of the `@salesforce` namespace, this is pretty safe. So we are going to add the namespace.
+    // Add appropriate prefixes for mono-repo packages in the @salesforce namespace.
     normalizedSource = `./${NODE_MODULES_FOLDER}/${
-        isMonoRepo ? EXTENSION_PACKAGE_NAMESPACE + path.posix.sep : ''
+        isMonoRepo ? `${EXTENSION_PACKAGE_NAMESPACE}${path.posix.sep}` : ''
     }${normalizedSource}`
 
     // Check if the normalized source is in the list of overridables.
