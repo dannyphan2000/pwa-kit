@@ -44,17 +44,24 @@ const {handler} = runtime.createHandler(options, (app) => {
                 directives: {
                     'img-src': [
                         // Default source for product images - replace with your CDN
-                        '*.commercecloud.salesforce.com'
+                        '*.commercecloud.salesforce.com',
+                        '*.site.com'
                     ],
                     'script-src': [
                         // Used by the service worker in /worker/main.js
-                        'storage.googleapis.com'
+                        'storage.googleapis.com',
+                        '*.site.com'
                     ],
                     'connect-src': [
                         // Connect to Einstein APIs
-                        'api.cquotient.com'
-                    ]
+                        'api.cquotient.com',
+                        '*.salesforce-scrt.com'
+                    ],
+                    'frame-src': ['*.site.com']
                 }
+            },
+            referrerPolicy: {
+                policy: 'strict-origin-when-cross-origin'
             }
         })
     )

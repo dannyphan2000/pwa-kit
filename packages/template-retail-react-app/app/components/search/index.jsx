@@ -29,6 +29,14 @@ import debounce from 'lodash/debounce'
 import {RECENT_SEARCH_KEY, RECENT_SEARCH_LIMIT, RECENT_SEARCH_MIN_LENGTH} from '../../constants'
 import {productUrlBuilder, searchUrlBuilder, categoryUrlBuilder} from '../../utils/url'
 
+import {getConfig} from 'pwa-kit-runtime/utils/ssr-config'
+
+const onClient = typeof window !== 'undefined'
+
+function isAskAgentOnSearchEnabled(enabled, askAgentOnSearch) {
+    return enabled === 'true' && askAgentOnSearch == 'true' && onClient
+}
+
 const formatSuggestions = (searchSuggestions, input) => {
     return {
         categorySuggestions: searchSuggestions?.categorySuggestions?.categories?.map(
@@ -72,9 +80,16 @@ const formatSuggestions = (searchSuggestions, input) => {
  * @return  {React.ReactElement} - SearchInput component
  */
 const Search = (props) => {
+    const config = getConfig()
+    const {enabled, askAgentOnSearch} = JSON.parse(config.app.commerceAgent)
+    const askAgentOnSearchEnabled = isAskAgentOnSearchEnabled(enabled, askAgentOnSearch)
     const navigate = useNavigation()
     const searchSuggestion = useSearchSuggestions()
     const searchInputRef = useRef()
+    const miawChatRef = useRef({
+        newChatLaunched: false,
+        hasFired: false
+    })
     const [isOpen, setIsOpen] = useState(false)
     const recentSearches = getSessionJSONItem(RECENT_SEARCH_KEY)
     const searchSuggestions = formatSuggestions(
@@ -131,6 +146,46 @@ const Search = (props) => {
         setIsOpen(false)
     }
 
+    useEffect(() => {
+        const handleEmbeddedMessageSent = (e) => {
+            if (!miawChatRef.current.hasFired && miawChatRef.current.newChatLaunched) {
+                if (
+                    e.detail.conversationEntry?.sender?.role === 'Chatbot' &&
+                    searchInputRef?.current?.value
+                ) {
+                    miawChatRef.current.hasFired = true
+                    setTimeout(() => {
+                        window.embeddedservice_bootstrap.utilAPI.sendTextMessage(
+                            searchInputRef.current.value.trim()
+                        )
+                    }, 500)
+                }
+            }
+        }
+
+        window.addEventListener('onEmbeddedMessageSent', handleEmbeddedMessageSent)
+
+        return () => {
+            // Clean up
+            window.removeEventListener('onEmbeddedMessageSent', handleEmbeddedMessageSent)
+        }
+    }, [])
+    const launchChat = () => {
+        window.embeddedservice_bootstrap.utilAPI
+            .launchChat()
+            .then((successMessage) => {
+                /* TODO: With the Salesforce Winter '26 release, we will be able to use the
+                 * onEmbeddedMessagingFirstBotMessageSent event instead, and get rid of this logic. */
+                if (successMessage.includes('Successfully initialized the messaging client')) {
+                    miawChatRef.current.hasFired = false //We want the logic in onEmbeddedMessageSent to happen once per new conversation
+                    miawChatRef.current.newChatLaunched = true
+                }
+            })
+            .catch((err) => {
+                console.error('launchChat error', err)
+            })
+    }
+
     const onSubmitSearch = (e) => {
         e.preventDefault()
         // Avoid blank spaces to be searched
@@ -139,6 +194,25 @@ const Search = (props) => {
         if (searchText.length < 1) {
             return
         }
+
+        if (askAgentOnSearchEnabled && window.embeddedservice_bootstrap) {
+            // Add a 500ms delay before sending the message to ensure the experience isn't jarring to the user
+            setTimeout(() => {
+                window.embeddedservice_bootstrap.utilAPI
+                    .sendTextMessage(searchText)
+                    .catch((err) => {
+                        console.error(err)
+                        if (
+                            err.includes(
+                                'invoke API before the onEmbeddedMessagingConversationOpened event is fired'
+                            )
+                        ) {
+                            launchChat()
+                        }
+                    })
+            }, 500)
+        }
+
         saveRecentSearch(searchText)
         clearInput()
         navigate(searchUrlBuilder(searchText))

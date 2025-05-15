@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {useHistory, useLocation} from 'react-router-dom'
 import {getAssetUrl} from 'pwa-kit-react-sdk/ssr/universal/utils'
@@ -57,6 +57,9 @@ import Seo from '../seo'
 import {resolveSiteFromUrl} from '../../utils/site-utils'
 import useMultiSite from '../../hooks/use-multi-site'
 
+import {getConfig} from 'pwa-kit-runtime/utils/ssr-config'
+import ShopperAgent from '../../components/shopper-agent'
+
 const App = (props) => {
     const {
         children,
@@ -87,6 +90,12 @@ const App = (props) => {
 
     // Set up customer and basket
     useShopper({currency})
+    const config = getConfig()
+
+    const commerceAgentConfiguration = useMemo(() => {
+        const {commerceAgent} = config.app
+        return JSON.parse(commerceAgent)
+    }, [config?.app])
 
     const wishlist = useWishlist()
     useEffect(() => {
@@ -205,6 +214,14 @@ const App = (props) => {
                                 {/* A wider fallback for user locales that the app does not support */}
                                 <link rel="alternate" hrefLang="x-default" href={`${appOrigin}/`} />
                             </Seo>
+
+                            <ShopperAgent
+                                commerceAgentConfiguration={commerceAgentConfiguration}
+                                domainUrl={`${appOrigin}${buildUrl(location.pathname)}`}
+                                locale={locale?.id}
+                                basketId={'fake-basket-id'}
+                                basketDoneLoading={true}
+                            />
 
                             <ScrollToTop />
 

@@ -8,6 +8,7 @@ const sites = require('./sites.js')
 
 module.exports = {
     app: {
+        commerceAgent: process.env.COMMERCE_AGENT_SETTINGS || JSON.stringify({enabled: 'false'}),
         url: {
             site: 'path',
             locale: 'path',
@@ -22,9 +23,9 @@ module.exports = {
         commerceAPI: {
             proxyPath: `/mobify/proxy/api`,
             parameters: {
-                clientId: 'c9c45bfd-0ed3-4aa2-9971-40f88962b836',
-                organizationId: 'f_ecom_zzrf_001',
-                shortCode: '8o7m175y',
+                clientId: 'd25242d4-76dd-4c42-9256-bbe37c69b508',
+                organizationId: 'f_ecom_zzeu_063',
+                shortCode: 'kv7kzm78',
                 siteId: 'RefArchGlobal'
             }
         },
@@ -55,7 +56,7 @@ module.exports = {
                 path: 'api'
             },
             {
-                host: 'zzrf-001.dx.commercecloud.salesforce.com',
+                host: 'zzeu-063.dx.commercecloud.salesforce.com',
                 path: 'ocapi'
             }
         ]
