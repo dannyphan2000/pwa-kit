@@ -13,10 +13,10 @@
 ## v4.0.0-dev (Jun 21, 2024)
 - Integrate Application Extensions Project. (#2099)[https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2099]
 
-## v3.10.0 (Feb 18, 2025)
+## v3.10.0-dev.1 (Apr 30, 2025)
 
 ## v3.9.2 (Mar 08, 2025)
-- Disable CloudWatch metrics sender retries [#2304](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2304) 
+- Disable CloudWatch metrics sender retries [#2304](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2304)
 
 ## v3.9.1 (Mar 05, 2025)
 - Update PWA-Kit SDKs to v3.9.1 [#2301](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2301)

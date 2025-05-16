@@ -10,7 +10,7 @@ const {program} = require('commander')
 const {mkdirIfNotExists} = require('./utils.js')
 
 const main = async (opts) => {
-    const {projectKey, projectConfig} = opts
+    const {projectKey, projectConfig, templateVersion} = opts
 
     if (!projectKey && !projectConfig) {
         console.error('You must provide either <project-key> or <project-config>.')
@@ -44,6 +44,11 @@ const main = async (opts) => {
         if (preset) {
             generateAppCommand = `${config.GENERATOR_CMD} ${outputDir} --preset ${preset}`
         }
+
+        if (templateVersion) {
+            generateAppCommand = `${generateAppCommand} --templateVersion ${templateVersion}`
+        }
+        console.log('Running command:', generateAppCommand)
         return await runGeneratorWithResponses(generateAppCommand, cliResponses)
     } catch (err) {
         // Generator failed to create project
@@ -54,33 +59,34 @@ const main = async (opts) => {
 
 // Define the program with description and arguments
 program
-  .description(
-    "Generate a retail-react-app project using the key <project-key> or the JSON <project-config>"
-  )
-  .option("--project-key <key>", "Project key", (value) => {
-    const validKeys = [
-      "retail-app-demo",
-      "retail-app-private-client",
-    ];
-    if (!validKeys.includes(value)) {
-      throw new Error("Invalid project key.");
-    }
-    return value;
-  })
-  .option(
-    "--project-config <config>",
-    "Project config as JSON string",
-    (value) => {
-      try {
-        return JSON.parse(value);
-      } catch (e) {
-        throw new Error("Invalid JSON string.");
-      }
-    }
-  )
-  .action((options) => {
-    // Call the main function with parsed options
-    main(options);
-  });
+    .description(
+        'Generate a retail-react-app project using the key <project-key> or the JSON <project-config>'
+    )
+    .option('--project-key <key>', 'Project key', (value) => {
+        const validKeys = [
+            'retail-app-demo',
+            'retail-app-ext',
+            'retail-app-no-ext',
+            'retail-app-private-client',
+            'retail-react-app-bug-bounty',
+            'retail-react-app-demo-site'
+        ]
+        if (!validKeys.includes(value)) {
+            throw new Error('Invalid project key.')
+        }
+        return value
+    })
+    .option('--project-config <config>', 'Project config as JSON string', (value) => {
+        try {
+            return JSON.parse(value)
+        } catch (e) {
+            throw new Error('Invalid JSON string.')
+        }
+    })
+    .option('--templateVersion <templateVersion>', 'Template version used to generate the project')
+    .action((options) => {
+        // Call the main function with parsed options
+        main(options)
+    })
 
 program.parse(process.argv)
