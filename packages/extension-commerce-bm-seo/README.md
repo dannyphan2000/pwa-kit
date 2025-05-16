@@ -62,10 +62,6 @@ The SEO extension is configured via the `mobify.app.extensions` property in your
 }
 ```
 
-Please note that the this extension needs to be defined in the array before any other extension that uses `isNavigationBlocked` to
-toggle the rendering of `<WrappedComponent />` in the extension's HOC. Otherwise, `extension-commerce-bm-seo` will not be able to
-set `isNavigationBlocked` back to a state to allow the rendering of `<WrappedComponent />` since its logic is within the component. 
-
 ### Configuration Options
 
 - `routingMode`: Determines how the extension handles URL mapping
