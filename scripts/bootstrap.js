@@ -23,7 +23,7 @@ const npmCmd = process.env.npm_config_argv
 const ciCommand = npmCmd === 'ci'
 
 // Run build before bootstrap
-childProc.execSync('npm run build', {stdio: 'inherit'})
+childProc.execSync('npx lerna run build --stream', {stdio: 'inherit'})
 
 // Note: We reduce concurrency and increase verbosity on CI environments.
 // They are often memory-constrained and kill processes which produce no
