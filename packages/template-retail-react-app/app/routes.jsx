@@ -48,6 +48,9 @@ const ProductDetail = loadable(() => import('./pages/product-detail'), {fallback
 const ProductList = loadable(() => import('./pages/product-list'), {
     fallback
 })
+const ProductSearch = loadable(() => import('./pages/product-search'), {
+    fallback
+})
 const StoreLocator = loadable(() => import('./pages/store-locator'), {
     fallback
 })
@@ -122,6 +125,10 @@ export const routes = [
     {
         path: '/search',
         component: ProductList
+    },
+    {
+        path: '/product-search',
+        component: ProductSearch
     },
     {
         path: '/category/:categoryId',

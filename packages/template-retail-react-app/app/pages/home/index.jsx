@@ -19,8 +19,7 @@ import {
     Text,
     Flex,
     Stack,
-    Container,
-    Link
+    Container
 } from '@salesforce/retail-react-app/app/components/shared/ui'
 
 // Project Components
@@ -28,7 +27,8 @@ import Hero from '@salesforce/retail-react-app/app/components/hero'
 import Seo from '@salesforce/retail-react-app/app/components/seo'
 import Section from '@salesforce/retail-react-app/app/components/section'
 import ProductScroller from '@salesforce/retail-react-app/app/components/product-scroller'
-
+import Todo from '@salesforce/retail-react-app/app/components/todo'
+import Link from '@salesforce/retail-react-app/app/components/link'
 // Others
 import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
 import {heroFeatures, features} from '@salesforce/retail-react-app/app/pages/home/data'
@@ -86,6 +86,24 @@ const Home = () => {
 
     return (
         <Box data-testid="home-page" layerStyle="page">
+            <Link color="teal.500" to={'/product-search?q=shirt'}>
+                Shirts
+            </Link>
+            {/* Todo Component Section */}
+            <Section
+                padding={4}
+                paddingTop={16}
+                title={intl.formatMessage({
+                    defaultMessage: 'Todo List',
+                    id: 'home.heading.todo_list'
+                })}
+                subtitle={intl.formatMessage({
+                    defaultMessage: 'Example Todo list fetched from JSONPlaceholder API',
+                    id: 'home.description.todo_list'
+                })}
+            >
+                <Todo />
+            </Section>
             <Seo
                 title="Home Page"
                 description="Commerce Cloud Retail React App"

@@ -312,6 +312,7 @@ const {handler} = runtime.createHandler(options, (app) => {
                         'storage.googleapis.com'
                     ],
                     'connect-src': [
+                        'jsonplaceholder.typicode.com',
                         // Connect to Einstein APIs
                         'api.cquotient.com',
                         // Connect to DataCloud APIs
