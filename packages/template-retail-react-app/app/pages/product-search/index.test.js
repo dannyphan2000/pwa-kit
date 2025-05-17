@@ -55,7 +55,6 @@ describe('ProductSearch', () => {
     // Restore all mocks after each test
     afterEach(() => {
         jest.restoreAllMocks()
-        localStorage.clear()
     })
 
     test('should render loading state', async () => {
