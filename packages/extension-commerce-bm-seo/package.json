@@ -1,6 +1,6 @@
 {
   "name": "@salesforce/extension-commerce-bm-seo",
-  "version": "0.1.0-extensibility-preview.4",
+  "version": "0.1.0-extensibility-preview.5",
   "private": false,
   "scripts": {
     "lint": "npm run lint:js",
