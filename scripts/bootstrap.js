@@ -22,6 +22,9 @@ const npmCmd = process.env.npm_config_argv
     : process.env.npm_command
 const ciCommand = npmCmd === 'ci'
 
+// Run build before bootstrap
+childProc.execSync('npm run build', {stdio: 'inherit'})
+
 // Note: We reduce concurrency and increase verbosity on CI environments.
 // They are often memory-constrained and kill processes which produce no
 // output for too long.
