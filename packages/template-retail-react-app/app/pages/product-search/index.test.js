@@ -6,14 +6,9 @@
  */
 
 import React from 'react'
-import PropTypes from 'prop-types'
 import {screen, waitFor} from '@testing-library/react'
 // import {rest} from 'msw'
-import {Route, Switch} from 'react-router-dom'
-import {
-    renderWithProviders,
-    createPathWithDefaults
-} from '@salesforce/retail-react-app/app/utils/test-utils'
+import {renderWithProviders} from '@salesforce/retail-react-app/app/utils/test-utils'
 import ProductSearch from '.'
 import {prependHandlersToServer} from '@salesforce/retail-react-app/jest-setup'
 
@@ -39,26 +34,6 @@ const mockProductSearchResult = {
     pagination: {
         urls: {}
     }
-}
-
-// Mock component wrapper to provide routing
-const MockedComponent = ({isLoading}) => {
-    return (
-        <Switch>
-            <Route
-                path={[createPathWithDefaults('/product-search')]}
-                render={(props) => (
-                    <div>
-                        <ProductSearch {...props} isLoading={isLoading} />
-                    </div>
-                )}
-            />
-        </Switch>
-    )
-}
-
-MockedComponent.propTypes = {
-    isLoading: PropTypes.bool
 }
 
 describe('ProductSearch', () => {
@@ -94,7 +69,7 @@ describe('ProductSearch', () => {
             }
         ])
         window.history.pushState({}, 'ProductSearch', '/uk/en-GB/product-search?q=shirt')
-        renderWithProviders(<MockedComponent />)
+        renderWithProviders(<ProductSearch />)
 
         await waitFor(() => {
             expect(screen.getByText(/Loading/i)).toBeInTheDocument()
@@ -103,7 +78,7 @@ describe('ProductSearch', () => {
 
     test('should render product search page with results', async () => {
         window.history.pushState({}, 'ProductSearch', '/uk/en-GB/product-search?q=shirt')
-        renderWithProviders(<MockedComponent />)
+        renderWithProviders(<ProductSearch />)
 
         expect(await screen.findByTestId('sf-product-search-page')).toBeInTheDocument()
         await waitFor(() => {
