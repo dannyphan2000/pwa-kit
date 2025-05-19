@@ -83,6 +83,10 @@ class CommerceAPI {
         // - boolean, if you want to affect _all_ methods for a given API
         // - OR an array (listing the API's methods), if you want to affect only certain methods of an API
         const apiConfigs = {
+            shopperCustomers: {
+                api: sdk.ShopperCustomers,
+                sendLocale: false
+            },
             shopperBaskets: {
                 api: ShopperBaskets,
                 sendLocale: false,
@@ -117,7 +121,6 @@ class CommerceAPI {
         }
 
         this._reactSdkClients = {
-            shopperCustomers: new sdk.ShopperCustomers(this._reactSdkConfig),
             shopperLogin: new sdk.ShopperLogin(this._reactSdkConfig)
         }
 
@@ -211,9 +214,10 @@ class CommerceAPI {
 
         // For hybrid stability improvements, we need to send the dwsid cookie with each request
         // using the `sfdc_dwsid` header if the dwsid cookie is present.
-        if (this.auth.dwsid) {
+        const dwsid = this.auth.get('dwsid')
+        if (dwsid) {
             dwsidHeader = {
-                [DWSID_HEADER_KEY]: this.auth.dwsid
+                [DWSID_HEADER_KEY]: dwsid
             }
         }
 

@@ -4,9 +4,16 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {useMemo} from 'react'
+import {useContext, useMemo} from 'react'
 import {nanoid} from 'nanoid'
-import {useCommerceAPI} from '../contexts'
+import {useCommerceAPI, CustomerContext} from '../contexts'
+
+const AuthTypes = Object.freeze({GUEST: 'guest', REGISTERED: 'registered'})
+
+import {
+    AuthHelpers,
+    useAuthHelper,
+} from '@salesforce/commerce-sdk-react'
 
 // This value represents the max age in milliseconds a customer can be before they are
 // no longer considered a "new" customer.
@@ -14,35 +21,13 @@ import {useCommerceAPI} from '../contexts'
 // a new customer.
 const NEW_CUSTOMER_MAX_AGE = 2 * 1000 // 2 seconds in milliseconds
 
-const isClient = typeof window !== 'undefined'
-
-import {
-    AuthHelpers,
-    useAuthHelper,
-    useShopperCustomersMutation,
-    useCustomerOrders
-} from '@salesforce/commerce-sdk-react'
-import {useCurrentCustomer} from './useCurrentCustomer'
-
 export default function useCustomer() {
     const api = useCommerceAPI()
-    const {data: customer} = useCurrentCustomer()
-    const {data: {data: orders, ...paging} = {}} = useCustomerOrders(
-        {
-            parameters: {customerId: customer?.customerId, limit: 10, offset: 0}
-        },
-        {enabled: isClient && !!customer?.customerId}
-    )
+    const {customer, setCustomer} = useContext(CustomerContext)
+
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const logout = useAuthHelper(AuthHelpers.Logout)
     const register = useAuthHelper(AuthHelpers.Register)
-    const updateCustomerMutation = useShopperCustomersMutation('updateCustomer')
-    const createCustomerAddress = useShopperCustomersMutation('createCustomerAddress')
-    const updateCustomerAddress = useShopperCustomersMutation('updateCustomerAddress')
-    const getResetPasswordToken = useShopperCustomersMutation('getResetPasswordToken')
-    const createCustomerPaymentInstrument = useShopperCustomersMutation('createCustomerPaymentInstrument')
-    const deleteCustomerPaymentInstrument = useShopperCustomersMutation('deleteCustomerPaymentInstrument')
-    const removeCustomerAddress = useShopperCustomersMutation('removeCustomerAddress')
 
     const self = useMemo(() => {
         return {
@@ -59,21 +44,21 @@ export default function useCustomer() {
              * Returns boolean value whether the customer is of type `registered` or not.
              */
             get isRegistered() {
-                return customer?.isRegistered
+                return customer?.authType === AuthTypes.REGISTERED
             },
 
             /**
              * Returns boolean value whether the customer is of type `guest` or not.
              */
             get isGuest() {
-                return customer?.isGuest
+                return customer?.authType === AuthTypes.GUEST
             },
 
             /**
              * Returns if this customer is newly registered.
              */
             get isNew() {
-                if (!customer || !customer?.isRegistered) return false
+                if (!customer || customer.authType !== 'registered') return false
                 const lastLoginTimeStamp = Date.parse(customer.lastLoginTime)
                 const creationTimeStamp = Date.parse(customer.creationDate)
                 return lastLoginTimeStamp - creationTimeStamp < NEW_CUSTOMER_MAX_AGE
@@ -102,10 +87,25 @@ export default function useCustomer() {
              * @param {string} credentials.password
              */
             async login(credentials) {
-                await login.mutateAsync({
-                    username: credentials.email,
-                    password: credentials.password
-                })
+                await api.auth.ready();
+                console.log('Customer Id', api.auth.get('customer_id'))
+                let skeletonCustomer = {
+                    customerId: api.auth.get('customer_id'),
+                    authType: api.auth.get('customer_type')
+                }
+                console.log('skeletonCustomer', skeletonCustomer)
+                if (credentials) {
+                    skeletonCustomer = await login.mutateAsync(credentials)
+                    console.log('skeletonCustomer login', skeletonCustomer)
+                }
+                if (skeletonCustomer.authType === 'guest') {
+                    setCustomer(skeletonCustomer)
+                } else {
+                    const customer = await api.shopperCustomers.getCustomer({
+                        parameters: {customerId: skeletonCustomer.customerId}
+                    })
+                    setCustomer(customer)
+                }
             },
 
             /**
@@ -113,14 +113,19 @@ export default function useCustomer() {
              * and retrive a guest access token
              */
             async logout() {
-                await logout.mutateAsync()
+                const customer = await api.auth.logout()
+                setCustomer(customer)
             },
 
             /**
              * Fetch current customer information.
              */
             async getCustomer() {
-                return customer
+                setCustomer(
+                    await api.shopperCustomers.getCustomer({
+                        parameters: {customerId: customer.customerId}
+                    })
+                )
             },
 
             /**
@@ -147,13 +152,14 @@ export default function useCustomer() {
                     password: data.password
                 }
 
-                await register.mutateAsync(body, {
-                    onSuccess: (response) => {
-                        if (response.detail && response.title && response.type) {
-                            throw new Error(response.detail)
-                        }
-                    }
-                })
+                const response = await api.shopperCustomers.registerCustomer({body})
+                // Check for error json response
+                if (response.detail && response.title && response.type) {
+                    throw new Error(response.detail)
+                }
+
+                // Send a new login request with the given credentials to ensure tokens are updated.
+                await self.login({email: data.email, password: data.password})
             },
 
             /**
@@ -181,24 +187,20 @@ export default function useCustomer() {
                     login: data.email
                 }
 
-                try {
-                    updateCustomerMutation.mutate(
-                        {
-                            parameters: {customerId: customer.customerId},
-                            body
-                        },
-                        {
-                            onSuccess: (response) => {
-                                // Check for error json response
-                                if (response.detail && response.title && response.type) {
-                                    throw new Error(response.detail)
-                                }
-                            }
-                        }
-                    )
-                } catch (error) {
-                    throw new Error(error)
+                const response = await api.shopperCustomers.updateCustomer({
+                    body,
+                    parameters: {customerId: customer.customerId}
+                })
+
+                // Check for error json response
+                if (response.detail && response.title && response.type) {
+                    throw new Error(response.detail)
                 }
+
+                // This previous request does return the updated customer profile, however it does
+                // not include the 'entire' customer. It is missing address and payment methods.
+                // We need to refetch the customer to make sure everything is up to date.
+                await self.getCustomer()
             },
 
             /**
@@ -248,11 +250,12 @@ export default function useCustomer() {
              * @param {string} login - customer email address
              */
             async getResetPasswordToken(login) {
-                await getResetPasswordToken.mutateAsync({body: {login}, onSuccess: (response) => {
-                    if (response.detail && response.title && response.type) {
-                        throw new Error(response.detail)
-                    }
-                }})
+                const response = await api.shopperCustomers.getResetPasswordToken({body: {login}})
+
+                // Check for error json response
+                if (response.detail && response.title && response.type) {
+                    throw new Error(response.detail)
+                }
             },
 
             /**
@@ -271,10 +274,13 @@ export default function useCustomer() {
                     ...address
                 }
 
-                await createCustomerAddress.mutateAsync({
+                await api.shopperCustomers.createCustomerAddress({
                     body,
                     parameters: {customerId: customer.customerId}
                 })
+
+                // This endpoint does not return the updated customer object, so we manually fetch it
+                await self.getCustomer()
             },
 
             /**
@@ -286,13 +292,13 @@ export default function useCustomer() {
             async updateSavedAddress(address) {
                 const body = address
 
-                await updateCustomerAddress.mutateAsync({
-                    body: address,
-                    parameters: {
-                        customerId: customer.customerId,
-                        addressName: address.addressId
-                    }
+                await api.shopperCustomers.updateCustomerAddress({
+                    body,
+                    parameters: {customerId: customer.customerId, addressName: address.addressId}
                 })
+
+                // This endpoint does not return the updated customer object, so we manually fetch it
+                await self.getCustomer()
             },
 
             /**
@@ -311,10 +317,13 @@ export default function useCustomer() {
                         securityCode: undefined
                     }
                 }
-                await createCustomerPaymentInstrument.mutateAsync({
+                await api.shopperCustomers.createCustomerPaymentInstrument({
                     body,
                     parameters: {customerId: customer.customerId}
                 })
+
+                // This endpoint does not return the updated customer object, so we manually fetch it
+                await self.getCustomer()
             },
 
             /**
@@ -325,12 +334,15 @@ export default function useCustomer() {
             async removeSavedPaymentInstrument(paymentInstrumentId) {
                 // This SDK method must be called with `true` as second argument to avoid an error in
                 // the sdk where it tries parsing json from an empty http response.
-                await deleteCustomerPaymentInstrument.mutateAsync(
+                await api.shopperCustomers.deleteCustomerPaymentInstrument(
                     {
                         parameters: {customerId: customer.customerId, paymentInstrumentId}
                     },
                     true
                 )
+
+                // This endpoint does not return the updated customer object, so we manually fetch it
+                await self.getCustomer()
             },
 
             /**
@@ -341,16 +353,22 @@ export default function useCustomer() {
             async removeSavedAddress(addressId) {
                 // This SDK method must be called with `true` as second argument to avoid an error in
                 // the sdk where it tries parsing json from an empty http response.
-                await removeCustomerAddress.mutateAsync(
+                await api.shopperCustomers.removeCustomerAddress(
                     {
                         parameters: {customerId: customer.customerId, addressName: addressId}
                     },
                     true
                 )
+
+                // This endpoint does not return the updated customer object, so we manually fetch it
+                await self.getCustomer()
             },
 
-            async getCustomerOrders() {
-                return {data: orders, ...paging}
+            async getCustomerOrders(params) {
+                const response = await api.shopperCustomers.getCustomerOrders({
+                    parameters: {customerId: customer.customerId, offset: 0, limit: 10, ...params}
+                })
+                return response
             },
 
             async getOrder(orderNo) {
@@ -374,7 +392,7 @@ export default function useCustomer() {
                 return productMap
             }
         }
-    }, [customer])
+    }, [customer, setCustomer])
 
     return self
 }
