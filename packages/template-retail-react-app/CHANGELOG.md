@@ -100,6 +100,10 @@
 - Add aria-label for Checkout's action buttons [#1906](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1906)
 - Avoid forced focus changes that are not user-initiated [#1940](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/1940)
 
+### Other Changes
+
+- Improved the layout of product tiles in product scroll and product list [#2434](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2434)
+
 ## v3.0.2 (Jul 11, 2024)
 
 ### Bug Fixes
