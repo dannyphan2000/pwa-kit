@@ -68,14 +68,15 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         const appOrigin = getAppOrigin()
 
         const urlSegment: string = locals.originalUrl.split('?')[0]
+        console.log('(YUNA3333333333333) urlSegment', urlSegment)
 
         const {routingMode} = config
 
         if (routingMode === ROUTING_MODE.ROUTER_FIRST) {
             // Only call matchPath if routingMode is ROUTER_FIRST
-            const matchedPath = matchPath(urlSegment, this.getRoutes({locals}), {filterWildcardRoutes: true})
+            const matchedPath = matchPath(urlSegment, locals.currentRoutes, {filterWildcardRoutes: true})
             if (matchedPath) {
-                return matchedPath
+                return [matchedPath]
             }
         }
 
@@ -85,6 +86,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
             urlMapping = await shopperSeo.getUrlMapping({
                 parameters: {urlSegment}
             })
+            console.log('(DIANA API CALL) urlMapping', urlMapping)
         } catch (e) {
             console.error(`Couldn't find mapping for given segment: ${urlSegment}`)
         }
