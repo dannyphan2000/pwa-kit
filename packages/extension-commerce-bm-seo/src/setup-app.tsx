@@ -81,6 +81,7 @@ class CommerceBmSeo extends ApplicationExtension<Config> {
         }
 
         // Make SEO GET Url Mapping API call
+        // TODO W-18474745: Use existing client instead of creating a new one
         const shopperSeo = await getShopperSeoClient(locals, config)
         try {
             urlMapping = await shopperSeo.getUrlMapping({

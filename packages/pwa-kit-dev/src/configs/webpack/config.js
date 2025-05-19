@@ -175,6 +175,7 @@ const baseConfig = (target) => {
         throw Error(`The value "${target}" is not a supported webpack target`)
     }
 
+    const extensions = getConfiguredExtensions(getConfig())
     class Builder {
         constructor() {
             this.config = {
@@ -239,7 +240,7 @@ const baseConfig = (target) => {
                 },
                 plugins: [
                     new ApplicationExtensionConfigPlugin({
-                        extensions: getConfiguredExtensions(getConfig())
+                        extensions
                     }),
                     new webpack.DefinePlugin({
                         DEBUG,
@@ -284,17 +285,23 @@ const baseConfig = (target) => {
                         },
                         ruleForApplicationExtensibility({
                             loaderOptions: {
-                                configured: getConfiguredExtensions(getConfig()),
+                                configured: extensions,
                                 target: 'web'
                             }
                         }),
                         ruleForApplicationExtensibility({
                             loaderOptions: {
-                                configured: getConfiguredExtensions(getConfig()),
+                                configured: extensions,
                                 target: 'node'
                             }
                         }),
-                        ruleForOverrideResolver({target, projectDir, isMonoRepo})
+                        ruleForOverrideResolver({
+                            extensions,
+                            resolveExtensions: SUPPORTED_FILE_EXTENSIONS,
+                            isMonoRepo,
+                            projectDir,
+                            target
+                        })
                     ].filter(Boolean)
                 }
             }
