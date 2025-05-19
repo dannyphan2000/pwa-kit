@@ -94,7 +94,7 @@ VisaSymbol.viewBox = VisaSymbol.viewBox || '0 0 38 22'
  *      pass an intl object from react-intl as a prop to translate the messages.
  */
 /* istanbul ignore next */
-export const icon = (name, passProps, localizationAttributes, css) => {
+export const icon = (name, passProps, localizationAttributes) => {
     const displayName = name
         .toLowerCase()
         .replace(/(?:^|[\s-/])\w/g, (match) => match.toUpperCase())
@@ -125,10 +125,11 @@ export const icon = (name, passProps, localizationAttributes, css) => {
         return (
             <Icon
                 ref={ref}
+                viewBox="0 0 24 24"
                 role="img"
                 aria-label={name}
                 as="svg"
-                css={{...baseStyles, ...props.css}}
+                css={{...baseStyles, ...css}}
                 {...restOfProps}
                 {...passProps}
             >
@@ -138,7 +139,8 @@ export const icon = (name, passProps, localizationAttributes, css) => {
     })
 
     component.propTypes = {
-        intl: PropTypes.object
+        intl: PropTypes.object,
+        css: PropTypes.object
     }
 
     component.displayName = `${displayName}Icon`
