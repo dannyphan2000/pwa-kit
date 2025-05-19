@@ -45,14 +45,23 @@ import headerRecipe from './components/project/header'
 // import LocaleSelector from './components/project/locale-selector'
 import offlineBannerRecipe from './components/project/offline-banner'
 // import Pagination from './components/project/pagination'
-// import ProductTile from './components/project/product-tile'
+import productTile from './components/project/product-tile'
 // import SocialIcons from './components/project/social-icons'
-// import SwatchGroup from './components/project/swatch-group'
+import swatchGroup from './components/project/swatch-group'
 // import ImageGallery from './components/project/image-gallery'
 
 // Please refer to the Chakra-Ui theme customization docs found
 // here https://chakra-ui.com/docs/theming/customize-theme to learn
 // more about extending and overriding themes for your project.
+
+export const breakpoints = {
+    base: '0em',
+    sm: '30em',
+    md: '48em',
+    lg: '62em',
+    xl: '80em',
+    '2xl': '96em'
+}
 
 export const overrides = defineConfig({
     ...styles,
@@ -67,7 +76,8 @@ export const overrides = defineConfig({
                 heading: `-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
                 body: `-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"`,
                 mono: `SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace`
-            }
+            },
+            breakpoints
         },
         semanticTokens: {
             shadows
@@ -97,7 +107,9 @@ export const overrides = defineConfig({
             // project components
             app: appRecipe,
             header: headerRecipe,
-            offlineBanner: offlineBannerRecipe
+            offlineBanner: offlineBannerRecipe,
+            productTile: productTile,
+            swatchGroup: swatchGroup
         }
         // components: {
         //     // base components

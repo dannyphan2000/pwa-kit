@@ -7,7 +7,7 @@
 
 import React, {useCallback, useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {Button, Box, Center, useMultiStyleConfig} from '@chakra-ui/react'
+import {Button, Box, Center, useSlotRecipe} from '@chakra-ui/react'
 import {Link as RouteLink} from 'react-router-dom'
 import {useBreakpointValue} from '@chakra-ui/react'
 
@@ -27,7 +27,10 @@ const Swatch = ({
     handleSelect,
     variant = 'square'
 }) => {
-    const styles = useMultiStyleConfig('SwatchGroup', {variant, disabled, selected})
+    const recipe = useSlotRecipe({
+        key: 'swatchGroup'
+    })
+    const styles = recipe({variant, disabled, selected})
     const isDesktop = useBreakpointValue({base: false, lg: true})
     const [selectHandlers, setSelectHandlers] = useState({})
 
@@ -63,7 +66,7 @@ const Swatch = ({
             tabIndex={isFocusable ? 0 : -1}
             {...(href ? {} : selectHandlers)}
         >
-            <Center {...styles.swatchButton}>
+            <Center css={styles.swatchButton}>
                 {children}
                 {label && <Box>{label}</Box>}
             </Center>

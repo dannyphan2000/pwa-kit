@@ -139,11 +139,12 @@ const ProductScroller = forwardRef(
                                     id: 'product_scroller.assistive_msg.scroll_left',
                                     defaultMessage: 'Scroll products left'
                                 })}
-                                icon={<ChevronLeftIcon color="black" />}
                                 borderRadius="full"
-                                colorScheme="whiteAlpha"
+                                colorPalette="whiteAlpha"
                                 onClick={() => scroll(-1)}
-                            />
+                            >
+                                <ChevronLeftIcon color="black" />
+                            </IconButton>
                         </Box>
 
                         <Box
@@ -162,11 +163,12 @@ const ProductScroller = forwardRef(
                                     id: 'product_scroller.assistive_msg.scroll_right',
                                     defaultMessage: 'Scroll products right'
                                 })}
-                                icon={<ChevronRightIcon color="black" />}
                                 borderRadius="full"
-                                colorScheme="whiteAlpha"
+                                colorPalette="whiteAlpha"
                                 onClick={() => scroll(1)}
-                            />
+                            >
+                                <ChevronRightIcon color="black" />
+                            </IconButton>
                         </Box>
                     </>
                 )}

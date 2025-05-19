@@ -6,7 +6,8 @@
  */
 import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {Img, Box, useTheme} from '@chakra-ui/react'
+import {Image, Box} from '@chakra-ui/react'
+import {breakpoints} from '../../theme'
 import {getResponsiveImageAttributes} from '../../utils/responsive-image'
 
 /**
@@ -19,14 +20,14 @@ import {getResponsiveImageAttributes} from '../../utils/responsive-image'
  * <DynamicImage src="http://example.com/image.jpg[?sw={width}&q=60]" widths={['50vw', '100vw', '500px']} />
  */
 const DynamicImage = ({src, widths, imageProps, as, ...rest}) => {
-    const Component = as ? as : Img
-    const theme = useTheme()
-
+    const Component = as ? as : Image
+    console.log('*************theme breakpoints=', JSON.stringify(breakpoints))
     const responsiveImageProps = useMemo(
-        () => getResponsiveImageAttributes({src, widths, breakpoints: theme.breakpoints}),
-        [src, widths, theme.breakpoints]
+        () => getResponsiveImageAttributes({src, widths, breakpoints}),
+        [src, widths, breakpoints]
     )
-
+    console.log('*************theme responsiveImageProps=', JSON.stringify(responsiveImageProps))
+    console.log('*************theme imageProps=', JSON.stringify(imageProps))
     return (
         <Box {...rest}>
             <Component {...responsiveImageProps} {...imageProps} />
