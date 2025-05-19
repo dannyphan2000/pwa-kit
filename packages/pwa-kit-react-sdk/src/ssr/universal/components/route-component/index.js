@@ -417,12 +417,12 @@ export const getAllRoutes = async (locals = {}) => {
     const {applicationExtensions = []} = locals
     await Promise.all(
         applicationExtensions.map(async (extension) => {
-            const routes = typeof extension.getRoutesAsync === 'function'
-                ? await extension.getRoutesAsync({locals})
-                : extension.getRoutes({locals})
+            const routes =
+                typeof extension.getRoutesAsync === 'function'
+                    ? await extension.getRoutesAsync({locals})
+                    : extension.getRoutes({locals})
             const safeRoutes = Array.isArray(routes) ? routes : routes ? [routes] : []
             locals.currentRoutes.push(...safeRoutes)
-            
         })
     )
 
