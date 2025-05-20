@@ -17,10 +17,10 @@ const mockProductSearchItem = {
         {
             images: [
                 {
-                    alt: 'Charcoal Single Pleat Wool Suit, , large',
+                    alt: 'Charcoal Single Pleat Wool Suit, , medium',
                     disBaseLink:
-                        'https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/ZZRF_001/on/demandware.static/-/Sites-apparel-m-catalog/default/dw175c1a89/images/large/PG.33698RUBN4Q.CHARCWL.PZ.jpg',
-                    link: 'https://zzrf-001.dx.commercecloud.salesforce.com/on/demandware.static/-/Sites-apparel-m-catalog/default/dw175c1a89/images/large/PG.33698RUBN4Q.CHARCWL.PZ.jpg',
+                        'https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/ZZRF_001/on/demandware.static/-/Sites-apparel-m-catalog/default/dw23283a20/images/medium/PG.33698RUBN4Q.CHARCWL.PZ.jpg',
+                    link: 'https://zzrf-001.dx.commercecloud.salesforce.com/on/demandware.static/-/Sites-apparel-m-catalog/default/dw23283a20/images/medium/PG.33698RUBN4Q.CHARCWL.PZ.jpg',
                     title: 'Charcoal Single Pleat Wool Suit, '
                 },
                 {
@@ -36,10 +36,10 @@ const mockProductSearchItem = {
         {
             images: [
                 {
-                    alt: 'Charcoal Single Pleat Wool Suit, Charcoal, large',
+                    alt: 'Charcoal Single Pleat Wool Suit, Charcoal, medium',
                     disBaseLink:
-                        'https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/ZZRF_001/on/demandware.static/-/Sites-apparel-m-catalog/default/dw175c1a89/images/large/PG.33698RUBN4Q.CHARCWL.PZ.jpg',
-                    link: 'https://zzrf-001.dx.commercecloud.salesforce.com/on/demandware.static/-/Sites-apparel-m-catalog/default/dw175c1a89/images/large/PG.33698RUBN4Q.CHARCWL.PZ.jpg',
+                        'https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/ZZRF_001/on/demandware.static/-/Sites-apparel-m-catalog/default/dw23283a20/images/medium/PG.33698RUBN4Q.CHARCWL.PZ.jpg',
+                    link: 'https://zzrf-001.dx.commercecloud.salesforce.com/on/demandware.static/-/Sites-apparel-m-catalog/default/dw23283a20/images/medium/PG.33698RUBN4Q.CHARCWL.PZ.jpg',
                     title: 'Charcoal Single Pleat Wool Suit, Charcoal'
                 },
                 {
@@ -762,9 +762,9 @@ const mockMasterProductHitWithMultipleVariants = {
         {
             images: [
                 {
-                    alt: 'Long Sleeve Embellished Boat Neck Top, Grey Heather, large',
+                    alt: 'Long Sleeve Embellished Boat Neck Top, Grey Heather, medium',
                     disBaseLink:
-                        'https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/ZZRF_001/on/demandware.static/-/Sites-apparel-m-catalog/default/dw3255ea4c/images/large/PG.10217069.JJ908XX.PZ.jpg',
+                        'https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/ZZRF_001/on/demandware.static/-/Sites-apparel-m-catalog/default/dwc9ce7da9/images/medium/PG.10217069.JJ908XX.PZ.jpg',
                     link: 'https://zzrf-001.dx.commercecloud.salesforce.com/on/demandware.static/-/Sites-apparel-m-catalog/default/dw3255ea4c/images/large/PG.10217069.JJ908XX.PZ.jpg',
                     title: 'Long Sleeve Embellished Boat Neck Top, Grey Heather'
                 },
