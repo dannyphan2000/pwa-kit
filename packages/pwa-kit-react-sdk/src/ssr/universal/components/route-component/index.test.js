@@ -368,6 +368,28 @@ describe('getAllRoutes', () => {
             ])
         )
     })
+
+    test('logs a warning if SEO extension is enabled but not the last extension', async () => {
+        const mockExtension1 = {
+            constructor: {name: 'CommerceBmSeo'},
+            getRoutes: jest.fn().mockReturnValue([{path: '/commerce-route', component: jest.fn()}])
+        }
+        const mockExtension2 = {
+            constructor: {name: 'ChakraStorefront'},
+            getRoutes: jest.fn().mockReturnValue([{path: '/other-route', component: jest.fn()}])
+        }
+        const locals = {currentRoutes: [], applicationExtensions: [mockExtension1, mockExtension2]}
+
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
+
+        await getAllRoutes(locals)
+
+        expect(consoleWarnSpy).toHaveBeenCalledWith([
+            'Route resolution may not work as expected because CommerceBmSeo is not the last extension'
+        ])
+
+        consoleWarnSpy.mockRestore()
+    })
 })
 
 /**

@@ -426,6 +426,15 @@ export const getAllRoutes = async (locals = {}) => {
         })
     )
 
+    // Check if an instance of 'CommerceBmSeo' is in the array and not the last extension
+    const isCommerceBmSeo = (extension) => extension.constructor.name === 'CommerceBmSeo'
+    const commerceBmSeoIndex = applicationExtensions.findIndex(isCommerceBmSeo)
+    if (commerceBmSeoIndex !== -1 && commerceBmSeoIndex !== applicationExtensions.length - 1) {
+        console.warn([
+            'Route resolution may not work as expected because CommerceBmSeo is not the last extension'
+        ])
+    }
+
     const allRoutes = [
         // NOTE: this route needs to be above _routes, in case _routes has a fallback route of `path: '*'`
         {path: '/__pwa-kit/refresh', component: Refresh},
