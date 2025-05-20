@@ -100,7 +100,7 @@ test('Renders variant details based on the selected swatch', async () => {
     fireEvent.mouseOver(swatches[0])
     await waitFor(() => screen.getByTestId('product-tile-image'))
     expect(productImage.firstChild.getAttribute('src')).toBe(
-        'https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/ZZRF_001/on/demandware.static/-/Sites-apparel-m-catalog/default/dw019d98a0/images/medium/PG.52002RUBN4Q.NAVYWL.PZ.jpg'
+        'https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/ZZRF_001/on/demandware.static/-/Sites-apparel-m-catalog/default/dwed78c6fc/images/medium/PG.52002RUBN4Q.NAVYWL.PZ.jpg'
     )
     expect(currentPriceTag).toHaveLength(1)
     expect(within(currentPriceTag[0]).getByText(/£143\.99/i)).toBeDefined()
@@ -136,7 +136,7 @@ test('Renders variant details based on the selected swatch on mobile', async () 
     fireEvent.click(swatches[0])
     await waitFor(() => screen.getByTestId('product-tile-image'))
     expect(productImage.firstChild.getAttribute('src')).toBe(
-        'https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/ZZRF_001/on/demandware.static/-/Sites-apparel-m-catalog/default/dw29b7f226/images/large/PG.52002RUBN4Q.NAVYWL.PZ.jpg'
+        'https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/ZZRF_001/on/demandware.static/-/Sites-apparel-m-catalog/default/dwed78c6fc/images/medium/PG.52002RUBN4Q.NAVYWL.PZ.jpg'
     )
     expect(currentPriceTag).toHaveLength(1)
     expect(within(currentPriceTag[0]).getByText(/£143\.99/i)).toBeDefined()
@@ -171,7 +171,7 @@ test('Renders price range with starting price and strikethrough price for master
     fireEvent.mouseOver(swatches[0])
     await waitFor(() => screen.getByTestId('product-tile-image'))
     expect(productImage.firstChild.getAttribute('src')).toBe(
-        'https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/ZZRF_001/on/demandware.static/-/Sites-apparel-m-catalog/default/dw7e4c00a0/images/large/PG.10217069.JJ5QZXX.PZ.jpg'
+        'https://edge.disstg.commercecloud.salesforce.com/dw/image/v2/ZZRF_001/on/demandware.static/-/Sites-apparel-m-catalog/default/dwed56b2da/images/medium/PG.10217069.JJ5QZXX.PZ.jpg'
     )
     expect(currentPriceTag).toHaveLength(1)
     expect(within(currentPriceTag[0]).getByText(/From £18\.55/i)).toBeDefined()
