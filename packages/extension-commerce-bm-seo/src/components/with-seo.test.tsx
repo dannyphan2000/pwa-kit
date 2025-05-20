@@ -7,7 +7,7 @@
 import React from 'react'
 import {render, screen, waitFor, act} from '@testing-library/react'
 import {BrowserRouter, useLocation} from 'react-router-dom'
-import SeoHOC from './with-seo'
+import withSeo from './with-seo'
 import {useExtensionConfig} from '../hooks/use-extension-config'
 
 // Mock the useLocation hook
@@ -103,11 +103,11 @@ const setupForSetRoutesTests = ({pathname}: {pathname: string}) => {
         routes: mockRoutes,
         setRoutes: setRoutesMock
     })
-    const WrappedComponent = SeoHOC(insideComponent)
+    const WrappedComponent = withSeo(insideComponent)
     return {WrappedComponent}
 }
 
-describe('SeoHOC', () => {
+describe('withSeo', () => {
     beforeEach(() => {
         // Reset all mocks before each test
         jest.clearAllMocks()
@@ -128,7 +128,7 @@ describe('SeoHOC', () => {
 
         it('should skip URL mapping when route is defined and strategy is router_first', () => {
             const MockComponent = () => <div>Test Component</div>
-            const WrappedComponent = SeoHOC(MockComponent)
+            const WrappedComponent = withSeo(MockComponent)
             // Mock useExtensionConfig to return router_first strategy
             ;(useExtensionConfig as jest.Mock).mockReturnValue({
                 routingMode: 'router_first',
@@ -171,7 +171,7 @@ describe('SeoHOC', () => {
 
         it('should proceed with URL mapping when route is not defined and strategy is router_first', () => {
             const MockComponent = () => <div>Test Component</div>
-            const WrappedComponent = SeoHOC(MockComponent)
+            const WrappedComponent = withSeo(MockComponent)
             // Mock useExtensionConfig to return router_first strategy
             ;(useExtensionConfig as jest.Mock).mockReturnValue({
                 routingMode: 'router_first',
