@@ -10,10 +10,7 @@ import {useCommerceAPI, CustomerContext} from '../contexts'
 
 const AuthTypes = Object.freeze({GUEST: 'guest', REGISTERED: 'registered'})
 
-import {
-    AuthHelpers,
-    useAuthHelper,
-} from '@salesforce/commerce-sdk-react'
+import {AuthHelpers, useAuthHelper} from '@salesforce/commerce-sdk-react'
 
 // This value represents the max age in milliseconds a customer can be before they are
 // no longer considered a "new" customer.
@@ -27,7 +24,13 @@ export default function useCustomer() {
 
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const logout = useAuthHelper(AuthHelpers.Logout)
-    const register = useAuthHelper(AuthHelpers.Register)
+
+    const getSkeletonCustomer = () => {
+        return {
+            customerId: api.auth.get('customer_id'),
+            authType: api.auth.get('customer_type')
+        }
+    }
 
     const self = useMemo(() => {
         return {
@@ -87,16 +90,14 @@ export default function useCustomer() {
              * @param {string} credentials.password
              */
             async login(credentials) {
-                await api.auth.ready();
-                console.log('Customer Id', api.auth.get('customer_id'))
-                let skeletonCustomer = {
-                    customerId: api.auth.get('customer_id'),
-                    authType: api.auth.get('customer_type')
-                }
-                console.log('skeletonCustomer', skeletonCustomer)
+                await api.auth.ready()
+                let skeletonCustomer = getSkeletonCustomer()
                 if (credentials) {
-                    skeletonCustomer = await login.mutateAsync(credentials)
-                    console.log('skeletonCustomer login', skeletonCustomer)
+                    await login.mutateAsync({
+                        username: credentials.email,
+                        password: credentials.password
+                    })
+                    skeletonCustomer = getSkeletonCustomer()
                 }
                 if (skeletonCustomer.authType === 'guest') {
                     setCustomer(skeletonCustomer)
@@ -113,8 +114,10 @@ export default function useCustomer() {
              * and retrive a guest access token
              */
             async logout() {
-                const customer = await api.auth.logout()
-                setCustomer(customer)
+                await logout.mutateAsync();
+                await api.auth.ready();
+                const skeletonCustomer = getSkeletonCustomer()
+                setCustomer(skeletonCustomer)
             },
 
             /**

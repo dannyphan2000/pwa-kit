@@ -16,6 +16,7 @@ import CommerceAPI from '../../commerce-api'
 import {
     BasketProvider,
     CommerceAPIProvider,
+    CommerceSDKReactProvider,
     CustomerProductListsProvider,
     CustomerProvider
 } from '../../commerce-api/contexts'
@@ -24,13 +25,6 @@ import {resolveSiteFromUrl} from '../../utils/site-utils'
 import {resolveLocaleFromUrl} from '../../utils/utils'
 import {getConfig} from 'pwa-kit-runtime/utils/ssr-config'
 import {createUrlTemplate} from '../../utils/url'
-
-import {
-    AuthContext,
-    CommerceApiContext,
-    ConfigContext
-} from '@salesforce/commerce-sdk-react/provider'
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 
 /**
  * Use the AppConfig component to inject extra arguments into the getProps
@@ -43,28 +37,19 @@ import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 const AppConfig = ({children, locals = {}}) => {
     const [basket, setBasket] = useState(null)
     const [customer, setCustomer] = useState(null)
-    const queryClient = new QueryClient()
 
     return (
         <MultiSiteProvider site={locals.site} locale={locals.locale} buildUrl={locals.buildUrl}>
             <CommerceAPIProvider value={locals.api}>
-                <QueryClientProvider client={queryClient}>
-                    <ConfigContext.Provider value={locals.api._authConfig}>
-                        <CommerceApiContext.Provider value={locals.api._reactSdkClients}>
-                            <AuthContext.Provider value={locals.api.auth}>
-                                <CustomerProvider value={{customer, setCustomer}}>
-                                    <BasketProvider value={{basket, setBasket}}>
-                                        <CustomerProductListsProvider>
-                                            <ChakraProvider theme={theme}>
-                                                {children}
-                                            </ChakraProvider>
-                                        </CustomerProductListsProvider>
-                                    </BasketProvider>
-                                </CustomerProvider>
-                            </AuthContext.Provider>
-                        </CommerceApiContext.Provider>
-                    </ConfigContext.Provider>
-                </QueryClientProvider>
+                <CommerceSDKReactProvider Providers api={locals.api}>
+                    <CustomerProvider value={{customer, setCustomer}}>
+                        <BasketProvider value={{basket, setBasket}}>
+                            <CustomerProductListsProvider>
+                                <ChakraProvider theme={theme}>{children}</ChakraProvider>
+                            </CustomerProductListsProvider>
+                        </BasketProvider>
+                    </CustomerProvider>
+                </CommerceSDKReactProvider>
             </CommerceAPIProvider>
         </MultiSiteProvider>
     )

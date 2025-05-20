@@ -5,6 +5,12 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React, {createContext, useContext, useReducer} from 'react'
+import {
+    AuthContext,
+    CommerceApiContext,
+    ConfigContext
+} from '@salesforce/commerce-sdk-react/provider'
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 
 /**
  * Provider and associated hook for accessing the Commerce API in React components.
@@ -12,6 +18,26 @@ import React, {createContext, useContext, useReducer} from 'react'
 export const CommerceAPIContext = createContext()
 export const CommerceAPIProvider = CommerceAPIContext.Provider
 export const useCommerceAPI = () => useContext(CommerceAPIContext)
+
+/**
+ * Extract the React SDK providers used across the app
+ * This combines QueryClient, Config, CommerceApi, and Auth contexts into one reusable component
+ */
+export const CommerceSDKReactProvider = ({api, children}) => {
+    const queryClient = new QueryClient()
+    
+    return (
+        <QueryClientProvider client={queryClient}>
+            <ConfigContext.Provider value={api._authConfig}>
+                <CommerceApiContext.Provider value={api._reactSdkClients}>
+                    <AuthContext.Provider value={api.auth}>
+                        {children}
+                    </AuthContext.Provider>
+                </CommerceApiContext.Provider>
+            </ConfigContext.Provider>
+        </QueryClientProvider>
+    )
+}
 
 /**
  * There are a few sources of global state in the react retail storefront.
