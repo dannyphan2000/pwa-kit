@@ -31,7 +31,7 @@ const Hero = ({title, img, actions, ...props}) => {
                         as="h1"
                         fontSize={{base: '4xl', md: '5xl', lg: '6xl'}}
                         maxWidth={{base: '75%', md: '50%', lg: 'md'}}
-                        lineHeight={{base: 'shorter', md: 'shorter', lg: 'shorter'}}
+                        lineHeight={{base: 'shorter'}}
                     >
                         {title}
                     </Heading>
