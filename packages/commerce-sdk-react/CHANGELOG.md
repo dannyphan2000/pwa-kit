@@ -1,3 +1,6 @@
+## Other changes (May 20, 2025)
+- Fixed spelling mistakes in comments: changed 'Prodived' to 'Provided', 'succesful' to 'successful', and 'usages' to 'usage'. See [PR #2435](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2435).
+
 ## v3.3.0-dev.1 (Apr 30, 2025)
 - Fix inconsistency between dwsid and access token for guest login when hybrid authentication is enabled [#2397](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2397)
 
