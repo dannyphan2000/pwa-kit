@@ -38,6 +38,9 @@
     "react-hook-form": "^7.43.9",
     "react-intl": "^5.25.1"
   },
+  "dependencies": {
+    "@salesforce/pwa-kit-extension-sdk": "^4.0.0-extensibility-preview.5"
+  },
   "peerDependencies": {
     "@chakra-ui/react": "^2.8.2",
     "@loadable/component": "^5.15.3",

@@ -24,7 +24,6 @@
     "@emotion/styled": "^11.13.0",
     "@loadable/component": "^5.15.3",
     "@salesforce/pwa-kit-dev": "4.0.0-extensibility-preview.5",
-    "@salesforce/pwa-kit-extension-sdk": "4.0.0-extensibility-preview.5",
     "@salesforce/pwa-kit-react-sdk": "4.0.0-extensibility-preview.5",
     "@salesforce/pwa-kit-runtime": "4.0.0-extensibility-preview.5",
     "@tanstack/react-query": "^4.28.0",
