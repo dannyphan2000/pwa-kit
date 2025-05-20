@@ -21,13 +21,10 @@ import {getResponsiveImageAttributes} from '../../utils/responsive-image'
  */
 const DynamicImage = ({src, widths, imageProps, as, ...rest}) => {
     const Component = as ? as : Image
-    console.log('*************theme breakpoints=', JSON.stringify(breakpoints))
     const responsiveImageProps = useMemo(
         () => getResponsiveImageAttributes({src, widths, breakpoints}),
         [src, widths, breakpoints]
     )
-    console.log('*************theme responsiveImageProps=', JSON.stringify(responsiveImageProps))
-    console.log('*************theme imageProps=', JSON.stringify(imageProps))
     return (
         <Box {...rest}>
             <Component {...responsiveImageProps} {...imageProps} />

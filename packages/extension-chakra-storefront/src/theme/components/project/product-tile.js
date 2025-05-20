@@ -6,10 +6,12 @@
  */
 
 import {defineSlotRecipe} from '@chakra-ui/react'
+
 export default defineSlotRecipe({
     base: {
         container: {
-            position: 'relative'
+            position: 'relative',
+            margin: 1
         },
         favIcon: {
             position: 'absolute',

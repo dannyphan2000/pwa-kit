@@ -5,10 +5,12 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {defineSlotRecipe} from '@chakra-ui/react'
+
 export default defineSlotRecipe({
+    slots: ['swatchGroup', 'swatchLabel', 'swatch', 'swatchesWrapper', 'swatchButton'],
     base: {
         swatchGroup: {
-            flexDirection: 'column '
+            flexDirection: 'column'
         },
         swatchLabel: {
             marginBottom: 3
@@ -43,10 +45,10 @@ export default defineSlotRecipe({
                     marginRight: 2,
                     marginLeft: 0,
                     marginBottom: 2,
-                    color: 'black',
-                    border: '1px',
+                    color: 'gray.200',
+                    border: '0',
                     _hover: {
-                        borderColor: 'black',
+                        borderColor: 'gray.200',
                         borderWidth: 1,
                         borderStyle: 'solid'
                     },
@@ -62,6 +64,18 @@ export default defineSlotRecipe({
                         transform: 'rotate(45deg)',
                         backgroundColor: 'black',
                         zIndex: 1
+                    },
+                    _selected: {
+                        color: 'black',
+                        border: '1px',
+                        _hover: {
+                            borderColor: 'black'
+                        }
+                    },
+                    _disabled: {
+                        _before: {
+                            display: 'block'
+                        }
                     }
                 },
                 swatchButton: {
@@ -80,17 +94,15 @@ export default defineSlotRecipe({
             square: {
                 swatch: {
                     marginRight: 2,
-                    // diagonal line for disabled options
-                    // theme variable like gray.200 won't work inside linear-gradient
-                    backgroundImage:
-                        'linear-gradient(to top left, transparent calc(50% - 1px), black, transparent calc(50% + 1px) )',
-                    borderColor: 'black',
+                    borderColor: 'gray.200',
                     borderStyle: 'solid',
                     borderWidth: 1,
                     paddingLeft: 3,
                     paddingRight: 3,
                     marginBottom: 2,
-                    _focus: {outline: 'none'},
+                    _focus: {
+                        outline: 'none'
+                    },
                     _hover: {
                         textDecoration: 'none',
                         borderColor: 'gray.900'
@@ -99,11 +111,29 @@ export default defineSlotRecipe({
                         borderColor: 'gray.900'
                     },
                     backgroundColor: 'white',
-                    color: 'white'
+                    color: 'gray.900',
+                    _selected: {
+                        backgroundColor: 'black',
+                        color: 'white',
+                        borderColor: 'black',
+                        _hover: {
+                            borderColor: 'black'
+                        }
+                    },
+                    // diagonal line for disabled options
+                    // theme variable like gray.200 won't work inside linear-gradient
+                    _disabled: {
+                        backgroundImage:
+                            'linear-gradient(to top left, white calc(50% - 1px), #c9c9c9, white calc(50% + 1px))',
+                        _selected: {
+                            backgroundColor: 'gray.100',
+                            backgroundImage:
+                                'linear-gradient(to top left, transparent calc(50% - 1px), black, transparent calc(50% + 1px))'
+                        }
+                    }
                 },
                 swatchButton: {}
             }
         }
-    },
-    slots: ['swatchGroup', 'swatch', 'swatchButton', 'swatchLabel', 'swatchesWrapper']
+    }
 })

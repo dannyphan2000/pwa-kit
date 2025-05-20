@@ -140,7 +140,8 @@ const ProductScroller = forwardRef(
                                     defaultMessage: 'Scroll products left'
                                 })}
                                 borderRadius="full"
-                                colorPalette="whiteAlpha"
+                                bg="white/36"
+                                _hover={{bg: 'white/48'}}
                                 onClick={() => scroll(-1)}
                             >
                                 <ChevronLeftIcon color="black" />
@@ -164,7 +165,8 @@ const ProductScroller = forwardRef(
                                     defaultMessage: 'Scroll products right'
                                 })}
                                 borderRadius="full"
-                                colorPalette="whiteAlpha"
+                                bg="white/36"
+                                _hover={{bg: 'white/48'}}
                                 onClick={() => scroll(1)}
                             >
                                 <ChevronRightIcon color="black" />
