@@ -79,7 +79,7 @@ export const getDefaultCookieAttributes = (): CookieAttributes => {
     }
 }
 
-/** Determines whether local storage is available. */
+/** Determines whether local storage is available. Test comment */
 export function detectLocalStorageAvailable(): boolean {
     if (typeof window === 'undefined') return false
     try {
