@@ -3,7 +3,6 @@
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
- * 
  */
 import Auth from '../auth'
 import {CommerceApiProviderProps} from '../provider'
@@ -31,7 +30,7 @@ export const handleInvalidToken = async (error: any, auth: Auth, logger: Logger)
 }
 
 /**
- * A helper function for preparing a call to the SCAPI custom API endpoint
+ * A helper function for preparing a call to the SCAPI custom API endpoint.
  */
 export const generateCustomEndpointOptions = (
     options: OptionalCustomEndpointClientConfig,
@@ -57,7 +56,7 @@ export const generateCustomEndpointOptions = (
             method: options.options?.method || 'GET',
             headers: {
                 Authorization: `Bearer ${access_token}`,
-                // Note the order of the following destructured objects is important.
+                // Note the order of the following de-structured objects is important.
                 // Priority in ascending order: global config < query/mutation config < mutate func args
                 ...globalHeaders,
                 ...options.options?.headers,
