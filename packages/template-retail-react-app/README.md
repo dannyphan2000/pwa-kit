@@ -14,6 +14,7 @@ A project template that includes an isomorphic JavaScript storefront and [Progre
 
 Developers don’t have to worry about the underlying infrastructure, whether they’re developing their app locally, deploying it to a [Managed Runtime](https://developer.salesforce.com/docs/commerce/pwa-kit-managed-runtime/guide/mrt-overview.html) environment, or testing the app live.
 
+
 ## Requirements
 
 -   Node 16.11 or later
