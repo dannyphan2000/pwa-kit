@@ -59,6 +59,7 @@ const Swatch = ({
             to={href}
             aria-label={name}
             aria-checked={selected}
+            data-state={selected ? 'selected' : undefined}
             variant="outline"
             role="radio"
             // To mimic the behavior of native radio inputs, only one input should be focusable.

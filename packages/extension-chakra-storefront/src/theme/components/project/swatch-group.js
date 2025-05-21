@@ -65,9 +65,10 @@ export default defineSlotRecipe({
                         backgroundColor: 'black',
                         zIndex: 1
                     },
-                    _selected: {
+                    '&[data-state="selected"]': {
                         color: 'black',
-                        border: '1px',
+                        border: '1px solid',
+                        borderColor: 'black',
                         _hover: {
                             borderColor: 'black'
                         }
@@ -112,7 +113,7 @@ export default defineSlotRecipe({
                     },
                     backgroundColor: 'white',
                     color: 'gray.900',
-                    _selected: {
+                    '&[data-state="selected"]': {
                         backgroundColor: 'black',
                         color: 'white',
                         borderColor: 'black',
@@ -125,7 +126,7 @@ export default defineSlotRecipe({
                     _disabled: {
                         backgroundImage:
                             'linear-gradient(to top left, white calc(50% - 1px), #c9c9c9, white calc(50% + 1px))',
-                        _selected: {
+                        '&[data-state="selected"]': {
                             backgroundColor: 'gray.100',
                             backgroundImage:
                                 'linear-gradient(to top left, transparent calc(50% - 1px), black, transparent calc(50% + 1px))'
