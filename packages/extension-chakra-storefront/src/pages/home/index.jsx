@@ -111,6 +111,8 @@ const Home = () => {
                             width={{base: 'full', md: 'inherit'}}
                             paddingX={7}
                             _hover={{textDecoration: 'none'}}
+                            fontSize={{base: 'sm', md: 'md'}}
+                            fontWeight={{base: 'medium', md: 'semibold'}}
                         >
                             <FormattedMessage
                                 defaultMessage="Get started"
