@@ -35,3 +35,11 @@ export const getAppOrigin = () => {
 
     return process.env.APP_ORIGIN
 }
+
+/**
+ * Determines whether the specified URL is absolute
+ *
+ * @param {string} url The URL to test
+ * @returns {boolean} True if the specified URL is absolute, otherwise false
+ */
+export const isAbsoluteURL = (url) => /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url)
