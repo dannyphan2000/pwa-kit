@@ -10,7 +10,6 @@
   "devDependencies": {
     "@loadable/component": "^5.15.3",
     "@salesforce/pwa-kit-dev": "4.0.0-extensibility-preview.5",
-    "@salesforce/pwa-kit-extension-sdk": "4.0.0-extensibility-preview.5",
     "@salesforce/pwa-kit-react-sdk": "4.0.0-extensibility-preview.5",
     "@salesforce/pwa-kit-runtime": "4.0.0-extensibility-preview.5",
     "@types/loadable__component": "^5.13.9",
@@ -21,12 +20,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
-  "dependencies": {
-    "@salesforce/pwa-kit-extension-sdk": "4.0.0-extensibility-preview.5"
-  },
   "peerDependencies": {
     "@loadable/component": "^5.15.3",
-    "@salesforce/pwa-kit-extension-sdk": "^4.0.0-extensibility-preview.0",
     "@salesforce/pwa-kit-react-sdk": "^4.0.0-extensibility-preview.0",
     "express": "^4.19.2",
     "react": "^18.2.0",

@@ -61,9 +61,6 @@
     "react-intl": "^5.25.1",
     "react-router-dom": "^5.3.4"
   },
-  "dependencies": {
-    "@salesforce/pwa-kit-extension-sdk": "^4.0.0-extensibility-preview.5"
-  },
   "peerDependencies": {
     "@chakra-ui/react": "^2.8.2",
     "@chakra-ui/skip-nav": "^2.0.15",
@@ -71,7 +68,6 @@
     "@peculiar/webcrypto": "^1.4.2",
     "@salesforce/cc-datacloud-typescript": "^1.0.10",
     "@salesforce/commerce-sdk-react": "^3.3.0-extensibility-preview.0",
-    "@salesforce/pwa-kit-extension-sdk": "^4.0.0-extensibility-preview.0",
     "@salesforce/pwa-kit-react-sdk": "^4.0.0-extensibility-preview.0",
     "@salesforce/pwa-kit-runtime": "^4.0.0-extensibility-preview.0",
     "@tanstack/react-query": "^4.28.0",
