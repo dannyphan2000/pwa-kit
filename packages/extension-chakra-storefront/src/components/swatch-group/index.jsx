@@ -7,7 +7,7 @@
 
 import React, {Children, useCallback, useEffect, useRef, useState} from 'react'
 import PropTypes from 'prop-types'
-import {Flex, Box, HStack, useSlotRecipe} from '@chakra-ui/react'
+import {Box, Flex, HStack, useSlotRecipe} from '@chakra-ui/react'
 import {FormattedMessage} from 'react-intl'
 import {noop} from '../../utils/utils'
 

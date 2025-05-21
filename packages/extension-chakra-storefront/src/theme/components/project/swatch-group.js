@@ -28,7 +28,7 @@ export default defineSlotRecipe({
         },
         swatchButton: {
             borderColor: 'gray.200',
-            _disabled: {
+            '&[data-state="disabled"]': {
                 opacity: 1
             }
         }
@@ -73,7 +73,7 @@ export default defineSlotRecipe({
                             borderColor: 'black'
                         }
                     },
-                    _disabled: {
+                    '&[data-state="disabled"]': {
                         _before: {
                             display: 'block'
                         }
@@ -123,7 +123,7 @@ export default defineSlotRecipe({
                     },
                     // diagonal line for disabled options
                     // theme variable like gray.200 won't work inside linear-gradient
-                    _disabled: {
+                    '&[data-state="disabled"]': {
                         backgroundImage:
                             'linear-gradient(to top left, white calc(50% - 1px), #c9c9c9, white calc(50% + 1px))',
                         '&[data-state="selected"]': {

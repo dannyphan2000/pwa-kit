@@ -7,7 +7,7 @@
 
 import React, {useCallback, useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {Button, Box, Center, useSlotRecipe} from '@chakra-ui/react'
+import {Box, Button, Center, useSlotRecipe} from '@chakra-ui/react'
 import {Link as RouteLink} from 'react-router-dom'
 import {useBreakpointValue} from '@chakra-ui/react'
 

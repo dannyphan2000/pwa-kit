@@ -14,12 +14,12 @@ import {
     AspectRatio,
     Badge,
     Box,
-    Skeleton as ChakraSkeleton,
-    Text,
-    Stack,
-    useSlotRecipe,
+    HStack,
     IconButton,
-    HStack
+    Skeleton as ChakraSkeleton,
+    Stack,
+    Text,
+    useSlotRecipe
 } from '@chakra-ui/react'
 import DynamicImage from '../../components/dynamic-image'
 

@@ -6,7 +6,7 @@
  */
 import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
-import {Image, Box} from '@chakra-ui/react'
+import {Box, Image} from '@chakra-ui/react'
 import {breakpoints} from '../../theme'
 import {getResponsiveImageAttributes} from '../../utils/responsive-image'
 
