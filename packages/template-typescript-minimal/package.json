@@ -69,7 +69,7 @@
           "@salesforce/extension-chakra-storefront",
           {
             "enabled": true,
-            "activeDataEnabled": false,
+            "activeDataEnabled": true,
             "categoryNav": {
               "defaultNavSsrDepth": 1,
               "defaultRootCategory": "root"

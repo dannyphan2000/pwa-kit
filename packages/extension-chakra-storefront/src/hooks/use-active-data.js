@@ -81,7 +81,7 @@ const useActiveData = () => {
             if (!canTrack()) return
             try {
                 var activeDataUrl =
-                    `${proxyBasePath}/ocapi/on/demandware.store/Sites-` +
+                    `https://zzrf-001.dx.commercecloud.salesforce.com/on/demandware.store/Sites-` +
                     siteId +
                     '-Site/' +
                     localeId +
