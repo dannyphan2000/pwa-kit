@@ -24,7 +24,6 @@ import container from './components/base/container'
 import drawer from './components/base/drawer'
 import formLabel from './components/base/formLabel'
 import icon from './components/base/icon'
-import iconButton from './components/base/icon-button'
 import input from './components/base/input'
 import modal from './components/base/modal'
 import radio from './components/base/radio'
@@ -104,7 +103,6 @@ export const overrides = defineConfig({
             checkbox,
             tooltip,
             nativeSelect,
-            iconButton,
 
             // project components
             app,

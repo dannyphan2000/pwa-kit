@@ -6,15 +6,7 @@
  */
 import React, {forwardRef, useRef} from 'react'
 import PropTypes from 'prop-types'
-import {
-    AspectRatio,
-    Box,
-    Heading,
-    IconButton,
-    Skeleton,
-    Stack,
-    useSlotRecipe
-} from '@chakra-ui/react'
+import {AspectRatio, Box, Heading, IconButton, Skeleton, Stack} from '@chakra-ui/react'
 import ProductTile from '../../components/product-tile'
 import {ChevronLeftIcon, ChevronRightIcon} from '../../components/icons'
 import {useIntl} from 'react-intl'
@@ -39,8 +31,6 @@ const ProductScroller = forwardRef(
     ) => {
         const intl = useIntl()
         const scrollRef = useRef()
-        const recipe = useSlotRecipe({key: 'iconButton'})
-        const styles = recipe({variant: 'scroller'})
 
         // Renders nothing if we aren't loading and have no products.
         if ((!products || products.length < 1) && !isLoading) {
@@ -149,12 +139,12 @@ const ProductScroller = forwardRef(
                                     id: 'product_scroller.assistive_msg.scroll_left',
                                     defaultMessage: 'Scroll products left'
                                 })}
-                                css={styles.root}
+                                borderRadius="full"
+                                bg="white/36"
+                                _hover={{bg: 'white/48'}}
                                 onClick={() => scroll(-1)}
                             >
-                                <Box css={styles.icon}>
-                                    <ChevronLeftIcon />
-                                </Box>
+                                <ChevronLeftIcon color="black" />
                             </IconButton>
                         </Box>
 
@@ -174,12 +164,12 @@ const ProductScroller = forwardRef(
                                     id: 'product_scroller.assistive_msg.scroll_right',
                                     defaultMessage: 'Scroll products right'
                                 })}
-                                css={styles.root}
+                                borderRadius="full"
+                                bg="white/36"
+                                _hover={{bg: 'white/48'}}
                                 onClick={() => scroll(1)}
                             >
-                                <Box css={styles.icon}>
-                                    <ChevronRightIcon />
-                                </Box>
+                                <ChevronRightIcon color="black" />
                             </IconButton>
                         </Box>
                     </>
