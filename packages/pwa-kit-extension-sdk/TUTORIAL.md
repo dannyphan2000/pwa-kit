@@ -149,6 +149,213 @@ To discover which files are overridable in an extension:
 
 In the next exercise, we'll explore how to create your own extension and make its components overridable...
 
+
+## Exercise 3: Combining Custom and Existing Extensions
+
+### Creating a Custom Location Finder Extension
+
+Let's create a custom extension that enhances the store locator with additional features:
+
+1. Generate a new extension:
+
+```bash
+npx @salesforce/pwa-kit-create-app
+```
+
+### ***WIP Note: Consider giving a @namespace/extension-location-finder
+### ***WIP Note: Potential bug with name in generator ending with extension-location-f instead extension-location-finder
+Select:
+- Project type: **PWA Kit Application Extension**
+- Extension name: **extension-location-finder**
+
+### ***WIP Note: Install Chakra UI before step 2
+
+```bin
+npm install @chakra-ui/react@^2.8.2
+```
+
+
+2. Create a new component in `src/components/location-search.tsx`:
+
+```tsx
+import React, {useState} from 'react'
+import {Box, Input, Button, VStack, Heading, Text} from '@chakra-ui/react'
+
+const LocationSearch = () => {
+    const [query, setQuery] = useState('')
+    
+    return (
+        <Box p={4} borderWidth="1px" borderRadius="lg">
+            <VStack spacing={4} align="stretch">
+                <Heading size="md">Enhanced Location Search</Heading>
+                <Input 
+                    placeholder="Search by ZIP code or city" 
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                />
+                <Button colorScheme="blue">Find Nearby Stores</Button>
+                <Text fontSize="sm">
+                    This component enhances the store locator with additional search capabilities
+                </Text>
+            </VStack>
+        </Box>
+    )
+}
+
+export default LocationSearch
+```
+
+### ***WIP Note: This step is wierd that I need to go to an external file to make the component overridable
+
+3. Make this component overridable by exporting it in `src/index.js`:
+
+```js
+// Export the component to make it available to other extensions
+export {default as LocationSearch} from 'overridable!./components/LocationSearch'
+```
+### ***WIP Note: It's wierd that we sometimes include the override inside app/overrides sometimes in src/overrides
+### ***WIP Note: It's wierd that we sometimes we need to include the /src folder in the pathname of the overrides like inside .force_overrides and sometimes not like inside overrides folder
+
+
+
+### ***WIP Note: First generate the App Project where both extensions are going to be used
+
+### ***WIP Note: Offer both paths without publishing your extension to NPM and publishing your extension to NPM and link NPPM docs to do that
+
+node packages/pwa-kit-create-app/scripts/create-mobify-app-dev.js
+
+? What type of PWA Kit project would you like to create? PWA Kit Application
+? Which Application Extensions do you want to install? @salesforce/extension-chakra-store-locator,
+@salesforce/extension-chakra-storefront
+? ⚠️ WARNING: If you choose to extract the Application Extension code,
+you will NO LONGER be able to consume upgrades from NPM. All changes
+made to the extracted code will be YOUR RESPONSIBILITY.
+
+Do you want to proceed with extracting the Application Extensions code? Yes
+? What is the name of your Project? test
+
+
+Edit package.json
+...
+"devDependencies": {
+...
+"@salesforce/extension-chakra-storefront": "file:app/application-extensions/@salesforce_extension-chakra-storefront"
+
+4. Create an override for the store locator in a project that uses both extensions:
+
+```bash
+mkdir -p ./src/overrides/@salesforce/extension-chakra-store-locator/pages/store-locator
+touch ./src/overrides/@salesforce/extension-chakra-store-locator/pages/store-locator/index.tsx
+```
+
+5. In your override, combine functionality from both extensions:
+
+### ***WIP Note: What should we do with the @salesforce/extension-chakra-store-locator import not finding the package installed in the extension
+
+
+```jsx
+import React from 'react'
+import {Box, Container, Stack} from '@chakra-ui/react'
+// Import the original store locator components
+import {StoreLocatorResults} from '@salesforce/extension-chakra-store-locator/components/store-locator-results'
+// Import your custom extension component
+import {LocationSearch} from '@salesforce/extension-location-finder'
+
+const EnhancedStoreLocator = () => {
+    return (
+        <Container maxW="container.xl" py={8}>
+            <Stack spacing={8}>
+                {/* Our custom enhanced search component */}
+                <LocationSearch />
+                
+                {/* Original store locator results component */}
+                <Box mt={4}>
+                    <StoreLocatorResults />
+                </Box>
+            </Stack>
+        </Container>
+    )
+}
+
+export default EnhancedStoreLocator
+```
+
+6. Configure both extensions in your `package.json`:
+
+```json
+{
+  "mobify": {
+    "app": {
+      "extensions": [
+        ["@salesforce/extension-chakra-storefront", {
+          "enabled": true
+        }],
+        ["@salesforce/extension-chakra-store-locator", {
+          "enabled": true,
+          "radius": 50,
+          "supportedCountries": ["US", "CA"]
+        }],
+        ["extension-location-finder", {
+          "enabled": true,
+          "searchRadius": 100
+        }]
+      ]
+    }
+  }
+}
+```
+------
+7. Implement state sharing between extensions:
+
+```js
+// In extension-location-finder/src/setup-app.js
+class LocationFinderExtension extends ApplicationExtension<Config> {
+    extendApp<T extends React.ComponentType<T>>(
+        App: React.ComponentType<T>
+    ): React.ComponentType<T> {
+        const HOCs = [
+            (component: React.ComponentType<any>) =>
+                withApplicationExtensionStore(component, {
+                    id: "location-finder",
+                    initializer: (set) => ({
+                        searchHistory: [],
+                        addToHistory: (location) => set((state) => ({
+                            searchHistory: [...state.searchHistory, location]
+                        }))
+                    })
+                })
+        ]
+        return applyHOCs(App, HOCs)
+    }
+}
+```
+
+8. Access state from multiple extensions:
+
+```jsx
+// In your custom component
+import {useApplicationExtensionsStore} from '@salesforce/pwa-kit-extension-sdk/react'
+
+const LocationSearch = () => {
+    // Access store-locator state
+    const storeLocatorState = useApplicationExtensionsStore(
+        (state) => state.state["extension-chakra-store-locator"]
+    )
+    
+    // Access your extension's state
+    const locationFinderState = useApplicationExtensionsStore(
+        (state) => state.state["location-finder"]
+    )
+    
+    // Now you can use both states
+    
+    return (
+        // Component implementation
+    )
+}
+```
+
+
 ## Exercise #2. Create Your Extension
 
 After mastering the use of existing extensions, you're ready to create your own. In this exercise, we'll explore how to build a custom extension that can be shared across projects or even published for others to use. Let's dive into the development process that will transform you from an extension consumer to an extension author.
@@ -168,7 +375,7 @@ The generator will prompt you a few questions, answer the questions as follows:
 
 The generator creates two key components:
 
-1. Your extension project in `/@salesforce/extension-starter`
+1. Your extension project in `/extension-starter`
 2. A development environment preconfigured to test your extension
 
 Running `npm start` launches a development server where you can see your extension in action. This environment is crucial for testing your extension in isolation before integrating it with other projects.
