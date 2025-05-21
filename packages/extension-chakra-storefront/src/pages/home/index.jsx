@@ -298,6 +298,8 @@ const Home = () => {
                         target="_blank"
                         width="auto"
                         paddingX={7}
+                        fontSize={{base: 'sm', md: 'md'}}
+                        fontWeight={{base: 'medium', md: 'semibold'}}
                         _hover={{textDecoration: 'none'}}
                     >
                         <FormattedMessage defaultMessage="Contact Us" id="home.link.contact_us" />
