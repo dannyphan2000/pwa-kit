@@ -12,6 +12,8 @@ import {StorefrontPreview} from '@salesforce/commerce-sdk-react/components'
 import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
 import useActiveData from '@salesforce/retail-react-app/app/hooks/use-active-data'
 import {useQuery} from '@tanstack/react-query'
+import LazyHydrate from 'react-lazy-hydration'
+
 import {
     useAccessToken,
     useCategory,
@@ -435,8 +437,9 @@ const App = (props) => {
                                     </Box>
                                 </SkipNavContent>
 
-                                {!isCheckout ? <Footer /> : <CheckoutFooter />}
-
+                                <LazyHydrate whenVisible>
+                                    {!isCheckout ? <Footer /> : <CheckoutFooter />}
+                                </LazyHydrate>
                                 <AuthModal {...authModal} />
                                 <DntNotification {...dntNotification} />
                             </AddToCartModalProvider>

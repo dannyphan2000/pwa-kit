@@ -7,6 +7,7 @@
 
 import React, {Fragment, useRef} from 'react'
 import PropTypes from 'prop-types'
+import LazyHydrate from 'react-lazy-hydration'
 
 // Project Components
 import {ListMenuContent} from '@salesforce/retail-react-app/app/components/list-menu/list-menu-content'
@@ -32,40 +33,45 @@ const ListMenuPopover = ({contentComponent, item, name, itemsKey, maxColumns}) =
     const {baseStyle} = theme.components.ListMenu
 
     return (
-        <Box onMouseLeave={onClose}>
-            <Popover
-                isLazy
-                placement={'bottom-start'}
-                initialFocusRef={initialFocusRef}
-                onOpen={onOpen}
-                onClose={onClose}
-                isOpen={isOpen}
-                variant="fullWidth"
-            >
-                <Fragment>
-                    <ListMenuTrigger
-                        item={item}
-                        name={name}
-                        isOpen={isOpen}
-                        onOpen={onOpen}
-                        onClose={onClose}
-                    />
-                    {isOpen && (
-                        <PopoverContent data-testid="popover-menu" {...baseStyle.popoverContent}>
-                            <PopoverBody {...baseStyle.popoverBody}>
-                                <ContentComponent
-                                    item={item}
-                                    itemsKey={itemsKey}
-                                    initialFocusRef={initialFocusRef}
-                                    onClose={onClose}
-                                    maxColumns={maxColumns}
-                                />
-                            </PopoverBody>
-                        </PopoverContent>
-                    )}
-                </Fragment>
-            </Popover>
-        </Box>
+        <LazyHydrate whenVisible>
+            <Box onMouseLeave={onClose}>
+                <Popover
+                    isLazy
+                    placement={'bottom-start'}
+                    initialFocusRef={initialFocusRef}
+                    onOpen={onOpen}
+                    onClose={onClose}
+                    isOpen={isOpen}
+                    variant="fullWidth"
+                >
+                    <Fragment>
+                        <ListMenuTrigger
+                            item={item}
+                            name={name}
+                            isOpen={isOpen}
+                            onOpen={onOpen}
+                            onClose={onClose}
+                        />
+                        {isOpen && (
+                            <PopoverContent
+                                data-testid="popover-menu"
+                                {...baseStyle.popoverContent}
+                            >
+                                <PopoverBody {...baseStyle.popoverBody}>
+                                    <ContentComponent
+                                        item={item}
+                                        itemsKey={itemsKey}
+                                        initialFocusRef={initialFocusRef}
+                                        onClose={onClose}
+                                        maxColumns={maxColumns}
+                                    />
+                                </PopoverBody>
+                            </PopoverContent>
+                        )}
+                    </Fragment>
+                </Popover>
+            </Box>
+        </LazyHydrate>
     )
 }
 

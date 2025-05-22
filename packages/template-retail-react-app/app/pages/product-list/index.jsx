@@ -10,6 +10,8 @@ import PropTypes from 'prop-types'
 import {useHistory, useLocation, useParams} from 'react-router-dom'
 import {FormattedMessage, useIntl} from 'react-intl'
 import {Helmet} from 'react-helmet'
+import LazyHydrate from 'react-lazy-hydration'
+
 import {
     useCategory,
     useCustomerId,
@@ -573,46 +575,51 @@ const ProductList = (props) => {
                                               )
 
                                           return (
-                                              <ProductTile
-                                                  data-testid={`sf-product-tile-${productSearchItem.productId}`}
+                                              <LazyHydrate
+                                                  whenVisible
                                                   key={productSearchItem.productId}
-                                                  product={productSearchItem}
-                                                  enableFavourite={true}
-                                                  isFavourite={isInWishlist}
-                                                  isRefreshingData={isRefetching && isFetched}
-                                                  imageViewType={PRODUCT_LIST_IMAGE_VIEW_TYPE}
-                                                  selectableAttributeId={
-                                                      PRODUCT_LIST_SELECTABLE_ATTRIBUTE_ID
-                                                  }
-                                                  onClick={() => {
-                                                      if (searchQuery) {
-                                                          einstein.sendClickSearch(
-                                                              searchQuery,
-                                                              productSearchItem
-                                                          )
-                                                      } else if (category) {
-                                                          einstein.sendClickCategory(
-                                                              category,
-                                                              productSearchItem
-                                                          )
+                                              >
+                                                  <ProductTile
+                                                      data-testid={`sf-product-tile-${productSearchItem.productId}`}
+                                                      key={productSearchItem.productId}
+                                                      product={productSearchItem}
+                                                      enableFavourite={true}
+                                                      isFavourite={isInWishlist}
+                                                      isRefreshingData={isRefetching && isFetched}
+                                                      imageViewType={PRODUCT_LIST_IMAGE_VIEW_TYPE}
+                                                      selectableAttributeId={
+                                                          PRODUCT_LIST_SELECTABLE_ATTRIBUTE_ID
                                                       }
-                                                  }}
-                                                  onFavouriteToggle={(toBeFavourite) => {
-                                                      const action = toBeFavourite
-                                                          ? addItemToWishlist
-                                                          : removeItemFromWishlist
-                                                      return action(productSearchItem)
-                                                  }}
-                                                  dynamicImageProps={{
-                                                      widths: [
-                                                          '50vw',
-                                                          '50vw',
-                                                          '20vw',
-                                                          '20vw',
-                                                          '25vw'
-                                                      ]
-                                                  }}
-                                              />
+                                                      onClick={() => {
+                                                          if (searchQuery) {
+                                                              einstein.sendClickSearch(
+                                                                  searchQuery,
+                                                                  productSearchItem
+                                                              )
+                                                          } else if (category) {
+                                                              einstein.sendClickCategory(
+                                                                  category,
+                                                                  productSearchItem
+                                                              )
+                                                          }
+                                                      }}
+                                                      onFavouriteToggle={(toBeFavourite) => {
+                                                          const action = toBeFavourite
+                                                              ? addItemToWishlist
+                                                              : removeItemFromWishlist
+                                                          return action(productSearchItem)
+                                                      }}
+                                                      dynamicImageProps={{
+                                                          widths: [
+                                                              '50vw',
+                                                              '50vw',
+                                                              '20vw',
+                                                              '20vw',
+                                                              '25vw'
+                                                          ]
+                                                      }}
+                                                  />
+                                              </LazyHydrate>
                                           )
                                       })}
                             </SimpleGrid>
