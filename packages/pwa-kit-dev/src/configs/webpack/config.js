@@ -299,47 +299,10 @@ const staticFolderCopyPlugin = new CopyPlugin({
 })
 
 const ruleForBabelLoader = (babelPlugins) => {
-    // Handle the case when no extensions are detected
     return {
         id: 'babel-loader',
         test: /(\.js(x?)|\.ts(x?))$/,
         exclude: /node_modules/,
-        use: [
-                {
-                    loader: findDepInStack('thread-loader'),
-                    options: {
-                        // eslint-disable-next-line @typescript-eslint/no-var-requires
-                        workers: Math.min(4, require('os').cpus().length),
-                        workerParallelJobs: 100
-                    }
-                },
-                {
-                    loader: findDepInStack('babel-loader'),
-                    options: {
-                        rootMode: 'upward',
-                        cacheDirectory: true,
-                        ...(babelPlugins ? {plugins: babelPlugins} : {})
-                    }
-                }
-        ]
-    }
-}
-
-    return {
-        id: 'babel-loader',
-        test: /(\.js(x?)|\.ts(x?))$/,
-        exclude: (modulePath) => {
-            // Not in node_modules. Include it (don't exclude)
-            if (!modulePath.includes('node_modules')) {
-                return false
-            }
-
-            // Normalize path for consistent comparison
-            const normalizedPath = path.normalize(modulePath)
-
-            // Check if the path includes any of our extension paths
-            return !extensionPaths.some((extPath) => normalizedPath.includes(extPath))
-        },
         use: [
             {
                 loader: findDepInStack('thread-loader'),
