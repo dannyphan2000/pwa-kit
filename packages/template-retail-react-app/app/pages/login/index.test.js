@@ -149,7 +149,7 @@ describe('Logging in tests', function () {
         global.server.use(
             rest.post('*/oauth2/token', (req, res, ctx) =>
                 res(
-                            ctx.delay(0),
+                    ctx.delay(0),
                     ctx.json({
                         customer_id: 'customerid_1',
                         access_token:
