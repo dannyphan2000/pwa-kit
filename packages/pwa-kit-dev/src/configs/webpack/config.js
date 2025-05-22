@@ -20,10 +20,6 @@ import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 import SpeedMeasurePlugin from 'speed-measure-webpack-plugin'
 import WebpackNotifierPlugin from 'webpack-notifier'
 
-// PWA-Kit Plugins
-import ApplicationExtensionConfigPlugin from '@salesforce/pwa-kit-extension-sdk/configs/webpack/application-extensions-config-plugin'
-import OverrideStatsPlugin from '@salesforce/pwa-kit-extension-sdk/configs/webpack/override-stats-plugin'
-
 // Local Plugins
 import {sdkReplacementPlugin} from './plugins'
 
@@ -31,16 +27,7 @@ import {sdkReplacementPlugin} from './plugins'
 import {CLIENT, SERVER, CLIENT_OPTIONAL, SSR, REQUEST_PROCESSOR} from './config-names'
 
 // Utilities
-import {
-    ruleForApplicationExtensibility,
-    ruleForOverrideResolver
-} from '@salesforce/pwa-kit-extension-sdk/configs/webpack'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
-import {
-    buildAliases,
-    getConfiguredExtensions,
-    isExtensionPackage
-} from '@salesforce/pwa-kit-extension-sdk/shared/utils'
 
 const projectDir = process.cwd()
 const pkg = fse.readJsonSync(resolve(projectDir, 'package.json'))
@@ -56,8 +43,6 @@ const INSPECT = process.execArgv.some((arg) => /^--inspect(?:-brk)?(?:$|=)/.test
 const DEBUG = mode !== production && process.env.DEBUG === 'true'
 const CI = process.env.CI
 const disableHMR = process.env.HMR === 'false'
-
-export const EXTENIONS_NAMESPACE = '__extensions'
 
 if ([production, development].indexOf(mode) < 0) {
     throw new Error(`Invalid mode "${mode}"`)
@@ -145,37 +130,11 @@ const findDepInStack = (pkg) => {
     return candidate
 }
 
-// Helper function to detect extensions
-const detectExtensions = ({dependencies, projectDir} = {}) => {
-    const extensions = []
-
-    // Use provided dependencies or get them from package.json
-    const allDependencies = dependencies || [
-        ...Object.keys(pkg.dependencies || {}),
-        ...Object.keys(pkg.devDependencies || {})
-    ]
-
-    for (const dependency of allDependencies) {
-        const packagePath = path.join(projectDir || process.cwd(), 'node_modules', dependency)
-
-        if (isExtensionPackage(packagePath)) {
-            extensions.push(dependency)
-        }
-    }
-
-    return extensions
-}
-
-const detectedExtensions = detectExtensions({
-    projectDir
-})
-
 const baseConfig = (target) => {
     if (!['web', 'node'].includes(target)) {
         throw Error(`The value "${target}" is not a supported webpack target`)
     }
 
-    const extensions = getConfiguredExtensions(getConfig())
     class Builder {
         constructor() {
             this.config = {
@@ -223,25 +182,11 @@ const baseConfig = (target) => {
                             ...DEPS_TO_DEDUPE.map((dep) => ({
                                 [dep]: findDepInStack(dep)
                             }))
-                        ),
-                        // Create alias's for "all" detected extensions, enabled or disabled, as they are being imported from the SDK package
-                        // and cannot be resolved from that location. We create alias's for all because we do not know which extensions
-                        // are configured at build time.
-                        ...buildAliases(detectedExtensions)
+                        )
                     },
                     ...(target === 'web' ? {fallback: {crypto: false}} : {})
                 },
-                resolveLoader: {
-                    alias: {
-                        overridable: findDepInStack(
-                            '@salesforce/pwa-kit-extension-sdk/configs/webpack/overrides-resolver-loader.js'
-                        )
-                    }
-                },
                 plugins: [
-                    new ApplicationExtensionConfigPlugin({
-                        extensions
-                    }),
                     new webpack.DefinePlugin({
                         DEBUG,
                         NODE_ENV: `'${process.env.NODE_ENV}'`,
@@ -349,26 +294,17 @@ const staticFolderCopyPlugin = new CopyPlugin({
         {
             from: 'app/static/',
             to: 'static/'
-        },
-        ...detectedExtensions.map((extension) => {
-            return {
-                from: `${projectDir}/node_modules/${extension}/static`,
-                to: `static/${EXTENIONS_NAMESPACE}/${extension}`,
-                // Add exclude for readme file.
-                noErrorOnMissing: true
-            }
-        })
+        }
     ]
 })
 
 const ruleForBabelLoader = (babelPlugins) => {
     // Handle the case when no extensions are detected
-    if (!detectedExtensions.length) {
-        return {
-            id: 'babel-loader',
-            test: /(\.js(x?)|\.ts(x?))$/,
-            exclude: /node_modules/,
-            use: [
+    return {
+        id: 'babel-loader',
+        test: /(\.js(x?)|\.ts(x?))$/,
+        exclude: /node_modules/,
+        use: [
                 {
                     loader: findDepInStack('thread-loader'),
                     options: {
@@ -385,14 +321,9 @@ const ruleForBabelLoader = (babelPlugins) => {
                         ...(babelPlugins ? {plugins: babelPlugins} : {})
                     }
                 }
-            ]
-        }
+        ]
     }
-
-    // Pre-compute the paths to extensions for performance
-    const extensionPaths = detectedExtensions.map((ext) =>
-        path.normalize(`node_modules${path.sep}${ext}${path.sep}`)
-    )
+}
 
     return {
         id: 'babel-loader',

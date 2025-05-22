@@ -10,10 +10,6 @@ import {hydrateRoot} from 'react-dom/client'
 import PropTypes from 'prop-types'
 import {BrowserRouter as Router} from 'react-router-dom'
 import {loadableReady} from '@loadable/component'
-import {
-    getApplicationExtensions,
-    withApplicationExtensions
-} from '@salesforce/pwa-kit-extension-sdk/react'
 
 import {ServerContext, CorrelationIdProvider} from '../universal/contexts'
 import App from '../universal/components/_app'
@@ -125,20 +121,11 @@ export const start = async () => {
     // been warned.
     window.__HYDRATING__ = true
 
-    // Load all the configured Application Extensions and provide them to the
-    const applicationExtensions = await getApplicationExtensions()
-    const WrappedApp = withApplicationExtensions(routeComponent(App, false, locals), {
-        applicationExtensions,
-        locals
-    })
-
-    const routes = await getAllRoutes(locals)
     const props = {
         error: window.__ERROR__,
         locals: locals,
-        routes,
-        extensions: applicationExtensions,
-        WrappedApp
+        routes: getAllRoutes(locals),
+        WrappedApp: routeComponent(App, false, locals)
     }
 
     return Promise.resolve()
