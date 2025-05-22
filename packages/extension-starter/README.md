@@ -2,7 +2,7 @@
 
 We’re excited to hear your thoughts on your developer experience with PWA Kit and the Composable Storefront generally! Your feedback is incredibly valuable in helping us guide our roadmap and improve our offering.
 
-:clipboard: Take our quick survey here: [Survey](https://forms.gle/bUZNxQ3QKUcrjhV18) 
+:clipboard: Take our quick survey here: [Survey](https://forms.gle/bUZNxQ3QKUcrjhV18)
 
 Feel free to share this survey link with your colleagues, partners, or anyone who has experience with PWA Kit. Your input will help us shape the future of our development tools.
 
@@ -31,10 +31,10 @@ This directory contains the PWA Kit Application Extension base files and structu
 
 PWA-Kit Application Extensions are NPM packages at their most simplest form, and as such you can define
 what peer dependencies are required when using it. Because this sample application extension provides
-UI via a new "Sample" page, it requires that the below dependencies are installed at a minimum. 
+UI via a new "Sample" page, it requires that the below dependencies are installed at a minimum.
 
 Depending on what features your application extensions provides it's recommended you include any third-party
-packages as peer dependencies so that your base application doesn't end up having multiple versions of a 
+packages as peer dependencies so that your base application doesn't end up having multiple versions of a
 given package.
 
 "react": "^18.2.0",
@@ -44,7 +44,7 @@ given package.
 
 This section is optional and will depend on your application extensions implementation. If you have features
 that are configurable, then list those configurations here so that the PWA-Kit project implementor can configure
-the extension as they like. 
+the extension as they like.
 
 ```
 {
@@ -65,10 +65,10 @@ the extension as they like.
 # State Management
 
 By default all extensions are enhanced with state management using the `withApplicationExtensionStore` higher-order component. Under the hood
-the state is provided using [Zustand](https://www.npmjs.com/package/zustand) as a global store for the entire PWA-Kit application. 
-Each Application Extension inserts a "slice" into this global store following the 
-[slicing pattern](https://github.com/pmndrs/zustand/blob/37e1e3f193a5e5dec6fbd0f07514aec59a187e01/docs/guides/slices-pattern.md). 
-This allows you to have data separation from one extension to the other, but also allows you to access state and associated actions of other extensions when needed. 
+the state is provided using [Zustand](https://www.npmjs.com/package/zustand) as a global store for the entire PWA-Kit application.
+Each Application Extension inserts a "slice" into this global store following the
+[slicing pattern](https://github.com/pmndrs/zustand/blob/37e1e3f193a5e5dec6fbd0f07514aec59a187e01/docs/guides/slices-pattern.md).
+This allows you to have data separation from one extension to the other, but also allows you to access state and associated actions of other extensions when needed.
 
 You can access the state of other extensions via the global store. Below is an example of why you might want to access state and actions from another extensions. In the following snippet we use the global store to access actions from the store locator. You can then use these actions as you please.
 
@@ -95,14 +95,4 @@ export MyComponent = () => {
         </div>
     )
 }
-```
-
-# Advanced Usage
-
-As an application extension developer you are responsible for documenting how your extension works including basic usage, its configuration, and advanced customization via overrides. Use this section to explain how your extension can use overrides to accomplish this. Make should to include what files are overridable as well as their expected inputs and outputs.
-
-## Overridable Files
-
-```
-/src/path/to/overridable/files.ts
 ```

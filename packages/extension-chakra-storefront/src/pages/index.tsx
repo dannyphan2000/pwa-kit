@@ -16,29 +16,29 @@ import {Skeleton} from '@chakra-ui/react'
 const fallback = <Skeleton height="75vh" width="100%" />
 
 // Page Loadables
-const Account = loadable(() => import('overridable!./account'), {fallback})
-const Cart = loadable(() => import('overridable!./cart'), {fallback})
-const Checkout = loadable(() => import('overridable!./checkout'), {
+const Account = loadable(() => import('./account'), {fallback})
+const Cart = loadable(() => import('./cart'), {fallback})
+const Checkout = loadable(() => import('./checkout'), {
     fallback
 })
-const CheckoutConfirmation = loadable(() => import('overridable!./checkout/confirmation'), {
+const CheckoutConfirmation = loadable(() => import('./checkout/confirmation'), {
     fallback
 })
-const Home = loadable(() => import('overridable!./home'), {fallback})
-const Login = loadable(() => import('overridable!./login'), {fallback})
-const Registration = loadable(() => import('overridable!./registration'), {
+const Home = loadable(() => import('./home'), {fallback})
+const Login = loadable(() => import('./login'), {fallback})
+const Registration = loadable(() => import('./registration'), {
     fallback
 })
-const ResetPassword = loadable(() => import('overridable!./reset-password'), {fallback})
-const LoginRedirect = loadable(() => import('overridable!./login-redirect'), {fallback})
-const ProductDetail = loadable(() => import('overridable!./product-detail'), {fallback})
-const ProductList = loadable(() => import('overridable!./product-list'), {
+const ResetPassword = loadable(() => import('./reset-password'), {fallback})
+const LoginRedirect = loadable(() => import('./login-redirect'), {fallback})
+const ProductDetail = loadable(() => import('./product-detail'), {fallback})
+const ProductList = loadable(() => import('./product-list'), {
     fallback
 })
-const SocialLoginRedirect = loadable(() => import('overridable!./social-login-redirect'), {
+const SocialLoginRedirect = loadable(() => import('./social-login-redirect'), {
     fallback
 })
-const Wishlist = loadable(() => import('overridable!./account/wishlist'), {
+const Wishlist = loadable(() => import('./account/wishlist'), {
     fallback
 })
 

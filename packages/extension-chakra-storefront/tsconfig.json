@@ -8,14 +8,6 @@
         "module": "esnext",
         "moduleResolution": "node",
         "baseUrl": "./",
-        "paths": {
-            "overridable!./*": [
-                "src/*",
-                "src/components/*",
-                "src/pages/*",
-                "node_modules/@salesforce/extension-*"
-            ]
-        },
 
         /* JavaScript Support */
         "allowJs": true,

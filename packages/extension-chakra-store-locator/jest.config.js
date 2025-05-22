@@ -12,9 +12,6 @@ module.exports = {
     ...base,
     moduleNameMapper: {
         ...base.moduleNameMapper,
-
-        // handle pwa-kit extensibility special import
-        '^overridable!(.*)': '$1'
     },
     coverageThreshold: {
         global: {
