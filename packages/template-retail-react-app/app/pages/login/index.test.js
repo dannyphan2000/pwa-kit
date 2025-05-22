@@ -99,7 +99,7 @@ describe('Logging in tests', function () {
         )
     })
 
-    test('Shows inline error when email input is empty', async () => {
+    test('Shows inline error when email is empty', async () => {
         const {user} = renderWithProviders(<MockedComponent />, {
             wrapperProps: {
                 siteAlias: 'uk',
