@@ -46,6 +46,7 @@ import linkList from './components/project/links-list'
 import offlineBanner from './components/project/offline-banner'
 // import Pagination from './components/project/pagination'
 import productTile from './components/project/product-tile'
+import search from './components/project/search'
 import socialIcons from './components/project/social-icons'
 import swatchGroup from './components/project/swatch-group'
 // import ImageGallery from './components/project/image-gallery'
@@ -113,7 +114,8 @@ export const overrides = defineConfig({
             offlineBanner,
             productTile,
             socialIcons,
-            swatchGroup
+            swatchGroup,
+            search
         }
         // keep these here for reference til we finish the components
         // components: {
