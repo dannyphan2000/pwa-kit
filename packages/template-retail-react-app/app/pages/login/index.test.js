@@ -99,7 +99,7 @@ describe('Logging in tests', function () {
         )
     })
 
-    test('show inline error when email is empty', async () => {
+    test('Shows inline error when email is empty', async () => {
         const {user} = renderWithProviders(<MockedComponent />, {
             wrapperProps: {
                 siteAlias: 'uk',
@@ -116,7 +116,7 @@ describe('Logging in tests', function () {
         expect(await screen.findByText(/Please enter your email address\./i)).toBeInTheDocument()
     })
 
-    test('show inline error when password is empty', async () => {
+    test('Shows inline error when password is empty', async () => {
         const {user} = renderWithProviders(<MockedComponent />, {
             wrapperProps: {
                 siteAlias: 'uk',
