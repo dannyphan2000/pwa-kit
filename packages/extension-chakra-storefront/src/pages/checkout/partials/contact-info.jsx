@@ -35,7 +35,7 @@ import {useCurrentBasket} from '../../../hooks/use-current-basket'
 import {isAbsoluteURL} from '../../../page-designer/utils'
 import {useAppOrigin} from '../../../hooks/use-app-origin'
 import {AuthHelpers, useAuthHelper, useShopperBasketsMutation} from '@salesforce/commerce-sdk-react'
-import {useExtensionConfig} from '../../../hooks/use-extension-config'
+import {useConfig} from '../../../hooks/use-config'
 
 import {
     API_ERROR_MESSAGE,
@@ -51,7 +51,7 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
     const {data: customer} = useCurrentCustomer()
     const {data: basket} = useCurrentBasket()
     const appOrigin = useAppOrigin()
-    const config = useExtensionConfig()
+    const config = useConfig()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const logout = useAuthHelper(AuthHelpers.Logout)
     const authorizePasswordlessLogin = useAuthHelper(AuthHelpers.AuthorizePasswordless)

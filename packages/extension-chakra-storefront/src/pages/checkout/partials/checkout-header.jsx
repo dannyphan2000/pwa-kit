@@ -9,7 +9,7 @@ import {FormattedMessage, useIntl} from 'react-intl'
 import {Badge, Box, Button, Flex, Center} from '@chakra-ui/react'
 import Link from '../../../components/link'
 import {BasketIcon, BrandLogo} from '../../../components/icons'
-import {useCurrentBasket, useExtensionConfig} from '../../../hooks/'
+import {useCurrentBasket, useConfig} from '../../../hooks/'
 
 const CheckoutHeader = () => {
     const intl = useIntl()
@@ -18,7 +18,7 @@ const CheckoutHeader = () => {
     } = useCurrentBasket()
     const {
         pages: {Home: homeConfig}
-    } = useExtensionConfig()
+    } = useConfig()
     return (
         <Box px={[4, 4, 8]} bg="white" borderBottom="1px" borderColor="gray.100">
             <Box maxWidth="container.xxxl" marginLeft="auto" marginRight="auto">

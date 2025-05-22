@@ -12,7 +12,7 @@ import {Button} from '@chakra-ui/react'
 import logger from '../../utils/logger-instance'
 import {useAuthHelper, AuthHelpers} from '@salesforce/commerce-sdk-react'
 import {useAppOrigin} from '../../hooks/use-app-origin'
-import {useExtensionConfig} from '../../hooks/use-extension-config'
+import {useConfig} from '../../hooks/use-config'
 import {setSessionJSONItem, buildRedirectURI} from '../../utils/utils'
 
 // Icons
@@ -48,7 +48,7 @@ const SocialLogin = ({form, idps = []}) => {
 
     // Build redirectURI from config values
     const appOrigin = useAppOrigin()
-    const {login: loginConfig} = useExtensionConfig()
+    const {login: loginConfig} = useConfig()
     const redirectPath = loginConfig?.social?.redirectURI || ''
     const redirectURI = buildRedirectURI(appOrigin, redirectPath)
 

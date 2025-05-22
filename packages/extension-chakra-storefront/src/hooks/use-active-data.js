@@ -7,12 +7,12 @@
 /*global dw*/
 import {proxyBasePath} from '@salesforce/pwa-kit-runtime/utils/ssr-namespace-paths'
 import logger from '../utils/logger-instance'
-import {useExtensionConfig} from '../hooks/use-extension-config'
+import {useConfig} from '../hooks/use-config'
 
 const useActiveData = () => {
     // Returns true when the feature flag is enabled and the tracking scripts have been executed
     // This MUST be called before using the `dw` variable, otherwise a ReferenceError will be thrown
-    const {activeDataEnabled = false} = useExtensionConfig()
+    const {activeDataEnabled = false} = useConfig()
 
     const canTrack = () => activeDataEnabled && typeof dw !== 'undefined'
     return {

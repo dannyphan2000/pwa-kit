@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import type {ApplicationExtensionConfig as BaseApplicationExtensionConfig} from '@salesforce/pwa-kit-extension-sdk/types'
 type Pages = typeof import('../pages')
 
 // Represents a locale with its ID and preferred currency.
@@ -101,7 +100,7 @@ type PageConfigs = {
 /**
  * This defines how your extension can be configured in the user's project. Please update it to your specific needs!
  */
-export interface UserConfig extends BaseApplicationExtensionConfig {
+export interface UserConfig  {
     activeDataEnabled?: boolean // default = false
     commerceAPI: CommerceAPIConfig
     categoryNav: {
@@ -173,5 +172,3 @@ export interface UserConfig extends BaseApplicationExtensionConfig {
  * When instantiating your extension, pwa-kit-extension-sdk will make sure to pass in the "complete" configuration, which has the merged user-defined and default configs.
  */
 export type Config = Required<UserConfig>
-
-export type ApplicationExtensionConfig = BaseApplicationExtensionConfig

@@ -67,7 +67,7 @@ import {
     usePageUrls,
     useSortUrls,
     useSearchParams,
-    useExtensionConfig
+    useConfig
 } from '../../hooks'
 import {useToast} from '../../hooks/use-toast'
 import useEinstein from '../../hooks/use-einstein'
@@ -122,7 +122,7 @@ const ProductList = (props) => {
         maxCacheAge: MAX_CACHE_AGE,
         staleWhileRevalidate: STALE_WHILE_REVALIDATE,
         search: searchConfig
-    } = useExtensionConfig()
+    } = useConfig()
     /**************** Page State ****************/
     const [filtersLoading, setFiltersLoading] = useState(false)
     const [wishlistLoading, setWishlistLoading] = useState([])

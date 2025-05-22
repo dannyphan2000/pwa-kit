@@ -24,7 +24,7 @@ import {
 } from '@chakra-ui/react'
 import {useCustomerOrders, useProducts} from '@salesforce/commerce-sdk-react'
 import useNavigation from '../../hooks/use-navigation'
-import {useExtensionConfig, useCurrentCustomer, usePageUrls, useSearchParams} from '../../hooks'
+import {useConfig, useCurrentCustomer, usePageUrls, useSearchParams} from '../../hooks'
 import PageActionPlaceHolder from '../../components/page-action-placeholder'
 import Link from '../../components/link'
 import {ChevronRightIcon, ReceiptIcon} from '../../components/icons'
@@ -81,7 +81,7 @@ const AccountOrderHistory = () => {
     const navigate = useNavigation()
     const {
         pages: {Account: accountConfig}
-    } = useExtensionConfig()
+    } = useConfig()
 
     const {data: customer} = useCurrentCustomer()
     const {customerId} = customer

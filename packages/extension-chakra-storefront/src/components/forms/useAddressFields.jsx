@@ -7,7 +7,7 @@
 import {useIntl, defineMessages} from 'react-intl'
 import {formatPhoneNumber} from '../../utils/phone-utils'
 import {stateOptions, provinceOptions} from '../../components/forms/state-province-options'
-import {useExtensionConfig} from '../../hooks'
+import {useConfig} from '../../hooks'
 
 const messages = defineMessages({
     required: {defaultMessage: 'Required', id: 'use_address_fields.error.required'},
@@ -46,7 +46,7 @@ export default function useAddressFields({
     const {formatMessage} = useIntl()
     const {
         pages: {Checkout: checkoutConfig}
-    } = useExtensionConfig()
+    } = useConfig()
     const countryCode = watch('countryCode')
 
     const fields = {

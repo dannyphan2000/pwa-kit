@@ -45,7 +45,7 @@ import {usePasswordReset} from './use-password-reset'
 import {isServer} from '../utils/utils'
 import {isAbsoluteURL} from '../page-designer/utils'
 import {useAppOrigin} from './use-app-origin'
-import {useExtensionConfig} from './use-extension-config'
+import {useConfig} from './use-config'
 
 export const LOGIN_VIEW = 'login'
 export const REGISTER_VIEW = 'register'
@@ -87,7 +87,7 @@ export const AuthModal = ({
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const register = useAuthHelper(AuthHelpers.Register)
     const appOrigin = useAppOrigin()
-    const config = useExtensionConfig()
+    const config = useConfig()
 
     const [loginType, setLoginType] = useState(LOGIN_TYPES.PASSWORD)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState(initialEmail)
@@ -362,7 +362,7 @@ AuthModal.propTypes = {
  */
 export const useAuthModal = (initialView = LOGIN_VIEW) => {
     const {isOpen, onOpen, onClose} = useDisclosure()
-    const {login} = useExtensionConfig()
+    const {login} = useConfig()
     const {passwordless = {}, social = {}} = login
 
     return {

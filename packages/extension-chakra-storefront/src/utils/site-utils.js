@@ -5,8 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import {getExtensionConfig as getConfig} from '../utils/get-extension-config'
-
+import {getConfig} from '../utils/get-config'
 import {absoluteUrl} from './url'
 
 /**
@@ -65,7 +64,8 @@ export const getDefaultSite = () => {
  * @return {array} sites - list of sites including their aliases
  */
 export const getSites = () => {
-    const {sites = [], siteAliases = {}} = getConfig() || {}
+    const config = getConfig()
+    const {sites = [], siteAliases = {}} = config || {}
 
     if (!sites.length) {
         throw new Error("Can't find any sites from the config. Please check your configuration")
@@ -123,11 +123,11 @@ export const getParamsFromPath = (path) => {
  * @return {object} - url config
  */
 export const getUrlConfig = () => {
-    const {url} = getConfig()
-    if (!url) {
+    const config = getConfig()
+    if (!config.url) {
         throw new Error('Cannot find `url` key. Please check your configuration file.')
     }
-    return url
+    return config.url
 }
 
 /**

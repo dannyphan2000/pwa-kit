@@ -8,7 +8,7 @@ import React from 'react'
 import Helmet from 'react-helmet'
 import {UserConfig} from '../../types/config'
 
-import {useExtensionConfig} from '../../hooks'
+import {useConfig} from '../../hooks'
 
 interface SeoProps {
     title?: string
@@ -19,7 +19,7 @@ interface SeoProps {
 }
 
 const Seo: React.FC<SeoProps> = ({title, description, noIndex, keywords, children, ...props}) => {
-    const {defaultSiteTitle} = useExtensionConfig() as UserConfig
+    const {defaultSiteTitle} = useConfig() as UserConfig
     const fullTitle = title ? `${title} | ${defaultSiteTitle}` : defaultSiteTitle
 
     return (

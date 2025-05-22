@@ -37,7 +37,7 @@ import {
     USER_NOT_FOUND_ERROR
 } from '../../constants'
 import {usePrevious} from '../../hooks/use-previous'
-import {useExtensionConfig} from '../../hooks'
+import {useConfig} from '../../hooks'
 import {isServer} from '../../utils/utils'
 
 const LOGIN_ERROR_MESSAGE = defineMessage({
@@ -57,7 +57,7 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const {path} = useRouteMatch()
     const einstein = useEinstein()
     const dataCloud = useDataCloud()
-    const {login: loginConfig} = useExtensionConfig()
+    const {login: loginConfig} = useConfig()
     const {isRegistered, customerType} = useCustomerType()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const loginPasswordless = useAuthHelper(AuthHelpers.LoginPasswordlessUser)

@@ -6,7 +6,6 @@
  */
 
 import config from '../../config/default.json'
-
 /**
  * This hook returns the configuration for the current application extension.
  */

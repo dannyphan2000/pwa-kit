@@ -18,7 +18,7 @@ import useEinstein from '../../hooks/use-einstein'
 import useDataCloud from '../../hooks/use-datacloud'
 import {useLocation, useRouteMatch} from 'react-router-dom'
 import {usePasswordReset} from '../../hooks/use-password-reset'
-import {useExtensionConfig} from '../../hooks'
+import {useConfig} from '../../hooks'
 
 import {API_ERROR_MESSAGE, FEATURE_UNAVAILABLE_ERROR_MESSAGE} from '../../constants'
 
@@ -31,7 +31,7 @@ const ResetPassword = () => {
     const {pathname} = useLocation()
     const {path} = useRouteMatch()
     const {getPasswordResetToken} = usePasswordReset()
-    const {login: loginConfig} = useExtensionConfig()
+    const {login: loginConfig} = useConfig()
 
     const submitForm = async ({email}) => {
         try {

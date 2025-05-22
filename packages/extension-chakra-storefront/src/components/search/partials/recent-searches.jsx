@@ -12,10 +12,10 @@ import {clearSessionJSONItem} from '../../../utils/utils'
 
 import {FormattedMessage} from 'react-intl'
 import {searchUrlBuilder} from '../../../utils/url'
-import {useExtensionConfig} from '../../../hooks'
+import {useConfig} from '../../../hooks'
 
 const RecentSearches = ({recentSearches, closeAndNavigate}) => {
-    const {search: searchConfig} = useExtensionConfig()
+    const {search: searchConfig} = useConfig()
 
     const clearSearches = () => {
         clearSessionJSONItem(searchConfig.recentSearchKey)

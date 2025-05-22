@@ -27,7 +27,7 @@ import {HideOnDesktop, HideOnMobile} from '../../components/responsive'
 import {FormattedMessage} from 'react-intl'
 import debounce from 'lodash/debounce'
 import {productUrlBuilder, searchUrlBuilder, categoryUrlBuilder} from '../../utils/url'
-import {useExtensionConfig} from '../../hooks'
+import {useConfig} from '../../hooks'
 
 const formatSuggestions = (searchSuggestions, input) => {
     return {
@@ -75,7 +75,7 @@ const Search = (props) => {
     const [isOpen, setIsOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const navigate = useNavigation()
-    const {search: searchConfig} = useExtensionConfig()
+    const {search: searchConfig} = useConfig()
     const searchSuggestion = useSearchSuggestions(
         {
             parameters: {

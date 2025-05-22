@@ -19,7 +19,7 @@ import {ServerContext} from '@salesforce/commerce-sdk-react/hooks/types'
 
 // Local Imports
 import {resolveSiteFromUrl, resolveLocaleFromUrl} from '../../utils/site-utils'
-import {useExtensionConfig} from '../../hooks/use-extension-config'
+import {useConfig} from '../../hooks/use-config'
 
 // Define a type for the HOC props
 type WithCommerceSDKReactProps = {
@@ -43,7 +43,7 @@ const withCommerceSDKReact = <P extends object>(WrappedComponent: React.Componen
         const path = req?.originalUrl || `${window.location.pathname}${window.location.search}`
 
         // TODO: Update this type
-        const config: any = useExtensionConfig()
+        const config: any = useConfig()
         const appOrigin = getAppOrigin()
         const site: any = resolveSiteFromUrl(path)
         const locale: any = resolveLocaleFromUrl(path)

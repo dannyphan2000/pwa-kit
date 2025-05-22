@@ -15,7 +15,7 @@ import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hook
 import {createUrlTemplate} from '../../utils/url'
 import {MultiSiteProvider} from '../../contexts'
 import {resolveSiteFromUrl, resolveLocaleFromUrl} from '../../utils/site-utils'
-import {useExtensionConfig} from '../../hooks/use-extension-config'
+import {useConfig} from '../../hooks/use-config'
 
 // Define a type for the HOC props
 type WithMultiSiteProps = React.ComponentPropsWithoutRef<any>
@@ -26,7 +26,7 @@ const withMultiSite = <P extends object>(WrappedComponent: React.ComponentType<P
         const {req} = useServerContext() as ServerContext
         const path = req?.originalUrl || `${window.location.pathname}${window.location.search}`
 
-        const config: any = useExtensionConfig()
+        const config: any = useConfig()
         const site: any = resolveSiteFromUrl(path)
         const locale: any = resolveLocaleFromUrl(path)
         const buildUrl = createUrlTemplate(config, site.alias || site.id, locale.id)

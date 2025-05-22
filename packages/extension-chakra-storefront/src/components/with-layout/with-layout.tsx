@@ -41,7 +41,7 @@ import ScrollToTop from '../scroll-to-top'
 // Local Project Hooks
 import {AuthModal, useAuthModal} from '../../hooks/use-auth-modal'
 import {AddToCartModalProvider} from '../../hooks/use-add-to-cart-modal'
-import {useExtensionConfig, useCurrentCustomer, useCurrentBasket} from '../../hooks'
+import {useConfig, useCurrentCustomer, useCurrentBasket} from '../../hooks'
 import {watchOnlineStatus, flatten} from '../../utils/utils'
 import useActiveData from '../../hooks/use-active-data'
 import useMultiSite from '../../hooks/use-multi-site'
@@ -97,7 +97,7 @@ const ListMenuContentWithData = withCommerceSdkReactHookData(
 // Define the HOC function
 const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const WithLayout: React.FC<P> = (props: WithAppLayoutProps) => {
-        const config = useExtensionConfig() as UserConfig
+        const config = useConfig() as UserConfig
 
         const CAT_MENU_DEFAULT_ROOT_CATEGORY = String(config.categoryNav.defaultRootCategory)
         const CAT_MENU_DEFAULT_NAV_SSR_DEPTH = config.categoryNav.defaultNavSsrDepth

@@ -127,8 +127,8 @@ jest.mock('@salesforce/pwa-kit-runtime/utils/ssr-config', () => {
         getConfig: () => mockAppConfig
     }
 })
-jest.mock('./src/utils/get-extension-config', () => {
-    const origin = jest.requireActual('./src/utils/get-extension-config')
+jest.mock('./src/utils/get-config', () => {
+    const origin = jest.requireActual('./src/utils/get-config')
     return {
         ...origin,
         getExtensionConfig: jest.fn().mockReturnValue(mockConfig)

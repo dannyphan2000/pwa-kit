@@ -8,7 +8,7 @@
 import {useLocation} from 'react-router-dom'
 import queryString from 'query-string'
 
-import {useExtensionConfig} from './use-extension-config'
+import {useConfig} from './use-config'
 
 const PARSE_OPTIONS = {
     parseBooleans: true,
@@ -21,7 +21,7 @@ const PARSE_OPTIONS = {
  */
 export const useSearchParams = (searchParams, parseRefine = true) => {
     const {search} = useLocation()
-    const {search: searchConfig} = useExtensionConfig()
+    const {search: searchConfig} = useConfig()
     if (!searchParams) {
         searchParams = searchConfig.defaultSearchParams
     }

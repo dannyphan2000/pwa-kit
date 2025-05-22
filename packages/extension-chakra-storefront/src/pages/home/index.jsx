@@ -40,7 +40,7 @@ import useDataCloud from '../../hooks/use-datacloud'
 // Constants
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useProductSearch} from '@salesforce/commerce-sdk-react'
-import {useExtensionConfig} from '../../hooks'
+import {useConfig} from '../../hooks'
 
 /**
  * This is the home page for Retail React App.
@@ -57,7 +57,7 @@ const Home = () => {
         pages: {Home: homeConfig},
         maxCacheAge: MAX_CACHE_AGE,
         staleWhileRevalidate: STALE_WHILE_REVALIDATE
-    } = useExtensionConfig()
+    } = useConfig()
     const {res} = useServerContext()
     if (res) {
         res.set(
