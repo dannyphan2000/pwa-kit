@@ -116,6 +116,7 @@ export const navigateToPDPDesktop = async ({page}) => {
         expect(newSrc).not.toBe(initialSrc)
     }).toPass()
     await expect(productTile.getByText(/From \$39\.99/i)).toBeVisible()
+
     await productTile.click()
 }
 
