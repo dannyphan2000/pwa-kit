@@ -57,7 +57,7 @@ choose to use it. To accomplish this follow the below steps:
 2. Import and re-export the error component from this Application Extension like so:
 
 ```
-import Error from '@salesforce/extension-chakra-storefront/components/error'
+import Error from '@salesforce/template-chakra-storefront/components/error'
 export default Error
 ```
 
@@ -161,20 +161,20 @@ Please refer to the sample configuration below in order to properly configure yo
 
 # Installation
 
-1. Install the `@salesforce/extension-chakra-storefront` extension into your base application.
+1. Install the `@salesforce/template-chakra-storefront` extension into your base application.
 ```
-> npm install @salesforce/extension-chakra-storefront<br/>
+> npm install @salesforce/template-chakra-storefront<br/>
 > Downloading npm package... <br/>
 > Installing extension... <br/>
 > Finished. <br/>
-> Congratulations! The extension was successfully installed! Please visit https://www.npmjs.com/package/@salesforce/extension-chakra-storefront for more information on how to use this extension.
+> Congratulations! The extension was successfully installed! Please visit https://www.npmjs.com/package/@salesforce/template-chakra-storefront for more information on how to use this extension.
 ```
 2. Configure the extension in your base application by updating the configured "extensions" in your configuration. The config file can exist in their the `package.json`
 file under the `mobify` key or in the `config/` folder depending on how your base application is setup.
 ```
 extensions: [
     [
-        "@salesforce/extension-chakra-storefront",
+        "@salesforce/template-chakra-storefront",
         {
             // Please refer to the config section of this document to properly configure the extension.
         }

@@ -9,19 +9,19 @@ This folder is home to two configuration files, `default.json` and `sample.json`
 
 ### `default.json`
 
-This configuration is used during the project generation as well as the extensions loading phase when running your PWA-Kit application. 
+This configuration is used during the project generation as well as the extensions loading phase when running your PWA-Kit application.
 
-During your PWA-Kit project generation, you can select which extensions are configured for your app. This ultimately leads to your applications configuration being setup with the extensions selected during the project questionnaire phase. For example, if you were to choose to use `@salesforce/extension-chakra-storefront` in your PWA-Kit app, then you might see something along the lines of this in your app config, where `<user_defined_configuration>` is initially set to the contents of the `default.json` file:
+During your PWA-Kit project generation, you can select which extensions are configured for your app. This ultimately leads to your applications configuration being setup with the extensions selected during the project questionnaire phase. For example, if you were to choose to use `@salesforce/template-chakra-storefront` in your PWA-Kit app, then you might see something along the lines of this in your app config, where `<user_defined_configuration>` is initially set to the contents of the `default.json` file:
 
 ```
 app: {
     extensions: [
-        ['@salesforce/extension-chakra-storefront', <user_defined_configuration>]
+        ['@salesforce/template-chakra-storefront', <user_defined_configuration>]
     ]
 }
 ```
 
-Additionally, during the PWA-Kit application execution the default configuration is merged with the user define configuration to ensure that all configuration key have a value. This means that you do not have to worry about scattering default values in your extensions code, whether it's in a React component or the setup files. 
+Additionally, during the PWA-Kit application execution the default configuration is merged with the user define configuration to ensure that all configuration key have a value. This means that you do not have to worry about scattering default values in your extensions code, whether it's in a React component or the setup files.
 
 It's worth noting that if your configuration file is expected to have values supplied by the PWA-Kit application developer, you can use placeholder values that will prompt the developer to replace them with real world values. Below is an example default config file with a placeholder:
 
@@ -56,13 +56,7 @@ We also recommend that you reference this configuration file from your extension
 
 ## How to use your extension configuration?
 
-Your extensions configuration can be used in different ways depending on the context in which you want to use it. Your configuration will primarily be used in two places, your React components and your extension setup files. 
-
-### Setup Files
-
-The exported extension classes in `setup-app.ts` and `setup-server.ts` are extended from the `ApplicationExtension` class. This class provide a method called `getConfig` which returns the configuration your extension was instantiated with. you can use this method to grab the configuration and use it however you want. 
-
-Please refer to the `src/setup-app.ts` file to see a sample of how `getConfig` is being used in the `getRoutes` implementation.
+Your extensions configuration can be used in different ways depending on the context in which you want to use it. Your configuration will primarily be used in two places, your React components and your extension setup files.
 
 ### React Components
 

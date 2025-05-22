@@ -16,7 +16,7 @@ sh.config.silent = false
 
 const TEMPLATE_PREFIX = 'template-'
 const EXTENSION_STARTER_NAME = 'extension-starter'
-const EXTENSION_CHAKRA_STOREFRONT_NAME = 'extension-chakra-storefront'
+const EXTENSION_CHAKRA_STOREFRONT_NAME = 'template-chakra-storefront'
 
 const monorepoRoot = p.resolve(__dirname, '..', '..', '..')
 const templatesDir = p.resolve(__dirname, '..', 'templates')

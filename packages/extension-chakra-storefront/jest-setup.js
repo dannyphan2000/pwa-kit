@@ -14,7 +14,7 @@ const mockConfig = require('./src/mock-config')
 
 const mockAppConfig = {
     app: {
-        extensions: [['@salesforce/extension-chakra-storefront', mockConfig]]
+        extensions: [['@salesforce/template-chakra-storefront', mockConfig]]
     }
 }
 const {configure: configureTestingLibrary} = require('@testing-library/react')

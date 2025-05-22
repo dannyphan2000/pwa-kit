@@ -366,7 +366,7 @@ const PRESETS = [
             ['project.type']: 'PWAKitAppProject',
             ['project.useApplicationExtensibility']: true,
             ['project.selectedAppExtensions']: [
-                '@salesforce/extension-chakra-storefront',
+                '@salesforce/template-chakra-storefront',
                 '@salesforce/extension-chakra-store-locator'
             ],
             ['project.name']: 'retail-react-app',
@@ -890,7 +890,7 @@ const processAppExtensions = (
 
 /**
  * Fetches the latest version of a package using npm view.
- * @param {string} packageName - The name of the package (e.g., '@salesforce/extension-chakra-storefront').
+ * @param {string} packageName - The name of the package (e.g., '@salesforce/template-chakra-storefront').
  * @returns {string} - The latest version number (e.g., '1.0.0') or 'latest' if fetching fails.
  */
 const getLatestVersion = (packageName) => {

@@ -13,7 +13,7 @@
  * A single-site, single-locale config is a special case of multi-site case.
  */
 module.exports = {
-    id: '@salesforce/extension-chakra-storefront',
+    id: '@salesforce/template-chakra-storefront',
     enabled: true,
     activeDataEnabled: true,
     categoryNav: {
