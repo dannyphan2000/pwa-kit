@@ -52,6 +52,7 @@ test.describe('Accessibility Tests with Snapshots for guest user', () => {
     test('Product Detail Page should not have new accessibility issues', async ({page}) => {
         await navigateToPDPDesktop({page})
 
+        // ensure that the page is fully loaded before starting a11y scan
         await expect(page.getByRole('heading', {name: /Cotton Turtleneck Sweater/i})).toBeVisible()
         await expect(page.getByText(/From \$39\.99/i).nth(1)).toBeVisible()
 
