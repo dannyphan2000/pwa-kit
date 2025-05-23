@@ -131,7 +131,7 @@ jest.mock('./src/utils/get-config', () => {
     const origin = jest.requireActual('./src/utils/get-config')
     return {
         ...origin,
-        getExtensionConfig: jest.fn().mockReturnValue(mockConfig)
+        getConfig: jest.fn().mockReturnValue(mockConfig)
     }
 })
 

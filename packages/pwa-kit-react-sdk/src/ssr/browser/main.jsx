@@ -46,11 +46,6 @@ export const OuterApp = ({routes, error, extensions, WrappedApp, locals, onHydra
     const AppConfig = getAppConfig()
     const isInitialPageRef = useRef(true)
 
-    // Invoke the Application Extensions 'beforeRouteMatch' hook. This hook accepts ALL the routes for the current
-    // application including all routes added from the configured extensions.
-    extensions.forEach((applicationExtension) => {
-        routes = applicationExtension.beforeRouteMatch({allRoutes: routes, locals})
-    })
 
     return (
         <ServerContext.Provider value={{}}>
@@ -121,10 +116,12 @@ export const start = async () => {
     // been warned.
     window.__HYDRATING__ = true
 
+    const routes = await getAllRoutes(locals)
+
     const props = {
         error: window.__ERROR__,
         locals: locals,
-        routes: getAllRoutes(locals),
+        routes: routes,
         WrappedApp: routeComponent(App, false, locals)
     }
 

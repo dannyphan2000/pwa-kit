@@ -6,15 +6,15 @@
  */
 
 import {getDefaultSite, getSites, resolveSiteFromUrl} from './site-utils'
-import {getExtensionConfig as getConfig} from '../utils/get-extension-config'
+import {getConfig} from '../utils/get-config'
 
 import mockConfig from '../mock-config'
 import {getParamsFromPath, resolveLocaleFromUrl} from './site-utils'
-jest.mock('../utils/get-extension-config', () => {
-    const origin = jest.requireActual('../utils/get-extension-config')
+jest.mock('../utils/get-config', () => {
+    const origin = jest.requireActual('../utils/get-config')
     return {
         ...origin,
-        getExtensionConfig: jest.fn()
+        getConfig: jest.fn()
     }
 })
 
@@ -62,8 +62,11 @@ describe('resolveSiteFromUrl', function () {
         getConfig.mockImplementation(() => {
             return {
                 ...mockConfig,
-                siteAliases: {},
-                defaultSite: 'site-2'
+                app: {
+                    ...mockConfig.app,
+                    siteAliases: {},
+                    defaultSite: 'site-2'
+                }
             }
         })
 
@@ -96,8 +99,10 @@ describe('getDefaultSite', function () {
             }
         }
         getConfig.mockImplementation(() => ({
-            ...mockConfig,
-            sites: [siteMock]
+            app: {
+                ...mockConfig.app,
+                sites: [siteMock]
+            }
         }))
 
         const defaultSite = getDefaultSite()
@@ -106,8 +111,10 @@ describe('getDefaultSite', function () {
 
     test('returns site-2 as the default site according to the config', () => {
         getConfig.mockImplementation(() => ({
-            ...mockConfig,
-            defaultSite: 'site-2'
+            app: {
+                ...mockConfig.app,
+                defaultSite: 'site-2'
+            }
         }))
 
         const expectedRes = {
@@ -186,7 +193,7 @@ describe('getSites', function () {
 
     test('throw error when there is no sites in the config', () => {
         getConfig.mockImplementation(() => ({
-            ...mockConfig,
+            ...mockConfig.app,
             sites: []
         }))
 
@@ -239,49 +246,52 @@ describe('getParamsFromPath', function () {
             getConfig.mockImplementation(() => {
                 return {
                     ...mockConfig,
-                    sites: [
-                        {
-                            id: 'RefArch',
-                            alias: 'us',
-                            l10n: {
-                                supportedCurrencies: ['USD'],
-                                defaultCurrency: 'USD',
-                                defaultLocale: 'en-US',
-                                supportedLocales: [
-                                    {
-                                        id: 'en-US',
-                                        alias: 'en',
-                                        preferredCurrency: 'USD'
-                                    },
-                                    {
-                                        id: 'en-CA',
-                                        alias: 'ca',
-                                        preferredCurrency: 'USD'
-                                    }
-                                ]
+                    app: {
+                        ...mockConfig.app,
+                        sites: [
+                            {
+                                id: 'RefArch',
+                                alias: 'us',
+                                l10n: {
+                                    supportedCurrencies: ['USD'],
+                                    defaultCurrency: 'USD',
+                                    defaultLocale: 'en-US',
+                                    supportedLocales: [
+                                        {
+                                            id: 'en-US',
+                                            alias: 'en',
+                                            preferredCurrency: 'USD'
+                                        },
+                                        {
+                                            id: 'en-CA',
+                                            alias: 'ca',
+                                            preferredCurrency: 'USD'
+                                        }
+                                    ]
+                                }
+                            },
+                            {
+                                id: 'RefArchGlobal',
+                                alias: 'global',
+                                l10n: {
+                                    supportedCurrencies: ['GBP', 'EUR', 'CNY', 'JPY'],
+                                    defaultCurrency: 'GBP',
+                                    supportedLocales: [
+                                        {
+                                            id: 'de-DE',
+                                            preferredCurrency: 'EUR'
+                                        },
+                                        {
+                                            id: 'en-GB',
+                                            alias: 'uk',
+                                            preferredCurrency: 'GBP'
+                                        }
+                                    ],
+                                    defaultLocale: 'en-GB'
+                                }
                             }
-                        },
-                        {
-                            id: 'RefArchGlobal',
-                            alias: 'global',
-                            l10n: {
-                                supportedCurrencies: ['GBP', 'EUR', 'CNY', 'JPY'],
-                                defaultCurrency: 'GBP',
-                                supportedLocales: [
-                                    {
-                                        id: 'de-DE',
-                                        preferredCurrency: 'EUR'
-                                    },
-                                    {
-                                        id: 'en-GB',
-                                        alias: 'uk',
-                                        preferredCurrency: 'GBP'
-                                    }
-                                ],
-                                defaultLocale: 'en-GB'
-                            }
-                        }
-                    ]
+                        ]
+                    }
                 }
             })
             // getSites.mockImplementation(() => {

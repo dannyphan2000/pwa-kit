@@ -6,7 +6,6 @@
  */
 
 // Platform Imports
-import {extensionConfigs} from '@salesforce/pwa-kit-extension-sdk/react'
-import extensionMeta from '../../extension-meta.json'
+import config from '../../config/default.json'
 
-export const getExtensionConfig = () => extensionConfigs[extensionMeta.id]
+export const getConfig = () => config

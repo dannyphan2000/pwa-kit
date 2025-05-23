@@ -17,7 +17,7 @@ import {getTargetLocale, fetchTranslations} from '../../utils/locale'
 import {isServer} from '../../utils/utils'
 import logger from '../../utils/logger-instance'
 import useMultiSite from '../../hooks/use-multi-site'
-import {useConfig} from '../../hooks'
+import {useConfig} from '../../hooks/use-config'
 
 // Define a type for the HOC props
 type WithReactIntlProps = React.ComponentPropsWithoutRef<any>
