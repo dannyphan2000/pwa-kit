@@ -111,13 +111,15 @@ afterEach(() => {
     localStorage.clear()
 })
 
-test('should render product list page', async () => {
+test('should render product list page with filter dialog', async () => {
     window.history.pushState({}, 'ProductList', '/uk/en-GB/category/mens-clothing-jackets')
     renderWithProviders(<MockedComponent />)
     expect(await screen.findByTestId('sf-product-list-page')).toBeInTheDocument()
     await waitFor(() => {
         expect(screen.getByText(/Classic Glen Plaid Pant/i)).toBeInTheDocument()
     })
+    // Verify filter dialog button exists
+    expect(screen.getByText('Filter')).toBeInTheDocument()
 })
 
 test('should render sort option list page', async () => {
@@ -156,9 +158,8 @@ test('should render only pricing and promotions skeleton when data is refreshing
     }))
     window.history.pushState({}, 'ProductList', '/uk/en-GB/category/mens-clothing-jackets')
     renderWithProviders(<MockedComponent isLoading />)
-    expect(screen.getAllByTestId('sf-product-tile-pricing-and-promotions-skeleton')).toHaveLength(
-        25
-    )
+    // Verify partial loading state
+    expect(screen.getAllByTestId('sf-product-tile-pricing-and-promotions-skeleton')).toHaveLength(25)
     expect(screen.queryByTestId('sf-product-tile-skeleton')).not.toBeInTheDocument()
 })
 
@@ -232,7 +233,7 @@ test('clicking a filter on mobile or desktop applies changes to both', async () 
     expect(screen.getByLabelText('Add filter: Blue (27)')).toHaveAttribute('aria-checked', 'false')
 
     // click filter button for mobile that is hidden on desktop but present in DOM
-    // this opens the filter modal on mobile
+    // this opens the filter dialog on mobile
     await user.click(screen.getByText('Filter'))
 
     // re-query for desktop and mobile filters
