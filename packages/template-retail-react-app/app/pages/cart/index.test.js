@@ -28,7 +28,6 @@ import {
     baskets as mockBaskets,
     products as mockProducts
 } from '@salesforce/retail-react-app/app/pages/cart/cart.mock'
-import userEvent from '@testing-library/user-event'
 
 const mockProduct = {
     ...mockVariant,
