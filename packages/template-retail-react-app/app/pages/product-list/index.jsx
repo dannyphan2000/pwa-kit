@@ -31,13 +31,13 @@ import {
     Stack,
     useDisclosure,
     Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    ModalContent,
-    ModalCloseButton,
-    ModalOverlay,
+    Dialog,
+    DialogHeader,
+    DialogBody,
+    DialogFooter,
+    DialogContent,
+    DialogCloseButton,
+    DialogOverlay,
     Drawer,
     DrawerBody,
     DrawerHeader,
@@ -416,6 +416,9 @@ const ProductList = (props) => {
             data-testid="sf-product-list-page"
             layerStyle="page"
             paddingTop={{base: 6, lg: 8}}
+            css={{
+                '& svg': { color: 'var(--chakra-colors-gray-500)' }
+            }}
             {...rest}
         >
             <Helmet>
@@ -488,17 +491,14 @@ const ProductList = (props) => {
                             >
                                 <Flex align="center">
                                     <Button
-                                        fontSize="sm"
-                                        colorScheme="black"
-                                        variant="outline"
-                                        marginRight={2}
-                                        display="inline-flex"
-                                        leftIcon={<FilterIcon boxSize={5} />}
+                                        variant="ghost"
+                                        size="sm"
                                         onClick={onOpen}
+                                        leftIcon={<FilterIcon />}
                                     >
                                         <FormattedMessage
                                             defaultMessage="Filter"
-                                            id="product_list.button.filter"
+                                            id="product_list.filter.button"
                                         />
                                     </Button>
                                 </Flex>
@@ -554,9 +554,8 @@ const ProductList = (props) => {
                         </Stack>
                         <Box>
                             <SimpleGrid
-                                columns={[2, 2, 4, 5]}
-                                spacingX={4}
-                                spacingY={{base: 12, lg: 16}}
+                                columns={{base: 2, md: 3, lg: 4}}
+                                spacing={4}
                             >
                                 {isHydrated() &&
                                 ((isRefetching && !isFetched) || !productSearchResult)
@@ -646,25 +645,19 @@ const ProductList = (props) => {
                 </>
             )}
             {/* Modal for filter options on mobile */}
-            <Modal
-                isOpen={isOpen}
-                onClose={onClose}
-                size="full"
-                motionPreset="slideInBottom"
-                scrollBehavior="inside"
-            >
-                <ModalOverlay />
-                <ModalContent top={0} marginTop={0}>
-                    <ModalHeader>
-                        <Heading as="h1" fontWeight="bold" fontSize="2xl">
+            <Dialog open={isOpen} onOpenChange={onClose}>
+                <DialogOverlay />
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogCloseButton />
+                        <Heading as="h2" size="lg">
                             <FormattedMessage
-                                defaultMessage="Filter"
-                                id="product_list.modal.title.filter"
+                                defaultMessage="Filter Products"
+                                id="product_list.filter_products.heading"
                             />
                         </Heading>
-                    </ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody py={4}>
+                    </DialogHeader>
+                    <DialogBody>
                         {filtersLoading && <LoadingSpinner />}
                         <Refinements
                             toggleFilter={toggleFilter}
@@ -683,16 +676,8 @@ const ProductList = (props) => {
                             }
                             excludedFilters={['cgid']}
                         />
-                    </ModalBody>
-
-                    <ModalFooter
-                        // justify="space-between"
-                        display="block"
-                        width="full"
-                        borderTop="1px solid"
-                        borderColor="gray.100"
-                        paddingBottom={10}
-                    >
+                    </DialogBody>
+                    <DialogFooter>
                         <Stack>
                             <Button width="full" onClick={onClose}>
                                 {formatMessage(
@@ -712,53 +697,42 @@ const ProductList = (props) => {
                                 />
                             </Button>
                         </Stack>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
             <Drawer
                 placement="bottom"
-                isOpen={sortOpen}
-                onClose={() => setSortOpen(false)}
-                size="sm"
-                motionPreset="slideInBottom"
-                scrollBehavior="inside"
-                isFullHeight={false}
-                height="50%"
+                open={sortOpen}
+                onOpenChange={() => setSortOpen(false)}
             >
                 <DrawerOverlay />
-                <DrawerContent marginTop={0}>
-                    <DrawerHeader boxShadow="none">
-                        <Text fontWeight="bold" fontSize="2xl">
+                <DrawerContent>
+                    <DrawerHeader>
+                        <DrawerCloseButton />
+                        <Heading as="h2" size="lg">
                             <FormattedMessage
                                 defaultMessage="Sort By"
-                                id="product_list.drawer.title.sort_by"
+                                id="product_list.sort_by.heading"
                             />
-                        </Text>
+                        </Heading>
                     </DrawerHeader>
-                    <DrawerCloseButton />
                     <DrawerBody>
-                        {sortUrls.map((href, idx) => (
-                            <Button
-                                width="full"
-                                onClick={() => {
-                                    setSortOpen(false)
-                                    history.push(href)
-                                }}
-                                fontSize={'md'}
-                                key={idx}
-                                marginTop={0}
-                                variant="menu-link"
-                            >
-                                <Text
-                                    as={
-                                        selectedSortingOptionLabel?.label ===
-                                            productSearchResult?.sortingOptions[idx]?.label && 'u'
-                                    }
+                        <Stack spacing={4}>
+                            {sortUrls?.map(({label, url, isSelected}) => (
+                                <Button
+                                    key={url}
+                                    variant={isSelected ? 'solid' : 'ghost'}
+                                    onClick={() => {
+                                        setSortOpen(false)
+                                        navigate(url)
+                                    }}
+                                    width="full"
+                                    justifyContent="flex-start"
                                 >
-                                    {productSearchResult?.sortingOptions[idx]?.label}
-                                </Text>
-                            </Button>
-                        ))}
+                                    {label}
+                                </Button>
+                            ))}
+                        </Stack>
                     </DrawerBody>
                 </DrawerContent>
             </Drawer>
