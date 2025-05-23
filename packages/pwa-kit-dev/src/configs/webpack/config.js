@@ -9,7 +9,7 @@
 
 // For more information on these settings, see https://webpack.js.org/configuration
 import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer'
-import path, {resolve} from 'path'
+import {resolve} from 'path'
 import fse from 'fs-extra'
 import webpack from 'webpack'
 
@@ -26,15 +26,11 @@ import {sdkReplacementPlugin} from './plugins'
 // Constants
 import {CLIENT, SERVER, CLIENT_OPTIONAL, SSR, REQUEST_PROCESSOR} from './config-names'
 
-// Utilities
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
-
 const projectDir = process.cwd()
 const pkg = fse.readJsonSync(resolve(projectDir, 'package.json'))
 const buildDir = process.env.PWA_KIT_BUILD_DIR
     ? resolve(process.env.PWA_KIT_BUILD_DIR)
     : resolve(projectDir, 'build')
-const isMonoRepo = fse.existsSync(resolve(projectDir, '..', '..', 'lerna.json'))
 const production = 'production'
 const development = 'development'
 const analyzeBundle = process.env.MOBIFY_ANALYZE === 'true'
@@ -227,26 +223,7 @@ const baseConfig = (target) => {
                             use: {
                                 loader: findDepInStack('source-map-loader')
                             }
-                        },
-                        ruleForApplicationExtensibility({
-                            loaderOptions: {
-                                configured: extensions,
-                                target: 'web'
-                            }
-                        }),
-                        ruleForApplicationExtensibility({
-                            loaderOptions: {
-                                configured: extensions,
-                                target: 'node'
-                            }
-                        }),
-                        ruleForOverrideResolver({
-                            extensions,
-                            resolveExtensions: SUPPORTED_FILE_EXTENSIONS,
-                            isMonoRepo,
-                            projectDir,
-                            target
-                        })
+                        }
                     ].filter(Boolean)
                 }
             }
@@ -292,8 +269,9 @@ const withChunking = (config) => {
 const staticFolderCopyPlugin = new CopyPlugin({
     patterns: [
         {
-            from: 'app/static/',
-            to: 'static/'
+            from: 'static',
+            to: 'static/',
+            noErrorOnMissing: true
         }
     ]
 })
