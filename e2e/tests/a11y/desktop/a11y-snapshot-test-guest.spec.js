@@ -51,12 +51,15 @@ test.describe('Accessibility Tests with Snapshots for guest user', () => {
 
     test('Product Detail Page should not have new accessibility issues', async ({page}) => {
         await navigateToPDPDesktop({page})
+        await page.waitForLoadState()
 
         // ensure that the page is fully loaded before starting a11y scan
         await expect(page.getByRole('heading', {name: /Cotton Turtleneck Sweater/i})).toBeVisible()
         await expect(page.getByText(/From \$39\.99/i).nth(1)).toBeVisible()
 
-        await page.waitForLoadState()
+        const addToWishlistButton = page.getByRole('button', {name: /Add to Wishlist/i})
+        await expect(addToWishlistButton).toBeVisible()
+        await expect(addToWishlistButton).toBeEnabled()
 
         // Run the a11y test
         await runAccessibilityTest(page, ['guest', 'pdp-a11y-violations.json'])
