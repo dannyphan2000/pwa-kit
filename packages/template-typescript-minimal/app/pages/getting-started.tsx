@@ -6,6 +6,7 @@
  */
 import React from 'react'
 import {useApplicationExtensions} from '@salesforce/pwa-kit-extension-sdk/react'
+import { Toaster, toaster } from '../components/toaster'
 
 const style = `
 .content {
@@ -70,7 +71,13 @@ const GettingStarted = () => {
                     <div style={{width: '300px'}}>
                         <p>
                             <a
-                                href="https://developer.salesforce.com/docs/commerce/pwa-kit-managed-runtime/guide/developer-workflow.html"
+                                onClick={() => {
+                                    toaster.create({
+                                        title: 'Hello',
+                                        description: 'World',
+                                        type: 'success'
+                                    })
+                                }}
                                 className="button"
                             >
                                 Get started
@@ -89,6 +96,8 @@ const GettingStarted = () => {
                         ) : (
                             <p>You currently do not have any extensions installed.</p>
                         )}
+
+                        <Toaster />
                     </div>
                 </div>
             </div>
