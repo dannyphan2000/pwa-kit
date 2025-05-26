@@ -75,7 +75,13 @@ const GettingStarted = () => {
                                     toaster.create({
                                         title: 'Hello',
                                         description: 'World',
-                                        type: 'success'
+                                        type: 'success',
+                                        action: {
+                                            label: 'Click me',
+                                            onClick: () => {
+                                                console.log('clicked')
+                                            }
+                                        }
                                     })
                                 }}
                                 className="button"
