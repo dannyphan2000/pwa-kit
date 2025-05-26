@@ -32,18 +32,15 @@ import {
     useDisclosure,
     Button,
     Dialog,
-    DialogHeader,
-    DialogBody,
-    DialogFooter,
-    DialogContent,
-    DialogCloseButton,
-    DialogOverlay,
+    CloseButton,
     Drawer,
     DrawerBody,
     DrawerHeader,
     DrawerOverlay,
     DrawerContent,
-    DrawerCloseButton
+    DrawerCloseButton,
+    RadioGroup,
+    Radio
 } from '@salesforce/retail-react-app/app/components/shared/ui'
 
 // Project Components
@@ -52,9 +49,10 @@ import ProductTile, {
     Skeleton as ProductTileSkeleton
 } from '@salesforce/retail-react-app/app/components/product-tile'
 import {HideOnDesktop} from '@salesforce/retail-react-app/app/components/responsive'
-import Refinements from '@salesforce/retail-react-app/app/pages/product-list/partials/refinements'
+// TODO: Refinements will be implemented in a separate ticket for Chakra v3 migration
+// import Refinements from '@salesforce/retail-react-app/app/pages/product-list/partials/refinements'
 import CategoryLinks from '@salesforce/retail-react-app/app/pages/product-list/partials/category-links'
-import SelectedRefinements from '@salesforce/retail-react-app/app/pages/product-list/partials/selected-refinements'
+// import SelectedRefinements from '@salesforce/retail-react-app/app/pages/product-list/partials/selected-refinements'
 import EmptySearchResults from '@salesforce/retail-react-app/app/pages/product-list/partials/empty-results'
 import PageHeader from '@salesforce/retail-react-app/app/pages/product-list/partials/page-header'
 import AbovePageHeader from '@salesforce/retail-react-app/app/pages/product-list/partials/above-page-header'
@@ -437,31 +435,22 @@ const ProductList = (props) => {
                     <PageDesignerPromotionalBanner />
 
                     {/* Header */}
-                    <Stack
-                        display={{base: 'none', lg: 'flex'}}
-                        direction="row"
-                        justify="flex-start"
-                        align="flex-start"
-                        spacing={4}
-                        marginBottom={6}
-                    >
-                        <Flex align="left" width="287px">
-                            <PageHeader
-                                searchQuery={searchQuery}
-                                category={category}
-                                productSearchResult={productSearchResult}
-                                isLoading={isLoading}
-                            />
-                        </Flex>
+                    <Stack gap={4}>
+                        <PageHeader
+                            searchQuery={searchQuery}
+                            category={category}
+                            productSearchResult={productSearchResult}
+                            isLoading={isLoading}
+                        />
 
-                        <Box flex={1} paddingTop={'45px'}>
-                            <SelectedRefinements
-                                filters={productSearchResult?.refinements}
-                                toggleFilter={toggleFilter}
-                                handleReset={resetFilters}
-                                selectedFilterValues={productSearchResult?.selectedRefinements}
-                            />
-                        </Box>
+                        {/*<Box flex={1} paddingTop={'45px'}>*/}
+                        {/*    <SelectedRefinements*/}
+                        {/*        filters={productSearchResult?.refinements}*/}
+                        {/*        toggleFilter={toggleFilter}*/}
+                        {/*        handleReset={resetFilters}*/}
+                        {/*        selectedFilterValues={productSearchResult?.selectedRefinements}*/}
+                        {/*    />*/}
+                        {/*</Box>*/}
                         <Box paddingTop={'45px'}>
                             <Sort
                                 sortUrls={sortUrls}
@@ -526,31 +515,31 @@ const ProductList = (props) => {
                                 </Flex>
                             </Stack>
                         </Stack>
-                        <Box marginBottom={4}>
-                            <SelectedRefinements
-                                filters={productSearchResult?.refinements}
-                                toggleFilter={toggleFilter}
-                                handleReset={resetFilters}
-                                selectedFilterValues={productSearchResult?.selectedRefinements}
-                            />
-                        </Box>
+                        {/*<Box marginBottom={4}>*/}
+                        {/*    <SelectedRefinements*/}
+                        {/*        filters={productSearchResult?.refinements}*/}
+                        {/*        toggleFilter={toggleFilter}*/}
+                        {/*        handleReset={resetFilters}*/}
+                        {/*        selectedFilterValues={productSearchResult?.selectedRefinements}*/}
+                        {/*    />*/}
+                        {/*</Box>*/}
                     </HideOnDesktop>
 
                     {/* Body  */}
                     <Grid templateColumns={{base: '1fr', md: '280px 1fr'}} columnGap={6}>
                         <Stack display={{base: 'none', md: 'flex'}}>
-                            <Refinements
-                                itemsBefore={
-                                    category?.categories
-                                        ? [<CategoryLinks key="itemsBefore" category={category} />]
-                                        : undefined
-                                }
-                                isLoading={filtersLoading}
-                                toggleFilter={toggleFilter}
-                                filters={productSearchResult?.refinements}
-                                excludedFilters={['cgid']}
-                                selectedFilters={searchParams.refine}
-                            />
+                            {/*<Refinements*/}
+                            {/*    itemsBefore={*/}
+                            {/*        category?.categories*/}
+                            {/*            ? [<CategoryLinks key="itemsBefore" category={category} />]*/}
+                            {/*            : undefined*/}
+                            {/*    }*/}
+                            {/*    isLoading={filtersLoading}*/}
+                            {/*    toggleFilter={toggleFilter}*/}
+                            {/*    filters={productSearchResult?.refinements}*/}
+                            {/*    excludedFilters={['cgid']}*/}
+                            {/*    selectedFilters={searchParams.refine}*/}
+                            {/*/>*/}
                         </Stack>
                         <Box>
                             <SimpleGrid
@@ -644,98 +633,133 @@ const ProductList = (props) => {
                     </Grid>
                 </>
             )}
-            {/* Modal for filter options on mobile */}
-            <Dialog open={isOpen} onOpenChange={onClose}>
-                <DialogOverlay />
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogCloseButton />
-                        <Heading as="h2" size="lg">
-                            <FormattedMessage
-                                defaultMessage="Filter Products"
-                                id="product_list.filter_products.heading"
-                            />
-                        </Heading>
-                    </DialogHeader>
-                    <DialogBody>
-                        {filtersLoading && <LoadingSpinner />}
-                        <Refinements
-                            toggleFilter={toggleFilter}
-                            filters={productSearchResult?.refinements}
-                            selectedFilters={searchParams.refine}
-                            itemsBefore={
-                                category?.categories
-                                    ? [
-                                          <CategoryLinks
-                                              key="itemsBefore"
-                                              category={category}
-                                              onSelect={onClose}
-                                          />
-                                      ]
-                                    : undefined
-                            }
-                            excludedFilters={['cgid']}
-                        />
-                    </DialogBody>
-                    <DialogFooter>
-                        <Stack>
-                            <Button width="full" onClick={onClose}>
-                                {formatMessage(
-                                    {
-                                        id: 'product_list.modal.button.view_items',
-                                        defaultMessage: 'View {prroductCount} items'
-                                    },
-                                    {
-                                        prroductCount: productSearchResult?.total
-                                    }
-                                )}
-                            </Button>
-                            <Button width="full" variant="outline" onClick={resetFilters}>
-                                <FormattedMessage
-                                    defaultMessage="Clear Filters"
-                                    id="product_list.modal.button.clear_filters"
-                                />
-                            </Button>
-                        </Stack>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-            <Drawer
-                placement="bottom"
-                open={sortOpen}
-                onOpenChange={() => setSortOpen(false)}
+           {/* Dialog for filter options on mobile */}
+            <Dialog.Root 
+                open={isOpen} 
+                onOpenChange={() => onClose()}
+                size="full"
+                motionPreset="slide-in-bottom"
             >
-                <DrawerOverlay />
-                <DrawerContent>
-                    <DrawerHeader>
-                        <DrawerCloseButton />
-                        <Heading as="h2" size="lg">
-                            <FormattedMessage
-                                defaultMessage="Sort By"
-                                id="product_list.sort_by.heading"
-                            />
-                        </Heading>
-                    </DrawerHeader>
-                    <DrawerBody>
-                        <Stack spacing={4}>
-                            {sortUrls?.map(({label, url, isSelected}) => (
-                                <Button
-                                    key={url}
-                                    variant={isSelected ? 'solid' : 'ghost'}
-                                    onClick={() => {
+                <Portal>
+                    <Dialog.Backdrop />
+                    <Dialog.Positioner>
+                        <Dialog.Content top={0} marginTop={0}>
+                            <Dialog.Header>
+                                <Dialog.Title as="h1" fontWeight="bold" fontSize="2xl">
+                                    <FormattedMessage
+                                        defaultMessage="Filter"
+                                        id="product_list.modal.title.filter"
+                                    />
+                                </Dialog.Title>
+                                <Dialog.CloseTrigger asChild>
+                                    <CloseButton />
+                                </Dialog.CloseTrigger>
+                            </Dialog.Header>
+                            <Dialog.Body py={4}>
+                                {filtersLoading && <LoadingSpinner />}
+                                <Refinements
+                                    toggleFilter={toggleFilter}
+                                    filters={productSearchResult?.refinements}
+                                    selectedFilters={searchParams.refine}
+                                    itemsBefore={
+                                        category?.categories
+                                            ? [
+                                                  <CategoryLinks
+                                                      key="itemsBefore"
+                                                      category={category}
+                                                      onSelect={onClose}
+                                                  />
+                                              ]
+                                            : undefined
+                                    }
+                                    excludedFilters={['cgid']}
+                                />
+                            </Dialog.Body>
+
+                            <Dialog.Footer
+                                display="block"
+                                width="full"
+                                borderTop="1px solid"
+                                borderColor="gray.100"
+                                paddingBottom={10}
+                            >
+                                <Stack>
+                                    <Dialog.ActionTrigger asChild>
+                                        <Button width="full" onClick={onClose}>
+                                            {formatMessage(
+                                                {
+                                                    id: 'product_list.modal.button.view_items',
+                                                    defaultMessage: 'View {prroductCount} items'
+                                                },
+                                                {
+                                                    prroductCount: productSearchResult?.total
+                                                }
+                                            )}
+                                        </Button>
+                                    </Dialog.ActionTrigger>
+                                    <Button width="full" variant="outline" onClick={resetFilters}>
+                                        <FormattedMessage
+                                            defaultMessage="Clear Filters"
+                                            id="product_list.modal.button.clear_filters"
+                                        />
+                                    </Button>
+                                </Stack>
+                            </Dialog.Footer>
+                        </Dialog.Content>
+                    </Dialog.Positioner>
+                </Portal>
+            </Dialog.Root>
+            {/* Sort Dialog */}
+            <Dialog.Root 
+                open={sortOpen} 
+                onOpenChange={() => setSortOpen(false)}
+                size="sm"
+                placement="center"
+            >
+                <Portal>
+                    <Dialog.Backdrop />
+                    <Dialog.Positioner>
+                        <Dialog.Content>
+                            <Dialog.Header>
+                                <Dialog.Title fontWeight="bold" fontSize="2xl">
+                                    <FormattedMessage
+                                        defaultMessage="Sort By"
+                                        id="product_list.modal.title.sort_by"
+                                    />
+                                </Dialog.Title>
+                                <Dialog.CloseTrigger asChild>
+                                    <CloseButton size="sm" />
+                                </Dialog.CloseTrigger>
+                            </Dialog.Header>
+                            <Dialog.Body>
+                                <RadioGroup
+                                    defaultValue={productSearchResult?.selectedSortingOption}
+                                    onChange={(value) => {
+                                        const href = sortUrls[value]
+                                        history.push(href)
                                         setSortOpen(false)
-                                        navigate(url)
                                     }}
-                                    width="full"
-                                    justifyContent="flex-start"
                                 >
-                                    {label}
-                                </Button>
-                            ))}
-                        </Stack>
-                    </DrawerBody>
-                </DrawerContent>
-            </Drawer>
+                                    <Stack gap={5}>
+                                        {productSearchResult?.sortingOptions?.map(
+                                            (option, idx) => (
+                                                <Radio
+                                                    key={option.id}
+                                                    value={idx.toString()}
+                                                >
+                                                    <Text lineClamp={2} fontSize="sm">
+                                                        {option.label}
+                                                    </Text>
+                                                </Radio>
+                                            )
+                                        )}
+                                    </Stack>
+                                </RadioGroup>
+                            </Dialog.Body>
+                        </Dialog.Content>
+                    </Dialog.Positioner>
+                </Portal>
+            </Dialog.Root>
         </Box>
     )
 }
