@@ -16,6 +16,43 @@
     ]
   },
   {
+    "id": "color-contrast",
+    "impact": "serious",
+    "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
+    "help": "Elements must meet minimum color contrast ratio thresholds",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=playwright",
+    "nodes": [
+      {
+        "html": "<h2 class=\"...\">Cotton Turtleneck Sweater</h2>",
+        "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.58 (foreground color: #a1a1a1, background color: #ffffff, font size: 18.0pt (24px), font weight: bold). Expected contrast ratio of 3:1",
+        "target": [
+          ".css-6st093 > .css-q0shp6.chakra-stack > .css-ahyunb.chakra-skeleton:nth-child(2) > .css-1xix1js.chakra-heading"
+        ]
+      },
+      {
+        "html": "<b class=\"...\" aria-live=\"polite\" aria-label=\"From current price $39.99\">From $39.99</b>",
+        "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 2.58 (foreground color: #a1a1a1, background color: #ffffff, font size: 12.0pt (16px), font weight: bold). Expected contrast ratio of 4.5:1",
+        "target": [
+          ".css-6st093 > .css-q0shp6.chakra-stack > .css-ahyunb.chakra-skeleton:nth-child(3) > b"
+        ]
+      },
+      {
+        "html": "<s class=\"...\" aria-label=\"From original price $89.00\">$89.00</s>",
+        "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 1.7 (foreground color: #c6c6c6, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+        "target": [
+          ".css-6st093 > .css-q0shp6.chakra-stack > .css-ahyunb.chakra-skeleton:nth-child(3) > s"
+        ]
+      },
+      {
+        "html": "<button type=\"button\" class=\"...\">Add to Wishlist</button>",
+        "failureSummary": "Fix any of the following:\n  Element has insufficient color contrast of 3.84 (foreground color: #1f86d8, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
+        "target": [
+          ".css-6st093 > .css-1mfmpuh"
+        ]
+      }
+    ]
+  },
+  {
     "id": "region",
     "impact": "moderate",
     "description": "Ensure all page content is contained by landmarks",
