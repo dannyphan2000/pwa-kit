@@ -46,7 +46,7 @@ sequenceDiagram
     else MRT Page Cache: Miss
       rect rgb(255,230,230)
         MRT->>SCAPI: POST /oauth2/token
-        SCAPI-->>MRT: Access token (300ms)
+        SCAPI-->>MRT: Access token (???ms)
       end 
       
       Note over MRT,SCAPI: All parallel requests use token from previous authentication.
@@ -89,6 +89,7 @@ sequenceDiagram
     end 
 
     Note over Browser,SCAPI: All parallel requests below use token from previous authentication.
+    Note over Browser,SCAPI: Data that was fetched on the server is not re-fetched during hydration.
 
     par Parallel Data Fetch
 
@@ -97,25 +98,9 @@ sequenceDiagram
         SCAPI-->>Browser: JSON (~500ms)
       end 
 
-      and
-      rect rgb(255,230,230)
-        Browser->>SCAPI: GET /product-search
-        SCAPI-->>Browser: JSON (~1500ms)
-      end 
-
-      rect rgb(255,230,230)
-        Browser->>SCAPI: GET /categories/womens
-        SCAPI-->>Browser: JSON (~300ms)
-      end 
-
       rect rgb(255,230,230)
         Browser->>SCAPI: GET /product-lists
         SCAPI-->>Browser: JSON (~450ms)
-      end 
-
-      rect rgb(255,230,230)
-        Browser->>SCAPI: GET /categories/root
-        SCAPI-->>Browser: JSON (~550ms)
       end 
 
       rect rgb(255,230,230)

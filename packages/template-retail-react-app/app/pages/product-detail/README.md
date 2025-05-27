@@ -39,7 +39,7 @@ sequenceDiagram
     else MRT Page Cache: Miss
       rect rgb(255,230,230)
         MRT->>SCAPI: POST /oauth2/token
-        SCAPI-->>MRT: Access token (300ms)
+        SCAPI-->>MRT: Access token (???ms)
       end 
       
       Note over MRT,SCAPI: All parallel requests use token from previous authentication.
@@ -76,22 +76,13 @@ sequenceDiagram
     end 
 
     Note over Browser,SCAPI: All parallel requests below use token from previous authentication.
+    Note over Browser,SCAPI: Data that was fetched on the server is not re-fetched during hydration.
 
     par Parallel Data Fetch
 
       rect rgb(255,230,230)
-        Browser->>SCAPI: POST /products/25565139M
-        SCAPI-->>Browser: JSON (~600ms)
-      end
-
-      rect rgb(255,230,230)
         Browser->>SCAPI: GET /categories/womens-clothing-tops
         SCAPI-->>Browser: JSON (~725ms)
-      end 
-
-      rect rgb(255,230,230)
-        Browser->>SCAPI: GET /categories/root
-        SCAPI-->>Browser: JSON (~500ms)
       end 
 
       and
@@ -129,7 +120,6 @@ sequenceDiagram
     end
 
     Note over Browser,SCAPI: All requests are made through mobify proxy (both on the server and client) unless specified otherwise.
-
 ```
 
 ### Summary of Flow
