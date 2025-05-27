@@ -58,14 +58,13 @@ const PricingAndPromotionsSkeleton = () => {
 }
 
 export const Skeleton = () => {
-    // Temporarily disabled useSlotRecipe for Chakra UI v3 compatibility
-    // const recipe = useSlotRecipe({key: 'productTile'})
-    // const styles = recipe()
+    const recipe = useSlotRecipe({key: 'productTile'})
+    const styles = recipe()
     return (
         <Box data-testid="sf-product-tile-skeleton">
             <Stack gap={2}>
-                <Box>
-                    <AspectRatio ratio={1}>
+                <Box css={styles.imageWrapper}>
+                    <AspectRatio ratio={1} css={styles.aspectRatio}>
                         <ChakraSkeleton />
                     </AspectRatio>
                 </Box>
@@ -98,9 +97,8 @@ const ProductTile = (props) => {
     const intl = useIntl()
     const {currency} = useCurrency()
     const isFavouriteLoading = useRef(false)
-    // Temporarily disabled useSlotRecipe for Chakra UI v3 compatibility
-    // const recipe = useSlotRecipe({key: 'productTile'})
-    // const styles = recipe()
+    const recipe = useSlotRecipe({key: 'productTile'})
+    const styles = recipe()
 
     const isMasterVariant = !!variants
     const initialVariationValue =
@@ -183,10 +181,10 @@ const ProductTile = (props) => {
     }, [product, badgeDetails])
 
     return (
-        <Box>
-            <Link data-testid="product-tile" to={productUrl} {...rest}>
-                <Box>
-                    <AspectRatio ratio={1}>
+        <Box css={styles.container}>
+            <Link data-testid="product-tile" to={productUrl} css={styles.link} {...rest}>
+                <Box css={styles.imageWrapper}>
+                    <AspectRatio ratio={1} css={styles.aspectRatio}>
                         <DynamicImage
                             data-testid="product-tile-image"
                             src={`${
@@ -202,6 +200,7 @@ const ProductTile = (props) => {
                                 // which can cause confusion for individuals who uses screen readers
                                 alt: '',
                                 loading: 'lazy',
+                                css: styles.image,
                                 ...dynamicImageProps?.imageProps
                             }}
                         />
@@ -253,7 +252,7 @@ const ProductTile = (props) => {
                     ))}
 
                 {/* Title */}
-                <Text>{localizedProductName}</Text>
+                <Text css={styles.title}>{localizedProductName}</Text>
 
                 {isRefreshingData ? (
                     <PricingAndPromotionsSkeleton />
@@ -298,6 +297,7 @@ const ProductTile = (props) => {
                                   )
                         }
                         icon={isFavourite ? <HeartSolidIcon /> : <HeartIcon />}
+                        css={styles.favIcon}
                         onClick={async () => {
                             if (!isFavouriteLoading.current) {
                                 isFavouriteLoading.current = true
@@ -309,7 +309,7 @@ const ProductTile = (props) => {
                 </Box>
             )}
             {filteredLabels.size > 0 && (
-                <HStack>
+                <HStack css={styles.badgeGroup}>
                     {Array.from(filteredLabels.entries()).map(([label, colorScheme]) => (
                         <Badge
                             key={label}

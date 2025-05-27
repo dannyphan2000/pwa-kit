@@ -549,8 +549,8 @@ const ProductList = (props) => {
                         <Box>
                             <SimpleGrid
                                 columns={[2, 2, 3, 3]}
-                                spacingX={4}
-                                spacingY={{base: 12, lg: 16}}
+                                columnGap={4}
+                                rowGap={{base: 12, lg: 16}}
                             >
                                 {isHydrated() &&
                                 ((isRefetching && !isFetched) || !productSearchResult)
