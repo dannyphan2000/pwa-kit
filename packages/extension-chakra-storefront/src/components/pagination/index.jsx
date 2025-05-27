@@ -15,10 +15,8 @@ import {
     Button,
     Flex,
     Select,
-    Text,
-
-    // Hooks
-    useStyleConfig
+    Text
+    // useStyleConfig is removed as it's not available in Chakra UI v3
 } from '@chakra-ui/react'
 
 // Icons
@@ -34,7 +32,22 @@ const SELECT_ID = 'pagination'
  */
 const Pagination = (props) => {
     const intl = useIntl()
-    const styles = useStyleConfig('Pagination')
+    // useStyleConfig is not available in Chakra UI v3
+    // We'll use inline styles instead
+    const styles = {
+        container: {
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        button: {
+            fontSize: 'sm'
+        },
+        text: {
+            paddingLeft: 1,
+            fontWeight: 'normal',
+            fontSize: 'sm'
+        }
+    }
     const history = useHistory()
     const {urls, currentURL, ...rest} = props
 
@@ -44,10 +57,10 @@ const Pagination = (props) => {
 
     // Determine the current page index.
     return (
-        <Flex data-testid="sf-pagination" className="sf-pagination" {...styles.container} {...rest}>
+        <Flex data-testid="sf-pagination" className="sf-pagination" sx={styles.container} {...rest}>
             {/* Previous Button */}
             <Button
-                {...styles.button}
+                sx={styles.button}
                 as={RouteLink}
                 // Because we are using a button component as a link, the isDisabled flag isn't working
                 // as intended, the workaround is to use the current url when its disabled.
@@ -90,7 +103,7 @@ const Pagination = (props) => {
                     ))}
                 </Select>
 
-                <Text {...styles.text}>
+                <Text sx={styles.text}>
                     {intl.formatMessage(
                         {
                             id: 'pagination.field.num_of_pages',
@@ -103,7 +116,7 @@ const Pagination = (props) => {
 
             {/* Next Button */}
             <Button
-                {...styles.button}
+                sx={styles.button}
                 as={RouteLink}
                 // Because we are using a button component as a link, the isDisabled flag isn't working
                 // as intended, the workaround is to use the current url when its disabled.

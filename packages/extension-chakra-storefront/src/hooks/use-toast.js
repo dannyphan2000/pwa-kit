@@ -7,12 +7,20 @@
 import React from 'react'
 import {
     Alert,
-    AlertIcon,
+    createToaster,
+    AlertIndicator,
     AlertTitle,
-    CloseButton,
-    Spacer,
-    useToast as useChakraToast
+    Button,
+    Spacer
 } from '@chakra-ui/react'
+
+// In Chakra UI v3, we need to create a toaster instance
+const toaster = createToaster({
+    defaultOptions: {
+        duration: 5000,
+        position: 'top-right'
+    }
+})
 
 /**
  * Display a toast message on the screen.
@@ -27,8 +35,7 @@ import {
  * @param {number} duration The delay before the toast hides (in milliseconds)
  */
 export function useToast() {
-    const toast = useChakraToast()
-
+    // Return a function that matches the signature of the old useToast
     return ({
         title,
         status,
@@ -36,33 +43,46 @@ export function useToast() {
         position = 'top-right',
         duration = 5000,
         variant = 'subtle',
-        isClosable = true
+        isClosable = true,
+        description
     }) => {
         let toastConfig = {
             title,
+            description,
             status,
-            isClosable,
-            position,
+            colorScheme: status, // In v3, colorScheme is used instead of status for styling
             duration,
-            variant
+            position,
+            variant,
+            isClosable
         }
 
         if (action) {
             toastConfig = {
                 ...toastConfig,
-
-                render: ({onClose}) => (
-                    <Alert status={status} variant="subtle" borderRadius="md" py={3} width="sm">
-                        <AlertIcon />
-                        <AlertTitle> {title} </AlertTitle>
+                render: (props) => (
+                    <Alert 
+                        status={status} 
+                        variant="subtle" 
+                        borderRadius="md" 
+                        padding={3} 
+                        width="sm"
+                        display="flex"
+                        alignItems="center"
+                    >
+                        {/* In Chakra UI v3, we use the status directly without a separate icon */}
+                        <AlertTitle marginRight={2}>{title}</AlertTitle>
+                        {description && <div>{description}</div>}
                         <Spacer />
                         {action}
                         <Spacer />
-                        <CloseButton onClick={onClose} />
+                        <Button variant="ghost" size="sm" onClick={props.onClose}>✕</Button>
                     </Alert>
                 )
             }
         }
-        toast(toastConfig)
+        
+        // Use the new toaster API
+        toaster.show(toastConfig)
     }
 }
