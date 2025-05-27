@@ -123,7 +123,7 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
 
                 const hasBasketItem = basket.productItems?.length > 0
                 if (hasBasketItem) {
-                    mergeBasket.mutate({
+                    await mergeBasket.mutateAsync({
                         parameters: {
                             createDestinationBasket: true
                         }

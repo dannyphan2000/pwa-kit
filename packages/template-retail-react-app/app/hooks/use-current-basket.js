@@ -12,12 +12,12 @@ import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
  * @param id - basket id to get the current used basket among baskets returned, use first basket in the array if not defined
  * @param shouldFetchProductDetail - boolean to indicate if the baskets should fetch product details based on basket items
  */
-export const useCurrentBasket = ({id = ''} = {}) => {
+export const useCurrentBasket = ({id = '', isMergingBasket = false} = {}) => {
     const customerId = useCustomerId()
     const {data: basketsData, ...restOfQuery} = useCustomerBaskets(
         {parameters: {customerId}},
         {
-            enabled: !!customerId && !isServer
+            enabled: !!customerId && !isServer && !isMergingBasket
         }
     )
 

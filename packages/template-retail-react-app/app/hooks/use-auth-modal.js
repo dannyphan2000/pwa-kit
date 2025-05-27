@@ -96,12 +96,12 @@ export const AuthModal = ({
     const callbackURL = isAbsoluteURL(passwordlessConfigCallback)
         ? passwordlessConfigCallback
         : `${appOrigin}${passwordlessConfigCallback}`
-
+    const mergeBasket = useShopperBasketsMutation('mergeBasket')
+    console.log('mergeBasket.isPending', mergeBasket.isLoading)
     const {
         data: basket,
         derivedData: {totalItems}
-    } = useCurrentBasket()
-    const mergeBasket = useShopperBasketsMutation('mergeBasket')
+    } = useCurrentBasket({isMergingBasket: mergeBasket.isLoading})
 
     const submitForm = async (data) => {
         form.clearErrors()
@@ -142,7 +142,9 @@ export const AuthModal = ({
                         // if you change logic here, also change it in login page
                         const shouldMergeBasket = totalItems > 0 && prevAuthType === 'guest'
                         if (shouldMergeBasket) {
-                            mergeBasket.mutate({
+                            console.log('shouldMergeBasket', shouldMergeBasket)
+                            console.log('basket', basket)
+                            await mergeBasket.mutateAsync({
                                 headers: {
                                     // This is not required since the request has no body
                                     // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
