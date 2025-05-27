@@ -38,8 +38,8 @@ import {
     USER_NOT_FOUND_ERROR
 } from '@salesforce/retail-react-app/app/constants'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
-import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+import {useCurrentBasket} from '@salesforce/retail-react-app/app/hooks/use-current-basket'
 
 const LOGIN_ERROR_MESSAGE = defineMessage({
     defaultMessage: 'Incorrect username or password, please try again.',
@@ -67,12 +67,11 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const isSocialEnabled = !!social?.enabled
     const idps = social?.idps
 
-    const customerId = useCustomerId()
     const prevAuthType = usePrevious(customerType)
-    const {data: baskets, isSuccess: isSuccessCustomerBaskets} = useCustomerBaskets(
-        {parameters: {customerId}},
-        {enabled: !!customerId && !isServer, keepPreviousData: true}
-    )
+    const {
+        isSuccess: isSuccessCustomerBaskets,
+        derivedData: {totalItems}
+    } = useCurrentBasket()
     const mergeBasket = useShopperBasketsMutation('mergeBasket')
     const [currentView, setCurrentView] = useState(initialView)
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState('')
@@ -80,12 +79,12 @@ const Login = ({initialView = LOGIN_VIEW}) => {
     const [redirectPath, setRedirectPath] = useState('')
 
     const handleMergeBasket = () => {
-        const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
+        // const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
         // we only want to merge basket when the user is logged in as a recurring user
         // only recurring users trigger the login mutation, new user triggers register mutation
         // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
         // if you change logic here, also change it in login page
-        const shouldMergeBasket = hasBasketItem && prevAuthType === 'guest'
+        const shouldMergeBasket = totalItems > 0 && prevAuthType === 'guest'
         if (shouldMergeBasket) {
             try {
                 mergeBasket.mutate({
@@ -129,13 +128,13 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                 if (loginType === LOGIN_TYPES.PASSWORD) {
                     try {
                         await login.mutateAsync({username: data.email, password: data.password})
+                        handleMergeBasket()
                     } catch (error) {
                         const message = /Unauthorized/i.test(error.message)
                             ? formatMessage(LOGIN_ERROR_MESSAGE)
                             : formatMessage(API_ERROR_MESSAGE)
                         form.setError('global', {type: 'manual', message})
                     }
-                    handleMergeBasket()
                 } else if (loginType === LOGIN_TYPES.PASSWORDLESS) {
                     setPasswordlessLoginEmail(data.email)
                     await handlePasswordlessLogin(data.email)

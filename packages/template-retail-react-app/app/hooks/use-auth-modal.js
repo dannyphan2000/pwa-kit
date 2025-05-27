@@ -42,10 +42,10 @@ import {
 import useNavigation from '@salesforce/retail-react-app/app/hooks/use-navigation'
 import {usePrevious} from '@salesforce/retail-react-app/app/hooks/use-previous'
 import {usePasswordReset} from '@salesforce/retail-react-app/app/hooks/use-password-reset'
-import {isServer} from '@salesforce/retail-react-app/app/utils/utils'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {isAbsoluteURL} from '@salesforce/retail-react-app/app/page-designer/utils'
 import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
+import {useCurrentBasket} from '@salesforce/retail-react-app/app/hooks/use-current-basket'
 
 export const LOGIN_VIEW = 'login'
 export const REGISTER_VIEW = 'register'
@@ -97,10 +97,10 @@ export const AuthModal = ({
         ? passwordlessConfigCallback
         : `${appOrigin}${passwordlessConfigCallback}`
 
-    const {data: baskets} = useCustomerBaskets(
-        {parameters: {customerId}},
-        {enabled: !!customerId && !isServer, keepPreviousData: true}
-    )
+    const {
+        data: basket,
+        derivedData: {totalItems}
+    } = useCurrentBasket()
     const mergeBasket = useShopperBasketsMutation('mergeBasket')
 
     const submitForm = async (data) => {
@@ -136,12 +136,11 @@ export const AuthModal = ({
                             username: data.email,
                             password: data.password
                         })
-                        const hasBasketItem = baskets?.baskets?.[0]?.productItems?.length > 0
                         // we only want to merge basket when the user is logged in as a recurring user
                         // only recurring users trigger the login mutation, new user triggers register mutation
                         // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
                         // if you change logic here, also change it in login page
-                        const shouldMergeBasket = hasBasketItem && prevAuthType === 'guest'
+                        const shouldMergeBasket = totalItems > 0 && prevAuthType === 'guest'
                         if (shouldMergeBasket) {
                             mergeBasket.mutate({
                                 headers: {
