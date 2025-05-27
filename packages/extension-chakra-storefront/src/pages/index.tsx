@@ -68,6 +68,6 @@ export {
     // ResetPassword,
     // LoginRedirect,
     // ProductDetail,
-    ProductList,
+    ProductList
     // SocialLoginRedirect
 }

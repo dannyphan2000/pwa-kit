@@ -5,14 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React from 'react'
-import {
-    Alert,
-    createToaster,
-    AlertIndicator,
-    AlertTitle,
-    Button,
-    Spacer
-} from '@chakra-ui/react'
+import {Alert, createToaster, AlertIndicator, AlertTitle, Button, Spacer} from '@chakra-ui/react'
 
 // In Chakra UI v3, we need to create a toaster instance
 const toaster = createToaster({
@@ -61,11 +54,11 @@ export function useToast() {
             toastConfig = {
                 ...toastConfig,
                 render: (props) => (
-                    <Alert 
-                        status={status} 
-                        variant="subtle" 
-                        borderRadius="md" 
-                        padding={3} 
+                    <Alert
+                        status={status}
+                        variant="subtle"
+                        borderRadius="md"
+                        padding={3}
                         width="sm"
                         display="flex"
                         alignItems="center"
@@ -76,12 +69,14 @@ export function useToast() {
                         <Spacer />
                         {action}
                         <Spacer />
-                        <Button variant="ghost" size="sm" onClick={props.onClose}>✕</Button>
+                        <Button variant="ghost" size="sm" onClick={props.onClose}>
+                            ✕
+                        </Button>
                     </Alert>
                 )
             }
         }
-        
+
         // Use the new toaster API
         toaster.show(toastConfig)
     }

@@ -7,7 +7,7 @@
 
 import React, {useEffect, useState} from 'react'
 import PropTypes from 'prop-types'
-import {useHistory, useLocation, useParams, Link as RouteLink} from 'react-router-dom'
+import {useHistory, useLocation, useParams} from 'react-router-dom'
 import {FormattedMessage, useIntl} from 'react-intl'
 import {Helmet} from 'react-helmet'
 import {keepPreviousData} from '@tanstack/react-query'
@@ -19,24 +19,28 @@ import {
 } from '@salesforce/commerce-sdk-react'
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 
-// Components - using only the essential components to minimize errors
+// Components
 import {
     Box,
     Flex,
     SimpleGrid,
     Grid,
-    Select,
     Heading,
     Text,
     Stack,
     useDisclosure,
-    Button
+    Button,
+    Field,
+    Dialog,
+    Portal,
+    Drawer
 } from '@chakra-ui/react'
 
 // Project Components
 import Pagination from '../../components/pagination'
 import ProductTile, {Skeleton as ProductTileSkeleton} from '../../components/product-tile'
 import {HideOnDesktop} from '../../components/responsive'
+// TODO: Refinements components will be migrated in separate PR
 // import Refinements from '../../pages/product-list/partials/refinements'
 import CategoryLinks from '../../pages/product-list/partials/category-links'
 // import SelectedRefinements from '../../pages/product-list/partials/selected-refinements'
@@ -56,16 +60,10 @@ import {
     useSearchParams,
     useExtensionConfig
 } from '../../hooks'
-// Toast is temporarily disabled due to Chakra UI v3 API changes
-// import {useToast} from '../../hooks/use-toast'
+import {useToast} from '../../hooks/use-toast'
 import useEinstein from '../../hooks/use-einstein'
 import useActiveData from '../../hooks/use-active-data'
 import useDataCloud from '../../hooks/use-datacloud'
-
-// Temporary toast mock function to prevent errors
-const mockToast = () => {
-    console.log('Toast notification disabled due to Chakra UI v3 migration')
-}
 
 // Others
 import {HTTPNotFound, HTTPError} from '@salesforce/pwa-kit-react-sdk/ssr/universal/errors'
@@ -103,7 +101,7 @@ const ProductList = (props) => {
     const history = useHistory()
     const params = useParams()
     const location = useLocation()
-    // const toast = useToast()
+    const toast = useToast()
     const einstein = useEinstein()
     const dataCloud = useDataCloud()
     const activeData = useActiveData()
@@ -418,20 +416,21 @@ const ProductList = (props) => {
                     return <meta name={id} content={value} key={id} />
                 })}
             </Helmet>
+
             {showNoResults ? (
                 <EmptySearchResults searchQuery={searchQuery} category={category} />
             ) : (
                 <>
                     <AbovePageHeader />
-                    <PageDesignerPromotionalBanner />
 
-                    {/* Header */}
+                    <PageDesignerPromotionalBanner />
+                    {/* Header for Desktop */}
                     <Stack
                         display={{base: 'none', lg: 'flex'}}
                         direction="row"
                         justify="flex-start"
                         align="flex-start"
-                        gap={4}
+                        spacing={4}
                         marginBottom={6}
                     >
                         <Flex align="left" width="287px">
@@ -444,14 +443,14 @@ const ProductList = (props) => {
                         </Flex>
 
                         <Box flex={1} paddingTop={'45px'}>
-                            {/* <SelectedRefinements
+                            {/* TODO: SelectedRefinements component will be added in separate PR */}
+                            {/*<SelectedRefinements
                                 filters={productSearchResult?.refinements}
                                 toggleFilter={toggleFilter}
                                 handleReset={resetFilters}
                                 selectedFilterValues={productSearchResult?.selectedRefinements}
-                            /> */}
+                            />*/}
                         </Box>
-                        {/* Sort component is temporarily disabled due to Chakra UI v3 API changes
                         <Box paddingTop={'45px'}>
                             <Sort
                                 sortUrls={sortUrls}
@@ -459,7 +458,6 @@ const ProductList = (props) => {
                                 basePath={basePath}
                             />
                         </Box>
-                        */}
                     </Stack>
 
                     {/* Filter Button for Mobile */}
@@ -521,35 +519,37 @@ const ProductList = (props) => {
                             </Stack>
                         </Stack>
                         <Box marginBottom={4}>
-                            {/* <SelectedRefinements
+                            {/* TODO: SelectedRefinements component will be added in separate PR */}
+                            {/*<SelectedRefinements
                                 filters={productSearchResult?.refinements}
                                 toggleFilter={toggleFilter}
                                 handleReset={resetFilters}
                                 selectedFilterValues={productSearchResult?.selectedRefinements}
-                            /> */}
+                            />*/}
                         </Box>
                     </HideOnDesktop>
 
                     {/* Body  */}
                     <Grid templateColumns={{base: '1fr', md: '280px 1fr'}} columnGap={6}>
                         <Stack display={{base: 'none', md: 'flex'}}>
-                            {/*<Refinements*/}
-                            {/*    itemsBefore={*/}
-                            {/*        category?.categories*/}
-                            {/*            ? [<CategoryLinks key="itemsBefore" category={category} />]*/}
-                            {/*            : undefined*/}
-                            {/*    }*/}
-                            {/*    isLoading={filtersLoading}*/}
-                            {/*    toggleFilter={toggleFilter}*/}
-                            {/*    filters={productSearchResult?.refinements}*/}
-                            {/*    excludedFilters={['cgid']}*/}
-                            {/*    selectedFilters={searchParams.refine}*/}
-                            {/*/>*/}
+                            {/* TODO:  Refinements component will be added in separate PR */}
+                            {/*<Refinements
+                                itemsBefore={
+                                    category?.categories
+                                        ? [<CategoryLinks key="itemsBefore" category={category} />]
+                                        : undefined
+                                }
+                                isLoading={filtersLoading}
+                                toggleFilter={toggleFilter}
+                                filters={productSearchResult?.refinements}
+                                excludedFilters={['cgid']}
+                                selectedFilters={searchParams.refine}
+                            />*/}
                         </Stack>
                         <Box>
                             <SimpleGrid
                                 columns={[2, 2, 3, 3]}
-                                gap={{base: 4, lg: 4}}
+                                spacingX={4}
                                 spacingY={{base: 12, lg: 16}}
                             >
                                 {isHydrated() &&
@@ -615,50 +615,121 @@ const ProductList = (props) => {
                                 justifyContent={['center', 'center', 'flex-start']}
                                 paddingTop={8}
                             >
-                                {/* Pagination component temporarily disabled due to Chakra UI v3 compatibility issues */}
-                                {/* <Pagination currentURL={basePath} urls={pageUrls} /> */}
-                                
-                                {/* Temporary simple pagination buttons */}
-                                <Flex justifyContent="center" alignItems="center">
-                                    <Button 
-                                        variant="link" 
-                                        as={RouteLink} 
-                                        to={pageUrls[0] || '#'} 
-                                        disabled={!pageUrls.length}
-                                    >
-                                        Page 1
-                                    </Button>
-                                </Flex>
-
-                                {/*
-                            Our design doesn't call for a page size select. Show this element if you want
-                            to add one to your design.
-                        */}
-                                <Select
-                                    display="none"
-                                    value={basePath}
-                                    onChange={({target}) => {
-                                        history.push(target.value)
-                                    }}
-                                >
-                                    {limitUrls.map((href, index) => (
-                                        <option key={href} value={href}>
-                                            {searchConfig.defaultLimitValues[index]}
-                                        </option>
-                                    ))}
-                                </Select>
+                                <Pagination currentURL={basePath} urls={pageUrls} />
                             </Flex>
                         </Box>
                     </Grid>
                 </>
             )}
-            {/* Dialog for filter options on mobile has been removed 
-            because it was using the old Dialog API from Chakra UI v2.
-            To restore this functionality, you would need to migrate to Dialog in Chakra UI v3.
-            See: https://www.chakra-ui.com/docs/components/dialog */}
-            {/* Drawer component has been commented out temporarily because it uses the old API from Chakra UI v2.
-            To restore this functionality, you would need to migrate to Drawer in Chakra UI v3.
-            See: https://www.chakra-ui.com/docs/components/drawer */}
+            {/* Modal for filter options on mobile */}
+            <Dialog.Root
+                open={isOpen}
+                onOpenChange={(e) => !e.open && onClose()}
+                size="full"
+                placement="center"
+            >
+                <Portal>
+                    <Dialog.Backdrop />
+                    <Dialog.Positioner>
+                        <Dialog.Content>
+                            <Dialog.Header>
+                                <Dialog.Title>
+                                    <Heading as="h1" fontWeight="bold" fontSize="2xl">
+                                        <FormattedMessage
+                                            defaultMessage="Filter"
+                                            id="product_list.modal.title.filter"
+                                        />
+                                    </Heading>
+                                </Dialog.Title>
+                                <Dialog.CloseTrigger asChild>
+                                    <Button variant="ghost" size="sm">
+                                        ✕
+                                    </Button>
+                                </Dialog.CloseTrigger>
+                            </Dialog.Header>
+                            <Dialog.Body py={4}>
+                                {filtersLoading && <LoadingSpinner />}
+                                {/* TODO: Refinements component will be added in separate PR */}
+                                {/*<Refinements
+                                    toggleFilter={toggleFilter}
+                                    filters={productSearchResult?.refinements}
+                                    selectedFilters={searchParams.refine}
+                                    itemsBefore={
+                                        category?.categories
+                                            ? [
+                                                <CategoryLinks
+                                                    key="itemsBefore"
+                                                    category={category}
+                                                    onSelect={onClose}
+                                                />
+                                            ]
+                                            : undefined
+                                    }
+                                    excludedFilters={['cgid']}
+                                />*/}
+                            </Dialog.Body>
+                        </Dialog.Content>
+                    </Dialog.Positioner>
+                </Portal>
+            </Dialog.Root>
+
+            {/* Sort Drawer */}
+            <Drawer.Root
+                open={sortOpen}
+                onOpenChange={(e) => !e.open && setSortOpen(false)}
+                placement="bottom"
+                size="sm"
+            >
+                <Portal>
+                    <Drawer.Backdrop />
+                    <Drawer.Positioner>
+                        <Drawer.Content>
+                            <Drawer.Header>
+                                <Drawer.Title>
+                                    <Text fontWeight="bold" fontSize="2xl">
+                                        <FormattedMessage
+                                            defaultMessage="Sort By"
+                                            id="product_list.drawer.title.sort_by"
+                                        />
+                                    </Text>
+                                </Drawer.Title>
+                                <Drawer.CloseTrigger asChild>
+                                    <Button variant="ghost" size="sm">
+                                        ✕
+                                    </Button>
+                                </Drawer.CloseTrigger>
+                            </Drawer.Header>
+                            <Drawer.Body>
+                                {sortUrls.map((href, idx) => (
+                                    <Button
+                                        width="full"
+                                        onClick={() => {
+                                            setSortOpen(false)
+                                            history.push(href)
+                                        }}
+                                        fontSize={'md'}
+                                        key={idx}
+                                        marginTop={0}
+                                        variant="ghost"
+                                        justifyContent="flex-start"
+                                        mb={2}
+                                    >
+                                        <Text
+                                            as={
+                                                selectedSortingOptionLabel?.label ===
+                                                    productSearchResult?.sortingOptions[idx]
+                                                        ?.label && 'u'
+                                            }
+                                        >
+                                            {productSearchResult?.sortingOptions[idx]?.label}
+                                        </Text>
+                                    </Button>
+                                ))}
+                            </Drawer.Body>
+                        </Drawer.Content>
+                    </Drawer.Positioner>
+                </Portal>
+            </Drawer.Root>
         </Box>
     )
 }
@@ -673,16 +744,12 @@ ProductList.propTypes = {
 
 export default ProductList
 
-// Temporarily commenting out the Sort component as it uses Chakra UI v2 API
-// In Chakra UI v3, Select would need to use the new compound component pattern
-/*
 const Sort = ({sortUrls, productSearchResult, basePath, ...otherProps}) => {
     const intl = useIntl()
     const history = useHistory()
 
     return (
-        <Box
-            role="group"
+        <Field.Root
             aria-label={intl.formatMessage({
                 id: 'product_list.drawer.title.sort_by',
                 defaultMessage: 'Sort By'
@@ -692,18 +759,30 @@ const Sort = ({sortUrls, productSearchResult, basePath, ...otherProps}) => {
             width="auto"
             {...otherProps}
         >
-            <Select
+            <Box
+                as="select"
                 id="sf-product-list-sort-select"
                 aria-label={intl.formatMessage({
                     id: 'product_list.sort_by.label.assistive_msg',
                     defaultMessage: 'Sort products by'
                 })}
                 value={basePath.replace(/(offset)=(\d+)/i, '$1=0')}
-                onChange={({target}) => {
-                    history.push(target.value)
+                onChange={(e) => {
+                    history.push(e.target.value)
                 }}
                 height={11}
                 width="240px"
+                border="1px solid"
+                borderColor="gray.200"
+                borderRadius="md"
+                px={3}
+                py={2}
+                fontSize="sm"
+                bg="white"
+                _focus={{
+                    borderColor: 'blue.500',
+                    boxShadow: '0 0 0 1px blue.500'
+                }}
             >
                 {sortUrls.map((href, index) => (
                     <option key={href} value={href}>
@@ -718,19 +797,13 @@ const Sort = ({sortUrls, productSearchResult, basePath, ...otherProps}) => {
                         )}
                     </option>
                 ))}
-            </Select>
-        </Box>
+            </Box>
+        </Field.Root>
     )
 }
-*/
 
-// Sort propTypes are also commented out while the component is disabled
-/*
 Sort.propTypes = {
     sortUrls: PropTypes.array,
     productSearchResult: PropTypes.object,
     basePath: PropTypes.string
 }
-*/
-
-
