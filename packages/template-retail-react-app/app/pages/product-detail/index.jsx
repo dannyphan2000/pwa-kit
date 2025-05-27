@@ -18,12 +18,10 @@ import {
 import {Box, Button, Stack} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {
     useProduct,
-    useProducts,
     useCategory,
     useShopperCustomersMutation,
     useShopperBasketsMutation,
     useCustomerId,
-    useShopperBasketsMutationHelper
 } from '@salesforce/commerce-sdk-react'
 
 // Hooks
@@ -114,6 +112,8 @@ const ProductDetail = () => {
             keepPreviousData: true
         }
     )
+    const isProductASet = product?.type.set
+    const isProductABundle = product?.type.bundle
 
     // Note: Since category needs id from product detail, it can't be server side rendered atm
     // until we can do dependent query on server
@@ -312,22 +312,16 @@ const ProductDetail = () => {
                 {isProductASet || isProductABundle ? (
                     <SetOrBundleProductView
                         product={product}
+                        einstein={einstein}
                         primaryCategory={primaryCategory}
-                        isProductASet={isProductASet}
-                        isProductABundle={isProductABundle}
-                        handleAddToCart={handleAddToCart}
                         handleAddToWishlist={handleAddToWishlist}
                         isProductLoading={isProductLoading}
                         isBasketLoading={isBasketLoading}
+                        isProductASet={isProductASet}
+                        isProductABundle={isProductABundle}
                         isWishlistLoading={isWishlistLoading}
-                        childProductOrderability={childProductOrderability}
-                        setSelectedBundleQuantity={setSelectedBundleQuantity}
-                        comboProduct={comboProduct}
-                        childProductRefs={childProductRefs}
-                        childProductSelection={childProductSelection}
-                        setChildProductSelection={setChildProductSelection}
-                        selectedBundleQuantity={selectedBundleQuantity}
-                        setChildProductOrderability={setChildProductOrderability}
+                        updateItemsInBasketMutation={updateItemsInBasketMutation}
+                        showError={showError}
                     />
                 ) : (
                     <Fragment>
