@@ -416,7 +416,6 @@ const ProductList = (props) => {
                     return <meta name={id} content={value} key={id} />
                 })}
             </Helmet>
-
             {showNoResults ? (
                 <EmptySearchResults searchQuery={searchQuery} category={category} />
             ) : (

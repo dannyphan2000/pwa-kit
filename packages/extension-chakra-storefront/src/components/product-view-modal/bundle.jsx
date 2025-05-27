@@ -17,7 +17,7 @@ import {useDerivedProduct} from '../../hooks'
 import {useIntl} from 'react-intl'
 
 /**
- * A Dialog that contains Product View for product bundle (migrated from Modal to Dialog for Chakra UI v3)
+ * A Dialog that contains Product View for product bundle
  */
 const BundleProductViewModal = ({product: bundle, isOpen, onClose, updateCart, ...props}) => {
     const productViewModalData = useProductViewModal(bundle)

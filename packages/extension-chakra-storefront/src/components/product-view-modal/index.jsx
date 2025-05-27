@@ -13,7 +13,7 @@ import {useProductViewModal} from '../../hooks/use-product-view-modal'
 import {useIntl} from 'react-intl'
 
 /**
- * A Dialog that contains Product View (migrated from Modal to Dialog for Chakra UI v3)
+ * A Dialog that contains Product View
  */
 const ProductViewModal = ({product, isOpen, onClose, ...props}) => {
     const productViewModalData = useProductViewModal(product)

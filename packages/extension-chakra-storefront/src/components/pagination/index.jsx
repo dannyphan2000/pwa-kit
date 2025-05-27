@@ -15,7 +15,7 @@ import {
     Button,
     Flex,
     Text
-    // Note: Select component needs to be migrated to v3 compound pattern
+    // TODO: Select component needs to be migrated to v3 compound pattern
     // For now, we'll use a simple approach without Select
 } from '@chakra-ui/react'
 
@@ -73,7 +73,7 @@ const Pagination = (props) => {
                 </Text>
             </Button>
 
-            {/* Direct Page Selection - Simplified for Chakra UI v3 compatibility */}
+            {/* Direct Page Selection */}
             <Flex paddingLeft={4} paddingRight={4} alignItems="center">
                 {/* TODO: Migrate to Chakra UI v3 Select compound component pattern in separate PR */}
                 {/* For now, showing simple page indicator */}

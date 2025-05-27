@@ -6,11 +6,10 @@
  */
 
 import React from 'react'
-import PropTypes from 'prop-types'
-import {FormattedMessage} from 'react-intl'
+import {useIntl} from 'react-intl'
 
 // Components
-import {Alert, AlertDescription, Box, Flex} from '@chakra-ui/react'
+import {Alert, AlertDescription, Flex} from '@chakra-ui/react'
 
 // Icons
 import {AlertIcon} from '../../components/icons'
@@ -19,23 +18,20 @@ import {AlertIcon} from '../../components/icons'
  * A banner component that displays when the user is offline.
  */
 const OfflineBanner = ({...rest}) => {
+    const intl = useIntl()
     return (
         <Alert status="warning" {...rest}>
             <Flex align="center">
                 <AlertIcon mr={2} />
                 <AlertDescription>
-                    <FormattedMessage
-                        defaultMessage="You're currently browsing in offline mode"
-                        id="offline_banner.description.browsing_offline_mode"
-                    />
+                    {intl.formatMessage({
+                        id: 'offline_banner.description.browsing_offline_mode',
+                        defaultMessage: "You're currently browsing in offline mode"
+                    })}
                 </AlertDescription>
             </Flex>
         </Alert>
     )
 }
-
-OfflineBanner.displayName = 'OfflineBanner'
-
-OfflineBanner.propTypes = {}
 
 export default OfflineBanner

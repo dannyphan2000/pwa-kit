@@ -7,7 +7,7 @@
 
 import React, {Children, useCallback, useEffect, useRef, useState} from 'react'
 import PropTypes from 'prop-types'
-import {Box, Flex, HStack} from '@chakra-ui/react'
+import {Box, Flex, HStack, useSlotRecipe} from '@chakra-ui/react'
 import {FormattedMessage} from 'react-intl'
 import {noop} from '../../utils/utils'
 
@@ -23,9 +23,8 @@ const DIRECTIONS = {
 const SwatchGroup = (props) => {
     const {ariaLabel, displayName, children, label = '', value, handleChange = noop} = props
 
-    // Temporarily disabled useSlotRecipe for Chakra UI v3 compatibility
-    // const recipe = useSlotRecipe({key: 'swatchgroup'})
-    // const styles = recipe()
+    const recipe = useSlotRecipe({key: 'swatchgroup'})
+    const styles = recipe()
     const [selectedIndex, setSelectedIndex] = useState(0)
     const wrapperRef = useRef(null)
 
@@ -87,9 +86,9 @@ const SwatchGroup = (props) => {
 
     return (
         <Box onKeyDown={onKeyDown}>
-            <Flex role="radiogroup" aria-label={ariaLabel || label}>
+            <Flex css={styles.swatchGroup} role="radiogroup" aria-label={ariaLabel || label}>
                 {label && (
-                    <HStack>
+                    <HStack css={styles.swatchLabel}>
                         <Box fontWeight="semibold">
                             <FormattedMessage
                                 id="swatch_group.selected.label"
@@ -100,7 +99,7 @@ const SwatchGroup = (props) => {
                         <Box>{displayName}</Box>
                     </HStack>
                 )}
-                <Flex ref={wrapperRef}>
+                <Flex ref={wrapperRef} css={styles.swatchWrapper}>
                     {Children.toArray(children).map((child, index) => {
                         const selected = child.props.value === value
                         return React.cloneElement(child, {
