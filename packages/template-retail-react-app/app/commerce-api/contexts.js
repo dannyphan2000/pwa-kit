@@ -24,7 +24,7 @@ export const useCommerceAPI = () => useContext(CommerceAPIContext)
  * This combines QueryClient, Config, CommerceApi, and Auth contexts into one reusable component
  */
 export const CommerceSDKReactProvider = ({api, children}) => {
-    const queryClient = new QueryClient()
+     const queryClient = React.useMemo(() => new QueryClient(), [])
     
     return (
         <QueryClientProvider client={queryClient}>
