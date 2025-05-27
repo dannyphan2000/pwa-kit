@@ -49,7 +49,7 @@ import {
 } from '../../constants'
 import {rebuildPathWithParams} from '../../utils/url'
 import {useHistory, useLocation, useParams} from 'react-router-dom'
-import {useToast} from '../../hooks/use-toast'
+import useToast from '../../hooks/use-toast'
 import {useWishList} from '../../hooks/use-wish-list'
 
 const ProductDetail = () => {
@@ -123,7 +123,7 @@ const ProductDetail = () => {
             levels: 1
         }
     })
-
+    console.log('category: ', category)
     /****************************** Sets and Bundles *********************************/
     const [childProductSelection, setChildProductSelection] = useState({})
     const [childProductOrderability, setChildProductOrderability] = useState({})
@@ -248,7 +248,7 @@ const ProductDetail = () => {
                     onSuccess: () => {
                         toast({
                             title: formatMessage(TOAST_MESSAGE_ADDED_TO_WISHLIST, {quantity: 1}),
-                            status: 'success',
+                            type: 'success',
                             action: (
                                 // it would be better if we could use <Button as={Link}>
                                 // but unfortunately the Link component is not compatible
@@ -272,7 +272,7 @@ const ProductDetail = () => {
         } else {
             toast({
                 title: formatMessage(TOAST_MESSAGE_ALREADY_IN_WISHLIST),
-                status: 'info',
+                type: 'info',
                 action: (
                     <Button variant="link" onClick={() => navigate('/account/wishlist')}>
                         {formatMessage(TOAST_ACTION_VIEW_WISHLIST)}
@@ -287,7 +287,7 @@ const ProductDetail = () => {
     const showError = () => {
         showToast({
             title: formatMessage(API_ERROR_MESSAGE),
-            status: 'error'
+            type: 'error'
         })
     }
 

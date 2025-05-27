@@ -34,7 +34,7 @@ import popover from './components/base/popover'
 //
 // // Project Component style overrides
 import app from './components/project/_app'
-// import Breadcrumb from './components/project/breadcrumb'
+import breadcrumb from './components/project/breadcrumb'
 import header from './components/project/header'
 // import ListMenu from './components/project/list-menu'
 import footer from './components/project/footer'
@@ -48,7 +48,7 @@ import offlineBanner from './components/project/offline-banner'
 import productTile from './components/project/product-tile'
 import socialIcons from './components/project/social-icons'
 import swatchGroup from './components/project/swatch-group'
-// import ImageGallery from './components/project/image-gallery'
+import imageGallery from './components/project/image-gallery'
 
 // Please refer to the Chakra-Ui theme customization docs found
 // here https://chakra-ui.com/docs/theming/customize-theme to learn
@@ -106,9 +106,11 @@ export const overrides = defineConfig({
 
             // project components
             app,
+            breadcrumb,
             checkoutFooter,
             footer,
             header,
+            imageGallery,
             linkList,
             offlineBanner,
             productTile,

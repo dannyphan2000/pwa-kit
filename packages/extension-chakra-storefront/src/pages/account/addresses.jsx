@@ -24,7 +24,7 @@ import {
 } from '@chakra-ui/react'
 import FormActionButtons from '../../components/forms/form-action-buttons'
 import {useForm} from 'react-hook-form'
-import {useToast} from '../../hooks/use-toast'
+import useToast from '../../hooks/use-toast'
 
 import LoadingSpinner from '../../components/loading-spinner'
 import {LocationIcon, PlusIcon} from '../../components/icons'
@@ -167,7 +167,7 @@ const AccountAddresses = () => {
     const showError = () => {
         showToast({
             title: formatMessage(API_ERROR_MESSAGE),
-            status: 'error'
+            type: 'error'
         })
     }
     const submitForm = async (address) => {
@@ -202,7 +202,7 @@ const AccountAddresses = () => {
                     title: selectedAddressId
                         ? formatMessage(successfullyUpdatedAddress)
                         : formatMessage(successfullyAddedAddress),
-                    status: 'success',
+                    type: 'success',
                     isClosable: true
                 })
             }
@@ -229,7 +229,7 @@ const AccountAddresses = () => {
                     onSuccess: () => {
                         showToast({
                             title: formatMessage(successfullyRemovedAddress),
-                            status: 'success',
+                            type: 'success',
                             isClosable: true
                         })
                         // Move focus to header after we successfully remove address

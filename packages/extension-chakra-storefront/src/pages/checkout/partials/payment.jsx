@@ -9,7 +9,7 @@ import PropTypes from 'prop-types'
 import {defineMessage, FormattedMessage, useIntl} from 'react-intl'
 import {Box, Button, Checkbox, Container, Heading, Stack, Text, Divider} from '@chakra-ui/react'
 import {useForm} from 'react-hook-form'
-import {useToast} from '../../../hooks/use-toast'
+import useToast from '../../../hooks/use-toast'
 import {useShopperBasketsMutation} from '@salesforce/commerce-sdk-react'
 import {useCurrentBasket} from '../../../hooks/use-current-basket'
 import {useCheckout} from '../../../pages/checkout/util/checkout-context'
@@ -45,7 +45,7 @@ const Payment = () => {
     const showError = () => {
         showToast({
             title: formatMessage(API_ERROR_MESSAGE),
-            status: 'error'
+            type: 'error'
         })
     }
 

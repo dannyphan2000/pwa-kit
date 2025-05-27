@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import React from 'react'
-import {useToast} from './use-toast'
+import useToast from './use-toast'
 import {Button} from '@chakra-ui/react'
 import {renderWithProviders} from '../utils/test-utils'
 import {screen, waitFor} from '@testing-library/react'
@@ -19,7 +19,7 @@ const MockedComponent = (props) => {
         showToast({
             ...props,
             title: 'Demo Notification',
-            status: 'success',
+            type: 'success',
             duration: 1000,
             variant: 'subtle'
         })

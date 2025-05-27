@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
 import {noop} from '../../utils/utils'
 import {useIntl} from 'react-intl'
 import {useLocation} from 'react-router-dom'
-import {useToast} from '../../hooks/use-toast'
+import useToast from '../../hooks/use-toast'
 import {useCurrentCustomer} from '../../hooks/use-current-customer'
 
 /**
@@ -43,7 +43,7 @@ const withRegistration = (
                             defaultMessage: 'Please sign in to continue!',
                             id: 'with_registration.info.please_sign_in'
                         }),
-                        status: 'info'
+                        type: 'info'
                     })
                 } else {
                     authModal.onOpen()
@@ -56,7 +56,7 @@ const withRegistration = (
         return (
             <React.Fragment>
                 <Component {...passThroughProps} onClick={handleClick} />
-                <AuthModal {...authModal} onLoginSuccess={onClick} />
+                {/* <AuthModal {...authModal} onLoginSuccess={onClick} /> */}
             </React.Fragment>
         )
     }

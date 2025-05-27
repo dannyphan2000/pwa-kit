@@ -14,8 +14,7 @@ import {
     ModalCloseButton,
     ModalContent,
     ModalOverlay,
-    useDisclosure,
-    useToast
+    useDisclosure
 } from '@chakra-ui/react'
 import {keepPreviousData} from '@tanstack/react-query'
 import {
@@ -30,6 +29,8 @@ import {
 import LoginForm from '../components/login'
 import ResetPasswordForm from '../components/reset-password'
 import RegisterForm from '../components/register'
+// import useToast from './use-toast'
+// console.log('useToast: ', useToast)
 import PasswordlessEmailConfirmation from '../components/email-confirmation/index'
 import {noop} from '../utils/utils'
 import {
@@ -84,7 +85,7 @@ export const AuthModal = ({
     const navigate = useNavigation()
     const [currentView, setCurrentView] = useState(initialView)
     const form = useForm()
-    const toast = useToast()
+    // const toast = useToast()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const register = useAuthHelper(AuthHelpers.Register)
     const appOrigin = useAppOrigin()
@@ -252,25 +253,25 @@ export const AuthModal = ({
 
         // Show a toast only for those registed users returning to the site.
         if (loggingIn) {
-            toast({
-                variant: 'subtle',
-                title: `${formatMessage(
-                    {
-                        defaultMessage: 'Welcome {name},',
-                        id: 'auth_modal.info.welcome_user'
-                    },
-                    {
-                        name: customer.data?.firstName || ''
-                    }
-                )}`,
-                description: `${formatMessage({
-                    defaultMessage: "You're now signed in.",
-                    id: 'auth_modal.description.now_signed_in'
-                })}`,
-                status: 'success',
-                position: 'top-right',
-                isClosable: true
-            })
+            // toast({
+            //     variant: 'subtle',
+            //     title: `${formatMessage(
+            //         {
+            //             defaultMessage: 'Welcome {name},',
+            //             id: 'auth_modal.info.welcome_user'
+            //         },
+            //         {
+            //             name: customer.data?.firstName || ''
+            //         }
+            //     )}`,
+            //     description: `${formatMessage({
+            //         defaultMessage: "You're now signed in.",
+            //         id: 'auth_modal.description.now_signed_in'
+            //     })}`,
+            //     type: 'success',
+            //     position: 'top-right',
+            //     isClosable: true
+            // })
 
             // Execute action to be performed on successful login
             onLoginSuccess()

@@ -70,7 +70,7 @@ import {
     useSearchParams,
     useExtensionConfig
 } from '../../hooks'
-import {useToast} from '../../hooks/use-toast'
+import useToast from '../../hooks/use-toast'
 import useEinstein from '../../hooks/use-einstein'
 import useActiveData from '../../hooks/use-active-data'
 import useDataCloud from '../../hooks/use-datacloud'
@@ -257,13 +257,13 @@ const ProductList = (props) => {
                 onError: () => {
                     toast({
                         title: formatMessage(API_ERROR_MESSAGE),
-                        status: 'error'
+                        type: 'error'
                     })
                 },
                 onSuccess: () => {
                     toast({
                         title: formatMessage(TOAST_MESSAGE_ADDED_TO_WISHLIST, {quantity: 1}),
-                        status: 'success',
+                        type: 'success',
                         action: (
                             // it would be better if we could use <Button as={Link}>
                             // but unfortunately the Link component is not compatible
@@ -300,13 +300,13 @@ const ProductList = (props) => {
                 onError: () => {
                     toast({
                         title: formatMessage(API_ERROR_MESSAGE),
-                        status: 'error'
+                        type: 'error'
                     })
                 },
                 onSuccess: () => {
                     toast({
                         title: formatMessage(TOAST_MESSAGE_REMOVED_FROM_WISHLIST),
-                        status: 'success'
+                        type: 'success'
                     })
                 },
                 onSettled: () => {

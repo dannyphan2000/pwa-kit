@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
 import {useLocation} from 'react-router-dom'
 import {useIntl, FormattedMessage} from 'react-intl'
 
-import {Flex, Heading, Button, Skeleton, Box, Text, VStack, Fade, useTheme} from '@chakra-ui/react'
+import {Flex, Heading, Button, Skeleton, Box, Text, VStack, useToken} from '@chakra-ui/react'
 import {useCurrency, useDerivedProduct} from '../../hooks'
 import {useAddToCartModalContext} from '../../hooks/use-add-to-cart-modal'
 
@@ -22,7 +22,7 @@ import withRegistration from '../../components/with-registration'
 import {Skeleton as ImageGallerySkeleton} from '../../components/image-gallery'
 import {HideOnDesktop, HideOnMobile} from '../../components/responsive'
 import QuantityPicker from '../../components/quantity-picker'
-import {useToast} from '../../hooks/use-toast'
+import useToast from '../../hooks/use-toast'
 import {API_ERROR_MESSAGE} from '../../constants'
 import DisplayPrice from '../../components/display-price'
 import Swatch from '../../components/swatch-group/swatch'
@@ -41,25 +41,25 @@ const ProductViewHeader = ({
     return (
         <VStack mr={4} spacing={2} align="flex-start" marginBottom={[4, 4, 4, 0, 0]}>
             {category && (
-                <Skeleton isLoaded={category} minWidth={64}>
+                <Skeleton loading={!category} minWidth={64}>
                     <Breadcrumb categories={category} />
                 </Skeleton>
             )}
 
             {/* Title */}
-            <Skeleton isLoaded={name}>
+            <Skeleton loading={!name}>
                 <Heading fontSize="2xl">{`${name}`}</Heading>
             </Skeleton>
 
             {!isProductPartOfBundle && (
                 <>
-                    <Skeleton isLoaded={priceData?.currentPrice}>
+                    <Skeleton loading={!priceData?.currentPrice}>
                         {priceData?.currentPrice && (
                             <DisplayPrice priceData={priceData} currency={currency} />
                         )}
                     </Skeleton>
 
-                    <Skeleton isLoaded={product}>
+                    <Skeleton loading={!product}>
                         {product?.productPromotions && <PromoCallout product={product} />}
                     </Skeleton>
                 </>
@@ -120,8 +120,9 @@ const ProductView = forwardRef(
             isOpen: isAddToCartModalOpen,
             onOpen: onAddToCartModalOpen,
             onClose: onAddToCartModalClose
-        } = useAddToCartModalContext()
-        const theme = useTheme()
+        } = useAddToCartModalContext() || {}
+        const theme = useToken('shadows.top')
+        // const [themeColor] = useToken('shadows.top')
         const [showOptionsMessage, toggleShowOptionsMessage] = useState(false)
         const {
             showLoading,
@@ -245,7 +246,7 @@ const ProductView = forwardRef(
             const showError = () => {
                 showToast({
                     title: intl.formatMessage(API_ERROR_MESSAGE),
-                    status: 'error'
+                    type: 'error'
                 })
             }
 
@@ -590,14 +591,12 @@ const ProductView = forwardRef(
                             )}
                             <Box ref={errorContainerRef}>
                                 {!showLoading && showOptionsMessage && (
-                                    <Fade in={true}>
-                                        <Text color="orange.600" fontWeight={600} marginBottom={8}>
-                                            {intl.formatMessage({
-                                                defaultMessage:
-                                                    'Please select all your options above'
-                                            })}
-                                        </Text>
-                                    </Fade>
+                                    <Text color="orange.600" fontWeight={600} marginBottom={8}>
+                                        {intl.formatMessage({
+                                            defaultMessage:
+                                                'Please select all your options above'
+                                        })}
+                                    </Text>
                                 )}
                             </Box>
                             <HideOnDesktop>
@@ -618,18 +617,14 @@ const ProductView = forwardRef(
 
                         <Box>
                             {!showLoading && showInventoryMessage && !customInventoryMessage && (
-                                <Fade in={true}>
-                                    <Text color="orange.600" fontWeight={600} marginBottom={8}>
-                                        {inventoryMessage}
-                                    </Text>
-                                </Fade>
+                                <Text color="orange.600" fontWeight={600} marginBottom={8}>
+                                    {inventoryMessage}
+                                </Text>
                             )}
                             {!showLoading && customInventoryMessage && (
-                                <Fade in={true}>
-                                    <Text color="orange.600" fontWeight={600} marginBottom={8}>
-                                        {customInventoryMessage}
-                                    </Text>
-                                </Fade>
+                                <Text color="orange.600" fontWeight={600} marginBottom={8}>
+                                    {customInventoryMessage}
+                                </Text>
                             )}
                             <Box
                                 display={
@@ -656,7 +651,7 @@ const ProductView = forwardRef(
                     left={0}
                     bottom={0}
                     zIndex={2}
-                    boxShadow={theme.shadows.top}
+                    // boxShadow={theme.shadows.top}
                 >
                     {renderActionButtons()}
                 </Box>

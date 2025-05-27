@@ -13,7 +13,7 @@ import PropTypes from 'prop-types'
 /**
  * This is the mobile implementation of the Chakra NumberInput. This simple component essentially
  * is a helper so we don't have to reuse the hooks every time we need a number input since design dictates
- * we use the moobile variation on all screens.
+ * we use the mobile variation on all screens.
  *
  * NOTE: We can optionally put global logic we see if in here, and various styling decisions in this single
  * component.
@@ -24,7 +24,7 @@ import PropTypes from 'prop-types'
 const QuantityPicker = (props) => {
     const intl = useIntl()
     const productName = props.productName
-    const {getInputProps, getIncrementButtonProps, getDecrementButtonProps} = useNumberInput({
+    const {getInputProps, getIncrementTriggerProps, getDecrementTriggerProps} = useNumberInput({
         ...props,
         // Defaults
         focusInputOnChange: false,
@@ -41,8 +41,8 @@ const QuantityPicker = (props) => {
             onFocus?.call(this, e)
         }
     })
-
-    const inc = getIncrementButtonProps({
+    
+    const inc = getIncrementTriggerProps({
         variant: 'outline',
         'aria-label': intl.formatMessage(
             {
@@ -52,7 +52,7 @@ const QuantityPicker = (props) => {
             {productName}
         )
     })
-    const dec = getDecrementButtonProps({
+    const dec = getDecrementTriggerProps({
         variant: 'outline',
         'aria-label': intl.formatMessage(
             {

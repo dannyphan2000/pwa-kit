@@ -250,7 +250,7 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
                         </Stack>
                     </form>
                 </Container>
-                <AuthModal {...authModal} initialEmail={form.getValues().email} />
+                {/* <AuthModal {...authModal} initialEmail={form.getValues().email} /> */}
             </ToggleCardEdit>
             <ToggleCardSummary>
                 <Text>{basket?.customerInfo?.email || customer?.email}</Text>
