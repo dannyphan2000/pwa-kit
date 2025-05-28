@@ -11,7 +11,7 @@ import {Link as RouteLink} from 'react-router-dom'
 import {useIntl} from 'react-intl'
 
 // Components
-import {Breadcrumb} from '@chakra-ui/react'
+import {Breadcrumb as ChakraBreadcrumb} from '@chakra-ui/react'
 
 // Icons
 import {ChevronRightIcon} from '../../components/icons'
@@ -23,41 +23,41 @@ import {categoryUrlBuilder} from '../../utils/url'
  * A simplification of the Chakra `Breadcrumb` component for our project needs. Given
  * a list of categories, display a breadcrumb and it's items.
  */
-const BreadcrumbComponent = ({categories, ...rest}) => {
+const Breadcrumb = ({categories, ...rest}) => {
     const intl = useIntl()
 
     return (
-        <Breadcrumb.Root className="sf-breadcrumb" {...rest}>
-            <Breadcrumb.List>
+        <ChakraBreadcrumb.Root className="sf-breadcrumb" {...rest}>
+            <ChakraBreadcrumb.List>
                 {categories.map((category, index) => (
                     <React.Fragment key={category.id}>
-                        <Breadcrumb.Item data-testid="sf-crumb-item">
-                            <Breadcrumb.Link
+                        <ChakraBreadcrumb.Item data-testid="sf-crumb-item">
+                            <ChakraBreadcrumb.Link
                                 as={RouteLink}
                                 to={categoryUrlBuilder(category, intl.locale)}
                             >
                                 {category.name}
-                            </Breadcrumb.Link>
-                        </Breadcrumb.Item>
+                            </ChakraBreadcrumb.Link>
+                        </ChakraBreadcrumb.Item>
                         {index < categories.length - 1 && (
-                            <Breadcrumb.Separator>
+                            <ChakraBreadcrumb.Separator>
                                 <ChevronRightIcon aria-hidden="true" />
-                            </Breadcrumb.Separator>
+                            </ChakraBreadcrumb.Separator>
                         )}
                     </React.Fragment>
                 ))}
-            </Breadcrumb.List>
-        </Breadcrumb.Root>
+            </ChakraBreadcrumb.List>
+        </ChakraBreadcrumb.Root>
     )
 }
 
-BreadcrumbComponent.displayName = 'Breadcrumb'
+Breadcrumb.displayName = 'Breadcrumb'
 
-BreadcrumbComponent.propTypes = {
+Breadcrumb.propTypes = {
     /**
      * The categories to be displayed in this breadcrumb.
      */
     categories: PropTypes.array
 }
 
-export default BreadcrumbComponent
+export default Breadcrumb
