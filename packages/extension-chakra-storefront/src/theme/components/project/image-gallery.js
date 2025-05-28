@@ -26,7 +26,12 @@ export default defineSlotRecipe({
     heroImageSkeleton: {
       mb: 2
     },
-    thumbnailImageGroup: {},
+    thumbnailImageGroup: {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      listStyleType: 'none'
+    },
     thumbnailImageItem: {
       flexShrink: 0,
       cursor: 'pointer',
@@ -47,24 +52,29 @@ export default defineSlotRecipe({
     }
   },
 
-  sizes: {
-    sm: {
-      heroImageSkeleton: {
-        maxW: ['none', 'none', 'none', '500px']
+  variants: {
+    size: {
+      sm: {
+        heroImageSkeleton: {
+          maxW: ['none', 'none', 'none', '500px']
+        },
+        heroImage: {
+          maxW: ['none', 'none', 'none', '500px']
+        }
       },
-      heroImage: {
-        maxW: ['none', 'none', 'none', '500px']
-      }
-    },
-    md: {
-      heroImageSkeleton: {
-        maxW: ['none', 'none', 'none', '680px']
-      },
-      heroImage: {
-        maxW: ['none', 'none', 'none', '680px']
+      md: {
+        heroImageSkeleton: {
+          maxW: ['none', 'none', 'none', '680px']
+        },
+        heroImage: {
+          // maxW: ['none', 'none', 'none', '680px']
+          maxW: '680px'
+        }
       }
     }
   },
 
-  defaultSize: 'md'
+  defaultProps: {
+    size: 'md'
+  }
 })

@@ -1,3 +1,4 @@
+"use client"
 /*
  * Copyright (c) 2021, salesforce.com, inc.
  * All rights reserved.
@@ -66,9 +67,8 @@ Skeleton.propTypes = {
 const ImageGallery = ({imageGroups = [], selectedVariationAttributes = {}, size, lazy = false}) => {
     const [selectedIndex, setSelectedIndex] = useState(0)
     const recipe = useSlotRecipe({key: 'imageGallery'})
-    console.log('ImageGallery size', size)
     const styles = recipe({size})
-
+    console.log('ImageGallery', size, styles)
     const location = useLocation()
 
     // Get the 'hero' image for the current variation.
@@ -102,8 +102,7 @@ const ImageGallery = ({imageGroups = [], selectedVariationAttributes = {}, size,
     const thumbnailImages = thumbnailImageGroup?.images || []
     const loadingStrategy = lazy ? 'lazy' : 'eager'
 
-    console.log('ImageGallery', styles.thumbnailImageItem)
-    const heroImageMaxWidth = '580px'//styles.heroImage.maxW[3] // in px
+    const heroImageMaxWidth = '680px'//styles.heroImage.maxW[3] // in px
 
     return (
         <Flex direction="column">
@@ -125,7 +124,7 @@ const ImageGallery = ({imageGroups = [], selectedVariationAttributes = {}, size,
                 </Box>
             )}
 
-            <List.Root display={'flex'} flexWrap={'wrap'}>
+            <List.Root css={styles.thumbnailImageGroup}>
                 {thumbnailImages.map((image, index) => {
                     const selected = index === selectedIndex
                     return (
@@ -135,23 +134,25 @@ const ImageGallery = ({imageGroups = [], selectedVariationAttributes = {}, size,
                             borderColor={`${selected ? 'black' : ''}`}
                             borderWidth={`${selected ? '1px' : 0}`}
                         >
-                            <Box
-                                as="button"
-                                aria-pressed={selected ? 'true' : 'false'}
-                                onKeyDown={(e) => {
-                                    if (e.keyCode === EnterKeyNumber) {
-                                        return setSelectedIndex(index)
-                                    }
-                                }}
-                                onClick={() => setSelectedIndex(index)}
-                                data-testid="image-gallery-thumbnails"
-                            >
-                                <Image
-                                    alt={image.alt}
-                                    src={image.disBaseLink || image.link}
-                                    loading={loadingStrategy}
-                                />
-                            </Box>
+                            <AspectRatio ratio={1}>
+                                <Box
+                                    as="button"
+                                    aria-pressed={selected ? 'true' : 'false'}
+                                    onKeyDown={(e) => {
+                                        if (e.keyCode === EnterKeyNumber) {
+                                            return setSelectedIndex(index)
+                                        }
+                                    }}
+                                    onClick={() => setSelectedIndex(index)}
+                                    data-testid="image-gallery-thumbnails"
+                                >
+                                    <Image
+                                        alt={image.alt}
+                                        src={image.disBaseLink || image.link}
+                                        loading={loadingStrategy}
+                                    />
+                                </Box>
+                            </AspectRatio>
                         </List.Item>
                     )
                 })}
