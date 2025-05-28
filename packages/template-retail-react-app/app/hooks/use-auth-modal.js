@@ -74,6 +74,7 @@ export const AuthModal = ({
     const customerId = useCustomerId()
     const {isRegistered, customerType} = useCustomerType()
     const prevAuthType = usePrevious(customerType)
+    const [shouldMergeBasket, setShouldMergeBasket] = useState(false)
 
     const customer = useCustomer(
         {parameters: {customerId}},
@@ -97,11 +98,11 @@ export const AuthModal = ({
         ? passwordlessConfigCallback
         : `${appOrigin}${passwordlessConfigCallback}`
     const mergeBasket = useShopperBasketsMutation('mergeBasket')
-    console.log('mergeBasket.isPending', mergeBasket.isLoading)
     const {
         data: basket,
         derivedData: {totalItems}
-    } = useCurrentBasket({isMergingBasket: mergeBasket.isLoading})
+    } = useCurrentBasket({shouldMergeBasket, setShouldMergeBasket})
+    console.log('shouldMergeBasket', shouldMergeBasket)
 
     const submitForm = async (data) => {
         form.clearErrors()
@@ -140,21 +141,25 @@ export const AuthModal = ({
                         // only recurring users trigger the login mutation, new user triggers register mutation
                         // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
                         // if you change logic here, also change it in login page
-                        const shouldMergeBasket = totalItems > 0 && prevAuthType === 'guest'
-                        if (shouldMergeBasket) {
-                            console.log('shouldMergeBasket', shouldMergeBasket)
-                            console.log('basket', basket)
-                            await mergeBasket.mutateAsync({
-                                headers: {
-                                    // This is not required since the request has no body
-                                    // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
-                                    'Content-Type': 'application/json'
-                                },
-                                parameters: {
-                                    createDestinationBasket: true
-                                }
-                            })
+                        // const shouldMergeBasket = totalItems > 0 && prevAuthType === 'guest'
+                        console.log('basket.basketId', basket.basketId)
+                        if (totalItems > 0 && prevAuthType === 'guest') {
+                            setShouldMergeBasket(true)
                         }
+                        // if (shouldMergeBasket) {
+                        //     console.log('shouldMergeBasket', shouldMergeBasket)
+                        //     console.log('basket', basket)
+                        //     await mergeBasket.mutateAsync({
+                        //         headers: {
+                        //             // This is not required since the request has no body
+                        //             // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
+                        //             'Content-Type': 'application/json'
+                        //         },
+                        //         parameters: {
+                        //             createDestinationBasket: true
+                        //         }
+                        //     })
+                        // }
                     } catch (error) {
                         const message = /Unauthorized/i.test(error.message)
                             ? formatMessage(LOGIN_ERROR)
