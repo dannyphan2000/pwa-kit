@@ -19,7 +19,15 @@ import {usePrevious} from '@chakra-ui/react'
  * @param id - basket id to get the current used basket among baskets returned, use first basket in the array if not defined
  * @param shouldFetchProductDetail - boolean to indicate if the baskets should fetch product details based on basket items
  */
-export const useCurrentBasket = ({id = '', setShouldMergeBasket, shouldMergeBasket} = {}) => {
+export const useCurrentBasket = ({
+    id = '',
+    isMergeInProgress = false
+    // setShouldMergeBasket,
+    // shouldMergeBasket
+} = {}) => {
+    if (isMergeInProgress) {
+        console.log('merging is in progress', isMergeInProgress)
+    }
     const customerId = useCustomerId()
     const basketMerged = useRef(false)
     const {customerType, isRegistered} = useCustomerType()
@@ -30,25 +38,25 @@ export const useCurrentBasket = ({id = '', setShouldMergeBasket, shouldMergeBask
     const {data: basketsData, ...restOfQuery} = useCustomerBaskets(
         {parameters: {customerId}},
         {
-            enabled: !!customerId && !isServer,
-            onSuccess: async () => {
-                console.log('onSuccess useCustomerBaskets')
-                if (shouldMergeBasket) {
-                    console.log('shouldMerge', shouldMergeBasket)
-                    console.log('-----calling merge basket------------------')
-                    await mergeBasket.mutateAsync({
-                        headers: {
-                            // This is not required since the request has no body
-                            // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
-                            'Content-Type': 'application/json'
-                        },
-                        parameters: {
-                            createDestinationBasket: true
-                        }
-                    })
-                    setShouldMergeBasket(false)
-                }
-            }
+            enabled: !!customerId && !isServer && !isMergeInProgress
+            // onSuccess: async () => {
+            //     console.log('onSuccess useCustomerBaskets')
+            //     if (shouldMergeBasket) {
+            //         console.log('shouldMerge', shouldMergeBasket)
+            //         console.log('-----calling merge basket------------------')
+            //         await mergeBasket.mutateAsync({
+            //             headers: {
+            //                 // This is not required since the request has no body
+            //                 // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
+            //                 'Content-Type': 'application/json'
+            //             },
+            //             parameters: {
+            //                 createDestinationBasket: true
+            //             }
+            //         })
+            //         setShouldMergeBasket(false)
+            //     }
+            // }
         }
     )
 

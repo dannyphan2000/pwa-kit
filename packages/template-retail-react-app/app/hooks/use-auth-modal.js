@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import PropTypes from 'prop-types'
 import {defineMessage, useIntl} from 'react-intl'
 import {useForm} from 'react-hook-form'
@@ -23,7 +23,6 @@ import {
     useCustomer,
     useCustomerId,
     useCustomerType,
-    useCustomerBaskets,
     useShopperBasketsMutation
 } from '@salesforce/commerce-sdk-react'
 import LoginForm from '@salesforce/retail-react-app/app/components/login'
@@ -72,8 +71,8 @@ export const AuthModal = ({
 }) => {
     const {formatMessage} = useIntl()
     const customerId = useCustomerId()
+    const prevCustomerId = usePrevious(customerId)
     const {isRegistered, customerType} = useCustomerType()
-    const prevAuthType = usePrevious(customerType)
     const [shouldMergeBasket, setShouldMergeBasket] = useState(false)
 
     const customer = useCustomer(
@@ -97,12 +96,51 @@ export const AuthModal = ({
     const callbackURL = isAbsoluteURL(passwordlessConfigCallback)
         ? passwordlessConfigCallback
         : `${appOrigin}${passwordlessConfigCallback}`
+
+    const [shouldMerge, setShouldMerge] = useState(false)
     const mergeBasket = useShopperBasketsMutation('mergeBasket')
     const {
         data: basket,
         derivedData: {totalItems}
-    } = useCurrentBasket({shouldMergeBasket, setShouldMergeBasket})
-    console.log('shouldMergeBasket', shouldMergeBasket)
+    } = useCurrentBasket({
+        isMergeInProgress: mergeBasket.isLoading,
+        shouldMergeBasket,
+        setShouldMergeBasket
+    })
+    const prevBasket = usePrevious(basket)
+
+    useEffect(() => {
+        const customerIdChanged = prevCustomerId !== customerId
+        const condition = login.isSuccess && customerIdChanged
+        console.log('==================')
+        console.log('login.isSuccess', login.isSuccess)
+        console.log('customerId', customerId)
+        console.log('prevCustomerId', prevCustomerId)
+        console.log('condition login.isSuccess && customerIdChanged', condition)
+
+        if (condition) {
+            console.log('calling merge API-------')
+            setShouldMerge(true)
+            mergeBasket.mutate({
+                headers: {
+                    // This is not required since the request has no body
+                    // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
+                    'Content-Type': 'application/json'
+                },
+                parameters: {
+                    createDestinationBasket: true
+                }
+            })
+        }
+    }, [login.isSuccess, customerType])
+
+    useEffect(() => {
+        console.log('mergeBasket.isLoading', mergeBasket.isLoading)
+        if (!mergeBasket.isLoading && shouldMerge) {
+            console.log('reset merge basket state shouldMerge')
+            setShouldMerge(false)
+        }
+    }, [shouldMerge, mergeBasket.isLoading])
 
     const submitForm = async (data) => {
         form.clearErrors()
@@ -142,10 +180,10 @@ export const AuthModal = ({
                         // this logic needs to stay in this block because this is the only place that tells if a user is a recurring user
                         // if you change logic here, also change it in login page
                         // const shouldMergeBasket = totalItems > 0 && prevAuthType === 'guest'
-                        console.log('basket.basketId', basket.basketId)
-                        if (totalItems > 0 && prevAuthType === 'guest') {
-                            setShouldMergeBasket(true)
-                        }
+                        // console.log('basket.basketId', basket.basketId)
+                        // if (totalItems > 0 && prevAuthType === 'guest') {
+                        //     setShouldMergeBasket(true)
+                        // }
                         // if (shouldMergeBasket) {
                         //     console.log('shouldMergeBasket', shouldMergeBasket)
                         //     console.log('basket', basket)
