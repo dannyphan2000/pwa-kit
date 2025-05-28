@@ -1,23 +1,18 @@
 /*
- * Copyright (c) 2023, Salesforce, Inc.
+ * Copyright (c) 2025, Salesforce, Inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-
 const {test, expect} = require('@playwright/test')
+const {generateUserCredentials, runAccessibilityTest} = require('../../../scripts/utils')
 const config = require('../../../config')
 const {
     answerConsentTrackingForm,
     navigateToPDPDesktop,
     addProductToCart,
-    checkoutProduct,
-    registeredUserHappyPath,
-    wishlistFlow,
-    loginShopper,
-    registerShopper
+    checkoutProduct
 } = require('../../../scripts/pageHelpers')
-const {generateUserCredentials, runAccessibilityTest} = require('../../../scripts/utils')
 
 test.describe('Accessibility Tests with Snapshots for guest user', () => {
     const GUEST_USER_CREDENTIALS = generateUserCredentials()
@@ -57,7 +52,46 @@ test.describe('Accessibility Tests with Snapshots for guest user', () => {
     test('Product Detail Page should not have new accessibility issues', async ({page}) => {
         await navigateToPDPDesktop({page})
 
-        await page.waitForLoadState()
+        const getProductPromise = page.waitForResponse(
+            '**/shopper-products/v1/organizations/**/products/25518241M**',
+            {timeout: 10000}
+        )
+
+        await getProductPromise
+        const getProductRes = await getProductPromise
+        expect(getProductRes.status()).toBe(200)
+        // ensure that the page is fully loaded before starting a11y scan
+        await expect(page.getByRole('heading', {name: /Cotton Turtleneck Sweater/i})).toBeVisible()
+        await expect(page.getByText(/From \$39\.99/i).nth(1)).toBeVisible()
+
+        const addToWishlistButton = page.getByRole('button', {name: /Add to Wishlist/i})
+        await expect(addToWishlistButton).toBeVisible()
+        await expect(addToWishlistButton).toBeEnabled()
+        // NOTE: Chakra Skeleton has animation when it is visible in the DOME,
+        // sometimes axe can't detect if the transition from skeleton to element is completed or not
+        // which cause the a11y scan to detect false positive violations
+        // here, we want to ensure skeleton is completely gone before running a11y scan
+        await page
+            .waitForFunction(
+                () => {
+                    const skeletons = Array.from(document.querySelectorAll('.chakra-skeleton'))
+                    return skeletons.every((skeleton) => {
+                        // Check if skeleton has data-loaded attribute (Chakra UI sets this when loaded)
+                        const hasDataLoaded = skeleton.hasAttribute('data-loaded')
+
+                        // Check if skeleton animation has stopped
+                        const computedStyle = getComputedStyle(skeleton)
+                        const hasNoAnimation = computedStyle.animationName === 'none'
+
+                        // Consider it loaded if either condition is met
+                        return hasDataLoaded || hasNoAnimation
+                    })
+                },
+                {timeout: 10000}
+            )
+            .catch(() => {
+                console.warn('Skeleton loading wait timed out, proceeding with test')
+            })
 
         // Run the a11y test
         await runAccessibilityTest(page, ['guest', 'pdp-a11y-violations.json'])
@@ -92,66 +126,5 @@ test.describe('Accessibility Tests with Snapshots for guest user', () => {
             userCredentials: GUEST_USER_CREDENTIALS,
             a11y: {checkA11y: true, snapShotName: 'guest'}
         })
-    })
-})
-
-test.describe('Accessibility Tests with Snapshots for a registered user', async () => {
-    let registeredUserCredentials = {}
-
-    test.beforeAll(async () => {
-        // Generate credentials once and use throughout tests to avoid creating a new account
-        registeredUserCredentials = generateUserCredentials()
-    })
-
-    test('Registered shopper happy path flow should not have new accessibility issues', async ({
-        page
-    }) => {
-        await registeredUserHappyPath({
-            page,
-            registeredUserCredentials,
-            a11y: {checkA11y: true, snapShotName: 'registered'}
-        })
-    })
-
-    test('Wishlist page should not have any new a11y issues', async ({page}) => {
-        await wishlistFlow({
-            page,
-            registeredUserCredentials,
-            a11y: {checkA11y: true, snapShotName: 'registered'}
-        })
-    })
-})
-
-test.describe('Registered Account pages', () => {
-    let registeredUserCredentials = {}
-
-    test.beforeAll(async () => {
-        // Generate credentials once and use throughout tests to avoid creating a new account
-        registeredUserCredentials = generateUserCredentials()
-    })
-    test('Account pages should not have any new a11y issues', async ({page}) => {
-        const isLoggedIn = await loginShopper({
-            page,
-            userCredentials: registeredUserCredentials
-        })
-
-        if (!isLoggedIn) {
-            await registerShopper({
-                page,
-                userCredentials: registeredUserCredentials
-            })
-        }
-        // The consent form does not stick after registration
-        await answerConsentTrackingForm(page)
-        await page.waitForLoadState()
-
-        await expect(page.getByRole('heading', {name: /Account Details/i})).toBeVisible({
-            timeout: 20000
-        })
-        await runAccessibilityTest(page, ['registered', 'account-details-a11y-violations.json'])
-
-        await page.getByRole('link', {name: 'Addresses'}).click()
-
-        await runAccessibilityTest(page, ['registered', 'account-addresses-a11y-violations.json'])
     })
 })
