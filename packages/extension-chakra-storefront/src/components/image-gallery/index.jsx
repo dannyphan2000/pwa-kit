@@ -103,7 +103,7 @@ const ImageGallery = ({imageGroups = [], selectedVariationAttributes = {}, size,
     const loadingStrategy = lazy ? 'lazy' : 'eager'
 
     const heroImageMaxWidth = styles.heroImage['@layer recipes'].maxWidth // in px
-    console.log('heroImageMaxWidth', heroImageMaxWidth)
+
     return (
         <Flex direction="column">
             {heroImage && (
