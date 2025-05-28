@@ -120,7 +120,7 @@ const ProductView = forwardRef(
             isOpen: isAddToCartModalOpen,
             onOpen: onAddToCartModalOpen,
             onClose: onAddToCartModalClose
-        } = useAddToCartModalContext() || {}
+        } = useAddToCartModalContext()
         const theme = useToken('shadows.top')
         // const [themeColor] = useToken('shadows.top')
         const [showOptionsMessage, toggleShowOptionsMessage] = useState(false)

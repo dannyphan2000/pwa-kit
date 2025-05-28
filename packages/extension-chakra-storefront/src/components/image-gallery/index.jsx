@@ -74,7 +74,6 @@ const ImageGallery = ({imageGroups = [], selectedVariationAttributes = {}, size,
     const [selectedIndex, setSelectedIndex] = useState(0)
     const recipe = useSlotRecipe({key: 'imageGallery'})
     const styles = recipe({size})
-    console.log('ImageGallery', size, styles)
     const location = useLocation()
 
     // Get the 'hero' image for the current variation.
