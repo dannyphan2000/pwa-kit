@@ -67,7 +67,7 @@ export {
     // Registration,
     // ResetPassword,
     // LoginRedirect,
-    ProductDetail,
+    ProductDetail
     // ProductList,
     // SocialLoginRedirect
 }

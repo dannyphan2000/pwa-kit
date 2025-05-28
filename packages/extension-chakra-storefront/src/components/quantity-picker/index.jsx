@@ -41,35 +41,10 @@ const QuantityPicker = (props) => {
             onFocus?.call(this, e)
         }
     })
-    
-    const inc = getIncrementTriggerProps({
-        variant: 'outline',
-        'aria-label': intl.formatMessage(
-            {
-                defaultMessage: 'Increment Quantity for {productName}',
-                id: 'product_view.label.assistive_msg.quantity_increment'
-            },
-            {productName}
-        )
-    })
-    const dec = getDecrementTriggerProps({
-        variant: 'outline',
-        'aria-label': intl.formatMessage(
-            {
-                defaultMessage: 'Decrement Quantity for {productName}',
-                id: 'product_view.label.assistive_msg.quantity_decrement'
-            },
-            {productName}
-        )
-    })
-    const input = getInputProps({
-        maxWidth: '44px',
-        textAlign: 'center',
-        'aria-label': intl.formatMessage({
-            defaultMessage: 'Quantity',
-            id: 'product_view.label.quantity'
-        })
-    })
+
+    const inc = getIncrementTriggerProps()
+    const dec = getDecrementTriggerProps()
+    const input = getInputProps()
 
     // Accessibility improvements:
     // 1. Allow keyboard focus on the buttons - Chakra overrides values passed to get*ButtonProps()
@@ -94,14 +69,44 @@ const QuantityPicker = (props) => {
 
     return (
         <HStack>
-            <Button data-testid="quantity-decrement" {...dec}>
+            <Button
+                data-testid="quantity-decrement"
+                {...dec}
+                variant="outline"
+                ariaLabel={intl.formatMessage(
+                    {
+                        defaultMessage: 'Decrement Quantity for {productName}',
+                        id: 'product_view.label.assistive_msg.quantity_decrement'
+                    },
+                    {productName}
+                )}
+            >
                 <FormattedMessage
                     id="product_view.label.quantity_decrement"
                     defaultMessage={'\u2212'} // HTML &minus;
                 />
             </Button>
-            <Input {...input} />
-            <Button data-testid="quantity-increment" {...inc}>
+            <Input
+                {...input}
+                ariaLabel={intl.formatMessage({
+                    defaultMessage: 'Quantity',
+                    id: 'product_view.label.quantity'
+                })}
+                maxWidth={'44px'}
+                textAlign="center"
+            />
+            <Button
+                data-testid="quantity-increment"
+                {...inc}
+                variant="outline"
+                ariaLabel={intl.formatMessage(
+                    {
+                        defaultMessage: 'Increment Quantity for {productName}',
+                        id: 'product_view.label.assistive_msg.quantity_increment'
+                    },
+                    {productName}
+                )}
+            >
                 <FormattedMessage id="product_view.label.quantity_increment" defaultMessage="+" />
             </Button>
         </HStack>

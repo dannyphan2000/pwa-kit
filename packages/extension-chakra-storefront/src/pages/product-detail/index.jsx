@@ -123,7 +123,7 @@ const ProductDetail = () => {
             levels: 1
         }
     })
-    console.log('category: ', category)
+
     /****************************** Sets and Bundles *********************************/
     const [childProductSelection, setChildProductSelection] = useState({})
     const [childProductOrderability, setChildProductOrderability] = useState({})

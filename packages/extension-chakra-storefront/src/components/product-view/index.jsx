@@ -593,8 +593,7 @@ const ProductView = forwardRef(
                                 {!showLoading && showOptionsMessage && (
                                     <Text color="orange.600" fontWeight={600} marginBottom={8}>
                                         {intl.formatMessage({
-                                            defaultMessage:
-                                                'Please select all your options above'
+                                            defaultMessage: 'Please select all your options above'
                                         })}
                                     </Text>
                                 )}

@@ -5,7 +5,7 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, { Fragment } from 'react'
+import React, {Fragment} from 'react'
 import PropTypes from 'prop-types'
 import {Link as RouteLink} from 'react-router-dom'
 import {useIntl} from 'react-intl'
@@ -40,7 +40,6 @@ const Breadcrumb = ({categories, ...rest}) => {
             {...rest}
         >
             <ChakraBreadcrumb.List>
-                
                 {categories.map((category, index) => (
                     <Fragment>
                         <ChakraBreadcrumb.Item key={category.id} data-testid="sf-crumb-item">
@@ -52,7 +51,7 @@ const Breadcrumb = ({categories, ...rest}) => {
                                 {category.name}
                             </ChakraBreadcrumb.Link>
                         </ChakraBreadcrumb.Item>
-                        {index < categories.length -1 && <ChakraBreadcrumb.Separator />}
+                        {index < categories.length - 1 && <ChakraBreadcrumb.Separator />}
                     </Fragment>
                 ))}
             </ChakraBreadcrumb.List>

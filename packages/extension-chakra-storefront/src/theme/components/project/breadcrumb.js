@@ -9,19 +9,19 @@ import {defineSlotRecipe} from '@chakra-ui/react'
 export default defineSlotRecipe({
     slots: ['container', 'icon', 'link'],
     base: {
-      container: {
-        minHeight: 4,
-        fontSize: 'sm',
-      },
-      icon: {
-        display: 'flex',
-        boxSize: 4,
-        color: 'grey',
-      },
-      link: {
-        pt: 3,
-        pb: 3,
-        textDecoration: 'none',
-      },
-    },
+        container: {
+            minHeight: 4,
+            fontSize: 'sm'
+        },
+        icon: {
+            display: 'flex',
+            boxSize: 4,
+            color: 'grey'
+        },
+        link: {
+            pt: 3,
+            pb: 3,
+            textDecoration: 'none'
+        }
+    }
 })
