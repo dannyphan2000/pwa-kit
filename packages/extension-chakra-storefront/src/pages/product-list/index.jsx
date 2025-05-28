@@ -429,7 +429,7 @@ const ProductList = (props) => {
                         direction="row"
                         justify="flex-start"
                         align="flex-start"
-                        spacing={4}
+                        gap={4}
                         marginBottom={6}
                     >
                         <Flex align="left" width="287px">
@@ -461,7 +461,7 @@ const ProductList = (props) => {
 
                     {/* Filter Button for Mobile */}
                     <HideOnDesktop>
-                        <Stack spacing={6}>
+                        <Stack gap={6}>
                             <PageHeader
                                 searchQuery={searchQuery}
                                 category={category}
@@ -473,20 +473,20 @@ const ProductList = (props) => {
                                 direction="row"
                                 justify="flex-start"
                                 align="center"
-                                spacing={1}
+                                gap={1}
                                 height={12}
                                 borderColor="gray.100"
                             >
                                 <Flex align="center">
                                     <Button
                                         fontSize="sm"
-                                        colorScheme="black"
+                                        colorPalette="black"
                                         variant="outline"
                                         marginRight={2}
                                         display="inline-flex"
-                                        leftIcon={<FilterIcon boxSize={5} />}
                                         onClick={onOpen}
                                     >
+                                        <FilterIcon boxSize={5} />
                                         <FormattedMessage
                                             defaultMessage="Filter"
                                             id="product_list.button.filter"
@@ -498,10 +498,9 @@ const ProductList = (props) => {
                                         maxWidth="245px"
                                         fontSize="sm"
                                         marginRight={2}
-                                        colorScheme="black"
+                                        colorPalette="black"
                                         variant="outline"
                                         display="inline-flex"
-                                        rightIcon={<ChevronDownIcon boxSize={5} />}
                                         onClick={() => setSortOpen(true)}
                                     >
                                         {formatMessage(
@@ -513,6 +512,7 @@ const ProductList = (props) => {
                                                 sortOption: selectedSortingOptionLabel?.label
                                             }
                                         )}
+                                        <ChevronDownIcon boxSize={5} />
                                     </Button>
                                 </Flex>
                             </Stack>
