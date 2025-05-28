@@ -5,13 +5,17 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React from 'react'
+import React, {Fragment} from 'react'
 import PropTypes from 'prop-types'
 import {Link as RouteLink} from 'react-router-dom'
 import {useIntl} from 'react-intl'
 
 // Components
-import {Breadcrumb as ChakraBreadcrumb} from '@chakra-ui/react'
+import {
+    Breadcrumb as ChakraBreadcrumb,
+    // Hooks
+    useSlotRecipe
+} from '@chakra-ui/react'
 
 // Icons
 import {ChevronRightIcon} from '../../components/icons'
@@ -25,26 +29,30 @@ import {categoryUrlBuilder} from '../../utils/url'
  */
 const Breadcrumb = ({categories, ...rest}) => {
     const intl = useIntl()
+    const recipe = useSlotRecipe({key: 'breadcrumb'})
+    const styles = recipe()
 
     return (
-        <ChakraBreadcrumb.Root className="sf-breadcrumb" {...rest}>
+        <ChakraBreadcrumb.Root
+            className="sf-breadcrumb"
+            css={styles.container}
+            separator={<ChevronRightIcon css={styles.icon} aria-hidden="true" />}
+            {...rest}
+        >
             <ChakraBreadcrumb.List>
                 {categories.map((category, index) => (
-                    <React.Fragment key={category.id}>
+                    <Fragment key={category.id}>
                         <ChakraBreadcrumb.Item data-testid="sf-crumb-item">
                             <ChakraBreadcrumb.Link
                                 as={RouteLink}
                                 to={categoryUrlBuilder(category, intl.locale)}
+                                sx={styles.link}
                             >
                                 {category.name}
                             </ChakraBreadcrumb.Link>
                         </ChakraBreadcrumb.Item>
-                        {index < categories.length - 1 && (
-                            <ChakraBreadcrumb.Separator>
-                                <ChevronRightIcon aria-hidden="true" />
-                            </ChakraBreadcrumb.Separator>
-                        )}
-                    </React.Fragment>
+                        {index < categories.length - 1 && <ChakraBreadcrumb.Separator />}
+                    </Fragment>
                 ))}
             </ChakraBreadcrumb.List>
         </ChakraBreadcrumb.Root>
