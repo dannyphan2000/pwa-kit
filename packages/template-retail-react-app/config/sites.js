@@ -28,12 +28,12 @@ module.exports = [
     {
         id: 'RefArchGlobal',
         l10n: {
-            supportedCurrencies: ['GBP', 'EUR', 'CNY', 'JPY', 'NOK', 'DKK', 'SEK', 'PLN'],
+            supportedCurrencies: ['GBP', 'EUR', 'CNY', 'JPY'],
             defaultCurrency: 'GBP',
             supportedLocales: [
                 {
                     id: 'da-DK',
-                    preferredCurrency: 'DKK'
+                    preferredCurrency: 'EUR'
                 },
                 {
                     id: 'de-DE',
@@ -73,11 +73,11 @@ module.exports = [
                 },
                 {
                     id: 'no-NO',
-                    preferredCurrency: 'NOK'
+                    preferredCurrency: 'EUR'
                 },
                 {
                     id: 'pl-PL',
-                    preferredCurrency: 'PLN'
+                    preferredCurrency: 'EUR'
                 },
                 {
                     id: 'pt-BR',
@@ -85,7 +85,7 @@ module.exports = [
                 },
                 {
                     id: 'sv-SE',
-                    preferredCurrency: 'SEK'
+                    preferredCurrency: 'EUR'
                 },
                 {
                     id: 'zh-CN',
