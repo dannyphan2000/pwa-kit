@@ -112,20 +112,6 @@ class CommerceAPI {
             }
         }
 
-        /** ************ Commerce SDK React Clients ************ */
-
-        this._reactSdkConfig = {
-            proxy,
-            parameters: this._config.parameters,
-            headers: this._config.headers
-        }
-
-        this._reactSdkClients = {
-            shopperLogin: new sdk.ShopperLogin(this._reactSdkConfig)
-        }
-
-        /** ************ End Commerce SDK React Clients ************ */
-
         // Instantiate the SDK class proxies and create getters from our api mapping.
         // The proxy handlers are called when accessing any of the mapped SDK class
         // proxies, executing various pre-defined hooks for tapping into or modifying
