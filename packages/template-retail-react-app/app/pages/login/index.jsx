@@ -87,16 +87,16 @@ const Login = ({initialView = LOGIN_VIEW}) => {
         const shouldMergeBasket = totalItems > 0 && prevAuthType === 'guest'
         if (shouldMergeBasket) {
             try {
-                mergeBasket.mutate({
-                    headers: {
-                        // This is not required since the request has no body
-                        // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
-                        'Content-Type': 'application/json'
-                    },
-                    parameters: {
-                        createDestinationBasket: true
-                    }
-                })
+                // mergeBasket.mutate({
+                //     headers: {
+                //         // This is not required since the request has no body
+                //         // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
+                //         'Content-Type': 'application/json'
+                //     },
+                //     parameters: {
+                //         createDestinationBasket: true
+                //     }
+                // })
             } catch (e) {
                 form.setError('global', {
                     type: 'manual',

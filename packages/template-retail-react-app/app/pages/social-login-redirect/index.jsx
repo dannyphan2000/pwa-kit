@@ -72,16 +72,16 @@ const SocialLoginRedirect = () => {
             return
         }
         clearSessionJSONItem('returnToPage')
-        mergeBasket.mutate({
-            headers: {
-                // This is not required since the request has no body
-                // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
-                'Content-Type': 'application/json'
-            },
-            parameters: {
-                createDestinationBasket: true
-            }
-        })
+        // mergeBasket.mutate({
+        //     headers: {
+        //         // This is not required since the request has no body
+        //         // but CommerceAPI throws a '419 - Unsupported Media Type' error if this header is removed.
+        //         'Content-Type': 'application/json'
+        //     },
+        //     parameters: {
+        //         createDestinationBasket: true
+        //     }
+        // })
         if (locatedFrom) {
             navigate(locatedFrom)
         } else {
