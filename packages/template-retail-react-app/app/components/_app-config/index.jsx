@@ -41,7 +41,7 @@ const AppConfig = ({children, locals = {}}) => {
     return (
         <MultiSiteProvider site={locals.site} locale={locals.locale} buildUrl={locals.buildUrl}>
             <CommerceAPIProvider value={locals.api}>
-                <CommerceSDKReactProvider Providers api={locals.api}>
+                <CommerceSDKReactProvider api={locals.api}>
                     <CustomerProvider value={{customer, setCustomer}}>
                         <BasketProvider value={{basket, setBasket}}>
                             <CustomerProductListsProvider>
