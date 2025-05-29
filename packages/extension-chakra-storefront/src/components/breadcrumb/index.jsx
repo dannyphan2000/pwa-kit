@@ -41,8 +41,8 @@ const Breadcrumb = ({categories, ...rest}) => {
         >
             <ChakraBreadcrumb.List>
                 {categories.map((category, index) => (
-                    <Fragment>
-                        <ChakraBreadcrumb.Item key={category.id} data-testid="sf-crumb-item">
+                    <Fragment key={category.id}>
+                        <ChakraBreadcrumb.Item data-testid="sf-crumb-item">
                             <ChakraBreadcrumb.Link
                                 as={RouteLink}
                                 to={categoryUrlBuilder(category, intl.locale)}

@@ -68,13 +68,10 @@ const RecommendedProducts = ({zone, recommender, products, title, shouldFetch, .
         // Fetch either zone or recommender, but not both. If a zone and recommender
         // name are both provided, `zone` takes precendence.
         if (zone) {
-            console.log('Fetching recommendations for zone:', zone)
             getZoneRecommendations(zone, _products)
             return
         }
         if (recommender) {
-            console.log('Fetching recommendations for recommender:', recommender, _products)
-
             getRecommendations(recommender, _products)
             return
         }

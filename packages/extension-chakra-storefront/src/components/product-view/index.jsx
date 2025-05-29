@@ -121,8 +121,6 @@ const ProductView = forwardRef(
             onOpen: onAddToCartModalOpen,
             onClose: onAddToCartModalClose
         } = useAddToCartModalContext()
-        const theme = useToken('shadows.top')
-        // const [themeColor] = useToken('shadows.top')
         const [showOptionsMessage, toggleShowOptionsMessage] = useState(false)
         const {
             showLoading,
@@ -650,7 +648,7 @@ const ProductView = forwardRef(
                     left={0}
                     bottom={0}
                     zIndex={2}
-                    // boxShadow={theme.shadows.top}
+                    boxShadow="top"
                 >
                     {renderActionButtons()}
                 </Box>
