@@ -27,7 +27,7 @@ class EinsteinAPI {
 
         // If we have an encrypted user id (authenticaed users only) use it as the `userId` otherwise
         // we won't send a `userId` param for guest users.
-        const encUserId = this.commerceAPI.auth.get('encUserId')
+        const encUserId = this.commerceAPI.auth.get('enc_user_id')
         if (encUserId) {
             body.userId = encUserId
         }
