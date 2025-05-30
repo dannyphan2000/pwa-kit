@@ -116,7 +116,6 @@ CurrencyProvider.propTypes = {
 export const AppConfigContext = React.createContext()
 export const AppConfigProvider = ({appConfig: initialAppConfig, children}) => {
     const [appConfig, setAppConfig] = useState(initialAppConfig)
-    console.log('>>> 119 initialAppConfig', initialAppConfig)
     return (
         <AppConfigContext.Provider value={{appConfig, setAppConfig}}>
             {children}

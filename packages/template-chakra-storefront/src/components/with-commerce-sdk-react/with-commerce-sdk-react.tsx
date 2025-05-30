@@ -52,7 +52,6 @@ const withCommerceSDKReact = <P extends object>(WrappedComponent: React.Componen
         const headers = {
             'correlation-id': correlationId
         }
-        console.log('>>> withCommerceSDKReact config')
         return (
             <CommerceApiProvider
                 shortCode={config.commerceAPI.parameters.shortCode}
