@@ -38,18 +38,6 @@ import {useCorrelationId} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hook
 import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import {DEFAULT_DNT_STATE} from '../../../src/constants'
 
-// Create config context
-const ConfigContext = createContext(null)
-
-// Hook to use config in components
-export const useConfig = () => {
-    const config = useContext(ConfigContext)
-    if (!config) {
-        throw new Error('useConfig must be used within a ConfigProvider (AppConfig)')
-    }
-    return config
-}
-
 /**
  * Use the AppConfig component to inject extra arguments into the getProps
  * methods for all Route Components in the app – typically you'd want to do this
@@ -79,12 +67,7 @@ const AppConfig = ({children, locals = {}}) => {
     const passwordlessLoginCallbackURI = useMemo(() => passwordlessCallback, [passwordlessCallback]);
     const defaultDnt = useMemo(() => locals.appConfig.dnt, [locals.appConfig.dnt]);
 
-    // locals._debugId = locals._debugId || Math.random();
-
-    // console.log('locals ref:', locals, 'id:', locals && locals._debugId);
-
     return (
-        // <ConfigContext.Provider value={locals.appConfig}>
             <CommerceApiProvider
                 shortCode={commerceApiConfig.parameters.shortCode}
                 clientId={commerceApiConfig.parameters.clientId}
@@ -99,14 +82,11 @@ const AppConfig = ({children, locals = {}}) => {
                 defaultDnt={defaultDnt}
                 logger={memoizedLogger}
             >
-                {/* <AppConfigProvider appConfig={locals.appConfig}> */}
                     <MultiSiteProvider site={locals.site} locale={locals.locale} buildUrl={locals.buildUrl}>
                         <ChakraProvider theme={theme}>{children}</ChakraProvider>
                     </MultiSiteProvider>
-                {/* </AppConfigProvider> */}
                 <ReactQueryDevtools />
             </CommerceApiProvider>
-        // </ConfigContext.Provider>
     )
 }
 
@@ -127,7 +107,6 @@ AppConfig.restore = (locals = {}) => {
     }
 
     apiConfig.parameters.siteId = site.id
-    // console.log('appConfig', JSON.stringify(apiConfig, null, 2))
     locals.buildUrl = createUrlTemplate(appConfig, site.alias || site.id, locale.id)
     locals.site = site
     locals.locale = locale

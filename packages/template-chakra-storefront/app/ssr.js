@@ -27,9 +27,6 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {getAppOrigin} from '@salesforce/pwa-kit-react-sdk/utils/url'
 
 const config = getConfig()
-
-console.log('config', config)
-
 const options = {
     // The build directory (an absolute path)
     buildDir: path.resolve(process.cwd(), 'build'),
@@ -38,7 +35,7 @@ const options = {
     defaultCacheTimeSeconds: 600,
 
     // The contents of the config file for the current environment
-    mobify: config,
+    mobify: config.mobify,
 
     // The port that the local dev server listens on
     port: 3000,
