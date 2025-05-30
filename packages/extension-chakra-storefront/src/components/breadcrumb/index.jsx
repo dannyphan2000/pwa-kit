@@ -46,7 +46,7 @@ const Breadcrumb = ({categories, ...rest}) => {
                             <ChakraBreadcrumb.Link
                                 as={RouteLink}
                                 to={categoryUrlBuilder(category, intl.locale)}
-                                sx={styles.link}
+                                css={styles.link}
                             >
                                 {category.name}
                             </ChakraBreadcrumb.Link>
