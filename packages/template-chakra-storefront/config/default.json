@@ -47,6 +47,7 @@
     },
     "defaultSite": "RefArchGlobal",
     "defaultAppLocale": "en-US",
+    "homeHref": "/",
     "defaultSiteTitle": "Retail React App",
     "defaultDnt": true,
     "einsteinAPI": {
@@ -76,60 +77,6 @@
         }
     },
     "maxCacheAge": 900,
-    "pages": {
-        "Account": {
-            "path": "/account",
-            "orderSearchParam": {"limit": 10, "offset": 0, "sort": "best-matches", "refine": []}
-        },
-        "Cart": {
-            "path": "/cart"
-        },
-        "Checkout": {
-            "path": "/checkout",
-            "shippingCountryCode": [
-                {"value": "CA", "label": "Canada"},
-                {"value": "US", "label": "United States"}
-            ]
-        },
-        "CheckoutConfirmation": {
-            "path": "/checkout/confirmation/:orderNo"
-        },
-        "Home": {
-            "path": "/",
-            "productLimit": 10,
-            "mainCategory": "newarrivals"
-        },
-        "Login": {
-            "path": "/login"
-        },
-        "Registration": {
-            "path": "/registration"
-        },
-        "ResetPassword": {
-            "path": "/reset-password"
-        },
-        "ResetPasswordLanding": {
-            "path": "/reset-password-landing"
-        },
-        "LoginRedirect": {
-            "path": "/callback"
-        },
-        "PasswordlessLoginLanding": {
-            "path": "/passwordless-login-landing"
-        },
-        "ProductDetail": {
-            "path": "/product/:productId"
-        },
-        "ProductList": {
-            "path": ["/search", "/category/:categoryId"],
-            "imageViewType": "large",
-            "selectableAttributeId": "color",
-            "filterAccordionSate": "filters-expanded-index"
-        },
-        "SocialRedirect": {
-            "path": "/social-redirect"
-        }
-    },
     "search": {
         "defaultLimitValues": [25, 50, 100],
         "defaultSearchParams": {"limit": 25, "offset": 0, "sort": "best-matches", "refine": []},

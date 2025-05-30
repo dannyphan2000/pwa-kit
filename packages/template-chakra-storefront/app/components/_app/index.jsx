@@ -54,9 +54,9 @@ import {
     DntNotification,
     useDntNotification
 } from '../../../src/hooks/use-dnt-notification'
+import {useTheme} from '@chakra-ui/react'
 import {AddToCartModalProvider} from '../../../src/hooks/use-add-to-cart-modal'
 import useMultiSite from '../../../src/hooks/use-multi-site'
-// import {useAppConfig} from '../../../src/hooks/use-app-config'
 import {useCurrentCustomer} from '../../../src/hooks/use-current-customer'
 import {useCurrentBasket} from '../../../src/hooks/use-current-basket'
 import {useUpdateShopperContext} from '../../../src/hooks/use-update-shopper-context'
@@ -69,15 +69,6 @@ import {IntlProvider} from 'react-intl'
 // Others
 import {watchOnlineStatus, flatten, isServer} from '../../../src/utils/utils'
 import {getTargetLocale, fetchTranslations} from '../../../src/utils/locale'
-import {
-    DEFAULT_SITE_TITLE,
-    HOME_HREF,
-    THEME_COLOR,
-    // CAT_MENU_DEFAULT_NAV_SSR_DEPTH,
-    // CAT_MENU_DEFAULT_ROOT_CATEGORY,
-    DEFAULT_LOCALE,
-    ACTIVE_DATA_ENABLED
-} from '../../../src/constants'
 
 import Seo from '../../../src/components/seo'
 import {Helmet} from 'react-helmet'
@@ -147,7 +138,9 @@ const App = (props) => {
     const {site, locale, buildUrl} = useMultiSite()
 
     const [isOnline, setIsOnline] = useState(true)
+    const {colors} = useTheme()
     const styles = useStyleConfig('App')
+
     const {isOpen, onOpen, onClose} = useDisclosure()
     const {
         isOpen: isOpenStoreLocator,
@@ -168,7 +161,7 @@ const App = (props) => {
             // then the app would use the default locale as the fallback.
 
             // NOTE: Your implementation may differ, this is just what we did.
-            return [locale?.id || DEFAULT_LOCALE]
+            return [locale?.id || appConfig.defaultAppLocale]
         },
         l10nConfig: site.l10n
     })
@@ -257,7 +250,7 @@ const App = (props) => {
 
     const onLogoClick = () => {
         // Goto the home page.
-        const path = buildUrl(HOME_HREF)
+        const path = buildUrl(appConfig.homeHref)
 
         history.push(path)
 
@@ -331,11 +324,11 @@ const App = (props) => {
                     // NOTE: if you update this value, please also update the following npm scripts in `template-retail-react-app/package.json`:
                     // - "extract-default-translations"
                     // - "compile-translations:pseudo"
-                    defaultLocale={DEFAULT_LOCALE}
+                    defaultLocale={appConfig.defaultAppLocale}
                 >
                     <CurrencyProvider currency={currency}>
                         <Seo>
-                            <meta name="theme-color" content={THEME_COLOR} />
+                            <meta name="theme-color" content={colors.blue['600']} />
                             <meta name="apple-mobile-web-app-title" content={appConfig.defaultSiteTitle} />
                             <link
                                 rel="apple-touch-icon"

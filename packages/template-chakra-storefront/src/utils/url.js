@@ -210,7 +210,7 @@ export const createUrlTemplate = (appConfig, siteRef, localeRef) => {
 
     return (path, site, locale) => {
         const isHomeWithDefaultSiteAndLocale =
-            path === appConfig.pages.Home.path &&
+            path === appConfig.homeHref &&
             (defaultSite.id === site || (defaultSite.alias && defaultSite.alias === site)) &&
             (defaultLocale.id === locale || (defaultLocale.alias && defaultLocale.alias === locale))
 
