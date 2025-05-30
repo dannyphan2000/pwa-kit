@@ -90,3 +90,41 @@ CurrencyProvider.propTypes = {
     children: PropTypes.node.isRequired,
     currency: PropTypes.string
 }
+
+/**
+ * This is the global state for app configuration, we use this throughout the site. For example, on
+ * various pages that need access to application-wide configuration settings.
+ *
+ * To use these context's simply import them into the component requiring context
+ * like the below example:
+ *
+ * import React, {useContext} from 'react'
+ * import {AppConfigContext} from './contexts'
+ *
+ * export const RootAppConfigLabel = () => {
+ *    const {appConfig} = useContext(AppConfigContext)
+ *    return <div>{JSON.stringify(appConfig)}</div>
+ * }
+ *
+ * Alternatively you can use the hook provided by us:
+ *
+ * import {useAppConfig} from './hooks'
+ *
+ * const {appConfig, setAppConfig} = useAppConfig()
+ *
+ */
+export const AppConfigContext = React.createContext()
+export const AppConfigProvider = ({appConfig: initialAppConfig, children}) => {
+    const [appConfig, setAppConfig] = useState(initialAppConfig)
+    console.log('>>> 119 initialAppConfig', initialAppConfig)
+    return (
+        <AppConfigContext.Provider value={{appConfig, setAppConfig}}>
+            {children}
+        </AppConfigContext.Provider>
+    )
+}
+
+AppConfigProvider.propTypes = {
+    children: PropTypes.node.isRequired,
+    appConfig: PropTypes.object
+}

@@ -13,7 +13,7 @@
  * - assets/bootstrap/js/overrides/app/components/_app-config
  * - assets/templates/../../../src/app/components/_app-config
  */
-import React, {createContext, useContext} from 'react'
+import React, {createContext, useContext, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {ChakraProvider} from '@chakra-ui/react'
 
@@ -21,6 +21,7 @@ import {ChakraProvider} from '@chakra-ui/react'
 import 'focus-visible/dist/focus-visible'
 
 import theme from '../../../src/theme'
+// import {MultiSiteProvider, AppConfigProvider} from '../../../src/contexts'
 import {MultiSiteProvider} from '../../../src/contexts'
 import {useAppOrigin} from '../../../src/hooks/use-app-origin'
 import {
@@ -67,28 +68,45 @@ const AppConfig = ({children, locals = {}}) => {
     const appOrigin = useAppOrigin()
     const passwordlessCallback = locals.appConfig.login?.passwordless?.callbackURI
 
+    const memoizedHeaders = useMemo(() => headers, [/* dependencies */])
+    const memoizedLogger = useMemo(() => createLogger({packageName: 'commerce-sdk-react'}), [])
+
+    const siteId = useMemo(() => locals.site?.id, [locals.site?.id]);
+    const locale = useMemo(() => locals.locale?.id, [locals.locale?.id]);
+    const currency = useMemo(() => locals.locale?.preferredCurrency, [locals.locale?.preferredCurrency]);
+    const proxy = useMemo(() => `${appOrigin}${commerceApiConfig.proxyPath}`, [appOrigin, commerceApiConfig.proxyPath]);
+    const redirectURI = useMemo(() => `${appOrigin}/callback`, [appOrigin]);
+    const passwordlessLoginCallbackURI = useMemo(() => passwordlessCallback, [passwordlessCallback]);
+    const defaultDnt = useMemo(() => locals.appConfig.dnt, [locals.appConfig.dnt]);
+
+    // locals._debugId = locals._debugId || Math.random();
+
+    // console.log('locals ref:', locals, 'id:', locals && locals._debugId);
+
     return (
-        <ConfigContext.Provider value={locals.appConfig}>
+        // <ConfigContext.Provider value={locals.appConfig}>
             <CommerceApiProvider
                 shortCode={commerceApiConfig.parameters.shortCode}
                 clientId={commerceApiConfig.parameters.clientId}
                 organizationId={commerceApiConfig.parameters.organizationId}
-                siteId={locals.site?.id}
-                locale={locals.locale?.id}
-                currency={locals.locale?.preferredCurrency}
-                redirectURI={`${appOrigin}/callback`}
-                passwordlessLoginCallbackURI={passwordlessCallback}
-                proxy={`${appOrigin}${commerceApiConfig.proxyPath}`}
-                headers={headers}
-                defaultDnt={locals.appConfig.dnt}
-                logger={createLogger({packageName: 'commerce-sdk-react'})}
+                siteId={siteId}
+                locale={locale}
+                currency={currency}
+                redirectURI={redirectURI}
+                passwordlessLoginCallbackURI={passwordlessLoginCallbackURI}
+                proxy={proxy}
+                headers={memoizedHeaders}
+                defaultDnt={defaultDnt}
+                logger={memoizedLogger}
             >
-                <MultiSiteProvider site={locals.site} locale={locals.locale} buildUrl={locals.buildUrl}>
-                    <ChakraProvider theme={theme}>{children}</ChakraProvider>
-                </MultiSiteProvider>
+                {/* <AppConfigProvider appConfig={locals.appConfig}> */}
+                    <MultiSiteProvider site={locals.site} locale={locals.locale} buildUrl={locals.buildUrl}>
+                        <ChakraProvider theme={theme}>{children}</ChakraProvider>
+                    </MultiSiteProvider>
+                {/* </AppConfigProvider> */}
                 <ReactQueryDevtools />
             </CommerceApiProvider>
-        </ConfigContext.Provider>
+        // </ConfigContext.Provider>
     )
 }
 
@@ -109,7 +127,7 @@ AppConfig.restore = (locals = {}) => {
     }
 
     apiConfig.parameters.siteId = site.id
-    console.log('appConfig', JSON.stringify(apiConfig, null, 2))
+    // console.log('appConfig', JSON.stringify(apiConfig, null, 2))
     locals.buildUrl = createUrlTemplate(appConfig, site.alias || site.id, locale.id)
     locals.site = site
     locals.locale = locale
@@ -122,7 +140,8 @@ AppConfig.extraGetPropsArgs = (locals = {}) => {
     return {
         buildUrl: locals.buildUrl,
         site: locals.site,
-        locale: locals.locale
+        locale: locals.locale,
+        // appConfig: locals.appConfig
     }
 }
 

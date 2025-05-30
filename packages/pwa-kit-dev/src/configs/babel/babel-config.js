@@ -6,7 +6,6 @@
  */
 
 // PWA-Kit Imports
-import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import path from 'path'
 
 export default {
