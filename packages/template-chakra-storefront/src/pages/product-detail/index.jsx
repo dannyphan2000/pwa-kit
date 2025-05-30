@@ -22,9 +22,10 @@ import {
     useCustomerId,
     useShopperBasketsMutationHelper
 } from '@salesforce/commerce-sdk-react'
-
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 // Hooks
-import {useCurrentBasket, useConfig, useVariant} from '../../hooks'
+import {useCurrentBasket, useVariant} from '../../hooks'
+
 import useNavigation from '../../hooks/use-navigation'
 import useEinstein from '../../hooks/use-einstein'
 import useDataCloud from '../../hooks/use-datacloud'
@@ -61,8 +62,7 @@ const ProductDetail = () => {
     const toast = useToast()
     const navigate = useNavigation()
     const customerId = useCustomerId()
-    const {maxCacheAge: MAX_CACHE_AGE, staleWhileRevalidate: STALE_WHILE_REVALIDATE} =
-        useConfig()
+    const {maxCacheAge: MAX_CACHE_AGE, staleWhileRevalidate: STALE_WHILE_REVALIDATE} = getConfig()
 
     /****************************** Basket *********************************/
     const {isLoading: isBasketLoading} = useCurrentBasket()

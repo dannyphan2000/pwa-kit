@@ -8,7 +8,7 @@ import React from 'react'
 import Helmet from 'react-helmet'
 import {UserConfig} from '../../types/config'
 
-import {useConfig} from '../../hooks'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 interface SeoProps {
     title?: string
@@ -19,7 +19,7 @@ interface SeoProps {
 }
 
 const Seo: React.FC<SeoProps> = ({title, description, noIndex, keywords, children, ...props}) => {
-    const {defaultSiteTitle} = useConfig() as UserConfig
+    const {defaultSiteTitle} = getConfig() as UserConfig
     const fullTitle = title ? `${title} | ${defaultSiteTitle}` : defaultSiteTitle
 
     return (

@@ -19,7 +19,7 @@ import {ServerContext} from '@salesforce/commerce-sdk-react/hooks/types'
 
 // Local Imports
 import {resolveSiteFromUrl, resolveLocaleFromUrl} from '../../utils/site-utils'
-import {useConfig} from '../../hooks/use-config'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 // Define a type for the HOC props
 type WithCommerceSDKReactProps = {
@@ -43,7 +43,7 @@ const withCommerceSDKReact = <P extends object>(WrappedComponent: React.Componen
         const path = req?.originalUrl || `${window.location.pathname}${window.location.search}`
 
         // TODO: Update this type
-        const config: any = useConfig()
+        const config: any = getConfig()
         const appOrigin = getAppOrigin()
         const site: any = resolveSiteFromUrl(path)
         const locale: any = resolveLocaleFromUrl(path)
@@ -52,7 +52,7 @@ const withCommerceSDKReact = <P extends object>(WrappedComponent: React.Componen
         const headers = {
             'correlation-id': correlationId
         }
-
+        console.log('>>> withCommerceSDKReact config')
         return (
             <CommerceApiProvider
                 shortCode={config.commerceAPI.parameters.shortCode}

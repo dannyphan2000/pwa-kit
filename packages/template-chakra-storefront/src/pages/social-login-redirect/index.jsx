@@ -16,7 +16,7 @@ import {useAuthHelper, AuthHelpers, useShopperBasketsMutation} from '@salesforce
 import {useSearchParams} from '../../hooks'
 import {useCurrentCustomer} from '../../hooks/use-current-customer'
 import {useAppOrigin} from '../../hooks/use-app-origin'
-import {useConfig} from '../../hooks/use-config'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {getSessionJSONItem, clearSessionJSONItem, buildRedirectURI} from '../../utils/utils'
 import {API_ERROR_MESSAGE} from '../../constants'
 
@@ -28,7 +28,7 @@ const SocialLoginRedirect = () => {
     const {data: customer} = useCurrentCustomer()
     // Build redirectURI from config values
     const appOrigin = useAppOrigin()
-    const {login} = useConfig()
+    const {login} = getConfig()
     const redirectPath = login?.social?.redirectURI || ''
     const redirectURI = buildRedirectURI(appOrigin, redirectPath)
 

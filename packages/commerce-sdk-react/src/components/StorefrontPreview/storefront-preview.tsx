@@ -11,7 +11,8 @@ import {Helmet} from 'react-helmet'
 import {CustomPropTypes, detectStorefrontPreview, getClientScript, proxyRequests} from './utils'
 import {useHistory} from 'react-router-dom'
 import type {LocationDescriptor} from 'history'
-import {useCommerceApi, useConfig} from '../../hooks'
+import {useCommerceApi} from '../../hooks'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 type GetToken = () => string | undefined | Promise<string | undefined>
 type ContextChangeHandler = () => void | Promise<void>
@@ -35,7 +36,7 @@ export const StorefrontPreview = ({
     const history = useHistory()
     const isHostTrusted = detectStorefrontPreview()
     const apiClients = useCommerceApi()
-    const {siteId} = useConfig()
+    const {siteId} = getConfig()
 
     useEffect(() => {
         if (enabled && isHostTrusted) {

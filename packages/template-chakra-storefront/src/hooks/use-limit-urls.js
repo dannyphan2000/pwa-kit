@@ -10,7 +10,7 @@ import {useLocation} from 'react-router-dom'
 
 // Utils
 import {buildUrlSet} from '../utils/url'
-import {useConfig} from './use-config'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 /*
  * Generate a memoized list of page size urls. Chaning the page size will reset
@@ -18,7 +18,7 @@ import {useConfig} from './use-config'
  */
 export const useLimitUrls = () => {
     const location = useLocation()
-    const {search: searchConfig} = useConfig()
+    const {search: searchConfig} = getConfig()
     return useMemo(
         () =>
             buildUrlSet(

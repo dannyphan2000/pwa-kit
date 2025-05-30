@@ -6,12 +6,12 @@
  */
 
 import {getDefaultSite, getSites, resolveSiteFromUrl} from './site-utils'
-import {getConfig} from '../utils/get-config'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 import mockConfig from '../mock-config'
 import {getParamsFromPath, resolveLocaleFromUrl} from './site-utils'
-jest.mock('../utils/get-config', () => {
-    const origin = jest.requireActual('../utils/get-config')
+jest.mock('@salesforce/pwa-kit-runtime/utils/ssr-config', () => {
+    const origin = jest.requireActual('@salesforce/pwa-kit-runtime/utils/ssr-config')
     return {
         ...origin,
         getConfig: jest.fn()

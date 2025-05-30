@@ -10,10 +10,10 @@ import Link from '../../components/link/index'
 import mockConfig from '../../mock-config'
 const originalLocation = window.location
 
-import {useConfig} from '../../hooks/use-config'
-jest.mock('../../hooks/use-config', () => {
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
+jest.mock('@salesforce/pwa-kit-runtime/utils/ssr-config', () => {
     return {
-        useConfig: jest.fn()
+        getConfig: jest.fn()
     }
 })
 
@@ -25,7 +25,7 @@ afterEach(() => {
 })
 
 test('renders a link with locale prepended', () => {
-    useConfig.mockImplementation(() => mockConfig)
+    getConfig.mockImplementation(() => mockConfig)
     delete window.location
     window.location = new URL('/us/en-US', 'https://www.example.com')
     const {getByText} = renderWithProviders(<Link href="/mypage">My Page</Link>, {
@@ -34,11 +34,11 @@ test('renders a link with locale prepended', () => {
     expect(getByText(/My Page/i)).toHaveAttribute('href', '/us/en-US/mypage')
 })
 
-// TODO: This test needs to be fixed. I behaves differently than the others where mocking the useConfig was enough, this
+// TODO: This test needs to be fixed. I behaves differently than the others where mocking the getConfig was enough, this
 // uses the multi-site context that would have to be mocked.
 
 test.skip('renders a link with locale and site as query param', () => {
-    useConfig.mockImplementation(() => ({
+    getConfig.mockImplementation(() => ({
         ...mockConfig,
         locale: {id: 'en-US'},
         siteAlias: 'us',
@@ -58,7 +58,7 @@ test.skip('renders a link with locale and site as query param', () => {
 })
 
 test('accepts `to` prop as well', () => {
-    useConfig.mockImplementation(() => mockConfig)
+    getConfig.mockImplementation(() => mockConfig)
     delete window.location
     window.location = new URL('us/en-US', 'https://www.example.com')
     const {getByText} = renderWithProviders(<Link to="/mypage">My Page</Link>, {
@@ -68,7 +68,7 @@ test('accepts `to` prop as well', () => {
 })
 
 test('does not modify root url', () => {
-    useConfig.mockImplementation(() => {
+    getConfig.mockImplementation(() => {
         return mockConfig
     })
     const {getByText} = renderWithProviders(<Link href="/">My Page</Link>)

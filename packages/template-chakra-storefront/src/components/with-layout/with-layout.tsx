@@ -41,7 +41,8 @@ import ScrollToTop from '../scroll-to-top'
 // Local Project Hooks
 import {AuthModal, useAuthModal} from '../../hooks/use-auth-modal'
 import {AddToCartModalProvider} from '../../hooks/use-add-to-cart-modal'
-import {useConfig, useCurrentCustomer, useCurrentBasket} from '../../hooks'
+import {useCurrentCustomer, useCurrentBasket} from '../../hooks'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {watchOnlineStatus, flatten} from '../../utils/utils'
 import useActiveData from '../../hooks/use-active-data'
 import useMultiSite from '../../hooks/use-multi-site'
@@ -97,8 +98,7 @@ const ListMenuContentWithData = withCommerceSdkReactHookData(
 // Define the HOC function
 const withLayout = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
     const WithLayout: React.FC<P> = (props: WithAppLayoutProps) => {
-        const config = useConfig() as UserConfig
-
+        const config = getConfig() as UserConfig
         const CAT_MENU_DEFAULT_ROOT_CATEGORY = String(config.categoryNav.defaultRootCategory)
         const CAT_MENU_DEFAULT_NAV_SSR_DEPTH = config.categoryNav.defaultNavSsrDepth
         const {data: categoriesTree} = useCategory({

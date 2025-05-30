@@ -27,7 +27,7 @@ import {HideOnDesktop, HideOnMobile} from '../../components/responsive'
 import {FormattedMessage} from 'react-intl'
 import debounce from 'lodash/debounce'
 import {productUrlBuilder, searchUrlBuilder, categoryUrlBuilder} from '../../utils/url'
-import {useConfig} from '../../hooks'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const formatSuggestions = (searchSuggestions, input) => {
     return {
@@ -75,7 +75,7 @@ const Search = (props) => {
     const [isOpen, setIsOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const navigate = useNavigation()
-    const {search: searchConfig} = useConfig()
+    const {search: searchConfig} = getConfig()
     const searchSuggestion = useSearchSuggestions(
         {
             parameters: {

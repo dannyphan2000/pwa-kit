@@ -10,7 +10,8 @@ import StorefrontPreview from './storefront-preview'
 import {detectStorefrontPreview} from './utils'
 import {Helmet} from 'react-helmet'
 import {mockQueryEndpoint, renderWithProviders} from '../../test-utils'
-import {useCommerceApi, useConfig} from '../../hooks'
+import {useCommerceApi} from '../../hooks'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 declare global {
     interface Window {
@@ -26,12 +27,14 @@ jest.mock('./utils', () => {
     }
 })
 jest.mock('../../auth/index.ts')
-jest.mock('../../hooks/useConfig', () => jest.fn())
+jest.mock('@salesforce/pwa-kit-runtime/utils/ssr-config', () => ({
+    getConfig: jest.fn()
+}))
 
 describe('Storefront Preview Component', function () {
     beforeEach(() => {
         delete window.STOREFRONT_PREVIEW
-        ;(useConfig as jest.Mock).mockReturnValue({siteId: 'site-id'})
+        ;(getConfig as jest.Mock).mockReturnValue({siteId: 'site-id'})
     })
     afterEach(() => {
         jest.restoreAllMocks()

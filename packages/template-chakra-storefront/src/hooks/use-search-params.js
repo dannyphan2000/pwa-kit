@@ -8,7 +8,7 @@
 import {useLocation} from 'react-router-dom'
 import queryString from 'query-string'
 
-import {useConfig} from './use-config'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const PARSE_OPTIONS = {
     parseBooleans: true,
@@ -21,7 +21,7 @@ const PARSE_OPTIONS = {
  */
 export const useSearchParams = (searchParams, parseRefine = true) => {
     const {search} = useLocation()
-    const {search: searchConfig} = useConfig()
+    const {search: searchConfig} = getConfig()
     if (!searchParams) {
         searchParams = searchConfig.defaultSearchParams
     }

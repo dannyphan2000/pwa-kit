@@ -66,9 +66,9 @@ import {
     useLimitUrls,
     usePageUrls,
     useSortUrls,
-    useSearchParams,
-    useConfig
+    useSearchParams
 } from '../../hooks'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {useToast} from '../../hooks/use-toast'
 import useEinstein from '../../hooks/use-einstein'
 import useActiveData from '../../hooks/use-active-data'
@@ -122,7 +122,7 @@ const ProductList = (props) => {
         maxCacheAge: MAX_CACHE_AGE,
         staleWhileRevalidate: STALE_WHILE_REVALIDATE,
         search: searchConfig
-    } = useConfig()
+    } = getConfig()
     /**************** Page State ****************/
     const [filtersLoading, setFiltersLoading] = useState(false)
     const [wishlistLoading, setWishlistLoading] = useState([])

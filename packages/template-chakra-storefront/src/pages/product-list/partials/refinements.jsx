@@ -23,7 +23,7 @@ import RadioRefinements from '../../../pages/product-list/partials/radio-refinem
 import CheckboxRefinements from '../../../pages/product-list/partials/checkbox-refinements'
 import LinkRefinements from '../../../pages/product-list/partials/link-refinements'
 import {isServer} from '../../../utils/utils'
-import {useConfig} from '../../../hooks'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 /** Map of refinement attribute IDs to the components used to display values as filter options. */
 export const componentMap = {
@@ -43,7 +43,7 @@ const Refinements = ({
 }) => {
     const {
         pages: {ProductList: productListConfig}
-    } = useConfig()
+    } = getConfig()
     const FILTER_ACCORDION_STATE = productListConfig.filterAccordionState
     // Exclude filters in the exclude list.
     if (excludedFilters) {

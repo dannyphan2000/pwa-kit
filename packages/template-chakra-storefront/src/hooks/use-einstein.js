@@ -14,7 +14,7 @@ import {
     useCustomerType,
     useDNT
 } from '@salesforce/commerce-sdk-react'
-import {useConfig} from '../hooks/use-config'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {keysToCamel} from '../utils/utils'
 import logger from '../utils/logger-instance'
 
@@ -395,7 +395,7 @@ const useEinstein = () => {
     const api = useCommerceApi()
     const {effectiveDnt} = useDNT()
     const {getTokenWhenReady} = useAccessToken()
-    const {einsteinAPI: config} = useConfig()
+    const {einsteinAPI: config} = getConfig()
     const {host, einsteinId, siteId, isProduction} = config
 
     const {getUsidWhenReady} = useUsid()

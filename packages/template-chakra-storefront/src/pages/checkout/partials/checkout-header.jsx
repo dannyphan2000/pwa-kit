@@ -9,7 +9,8 @@ import {FormattedMessage, useIntl} from 'react-intl'
 import {Badge, Box, Button, Flex, Center} from '@chakra-ui/react'
 import Link from '../../../components/link'
 import {BasketIcon, BrandLogo} from '../../../components/icons'
-import {useCurrentBasket, useConfig} from '../../../hooks/'
+import {useCurrentBasket} from '../../../hooks/use-current-basket'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const CheckoutHeader = () => {
     const intl = useIntl()
@@ -18,7 +19,7 @@ const CheckoutHeader = () => {
     } = useCurrentBasket()
     const {
         pages: {Home: homeConfig}
-    } = useConfig()
+    } = getConfig()
     return (
         <Box px={[4, 4, 8]} bg="white" borderBottom="1px" borderColor="gray.100">
             <Box maxWidth="container.xxxl" marginLeft="auto" marginRight="auto">

@@ -12,10 +12,10 @@ import {clearSessionJSONItem} from '../../../utils/utils'
 
 import {FormattedMessage} from 'react-intl'
 import {searchUrlBuilder} from '../../../utils/url'
-import {useConfig} from '../../../hooks'
+import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 const RecentSearches = ({recentSearches, closeAndNavigate}) => {
-    const {search: searchConfig} = useConfig()
+    const {search: searchConfig} = getConfig()
 
     const clearSearches = () => {
         clearSessionJSONItem(searchConfig.recentSearchKey)
