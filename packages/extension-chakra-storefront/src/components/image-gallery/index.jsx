@@ -5,145 +5,176 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, {useState} from 'react'
+import React, {useState, useMemo, useEffect} from 'react'
 import PropTypes from 'prop-types'
+import {useLocation} from 'react-router-dom'
+
+// Chakra Components
 import {
     AspectRatio,
     Box,
+    Img,
     Flex,
-    IconButton,
-    Image,
-    Skeleton,
-    Stack,
-    useBreakpointValue
-} from '@chakra-ui/react'
 
-// Project Components
-import {ChevronLeftIcon, ChevronRightIcon} from '../icons'
+    // Hooks
+    Skeleton as ChakraSkeleton,
+    ListItem,
+    List,
+    useMultiStyleConfig
+} from '@chakra-ui/react'
+import {findImageGroupBy} from '../../utils/image-groups-utils'
+import DynamicImage from '../../components/dynamic-image'
+
+const EnterKeyNumber = 13
+
+const LARGE = 'large'
+const SMALL = 'small'
 
 /**
- * A carousel for product images.
+ * The skeleton representation of the image gallery component. Use this component while
+ * you are waiting for product data to be returnd from the server.
  */
-const ImageGallery = ({size, imageProps, ...props}) => {
-    const {images, selectedImageIndex = 0} = props
-    const [imageIndex, setImageIndex] = useState(selectedImageIndex)
-
-    const image = images?.[imageIndex] || {}
-
-    const previousImage = () => {
-        setImageIndex((imageIndex - 1 + images.length) % images.length)
-    }
-
-    const nextImage = () => {
-        setImageIndex((imageIndex + 1) % images.length)
-    }
-
-    const heroImageSize = useBreakpointValue({base: 'md', md: size})
+export const Skeleton = ({size}) => {
+    const styles = useMultiStyleConfig('ImageGallery', {size})
 
     return (
-        <Stack spacing={2} {...props}>
-            <Box position="relative">
-                <AspectRatio ratio={1}>
-                    <Image
-                        ignoreFallback={true}
-                        src={image.disBaseLink || image.link}
-                        alt={image.alt}
-                        objectFit="cover"
-                        {...imageProps}
-                    />
+        <Box data-testid="sf-image-gallery-skeleton">
+            <Flex flexDirection="column">
+                <AspectRatio ratio={1} {...styles.heroImageSkeleton}>
+                    <ChakraSkeleton />
                 </AspectRatio>
-
-                {images?.length > 1 && (
-                    <>
-                        <IconButton
-                            aria-label="Previous Image"
-                            icon={<ChevronLeftIcon color="white" />}
-                            position="absolute"
-                            left={2}
-                            top="50%"
-                            transform="translateY(-50%)"
-                            variant="ghost"
-                            backgroundColor="blackAlpha.600"
-                            _hover={{backgroundColor: 'blackAlpha.800'}}
-                            onClick={previousImage}
-                        />
-                        <IconButton
-                            aria-label="Next Image"
-                            icon={<ChevronRightIcon color="white" />}
-                            position="absolute"
-                            right={2}
-                            top="50%"
-                            transform="translateY(-50%)"
-                            variant="ghost"
-                            backgroundColor="blackAlpha.600"
-                            _hover={{backgroundColor: 'blackAlpha.800'}}
-                            onClick={nextImage}
-                        />
-                    </>
-                )}
-            </Box>
-
-            {images?.length > 1 && (
-                <Flex overflowX="auto" gap={2}>
-                    {images.map((image, index) => (
-                        <Box
-                            key={index}
-                            minWidth="60px"
-                            cursor="pointer"
-                            border={index === imageIndex ? '2px solid' : '1px solid'}
-                            borderColor={index === imageIndex ? 'blue.500' : 'gray.200'}
-                            borderRadius="md"
-                            onClick={() => setImageIndex(index)}
-                        >
-                            <AspectRatio ratio={1}>
-                                <Image
-                                    src={image.disBaseLink || image.link}
-                                    alt={image.alt}
-                                    objectFit="cover"
-                                    borderRadius="md"
-                                />
-                            </AspectRatio>
-                        </Box>
+                <Flex>
+                    {new Array(4).fill(0).map((_, index) => (
+                        <AspectRatio ratio={1} {...styles.thumbnailImageSkeleton} key={index}>
+                            <ChakraSkeleton />
+                        </AspectRatio>
                     ))}
                 </Flex>
+            </Flex>
+        </Box>
+    )
+}
+
+Skeleton.propTypes = {
+    size: PropTypes.bool
+}
+
+/**
+ * The image gallery displays a hero image and thumbnails below it. You can control which
+ * image groups that are use by passing in the current selected variation values.
+ */
+const ImageGallery = ({imageGroups = [], selectedVariationAttributes = {}, size, lazy = false}) => {
+    const [selectedIndex, setSelectedIndex] = useState(0)
+    const styles = useMultiStyleConfig('ImageGallery', {size})
+    const location = useLocation()
+
+    // Get the 'hero' image for the current variation.
+    const heroImageGroup = useMemo(
+        () =>
+            findImageGroupBy(imageGroups, {
+                viewType: LARGE,
+                selectedVariationAttributes
+            }),
+        [selectedVariationAttributes]
+    )
+
+    useEffect(() => {
+        // reset the selected index when location search changes
+        setSelectedIndex(0)
+    }, [location.search])
+
+    // Get a memoized image group used for the thumbnails. We use the `useMemo` hook
+    // so we don't have to waste time filtering the image groups each render if the
+    // selected variation attributes haven't changed.
+    const thumbnailImageGroup = useMemo(
+        () =>
+            findImageGroupBy(imageGroups, {
+                viewType: SMALL,
+                selectedVariationAttributes
+            }),
+        [selectedVariationAttributes]
+    )
+
+    const heroImage = heroImageGroup?.images?.[selectedIndex]
+    const thumbnailImages = thumbnailImageGroup?.images || []
+    const loadingStrategy = lazy ? 'lazy' : 'eager'
+
+    const heroImageMaxWidth = styles.heroImage.maxWidth[3] // in px
+
+    return (
+        <Flex direction="column">
+            {heroImage && (
+                <Box {...styles.heroImageGroup}>
+                    <AspectRatio {...styles.heroImage} ratio={1}>
+                        <DynamicImage
+                            src={`${heroImage.disBaseLink || heroImage.link}[?sw={width}&q=60]`}
+                            widths={{
+                                base: '100vw',
+                                lg: heroImageMaxWidth
+                            }}
+                            imageProps={{
+                                alt: heroImage.alt,
+                                loading: loadingStrategy
+                            }}
+                        />
+                    </AspectRatio>
+                </Box>
             )}
-        </Stack>
+
+            <List display={'flex'} flexWrap={'wrap'}>
+                {thumbnailImages.map((image, index) => {
+                    const selected = index === selectedIndex
+                    return (
+                        <ListItem
+                            {...styles.thumbnailImageItem}
+                            key={index}
+                            borderColor={`${selected ? 'black' : ''}`}
+                            borderWidth={`${selected ? '1px' : 0}`}
+                        >
+                            <AspectRatio ratio={1}>
+                                <Box
+                                    as="button"
+                                    aria-pressed={selected ? 'true' : 'false'}
+                                    onKeyDown={(e) => {
+                                        if (e.keyCode === EnterKeyNumber) {
+                                            return setSelectedIndex(index)
+                                        }
+                                    }}
+                                    onClick={() => setSelectedIndex(index)}
+                                    data-testid="image-gallery-thumbnails"
+                                >
+                                    <Img
+                                        alt={image.alt}
+                                        src={image.disBaseLink || image.link}
+                                        loading={loadingStrategy}
+                                    />
+                                </Box>
+                            </AspectRatio>
+                        </ListItem>
+                    )
+                })}
+            </List>
+        </Flex>
     )
 }
 
 ImageGallery.propTypes = {
-    images: PropTypes.array,
-    selectedImageIndex: PropTypes.number,
-    size: PropTypes.oneOf(['sm', 'md', 'lg']),
-    imageProps: PropTypes.object
+    /**
+     * The images array to be rendered
+     */
+    imageGroups: PropTypes.array,
+    /**
+     * The current selected variation values
+     */
+    selectedVariationAttributes: PropTypes.object,
+    /**
+     * Size of the Image gallery, this will be used to determined the max width from styles
+     */
+    size: PropTypes.string,
+    /**
+     * Determines whether the image will be lazy loaded or not
+     */
+    lazy: PropTypes.bool
 }
-
-/**
- * A skeleton version of the ImageGallery for when the component is loading.
- */
-const ImageGallerySkeleton = ({...props}) => {
-    return (
-        <Stack spacing={2} {...props}>
-            <AspectRatio ratio={1}>
-                <Skeleton />
-            </AspectRatio>
-            <Flex gap={2}>
-                {Array.from({length: 4}).map((_, index) => (
-                    <Box key={index} minWidth="60px">
-                        <AspectRatio ratio={1}>
-                            <Skeleton borderRadius="md" />
-                        </AspectRatio>
-                    </Box>
-                ))}
-            </Flex>
-        </Stack>
-    )
-}
-
-ImageGallerySkeleton.propTypes = {
-    size: PropTypes.oneOf(['sm', 'md', 'lg'])
-}
-
-ImageGallery.Skeleton = ImageGallerySkeleton
 
 export default ImageGallery
