@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import {render, RenderOptions, renderHook, waitFor} from '@testing-library/react'
+import {render, RenderOptions, waitFor} from '@testing-library/react'
+import {renderHook} from '@testing-library/react-hooks'
 import {
     QueryClient,
     QueryClientProvider,
@@ -115,7 +116,7 @@ export const mockMutationEndpoints = (
 
     // For delay(NOCK_DELAY):
     // It sucks that we have to do the delay
-    // but since @react-testing-library/react@14, the waitFor
+    // but since @react-testing-library/react@12, the waitFor
     // method only checks hook result by interval, there is no
     // reliable way to trigger waitFor per re-render.
     // So we need to give the mocks a small delay to ensure that
@@ -191,7 +192,7 @@ export const getUnimplementedEndpoints = (
     return [...unimplemented]
 }
 
-// Since @react-testing-library/react@14, the waitFor
+// Since @react-testing-library/react@12, the waitFor
 // method only checks hook result by interval. Re-renders no longer
 // trigger waitFor. The default interval value is 100ms and it is way
 // too slow for us to assert value changes per re-render.
