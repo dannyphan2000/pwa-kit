@@ -54,7 +54,7 @@
         "react-intl": "^5.25.1",
         "react-router-dom": "^5.3.4",
         "seedrandom": "^3.0.5",
-        "@salesforce/commerce-sdk-react": "^3.2.1",
+        "@salesforce/commerce-sdk-react": "^3.4.0-dev.0",
         "@tanstack/react-query": "4.28.0",
         "ajv": "^8.17.1",
         "ajv-keywords": "^5.1.0"
