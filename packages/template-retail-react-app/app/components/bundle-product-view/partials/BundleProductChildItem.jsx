@@ -8,25 +8,18 @@
 import React, {forwardRef, useEffect, useMemo, useRef, useState} from 'react'
 import PropTypes from 'prop-types'
 import {useLocation} from 'react-router-dom'
-import {useIntl} from 'react-intl'
-
-import {
-    Button,
-    useTheme
-} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {useCurrency, useDerivedProduct} from '@salesforce/retail-react-app/app/hooks'
 import {useAddToCartModalContext} from '@salesforce/retail-react-app/app/hooks/use-add-to-cart-modal'
 
 // project components
-import withRegistration from '@salesforce/retail-react-app/app/components/with-registration'
 import {getPriceData} from '@salesforce/retail-react-app/app/utils/product-utils'
-import ProductViewLayout from '@salesforce/retail-react-app/app/components/product-view/partials/ProductViewLayout'
+import BundleProductChildItemView from '@salesforce/retail-react-app/app/components/bundle-product-view/partials/BundleProductChildItemView'
 /**
- * Render a product detail view that includes name, image gallery, price,
+ * Render a bundle product child item view that includes name, image gallery, price,
  * variant selections, action buttons
  */
 
-const ProductView = forwardRef(
+const BundleProductChildItem = forwardRef(
     (
         {
             product,
@@ -39,7 +32,6 @@ const ProductView = forwardRef(
             addToWishlist,
             updateWishlist,
             isProductLoading,
-            isProductPartOfSet = false,
             isProductPartOfBundle = false,
             childOfBundleQuantity = 0,
             childProductOrderability,
@@ -55,14 +47,12 @@ const ProductView = forwardRef(
         ref
     ) => {
         const {currency: activeCurrency} = useCurrency()
-        const intl = useIntl()
         const location = useLocation()
         const {
             isOpen: isAddToCartModalOpen,
             onOpen: onAddToCartModalOpen,
             onClose: onAddToCartModalClose
         } = useAddToCartModalContext()
-        const theme = useTheme()
         const [showOptionsMessage, toggleShowOptionsMessage] = useState(false)
         const {
             showLoading,
@@ -78,64 +68,19 @@ const ProductView = forwardRef(
             stepQuantity,
             isOutOfStock,
             unfulfillable
-        } = useDerivedProduct(product, isProductPartOfSet, isProductPartOfBundle)
+        } = useDerivedProduct(product, false, true)
         const priceData = useMemo(() => {
             return getPriceData(product, {quantity})
         }, [product, quantity])
         const canAddToWishlist = !isProductLoading
-        const isProductASet = product?.type.set
-        const isProductABundle = product?.type.bundle
+        console.log('product in bundleproductchilditem', product)
         const errorContainerRef = useRef(null)
-
-        const {disableButton, customInventoryMessage} = useMemo(() => {
-            let shouldDisableButton = showInventoryMessage
-            let currentInventoryMsg = ''
-            if (
-                !shouldDisableButton &&
-                (isProductASet || isProductABundle) &&
-                childProductOrderability
-            ) {
-                // if any of the children are not orderable, it will disable the add to cart button
-                const unavailableChildProductKey = Object.keys(childProductOrderability).find(
-                    (key) => {
-                        return childProductOrderability[key].showInventoryMessage
-                    }
-                )
-                shouldDisableButton = !!unavailableChildProductKey
-                if (unavailableChildProductKey) {
-                    const unavailableChildProduct =
-                        childProductOrderability[unavailableChildProductKey]
-                    if (unavailableChildProduct.unfulfillable) {
-                        currentInventoryMsg = intl.formatMessage(
-                            {
-                                defaultMessage: 'Only {stockLevel} left for {productName}!',
-                                id: 'use_product.message.inventory_remaining_for_product'
-                            },
-                            {
-                                stockLevel: unavailableChildProduct.stockLevel,
-                                productName: unavailableChildProduct.productName
-                            }
-                        )
-                    }
-                    if (unavailableChildProduct.isOutOfStock) {
-                        currentInventoryMsg = intl.formatMessage(
-                            {
-                                defaultMessage: 'Out of stock for {productName}',
-                                id: 'use_product.message.out_of_stock_for_product'
-                            },
-                            {productName: unavailableChildProduct.productName}
-                        )
-                    }
-                }
-            }
-            return {disableButton: shouldDisableButton, customInventoryMessage: currentInventoryMsg}
-        }, [showInventoryMessage, childProductOrderability])
 
         const validateAndShowError = (opts = {}) => {
             const {scrollErrorIntoView = true} = opts
             // Validate that all attributes are selected before proceeding.
             const hasValidSelection = validateOrderability(variant, quantity, stockLevel)
-            const showError = !isProductASet && !isProductABundle && !hasValidSelection
+            const showError = !hasValidSelection
             const scrollToError = showError && scrollErrorIntoView
 
             toggleShowOptionsMessage(showError)
@@ -158,7 +103,6 @@ const ProductView = forwardRef(
 
         // Set the quantity of bundle child in a product bundle to ensure availability messages appear
         if (
-            isProductPartOfBundle &&
             quantity != selectedBundleParentQuantity * childOfBundleQuantity
         ) {
             setQuantity(selectedBundleParentQuantity * childOfBundleQuantity)
@@ -172,8 +116,6 @@ const ProductView = forwardRef(
 
         useEffect(() => {
             if (
-                !isProductASet &&
-                !isProductABundle &&
                 validateOrderability(variant, quantity, stockLevel)
             ) {
                 toggleShowOptionsMessage(false)
@@ -187,24 +129,22 @@ const ProductView = forwardRef(
         }, [variant?.productId, quantity])
 
         useEffect(() => {
-            if (isProductPartOfBundle || isProductPartOfSet) {
-                const key = product.itemId ?? product.id
-                // when showInventoryMessage is true, it means child product is not orderable
-                setChildProductOrderability((previousState) => ({
-                    ...previousState,
-                    [key]: {
-                        showInventoryMessage,
-                        isOutOfStock,
-                        unfulfillable,
-                        stockLevel,
-                        productName: product?.name
-                    }
-                }))
-            }
+            const key = product.itemId ?? product.id
+            // when showInventoryMessage is true, it means child product is not orderable
+            setChildProductOrderability((previousState) => ({
+                ...previousState,
+                [key]: {
+                    showInventoryMessage,
+                    isOutOfStock,
+                    unfulfillable,
+                    stockLevel,
+                    productName: product?.name
+                }
+            }))
         }, [showInventoryMessage, inventoryMessage])
 
         return (
-            <ProductViewLayout
+            <BundleProductChildItemView
                 ref={ref}
                 product={product}
                 category={category}
@@ -216,7 +156,6 @@ const ProductView = forwardRef(
                 addToWishlist={addToWishlist}
                 updateWishlist={updateWishlist}
                 isProductLoading={isProductLoading}
-                isProductPartOfSet={isProductPartOfSet}
                 isProductPartOfBundle={isProductPartOfBundle}
                 childOfBundleQuantity={childOfBundleQuantity}
                 childProductOrderability={childProductOrderability}
@@ -229,7 +168,6 @@ const ProductView = forwardRef(
                 selectedBundleParentQuantity={selectedBundleParentQuantity}
                 priceData={priceData}
                 activeCurrency={activeCurrency}
-                intl={intl}
                 showLoading={showLoading}
                 showInventoryMessage={showInventoryMessage}
                 inventoryMessage={inventoryMessage}
@@ -243,25 +181,19 @@ const ProductView = forwardRef(
                 stepQuantity={stepQuantity}
                 isOutOfStock={isOutOfStock}
                 unfulfillable={unfulfillable}
-                isProductASet={isProductASet}
-                isProductABundle={isProductABundle}
-                disableButton={disableButton}
                 canAddToWishlist={canAddToWishlist}
                 showOptionsMessage={showOptionsMessage}
                 errorContainerRef={errorContainerRef}
-                customInventoryMessage={customInventoryMessage}
                 onAddToCartModalOpen={onAddToCartModalOpen}
-                theme={theme}
             />
         )
     }
 )
 
-ProductView.displayName = 'ProductView'
+BundleProductChildItem.displayName = 'BundleProductChildItem'
 
-ProductView.propTypes = {
+BundleProductChildItem.propTypes = {
     product: PropTypes.object,
-    isProductPartOfSet: PropTypes.bool,
     isProductPartOfBundle: PropTypes.bool,
     childOfBundleQuantity: PropTypes.number,
     category: PropTypes.array,
@@ -283,4 +215,4 @@ ProductView.propTypes = {
     selectedBundleParentQuantity: PropTypes.number
 }
 
-export default ProductView
+export default BundleProductChildItem

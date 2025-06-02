@@ -37,6 +37,7 @@ import RecommendedProducts from '@salesforce/retail-react-app/app/components/rec
 import ProductView from '@salesforce/retail-react-app/app/components/product-view'
 import InformationAccordion from '@salesforce/retail-react-app/app/pages/product-detail/partials/information-accordion'
 import SetOrBundleProductView from '@salesforce/retail-react-app/app/pages/product-detail/partials/set-or-bundle-product-view'
+import BundleProductView from '@salesforce/retail-react-app/app/components/bundle-product-view'
 
 import {HTTPNotFound, HTTPError} from '@salesforce/pwa-kit-react-sdk/ssr/universal/errors'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
@@ -56,6 +57,8 @@ import {useHistory, useLocation, useParams} from 'react-router-dom'
 import {useToast} from '@salesforce/retail-react-app/app/hooks/use-toast'
 import {useWishList} from '@salesforce/retail-react-app/app/hooks/use-wish-list'
 import {getAddToCartHandler} from '@salesforce/retail-react-app/app/utils/cart-handlers'
+import VariationGroupView from '@salesforce/retail-react-app/app/components/variation-group-view'
+import SetProductView from '@salesforce/retail-react-app/app/components/set-product-view'
 
 const ProductDetail = () => {
     const {formatMessage} = useIntl()
@@ -289,6 +292,51 @@ const ProductDetail = () => {
         }
     }, [product])
 
+
+    const renderProductView = () => {
+        if (isProductASet) {
+            return <SetProductView product={product} 
+                einstein={einstein}
+                primaryCategory={primaryCategory}
+                handleAddToWishlist={handleAddToWishlist}
+                isProductLoading={isProductLoading}
+                isBasketLoading={isBasketLoading}
+                isWishlistLoading={isWishlistLoading}
+                updateItemsInBasketMutation={updateItemsInBasketMutation}
+                showError={showError}
+            /> 
+        }
+        else if (isProductABundle) {
+            return <BundleProductView
+                product={product}
+                einstein={einstein}
+                primaryCategory={primaryCategory}
+                handleAddToWishlist={handleAddToWishlist}
+                isProductLoading={isProductLoading}
+                isBasketLoading={isBasketLoading}
+                isWishlistLoading={isWishlistLoading}
+                updateItemsInBasketMutation={updateItemsInBasketMutation}
+                showError={showError}
+            />
+        }
+        else {
+            return <Fragment>
+                <VariationGroupView
+                    product={product}
+                    category={primaryCategory?.parentCategoryTree || []}
+                    addToCart={(variant, quantity) =>
+                        handleAddToCart({variant, quantity})
+                    }
+                    addToWishlist={handleAddToWishlist}
+                    isProductLoading={isProductLoading}
+                    isBasketLoading={isBasketLoading}
+                    isWishlistLoading={isWishlistLoading}
+                />
+                <InformationAccordion product={product} />
+            </Fragment>
+        }
+    }
+
     return (
         <Box
             className="sf-product-detail-page"
@@ -309,36 +357,7 @@ const ProductDetail = () => {
             </Helmet>
 
             <Stack spacing={16}>
-                {isProductASet || isProductABundle ? (
-                    <SetOrBundleProductView
-                        product={product}
-                        einstein={einstein}
-                        primaryCategory={primaryCategory}
-                        handleAddToWishlist={handleAddToWishlist}
-                        isProductLoading={isProductLoading}
-                        isBasketLoading={isBasketLoading}
-                        isProductASet={isProductASet}
-                        isProductABundle={isProductABundle}
-                        isWishlistLoading={isWishlistLoading}
-                        updateItemsInBasketMutation={updateItemsInBasketMutation}
-                        showError={showError}
-                    />
-                ) : (
-                    <Fragment>
-                        <ProductView
-                            product={product}
-                            category={primaryCategory?.parentCategoryTree || []}
-                            addToCart={(variant, quantity) =>
-                                handleAddToCart({variant, quantity})
-                            }
-                            addToWishlist={handleAddToWishlist}
-                            isProductLoading={isProductLoading}
-                            isBasketLoading={isBasketLoading}
-                            isWishlistLoading={isWishlistLoading}
-                        />
-                        <InformationAccordion product={product} />
-                    </Fragment>
-                )}
+                {renderProductView()}
 
                 {/* Product Recommendations */}
                 <Stack spacing={16}>

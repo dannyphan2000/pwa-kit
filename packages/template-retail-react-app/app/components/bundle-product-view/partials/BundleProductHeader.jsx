@@ -5,28 +5,24 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
-import React, {forwardRef, useEffect, useMemo, useRef, useState} from 'react'
+import React, {forwardRef, useEffect, useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {useLocation} from 'react-router-dom'
 import {useIntl} from 'react-intl'
 
-import {
-    Button,
-    useTheme
-} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {useTheme} from '@salesforce/retail-react-app/app/components/shared/ui'
 import {useCurrency, useDerivedProduct} from '@salesforce/retail-react-app/app/hooks'
 import {useAddToCartModalContext} from '@salesforce/retail-react-app/app/hooks/use-add-to-cart-modal'
 
 // project components
-import withRegistration from '@salesforce/retail-react-app/app/components/with-registration'
 import {getPriceData} from '@salesforce/retail-react-app/app/utils/product-utils'
-import ProductViewLayout from '@salesforce/retail-react-app/app/components/product-view/partials/ProductViewLayout'
+import BundleProductHeaderViewLayout from '@salesforce/retail-react-app/app/components/bundle-product-view/partials/BundleProductHeaderView'
+
 /**
- * Render a product detail view that includes name, image gallery, price,
+ * Render a bundle product header view that includes name, image gallery, price,
  * variant selections, action buttons
  */
-
-const ProductView = forwardRef(
+const BundleProductHeader = forwardRef(
     (
         {
             product,
@@ -39,18 +35,13 @@ const ProductView = forwardRef(
             addToWishlist,
             updateWishlist,
             isProductLoading,
-            isProductPartOfSet = false,
-            isProductPartOfBundle = false,
-            childOfBundleQuantity = 0,
             childProductOrderability,
-            setChildProductOrderability,
             isBasketLoading = false,
             onVariantSelected = () => {},
             validateOrderability = (variant, quantity, stockLevel) =>
                 !isProductLoading && variant?.orderable && quantity > 0 && quantity <= stockLevel,
             showImageGallery = true,
-            setSelectedBundleQuantity = () => {},
-            selectedBundleParentQuantity = 1
+            setSelectedBundleQuantity = () => {}
         },
         ref
     ) => {
@@ -63,7 +54,6 @@ const ProductView = forwardRef(
             onClose: onAddToCartModalClose
         } = useAddToCartModalContext()
         const theme = useTheme()
-        const [showOptionsMessage, toggleShowOptionsMessage] = useState(false)
         const {
             showLoading,
             showInventoryMessage,
@@ -74,27 +64,20 @@ const ProductView = forwardRef(
             variant,
             variationParams,
             variationAttributes,
-            stockLevel,
             stepQuantity,
-            isOutOfStock,
-            unfulfillable
-        } = useDerivedProduct(product, isProductPartOfSet, isProductPartOfBundle)
+        } = useDerivedProduct(product, false, false)
+        
         const priceData = useMemo(() => {
             return getPriceData(product, {quantity})
         }, [product, quantity])
+        
         const canAddToWishlist = !isProductLoading
-        const isProductASet = product?.type.set
-        const isProductABundle = product?.type.bundle
-        const errorContainerRef = useRef(null)
 
         const {disableButton, customInventoryMessage} = useMemo(() => {
             let shouldDisableButton = showInventoryMessage
             let currentInventoryMsg = ''
-            if (
-                !shouldDisableButton &&
-                (isProductASet || isProductABundle) &&
-                childProductOrderability
-            ) {
+            
+            if (!shouldDisableButton && childProductOrderability) {
                 // if any of the children are not orderable, it will disable the add to cart button
                 const unavailableChildProductKey = Object.keys(childProductOrderability).find(
                     (key) => {
@@ -131,37 +114,10 @@ const ProductView = forwardRef(
             return {disableButton: shouldDisableButton, customInventoryMessage: currentInventoryMsg}
         }, [showInventoryMessage, childProductOrderability])
 
-        const validateAndShowError = (opts = {}) => {
-            const {scrollErrorIntoView = true} = opts
-            // Validate that all attributes are selected before proceeding.
-            const hasValidSelection = validateOrderability(variant, quantity, stockLevel)
-            const showError = !isProductASet && !isProductABundle && !hasValidSelection
-            const scrollToError = showError && scrollErrorIntoView
-
-            toggleShowOptionsMessage(showError)
-
-            if (scrollToError) {
-                errorContainerRef.current.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                })
-            }
-
-            return hasValidSelection
-        }
-
         // Bind the reference with our `scope` that includes the internal validate function for this component.
         // Other values can be added to this scope as required.
         if (typeof ref === 'function') {
-            ref = ref.bind({validateOrderability: validateAndShowError})
-        }
-
-        // Set the quantity of bundle child in a product bundle to ensure availability messages appear
-        if (
-            isProductPartOfBundle &&
-            quantity != selectedBundleParentQuantity * childOfBundleQuantity
-        ) {
-            setQuantity(selectedBundleParentQuantity * childOfBundleQuantity)
+            ref = ref.bind({validateOrderability: validateOrderability})
         }
 
         useEffect(() => {
@@ -171,40 +127,13 @@ const ProductView = forwardRef(
         }, [location.pathname])
 
         useEffect(() => {
-            if (
-                !isProductASet &&
-                !isProductABundle &&
-                validateOrderability(variant, quantity, stockLevel)
-            ) {
-                toggleShowOptionsMessage(false)
-            }
-        }, [variationParams])
-
-        useEffect(() => {
             if (variant) {
                 onVariantSelected(product, variant, quantity)
             }
         }, [variant?.productId, quantity])
 
-        useEffect(() => {
-            if (isProductPartOfBundle || isProductPartOfSet) {
-                const key = product.itemId ?? product.id
-                // when showInventoryMessage is true, it means child product is not orderable
-                setChildProductOrderability((previousState) => ({
-                    ...previousState,
-                    [key]: {
-                        showInventoryMessage,
-                        isOutOfStock,
-                        unfulfillable,
-                        stockLevel,
-                        productName: product?.name
-                    }
-                }))
-            }
-        }, [showInventoryMessage, inventoryMessage])
-
         return (
-            <ProductViewLayout
+            <BundleProductHeaderViewLayout
                 ref={ref}
                 product={product}
                 category={category}
@@ -215,18 +144,9 @@ const ProductView = forwardRef(
                 updateCart={updateCart}
                 addToWishlist={addToWishlist}
                 updateWishlist={updateWishlist}
-                isProductLoading={isProductLoading}
-                isProductPartOfSet={isProductPartOfSet}
-                isProductPartOfBundle={isProductPartOfBundle}
-                childOfBundleQuantity={childOfBundleQuantity}
-                childProductOrderability={childProductOrderability}
-                setChildProductOrderability={setChildProductOrderability}
                 isBasketLoading={isBasketLoading}
-                onVariantSelected={onVariantSelected}
-                validateOrderability={validateOrderability}
                 showImageGallery={showImageGallery}
                 setSelectedBundleQuantity={setSelectedBundleQuantity}
-                selectedBundleParentQuantity={selectedBundleParentQuantity}
                 priceData={priceData}
                 activeCurrency={activeCurrency}
                 intl={intl}
@@ -239,16 +159,9 @@ const ProductView = forwardRef(
                 variant={variant}
                 variationParams={variationParams}
                 variationAttributes={variationAttributes}
-                stockLevel={stockLevel}
                 stepQuantity={stepQuantity}
-                isOutOfStock={isOutOfStock}
-                unfulfillable={unfulfillable}
-                isProductASet={isProductASet}
-                isProductABundle={isProductABundle}
                 disableButton={disableButton}
                 canAddToWishlist={canAddToWishlist}
-                showOptionsMessage={showOptionsMessage}
-                errorContainerRef={errorContainerRef}
                 customInventoryMessage={customInventoryMessage}
                 onAddToCartModalOpen={onAddToCartModalOpen}
                 theme={theme}
@@ -257,13 +170,10 @@ const ProductView = forwardRef(
     }
 )
 
-ProductView.displayName = 'ProductView'
+BundleProductHeader.displayName = 'BundleProductHeader'
 
-ProductView.propTypes = {
+BundleProductHeader.propTypes = {
     product: PropTypes.object,
-    isProductPartOfSet: PropTypes.bool,
-    isProductPartOfBundle: PropTypes.bool,
-    childOfBundleQuantity: PropTypes.number,
     category: PropTypes.array,
     isProductLoading: PropTypes.bool,
     isBasketLoading: PropTypes.bool,
@@ -275,12 +185,10 @@ ProductView.propTypes = {
     showFullLink: PropTypes.bool,
     imageSize: PropTypes.oneOf(['sm', 'md']),
     childProductOrderability: PropTypes.object,
-    setChildProductOrderability: PropTypes.func,
     onVariantSelected: PropTypes.func,
     validateOrderability: PropTypes.func,
     showImageGallery: PropTypes.bool,
-    setSelectedBundleQuantity: PropTypes.func,
-    selectedBundleParentQuantity: PropTypes.number
+    setSelectedBundleQuantity: PropTypes.func
 }
 
-export default ProductView
+export default BundleProductHeader

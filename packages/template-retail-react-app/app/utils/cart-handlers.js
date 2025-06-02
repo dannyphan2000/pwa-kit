@@ -13,8 +13,7 @@ export function getAddToCartHandler({
     showError
 }) {
     const {addItemToNewOrExistingBasket} = useShopperBasketsMutationHelper()
-
-    return async function handleAddToCart({variant, quantity, selectedQuantity} = {}) {
+    return async function handleAddToCart({variant, quantity} = {}) {
         if (product?.type?.set) {
             // Get all the selected products, and pass them to the addToCart handler which
             // accepts an array.
@@ -26,7 +25,7 @@ export function getAddToCartHandler({
                 {
                     productId: product.id,
                     price: product.price,
-                    quantity: selectedQuantity,
+                    quantity: quantity,
                     // The add item endpoint in the shopper baskets API does not respect variant selections
                     // for bundle children, so we have to make a follow up call to update the basket
                     // with the chosen variant selections
