@@ -54,7 +54,8 @@ const Home = () => {
     const dataCloud = useDataCloud()
     const {pathname} = useLocation()
     const {
-        pages: {Home: homeConfig},
+        homeProductLimit: HOME_PRODUCT_LIMIT,
+        homeMainCategory: HOME_MAIN_CATEGORY,
         maxCacheAge: MAX_CACHE_AGE,
         staleWhileRevalidate: STALE_WHILE_REVALIDATE
     } = getConfig()
@@ -71,9 +72,9 @@ const Home = () => {
             allImages: true,
             allVariationProperties: true,
             expand: ['promotions', 'variations', 'prices', 'images', 'custom_properties'],
-            limit: homeConfig.productLimit,
+            limit: HOME_PRODUCT_LIMIT,
             perPricebook: true,
-            refine: [`cgid=${homeConfig.mainCategory}`, 'htype=master']
+            refine: [`cgid=${HOME_MAIN_CATEGORY}`, 'htype=master']
         }
     })
 

@@ -49,6 +49,8 @@
     "defaultAppLocale": "en-US",
     "homeHref": "/",
     "defaultSiteTitle": "Retail React App",
+    "homeProductLimit": 10,
+    "homeMainCategory": "newarrivals",
     "defaultDnt": true,
     "einsteinAPI": {
         "host": "https://api.cquotient.com",
