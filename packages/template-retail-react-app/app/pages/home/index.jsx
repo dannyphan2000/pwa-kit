@@ -28,6 +28,7 @@ import Hero from '@salesforce/retail-react-app/app/components/hero'
 import Seo from '@salesforce/retail-react-app/app/components/seo'
 import Section from '@salesforce/retail-react-app/app/components/section'
 import ProductScroller from '@salesforce/retail-react-app/app/components/product-scroller'
+import Todo from '@salesforce/retail-react-app/app/components/todo'
 
 // Others
 import {getAssetUrl} from '@salesforce/pwa-kit-react-sdk/ssr/universal/utils'
@@ -219,6 +220,22 @@ const Home = () => {
                     </Stack>
                 </Section>
             )}
+
+            {/* Todo Section */}
+            <Section
+                padding={4}
+                paddingTop={32}
+                title={intl.formatMessage({
+                    defaultMessage: 'Todo List',
+                    id: 'home.heading.todo_list'
+                })}
+                subtitle={intl.formatMessage({
+                    defaultMessage: 'A simple todo list fetched from a public API.',
+                    id: 'home.description.todo_list'
+                })}
+            >
+                <Todo />
+            </Section>
 
             <Section
                 padding={4}
