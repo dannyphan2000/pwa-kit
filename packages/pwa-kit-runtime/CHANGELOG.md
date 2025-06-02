@@ -1,3 +1,4 @@
+## v3.11.0-nightly-20250602080238 (Jun 02, 2025)
 ## v3.11.0-dev.0 (May 23, 2025)
 - Fix the logger so that it will now print out details of the given Error object [#2486](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2486)
 
