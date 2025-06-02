@@ -6,7 +6,8 @@
  */
 
 import React from 'react'
-import {render, RenderOptions, renderHook, waitFor} from '@testing-library/react'
+import {render, RenderOptions, waitFor} from '@testing-library/react'
+import {renderHook} from '@testing-library/react-hooks'
 import {
     QueryClient,
     QueryClientProvider,
