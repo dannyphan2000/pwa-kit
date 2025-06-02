@@ -14,6 +14,64 @@ describe('useLocalStorage', () => {
         // Note: localStorage is already mocked in setup-jest.js
     })
 
+    describe('React version compatibility', () => {
+        it('should use useSyncExternalStore when available (React 18+)', () => {
+            // Temporarily mock useSyncExternalStore to verify it's being used
+            const mockUseSyncExternalStore = jest.fn().mockReturnValue('mocked-value')
+            const originalReact = require('react')
+            
+            // Mock React to include useSyncExternalStore
+            jest.doMock('react', () => ({
+                ...originalReact,
+                useSyncExternalStore: mockUseSyncExternalStore
+            }))
+
+            // Re-import the hook to get the version with the mocked React
+            jest.resetModules()
+            const useLocalStorageWithMock = require('./useLocalStorage').default
+
+            const testKey = 'test-key'
+            renderHook(() => useLocalStorageWithMock(testKey))
+
+            // Verify useSyncExternalStore was called
+            expect(mockUseSyncExternalStore).toHaveBeenCalled()
+            
+            // Clean up
+            jest.resetModules()
+        })
+
+        it('should fallback to useState/useEffect when useSyncExternalStore is not available (React 17)', () => {
+            // Mock React without useSyncExternalStore
+            const originalReact = require('react')
+            const mockUseState = jest.fn().mockReturnValue(['test-value', jest.fn()])
+            const mockUseEffect = jest.fn()
+            const mockUseCallback = jest.fn().mockImplementation((fn) => fn)
+            
+            jest.doMock('react', () => ({
+                ...originalReact,
+                useState: mockUseState,
+                useEffect: mockUseEffect,
+                useCallback: mockUseCallback,
+                // Explicitly exclude useSyncExternalStore
+                useSyncExternalStore: undefined
+            }))
+
+            // Re-import the hook
+            jest.resetModules()
+            const useLocalStorageWithMock = require('./useLocalStorage').default
+
+            const testKey = 'test-key'
+            renderHook(() => useLocalStorageWithMock(testKey))
+
+            // Verify fallback hooks were called
+            expect(mockUseState).toHaveBeenCalled()
+            expect(mockUseEffect).toHaveBeenCalled()
+            
+            // Clean up
+            jest.resetModules()
+        })
+    })
+
     describe('initial value reading', () => {
         it('should return the value from localStorage on initial render', () => {
             const testKey = 'test-key'
