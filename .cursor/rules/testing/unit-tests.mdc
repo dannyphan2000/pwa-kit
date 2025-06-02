@@ -14,8 +14,9 @@ alwaysApply: false
 - Test files are colocated with the component they test.
 
 ## Imports
-- Import React, the component under test, and utilities from `@testing-library/react` and `@testing-library/user-event`.
+- Import React, the component under test, and utilities from `@testing-library/react`.
 - Use `renderWithProviders` for rendering components.
+- **Get user events from the object returned by `renderWithProviders` (i.e., `const {user} = renderWithProviders(...)`). Do not import or use `userEvent` directly when using `renderWithProviders`.**
 - Import mocks/helpers at the top.
 
 ## Test Structure
@@ -25,7 +26,7 @@ alwaysApply: false
 
 ## Arrange-Act-Assert Pattern
 - **Arrange**: Set up props, mocks, and data.
-- **Act**: Render with `renderWithProviders`, simulate user actions with `userEvent`/`fireEvent`.
+- **Act**: Render with `renderWithProviders`, simulate user actions with the `user` object from `renderWithProviders` (e.g., `await user.click(...)`).
 - **Assert**: Use `screen` queries for DOM/text/behavior checks.
 - For async, use `await` and `waitFor` for assertions.
 
@@ -54,7 +55,6 @@ alwaysApply: false
 ```js
 import React from 'react'
 import {screen, waitFor} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import {renderWithProviders} from '@salesforce/retail-react-app/app/utils/test-utils'
 import MyComponent from '.'
 
@@ -63,8 +63,9 @@ describe('MyComponent', () => {
         jest.clearAllMocks()
     })
 
-    test('renders expected content', async () => {
-        renderWithProviders(<MyComponent />)
+    test('renders expected content and handles user event', async () => {
+        const {user} = renderWithProviders(<MyComponent />)
+        await user.click(screen.getByText('Click Me'))
         expect(screen.getByText('Expected Text')).toBeInTheDocument()
     })
 })
