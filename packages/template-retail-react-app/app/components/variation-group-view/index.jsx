@@ -20,7 +20,6 @@ import {useAddToCartModalContext} from '@salesforce/retail-react-app/app/hooks/u
 // project components
 import withRegistration from '@salesforce/retail-react-app/app/components/with-registration'
 import {getPriceData} from '@salesforce/retail-react-app/app/utils/product-utils'
-import ProductViewLayout from '@salesforce/retail-react-app/app/components/product-view/partials/ProductViewLayout'
 import VariationGroupViewLayout from '@salesforce/retail-react-app/app/components/variation-group-view/partials/VariationGroupViewLayout'
 /**
  * Render a product detail view that includes name, image gallery, price,

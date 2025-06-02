@@ -8,7 +8,7 @@ import {API_ERROR_MESSAGE} from '@salesforce/retail-react-app/app/constants'
 
 const ButtonWithRegistration = withRegistration(Button)
 
-const ActionButtons = ({
+const ProductViewActionButtons = ({
     addToCart,
     updateCart,
     addToWishlist,
@@ -141,7 +141,7 @@ const ActionButtons = ({
     return <>{buttons}</>
 }
 
-ActionButtons.propTypes = {
+ProductViewActionButtons.propTypes = {
     addToCart: PropTypes.func,
     updateCart: PropTypes.func,
     addToWishlist: PropTypes.func,
@@ -158,4 +158,4 @@ ActionButtons.propTypes = {
     onAddToCartModalOpen: PropTypes.func
 }
 
-export default ActionButtons 
+export default ProductViewActionButtons 

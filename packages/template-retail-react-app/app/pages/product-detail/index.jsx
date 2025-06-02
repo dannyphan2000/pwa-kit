@@ -34,9 +34,7 @@ import useActiveData from '@salesforce/retail-react-app/app/hooks/use-active-dat
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 // Project Components
 import RecommendedProducts from '@salesforce/retail-react-app/app/components/recommended-products'
-import ProductView from '@salesforce/retail-react-app/app/components/product-view'
 import InformationAccordion from '@salesforce/retail-react-app/app/pages/product-detail/partials/information-accordion'
-import SetOrBundleProductView from '@salesforce/retail-react-app/app/pages/product-detail/partials/set-or-bundle-product-view'
 import BundleProductView from '@salesforce/retail-react-app/app/components/bundle-product-view'
 
 import {HTTPNotFound, HTTPError} from '@salesforce/pwa-kit-react-sdk/ssr/universal/errors'

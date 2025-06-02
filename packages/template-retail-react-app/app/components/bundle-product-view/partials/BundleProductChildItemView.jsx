@@ -9,7 +9,7 @@ import {HideOnDesktop, HideOnMobile} from '@salesforce/retail-react-app/app/comp
 import QuantityPicker from '@salesforce/retail-react-app/app/components/quantity-picker'
 import Swatch from '@salesforce/retail-react-app/app/components/swatch-group/swatch'
 import SwatchGroup from '@salesforce/retail-react-app/app/components/swatch-group'
-import ActionButtons from '@salesforce/retail-react-app/app/components/product-view/partials/ActionButtons'
+import ProductViewActionButtons from '@salesforce/retail-react-app/app/components/product-view-action-buttons/ProductViewActionButtons'
 import ProductViewHeader from '@salesforce/retail-react-app/app/components/product-view/partials/ProductViewHeader'
 import {Skeleton as ImageGallerySkeleton} from '@salesforce/retail-react-app/app/components/image-gallery'
 import {useIntl} from 'react-intl'
@@ -221,7 +221,7 @@ const BundleProductChildItemView = forwardRef((props, ref) => {
                                 ['none', 'none', 'none', 'block']
                             }
                         >
-                            <ActionButtons
+                            <ProductViewActionButtons
                                 addToCart={addToCart}
                                 updateCart={updateCart}
                                 addToWishlist={addToWishlist}
@@ -256,7 +256,7 @@ const BundleProductChildItemView = forwardRef((props, ref) => {
                 zIndex={2}
                 boxShadow={theme?.shadows?.top}
             >
-                <ActionButtons
+                <ProductViewActionButtons
                     addToCart={addToCart}
                     updateCart={updateCart}
                     addToWishlist={addToWishlist}
