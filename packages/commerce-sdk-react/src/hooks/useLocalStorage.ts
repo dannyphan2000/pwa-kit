@@ -27,6 +27,10 @@ function useLocalStorage(key: string): Value {
     const [value, setValue] = useState<Value>(() => readValue(key))
 
     useEffect(() => {
+        setValue(readValue(key))
+    }, [key])
+
+    useEffect(() => {
         const handleStorageChange = (e: StorageEvent) => {
             if (e.key === key) {
                 setValue(readValue(key))
