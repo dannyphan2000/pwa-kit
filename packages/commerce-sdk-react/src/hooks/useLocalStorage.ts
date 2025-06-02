@@ -23,8 +23,7 @@ const readValue = (key: string): Value => {
  * @internal
  */
 function useLocalStorage(key: string): Value {
-    // Use lazy initialization to avoid calling readValue on every render
-    // This prevents unnecessary localStorage access and DOM queries
+    // Use lazy initialization to avoid calling readValue on every render and prevent unnecessary localStorage access
     const [value, setValue] = useState<Value>(() => readValue(key))
 
     useEffect(() => {
