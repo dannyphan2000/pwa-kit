@@ -9,11 +9,7 @@ import PropTypes from 'prop-types'
 import {defineMessage, useIntl} from 'react-intl'
 import {useForm} from 'react-hook-form'
 import {
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalOverlay,
+    Dialog,
     useDisclosure
 } from '@chakra-ui/react'
 import {keepPreviousData} from '@tanstack/react-query'
@@ -283,24 +279,24 @@ export const AuthModal = ({
         initialView === PASSWORD_VIEW ? onClose() : setCurrentView(LOGIN_VIEW)
 
     return (
-        <Modal
+        <Dialog.Root
+            open={isOpen}
+            onOpenChange={() => onClose()}
             size="sm"
-            closeOnOverlayClick={false}
+            closeOnInteractOutside={false}
             data-testid="sf-auth-modal"
-            isOpen={isOpen}
-            onOpen={onOpen}
-            onClose={onClose}
             {...props}
         >
-            <ModalOverlay />
-            <ModalContent>
-                <ModalCloseButton
+            <Dialog.Backdrop />
+            <Dialog.Positioner>
+                <Dialog.Content>
+                    <Dialog.CloseTrigger
                     aria-label={formatMessage({
                         id: 'auth_modal.button.close.assistive_msg',
                         defaultMessage: 'Close login form'
                     })}
                 />
-                <ModalBody pb={8} bg="white" paddingBottom={14} marginTop={14}>
+                    <Dialog.Body padding={8} bg="white" paddingBottom={14} marginTop={14}>
                     {!form.formState.isSubmitSuccessful && currentView === LOGIN_VIEW && (
                         <LoginForm
                             form={form}
@@ -337,9 +333,10 @@ export const AuthModal = ({
                             email={passwordlessLoginEmail}
                         />
                     )}
-                </ModalBody>
-            </ModalContent>
-        </Modal>
+                    </Dialog.Body>
+                </Dialog.Content>
+            </Dialog.Positioner>
+        </Dialog.Root>
     )
 }
 
