@@ -19,7 +19,7 @@ describe('useLocalStorage', () => {
             // Temporarily mock useSyncExternalStore to verify it's being used
             const mockUseSyncExternalStore = jest.fn().mockReturnValue('mocked-value')
             const originalReact = require('react')
-            
+
             // Mock React to include useSyncExternalStore
             jest.doMock('react', () => ({
                 ...originalReact,
@@ -35,7 +35,7 @@ describe('useLocalStorage', () => {
 
             // Verify useSyncExternalStore was called
             expect(mockUseSyncExternalStore).toHaveBeenCalled()
-            
+
             // Clean up
             jest.resetModules()
         })
@@ -46,7 +46,7 @@ describe('useLocalStorage', () => {
             const mockUseState = jest.fn().mockReturnValue(['test-value', jest.fn()])
             const mockUseEffect = jest.fn()
             const mockUseCallback = jest.fn().mockImplementation((fn) => fn)
-            
+
             jest.doMock('react', () => ({
                 ...originalReact,
                 useState: mockUseState,
@@ -66,7 +66,7 @@ describe('useLocalStorage', () => {
             // Verify fallback hooks were called
             expect(mockUseState).toHaveBeenCalled()
             expect(mockUseEffect).toHaveBeenCalled()
-            
+
             // Clean up
             jest.resetModules()
         })
@@ -89,7 +89,7 @@ describe('useLocalStorage', () => {
 
             const {result} = renderHook(() => useLocalStorage(testKey))
 
-            expect(result.current).toBe(null)
+            expect(result.current).toBeNull()
         })
     })
 
@@ -108,11 +108,13 @@ describe('useLocalStorage', () => {
             // Simulate storage change and fire storage event
             act(() => {
                 localStorage.setItem(testKey, updatedValue)
-                window.dispatchEvent(new StorageEvent('storage', {
-                    key: testKey,
-                    newValue: updatedValue,
-                    oldValue: initialValue
-                }))
+                window.dispatchEvent(
+                    new StorageEvent('storage', {
+                        key: testKey,
+                        newValue: updatedValue,
+                        oldValue: initialValue
+                    })
+                )
             })
 
             expect(result.current).toBe(updatedValue)
@@ -131,10 +133,12 @@ describe('useLocalStorage', () => {
             // Simulate storage change for a different key
             act(() => {
                 localStorage.setItem('different-key', 'different-value')
-                window.dispatchEvent(new StorageEvent('storage', {
-                    key: 'different-key',
-                    newValue: 'different-value'
-                }))
+                window.dispatchEvent(
+                    new StorageEvent('storage', {
+                        key: 'different-key',
+                        newValue: 'different-value'
+                    })
+                )
             })
 
             // Value should remain unchanged
@@ -154,14 +158,16 @@ describe('useLocalStorage', () => {
             // Simulate storage deletion
             act(() => {
                 localStorage.removeItem(testKey)
-                window.dispatchEvent(new StorageEvent('storage', {
-                    key: testKey,
-                    newValue: null,
-                    oldValue: initialValue
-                }))
+                window.dispatchEvent(
+                    new StorageEvent('storage', {
+                        key: testKey,
+                        newValue: null,
+                        oldValue: initialValue
+                    })
+                )
             })
 
-            expect(result.current).toBe(null)
+            expect(result.current).toBeNull()
         })
     })
 
@@ -175,10 +181,9 @@ describe('useLocalStorage', () => {
             localStorage.setItem(initialKey, value1)
             localStorage.setItem(anotherKey, value2)
 
-            const {result, rerender} = renderHook(
-                ({key}) => useLocalStorage(key),
-                {initialProps: {key: initialKey}}
-            )
+            const {result, rerender} = renderHook(({key}) => useLocalStorage(key), {
+                initialProps: {key: initialKey}
+            })
 
             expect(result.current).toBe(value1)
 
@@ -205,11 +210,13 @@ describe('useLocalStorage', () => {
             act(() => {
                 localStorage.setItem(testKey, newValue)
                 // Dispatch storage event (this would normally come from another tab)
-                window.dispatchEvent(new StorageEvent('storage', {
-                    key: testKey,
-                    newValue: newValue,
-                    oldValue: initialValue
-                }))
+                window.dispatchEvent(
+                    new StorageEvent('storage', {
+                        key: testKey,
+                        newValue: newValue,
+                        oldValue: initialValue
+                    })
+                )
             })
 
             expect(result.current).toBe(newValue)
@@ -235,15 +242,19 @@ describe('useLocalStorage', () => {
                 localStorage.setItem(key1, value1)
                 localStorage.setItem(key2, value2)
 
-                window.dispatchEvent(new StorageEvent('storage', {
-                    key: key1,
-                    newValue: value1
-                }))
+                window.dispatchEvent(
+                    new StorageEvent('storage', {
+                        key: key1,
+                        newValue: value1
+                    })
+                )
 
-                window.dispatchEvent(new StorageEvent('storage', {
-                    key: key2,
-                    newValue: value2
-                }))
+                window.dispatchEvent(
+                    new StorageEvent('storage', {
+                        key: key2,
+                        newValue: value2
+                    })
+                )
             })
 
             expect(result1.current).toBe(value1)
