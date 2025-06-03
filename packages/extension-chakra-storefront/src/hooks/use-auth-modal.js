@@ -9,11 +9,12 @@ import PropTypes from 'prop-types'
 import {defineMessage, useIntl} from 'react-intl'
 import {useForm} from 'react-hook-form'
 import {
-    Dialog,
-    Portal,
-    useDisclosure,
-    // useToast is replaced in Chakra UI v3, we'll need to use createToaster
-    createToaster
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalOverlay,
+    useDisclosure
 } from '@chakra-ui/react'
 import {keepPreviousData} from '@tanstack/react-query'
 import {
@@ -39,6 +40,7 @@ import {
     USER_NOT_FOUND_ERROR
 } from '../constants'
 import useNavigation from './use-navigation'
+import useToast from './use-toast'
 import {usePrevious} from './use-previous'
 import {usePasswordReset} from './use-password-reset'
 import {isServer} from '../utils/utils'
@@ -82,11 +84,7 @@ export const AuthModal = ({
     const navigate = useNavigation()
     const [currentView, setCurrentView] = useState(initialView)
     const form = useForm()
-    // Create a custom toast function to replace useToast
-    const toast = (props) => {
-        console.log('Toast notification:', props)
-        // In a real implementation, you would use createToaster from Chakra UI v3
-    }
+    const toast = useToast()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const register = useAuthHelper(AuthHelpers.Register)
     const appOrigin = useAppOrigin()
@@ -255,7 +253,6 @@ export const AuthModal = ({
         // Show a toast only for those registed users returning to the site.
         if (loggingIn) {
             toast({
-                variant: 'subtle',
                 title: `${formatMessage(
                     {
                         defaultMessage: 'Welcome {name},',
@@ -269,9 +266,7 @@ export const AuthModal = ({
                     defaultMessage: "You're now signed in.",
                     id: 'auth_modal.description.now_signed_in'
                 })}`,
-                status: 'success',
-                position: 'top-right',
-                isClosable: true
+                type: 'success'
             })
 
             // Execute action to be performed on successful login
@@ -288,64 +283,63 @@ export const AuthModal = ({
         initialView === PASSWORD_VIEW ? onClose() : setCurrentView(LOGIN_VIEW)
 
     return (
-        <Dialog.Root
-            open={isOpen}
-            onOpenChange={() => onClose()}
+        <Modal
             size="sm"
-            closeOnInteractOutside={false}
+            closeOnOverlayClick={false}
             data-testid="sf-auth-modal"
+            isOpen={isOpen}
+            onOpen={onOpen}
+            onClose={onClose}
             {...props}
         >
-            <Dialog.Backdrop />
-            <Dialog.Positioner>
-                <Dialog.Content>
-                    <Dialog.CloseTrigger
-                        aria-label={formatMessage({
-                            id: 'auth_modal.button.close.assistive_msg',
-                            defaultMessage: 'Close login form'
-                        })}
-                    />
-                    <Dialog.Body padding={8} bg="white" paddingBottom={14} marginTop={14}>
-                        {!form.formState.isSubmitSuccessful && currentView === LOGIN_VIEW && (
-                            <LoginForm
-                                form={form}
-                                submitForm={submitForm}
-                                clickCreateAccount={() => setCurrentView(REGISTER_VIEW)}
-                                handlePasswordlessLoginClick={() =>
-                                    setLoginType(LOGIN_TYPES.PASSWORDLESS)
-                                }
-                                handleForgotPasswordClick={() => setCurrentView(PASSWORD_VIEW)}
-                                isPasswordlessEnabled={isPasswordlessEnabled}
-                                isSocialEnabled={isSocialEnabled}
-                                idps={idps}
-                                setLoginType={setLoginType}
-                            />
-                        )}
-                        {!form.formState.isSubmitSuccessful && currentView === REGISTER_VIEW && (
-                            <RegisterForm
-                                form={form}
-                                submitForm={submitForm}
-                                clickSignIn={onBackToSignInClick}
-                            />
-                        )}
-                        {currentView === PASSWORD_VIEW && (
-                            <ResetPasswordForm
-                                form={form}
-                                submitForm={submitForm}
-                                clickSignIn={onBackToSignInClick}
-                            />
-                        )}
-                        {currentView === EMAIL_VIEW && (
-                            <PasswordlessEmailConfirmation
-                                form={form}
-                                submitForm={submitForm}
-                                email={passwordlessLoginEmail}
-                            />
-                        )}
-                    </Dialog.Body>
-                </Dialog.Content>
-            </Dialog.Positioner>
-        </Dialog.Root>
+            <ModalOverlay />
+            <ModalContent>
+                <ModalCloseButton
+                    aria-label={formatMessage({
+                        id: 'auth_modal.button.close.assistive_msg',
+                        defaultMessage: 'Close login form'
+                    })}
+                />
+                <ModalBody pb={8} bg="white" paddingBottom={14} marginTop={14}>
+                    {!form.formState.isSubmitSuccessful && currentView === LOGIN_VIEW && (
+                        <LoginForm
+                            form={form}
+                            submitForm={submitForm}
+                            clickCreateAccount={() => setCurrentView(REGISTER_VIEW)}
+                            handlePasswordlessLoginClick={() =>
+                                setLoginType(LOGIN_TYPES.PASSWORDLESS)
+                            }
+                            handleForgotPasswordClick={() => setCurrentView(PASSWORD_VIEW)}
+                            isPasswordlessEnabled={isPasswordlessEnabled}
+                            isSocialEnabled={isSocialEnabled}
+                            idps={idps}
+                            setLoginType={setLoginType}
+                        />
+                    )}
+                    {!form.formState.isSubmitSuccessful && currentView === REGISTER_VIEW && (
+                        <RegisterForm
+                            form={form}
+                            submitForm={submitForm}
+                            clickSignIn={onBackToSignInClick}
+                        />
+                    )}
+                    {currentView === PASSWORD_VIEW && (
+                        <ResetPasswordForm
+                            form={form}
+                            submitForm={submitForm}
+                            clickSignIn={onBackToSignInClick}
+                        />
+                    )}
+                    {currentView === EMAIL_VIEW && (
+                        <PasswordlessEmailConfirmation
+                            form={form}
+                            submitForm={submitForm}
+                            email={passwordlessLoginEmail}
+                        />
+                    )}
+                </ModalBody>
+            </ModalContent>
+        </Modal>
     )
 }
 
