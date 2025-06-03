@@ -47,10 +47,26 @@
     },
     "defaultSite": "RefArchGlobal",
     "defaultAppLocale": "en-US",
-    "homeHref": "/",
     "defaultSiteTitle": "Retail React App",
-    "homeProductLimit": 10,
-    "homeMainCategory": "newarrivals",
+    "pages": {
+        "home":{
+            "title": "New Arrivals",
+            "href": "/",
+            "productLimit": 10,
+            "mainCategory": "newarrivals"
+        },
+        "productList":{
+            "path": ["/search", "/category/:categoryId"],
+            "imageViewType": "large",
+            "selectableAttributeId": "color",
+            "filterAccordionSate": "filters-expanded-index"
+        },
+        "productDetail":{
+            "path": "/product/:productId",
+            "imageViewType": "large",
+            "selectableAttributeId": "color"
+        }
+    },
     "defaultDnt": true,
     "einsteinAPI": {
         "host": "https://api.cquotient.com",

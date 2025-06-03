@@ -54,8 +54,12 @@ const Home = () => {
     const dataCloud = useDataCloud()
     const {pathname} = useLocation()
     const {
-        homeProductLimit: HOME_PRODUCT_LIMIT,
-        homeMainCategory: HOME_MAIN_CATEGORY,
+        pages: {
+            home: {
+                productLimit: HOME_PRODUCT_LIMIT,
+                mainCategory: HOME_MAIN_CATEGORY
+            }
+        },
         maxCacheAge: MAX_CACHE_AGE,
         staleWhileRevalidate: STALE_WHILE_REVALIDATE
     } = getConfig()
