@@ -20,16 +20,9 @@ import {
 } from '@chakra-ui/react'
 import SearchSuggestions from '../../components/search/partials/search-suggestions'
 import {SearchIcon} from '../../components/icons'
-import {
-    capitalize,
-    boldString,
-    getSessionJSONItem,
-    setSessionJSONItem,
-    isServer,
-    isHydrated
-} from '../../utils/utils'
+import {capitalize, boldString, getSessionJSONItem, setSessionJSONItem} from '../../utils/utils'
 import useNavigation from '../../hooks/use-navigation'
-import {HideOnDesktop, HideOnMobile} from '../../components/responsive'
+import {HideOnDesktop, HideOnMobile} from '../responsive'
 import {FormattedMessage, useIntl} from 'react-intl'
 import debounce from 'lodash/debounce'
 import {productUrlBuilder, searchUrlBuilder, categoryUrlBuilder} from '../../utils/url'
@@ -99,7 +92,6 @@ const Search = (props) => {
     const styles = recipe()
 
     useEffect(() => {
-        // Only access localStorage/sessionStorage after mounting
         setRecentSearches(getSessionJSONItem(searchConfig.recentSearchKey) || [])
     }, [])
     const searchSuggestions = useMemo(

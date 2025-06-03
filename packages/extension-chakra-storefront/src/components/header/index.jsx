@@ -12,16 +12,16 @@ import {
     Box,
     Flex,
     IconButton,
-    Badge,
-    Button,
-    Popover,
-    PopoverFooter,
-    Portal,
-    Stack,
-    Text,
+    // Badge,
+    // Button,
+    // Popover,
+    // PopoverFooter,
+    // Portal,
+    // Stack,
+    // Text,
     useDisclosure,
     useMediaQuery,
-    Separator,
+    // Separator,
     useSlotRecipe
 } from '@chakra-ui/react'
 import {AuthHelpers, useAuthHelper, useCustomerType} from '@salesforce/commerce-sdk-react'
@@ -36,21 +36,21 @@ import Link from '../../components/link'
 import Search from '../../components/search'
 // import withRegistration from '../../components/with-registration'
 import {
-    AccountIcon,
-    BrandLogo,
-    BasketIcon,
-    HamburgerIcon,
-    ChevronDownIcon,
-    HeartIcon,
-    SignoutIcon,
-    StoreIcon
+    // AccountIcon,
+    BrandLogo
+    // BasketIcon,
+    // HamburgerIcon,
+    // ChevronDownIcon,
+    // HeartIcon,
+    // SignoutIcon,
+    // StoreIcon
 } from '../icons'
 
 // import {navLinks, messages} from '../../pages/account/constant'
 import useNavigation from '../../hooks/use-navigation'
 import LoadingSpinner from '../../components/loading-spinner'
 import {HideOnDesktop, HideOnMobile} from '../responsive'
-import {isHydrated, noop} from '../../utils/utils'
+import {noop} from '../../utils/utils'
 
 // const IconButtonWithRegistration = withRegistration(IconButton)
 
