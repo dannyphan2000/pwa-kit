@@ -8,13 +8,14 @@ import {defineRecipe} from '@chakra-ui/react'
 
 //Chakra v3 has remove the input
 export default defineRecipe({
-    slots: ['searchContainer', 'searchInput', 'searchIcon', 'clearIcon', 'cancelButton'],
+    slots: ['cancelButton', 'clearIcon', 'searchContainer', 'searchIcon', 'searchInput'],
     base: {
-        searchContainer: {},
-        searchIcon: {},
+        cancelButton: {},
         clearIcon: {
             me: '-2'
         },
+        searchContainer: {},
+        searchIcon: {},
         searchInput: {
             borderColor: 'gray.600',
             border: '2px solid',

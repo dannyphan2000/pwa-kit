@@ -207,6 +207,7 @@ const Search = (props) => {
                                 endElement={
                                     searchQuery.length ? (
                                         <CloseButton
+                                            size="xs"
                                             css={styles.clearIcon}
                                             variant="unstyled"
                                             aria-label={intl.formatMessage({
