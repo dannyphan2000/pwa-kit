@@ -10,7 +10,7 @@ runs:
     - name: Install Dependencies
       run: |-
         # Install node dependencies
-        npm ci
+        node ./scripts/gtime.js monorepo_install npm ci
 
         # Build the PWA
         npm run lerna -- run analyze-build --scope "retail-react-app"
@@ -22,7 +22,7 @@ runs:
         node ./scripts/check-dependencies.js
 
         # Install Snyk CLI
-        # TODO: Ticket W-12425059. Revisit Snyk CLI integration to monitor manifest files on generated projects.
+        # TODO: Ticket W-12425059. Revisit Snyk CLI integration to monitor manifest files on generated projects.  
         # TODO: Latest Snyk CLI version is currently failing on npm i. We use the alternative Snyk GitHub integration.
         # sudo npm install -g snyk
 
