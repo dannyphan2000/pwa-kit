@@ -7,6 +7,7 @@
 import {renderHook, act} from '@testing-library/react'
 import useLocalStorage from './useLocalStorage'
 
+/* eslint-disable @typescript-eslint/no-var-requires */
 describe('useLocalStorage', () => {
     beforeEach(() => {
         // Clear localStorage before each test
