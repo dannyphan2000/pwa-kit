@@ -46,7 +46,7 @@ const getLocalStorageServerSnapshot = () => {
 }
 
 /* eslint-disable react-hooks/rules-of-hooks */
-// NOTE: it's ok to disable the rules-of-hooks because the existence of useSyncExternalStore will be consistent
+// NOTE: it's ok to ignore the rules-of-hooks because the existence of useSyncExternalStore will be consistent
 /**
  * @internal
  */
@@ -66,7 +66,8 @@ function useLocalStorage(key: string): Value {
         return store
     }
 
-    // Fallback implementation for React 17
+    // Now, fallback implementation for the older React 17
+
     // Use lazy initialization to avoid calling readValue on every render and prevent unnecessary localStorage access
     const [value, setValue] = useState<Value>(() => readValue(key))
 
