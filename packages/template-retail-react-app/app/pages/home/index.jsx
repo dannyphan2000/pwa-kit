@@ -8,7 +8,7 @@
 import React, {useEffect} from 'react'
 import {useIntl, FormattedMessage} from 'react-intl'
 import {useLocation} from 'react-router-dom'
-
+import Todo from '@salesforce/retail-react-app/app/components/todo'
 // Components
 import {
     Box,
@@ -86,6 +86,21 @@ const Home = () => {
 
     return (
         <Box data-testid="home-page" layerStyle="page">
+            <Section
+                padding={4}
+                paddingTop={16}
+                title={intl.formatMessage({
+                    defaultMessage: 'Todo List',
+                    id: 'home.heading.todo_list'
+                })}
+                subtitle={intl.formatMessage({
+                    defaultMessage: 'Example Todo list fetched from JSONPlaceholder API',
+                    id: 'home.description.todo_list'
+                })}
+            >
+                <Todo />
+            </Section>
+
             <Seo
                 title="Home Page"
                 description="Commerce Cloud Retail React App"

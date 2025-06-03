@@ -50,7 +50,7 @@ import ProductTile from '@salesforce/retail-react-app/app/theme/components/proje
 import SocialIcons from '@salesforce/retail-react-app/app/theme/components/project/social-icons'
 import SwatchGroup from '@salesforce/retail-react-app/app/theme/components/project/swatch-group'
 import ImageGallery from '@salesforce/retail-react-app/app/theme/components/project/image-gallery'
-
+import Todo from '@salesforce/retail-react-app/app/theme/components/project/todo'
 // Please refer to the Chakra-Ui theme customization docs found
 // here https://chakra-ui.com/docs/theming/customize-theme to learn
 // more about extending and overriding themes for your project.

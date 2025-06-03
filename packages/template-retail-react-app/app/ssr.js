@@ -39,7 +39,7 @@ const options = {
     mobify: config,
 
     // The port that the local dev server listens on
-    port: 3000,
+    port: 3002,
 
     // The protocol on which the development Express app listens.
     // Note that http://localhost is treated as a secure context for development,
@@ -321,6 +321,33 @@ const {handler} = runtime.createHandler(options, (app) => {
             }
         })
     )
+
+// Set custom HTTP security headers
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            useDefaults: true,
+            directives: {
+                'img-src': [
+                    // Default source for product images - replace with your CDN
+                    '*.commercecloud.salesforce.com'
+                ],
+                'script-src': [
+                    // Used by the service worker in /worker/main.js
+                    'storage.googleapis.com'
+                ],
+                'connect-src': [
+                    // add this line here
+                    'jsonplaceholder.typicode.com',
+                    // Connect to Einstein APIs
+                    'api.cquotient.com',
+                    // Connect to DataCloud APIs
+                    '*.c360a.salesforce.com'
+                ]
+            }
+        }
+    })
+)
 
     // Handle the redirect from SLAS as to avoid error
     app.get('/callback?*', (req, res) => {
