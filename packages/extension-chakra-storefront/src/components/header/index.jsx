@@ -165,22 +165,22 @@ const Header = ({
             <Box css={styles.content}>
                 {showLoading && <LoadingSpinner wrapperStyles={{height: '100vh'}} />}
                 <Flex wrap="wrap" alignItems={['baseline', 'baseline', 'baseline', 'center']}>
-                    <IconButton
-                        aria-label={intl.formatMessage({
-                            id: 'header.button.assistive_msg.menu',
-                            defaultMessage: 'Menu'
-                        })}
-                        title={intl.formatMessage({
-                            id: 'header.button.assistive_msg.menu.open_dialog',
-                            defaultMessage: 'Opens a dialog'
-                        })}
-                        css={styles.icons}
-                        variant="unstyled"
-                        display={{lg: 'none'}}
-                        onClick={onMenuClick}
-                    >
-                        <HamburgerIcon />
-                    </IconButton>
+                    {/*<IconButton*/}
+                    {/*    aria-label={intl.formatMessage({*/}
+                    {/*        id: 'header.button.assistive_msg.menu',*/}
+                    {/*        defaultMessage: 'Menu'*/}
+                    {/*    })}*/}
+                    {/*    title={intl.formatMessage({*/}
+                    {/*        id: 'header.button.assistive_msg.menu.open_dialog',*/}
+                    {/*        defaultMessage: 'Opens a dialog'*/}
+                    {/*    })}*/}
+                    {/*    css={styles.icons}*/}
+                    {/*    variant="unstyled"*/}
+                    {/*    display={{lg: 'none'}}*/}
+                    {/*    onClick={onMenuClick}*/}
+                    {/*>*/}
+                    {/*    <HamburgerIcon />*/}
+                    {/*</IconButton>*/}
                     <IconButton
                         aria-label={intl.formatMessage({
                             id: 'header.button.assistive_msg.logo',
@@ -196,144 +196,132 @@ const Header = ({
                     <HideOnMobile>
                         <SearchBar />
                     </HideOnMobile>
+
                     {/*<IconButtonWithRegistration*/}
-                    {/*    icon={<AccountIcon />}*/}
                     {/*    aria-label={intl.formatMessage({*/}
                     {/*        id: 'header.button.assistive_msg.my_account',*/}
                     {/*        defaultMessage: 'My Account'*/}
                     {/*    })}*/}
                     {/*    variant="unstyled"*/}
-                    {/*    {...styles.icons}*/}
-                    {/*    {...styles.accountIcon}*/}
+                    {/*    css={{...styles.icons, ...styles.accountIcon}}*/}
                     {/*    onClick={onMyAccountClick}*/}
                     {/*    onMouseOver={isDesktop ? onAccountMenuOpen : noop}*/}
-                    {/*/>*/}
+                    {/*>*/}
+                    {/*    <AccountIcon />*/}
+                    {/*</IconButton>*/}
+                    {/*{isRegistered && isHydrated() && (*/}
+                    {/*    <Popover.Root*/}
+                    {/*        lazyMount*/}
+                    {/*        arrowSize={15}*/}
+                    {/*        isOpen={isAccountMenuOpen}*/}
+                    {/*        placement="bottom-end"*/}
+                    {/*        onClose={onAccountMenuClose}*/}
+                    {/*        onOpen={onAccountMenuOpen}*/}
+                    {/*    >*/}
+                    {/*        <Popover.Trigger>*/}
+                    {/*            <IconButton*/}
+                    {/*                aria-label={intl.formatMessage({*/}
+                    {/*                    id: 'header.button.assistive_msg.my_account_menu',*/}
+                    {/*                    defaultMessage: 'Open account menu'*/}
+                    {/*                })}*/}
+                    {/*                variant="unstyled"*/}
+                    {/*                css={{...styles.icons, ...styles.arrowDown}}*/}
+                    {/*                {...getAccountMenuButtonProps()}*/}
+                    {/*                onMouseOver={onAccountMenuOpen}*/}
+                    {/*                onMouseLeave={handleIconsMouseLeave}*/}
+                    {/*                ref={popoverTriggerRef}*/}
+                    {/*                onKeyDown={handleKeyDown}*/}
+                    {/*            >*/}
+                    {/*                <ChevronDownIcon />*/}
+                    {/*            </IconButton>*/}
+                    {/*        </Popover.Trigger>*/}
 
-                    <IconButton
-                        aria-label={intl.formatMessage({
-                            id: 'header.button.assistive_msg.my_account',
-                            defaultMessage: 'My Account'
-                        })}
-                        variant="unstyled"
-                        css={{...styles.icons, ...styles.accountIcon}}
-                        onClick={onMyAccountClick}
-                        onMouseOver={isDesktop ? onAccountMenuOpen : noop}
-                    >
-                        <AccountIcon />
-                    </IconButton>
-                    {isRegistered && isHydrated() && (
-                        <Popover.Root
-                            lazyMount
-                            arrowSize={15}
-                            isOpen={isAccountMenuOpen}
-                            placement="bottom-end"
-                            onClose={onAccountMenuClose}
-                            onOpen={onAccountMenuOpen}
-                        >
-                            <Popover.Trigger>
-                                <IconButton
-                                    aria-label={intl.formatMessage({
-                                        id: 'header.button.assistive_msg.my_account_menu',
-                                        defaultMessage: 'Open account menu'
-                                    })}
-                                    variant="unstyled"
-                                    css={{...styles.icons, ...styles.arrowDown}}
-                                    {...getAccountMenuButtonProps()}
-                                    onMouseOver={onAccountMenuOpen}
-                                    onMouseLeave={handleIconsMouseLeave}
-                                    ref={popoverTriggerRef}
-                                    onKeyDown={handleKeyDown}
-                                >
-                                    <ChevronDownIcon />
-                                </IconButton>
-                            </Popover.Trigger>
-
-                            <Portal>
-                                <Popover.Positioner>
-                                    <Popover.Content
-                                        css={styles.popoverContent}
-                                        onMouseLeave={() => {
-                                            hasEnterPopoverContent.current = false
-                                            onAccountMenuClose()
-                                        }}
-                                        onMouseOver={() => {
-                                            hasEnterPopoverContent.current = true
-                                        }}
-                                        {...getAccountMenuDisclosureProps()}
-                                    >
-                                        <Popover.Arrow />
-                                        <Popover.Header>
-                                            <Text
-                                                as="h2"
-                                                fontSize="l"
-                                                fontFamily="body"
-                                                fontWeight="700"
-                                            >
-                                                {intl.formatMessage({
-                                                    defaultMessage: 'My Account',
-                                                    id: 'header.popover.title.my_account'
-                                                })}
-                                            </Text>
-                                        </Popover.Header>
-                                        <Popover.Body>
-                                            <Box as="nav">
-                                                <Stack
-                                                    gap={0}
-                                                    as="ul"
-                                                    data-testid="account-detail-nav"
-                                                >
-                                                    {navLinks.map((link) => {
-                                                        const LinkIcon = link.icon
-                                                        return (
-                                                            <Box
-                                                                key={link.name}
-                                                                position="relative"
-                                                                as="li"
-                                                                listStyleType="none"
-                                                            >
-                                                                <Button
-                                                                    as={Link}
-                                                                    to={`/account${link.path}`}
-                                                                    useNavLink={true}
-                                                                    variant="menu-link"
-                                                                    leftIcon={
-                                                                        <LinkIcon boxSize={5} />
-                                                                    }
-                                                                    width="100%"
-                                                                >
-                                                                    {intl.formatMessage(
-                                                                        messages[link.name]
-                                                                    )}
-                                                                </Button>
-                                                            </Box>
-                                                        )
-                                                    })}
-                                                </Stack>
-                                            </Box>
-                                        </Popover.Body>
-                                        <Popover.Footer onClick={onSignoutClick} cursor="pointer">
-                                            <Separator colorPallete="gray" />
-                                            <Button variant="unstyled" {...styles.signout}>
-                                                <Flex>
-                                                    <SignoutIcon
-                                                        aria-hidden={true}
-                                                        boxSize={5}
-                                                        {...styles.signoutIcon}
-                                                    />
-                                                    <Text as="span" {...styles.signoutText}>
-                                                        {intl.formatMessage({
-                                                            defaultMessage: 'Log out',
-                                                            id: 'header.popover.action.log_out'
-                                                        })}
-                                                    </Text>
-                                                </Flex>
-                                            </Button>
-                                        </Popover.Footer>
-                                    </Popover.Content>
-                                </Popover.Positioner>
-                            </Portal>
-                        </Popover.Root>
-                    )}
+                    {/*        <Portal>*/}
+                    {/*            <Popover.Positioner>*/}
+                    {/*                <Popover.Content*/}
+                    {/*                    css={styles.popoverContent}*/}
+                    {/*                    onMouseLeave={() => {*/}
+                    {/*                        hasEnterPopoverContent.current = false*/}
+                    {/*                        onAccountMenuClose()*/}
+                    {/*                    }}*/}
+                    {/*                    onMouseOver={() => {*/}
+                    {/*                        hasEnterPopoverContent.current = true*/}
+                    {/*                    }}*/}
+                    {/*                    {...getAccountMenuDisclosureProps()}*/}
+                    {/*                >*/}
+                    {/*                    <Popover.Arrow />*/}
+                    {/*                    <Popover.Header>*/}
+                    {/*                        <Text*/}
+                    {/*                            as="h2"*/}
+                    {/*                            fontSize="l"*/}
+                    {/*                            fontFamily="body"*/}
+                    {/*                            fontWeight="700"*/}
+                    {/*                        >*/}
+                    {/*                            {intl.formatMessage({*/}
+                    {/*                                defaultMessage: 'My Account',*/}
+                    {/*                                id: 'header.popover.title.my_account'*/}
+                    {/*                            })}*/}
+                    {/*                        </Text>*/}
+                    {/*                    </Popover.Header>*/}
+                    {/*                    <Popover.Body>*/}
+                    {/*                        <Box as="nav">*/}
+                    {/*                            <Stack*/}
+                    {/*                                gap={0}*/}
+                    {/*                                as="ul"*/}
+                    {/*                                data-testid="account-detail-nav"*/}
+                    {/*                            >*/}
+                    {/*                                {navLinks.map((link) => {*/}
+                    {/*                                    const LinkIcon = link.icon*/}
+                    {/*                                    return (*/}
+                    {/*                                        <Box*/}
+                    {/*                                            key={link.name}*/}
+                    {/*                                            position="relative"*/}
+                    {/*                                            as="li"*/}
+                    {/*                                            listStyleType="none"*/}
+                    {/*                                        >*/}
+                    {/*                                            <Button*/}
+                    {/*                                                as={Link}*/}
+                    {/*                                                to={`/account${link.path}`}*/}
+                    {/*                                                useNavLink={true}*/}
+                    {/*                                                variant="menu-link"*/}
+                    {/*                                                leftIcon={*/}
+                    {/*                                                    <LinkIcon boxSize={5} />*/}
+                    {/*                                                }*/}
+                    {/*                                                width="100%"*/}
+                    {/*                                            >*/}
+                    {/*                                                {intl.formatMessage(*/}
+                    {/*                                                    messages[link.name]*/}
+                    {/*                                                )}*/}
+                    {/*                                            </Button>*/}
+                    {/*                                        </Box>*/}
+                    {/*                                    )*/}
+                    {/*                                })}*/}
+                    {/*                            </Stack>*/}
+                    {/*                        </Box>*/}
+                    {/*                    </Popover.Body>*/}
+                    {/*                    <Popover.Footer onClick={onSignoutClick} cursor="pointer">*/}
+                    {/*                        <Separator colorPallete="gray" />*/}
+                    {/*                        <Button variant="unstyled" {...styles.signout}>*/}
+                    {/*                            <Flex>*/}
+                    {/*                                <SignoutIcon*/}
+                    {/*                                    aria-hidden={true}*/}
+                    {/*                                    boxSize={5}*/}
+                    {/*                                    {...styles.signoutIcon}*/}
+                    {/*                                />*/}
+                    {/*                                <Text as="span" {...styles.signoutText}>*/}
+                    {/*                                    {intl.formatMessage({*/}
+                    {/*                                        defaultMessage: 'Log out',*/}
+                    {/*                                        id: 'header.popover.action.log_out'*/}
+                    {/*                                    })}*/}
+                    {/*                                </Text>*/}
+                    {/*                            </Flex>*/}
+                    {/*                        </Button>*/}
+                    {/*                    </Popover.Footer>*/}
+                    {/*                </Popover.Content>*/}
+                    {/*            </Popover.Positioner>*/}
+                    {/*        </Portal>*/}
+                    {/*    </Popover.Root>*/}
+                    {/*)}*/}
                     {/*<IconButtonWithRegistration*/}
                     {/*    aria-label={intl.formatMessage({*/}
                     {/*        defaultMessage: 'Wishlist',*/}
@@ -379,9 +367,9 @@ const Header = ({
                     {/*    {...styles.icons}*/}
                     {/*    onClick={onMyCartClick}*/}
                     {/*/>*/}
-                    {/*<HideOnDesktop display={{base: 'contents', lg: 'none'}}>*/}
-                    {/*    <SearchBar />*/}
-                    {/*</HideOnDesktop>*/}
+                    <HideOnDesktop display={{base: 'contents', lg: 'none'}}>
+                        <SearchBar />
+                    </HideOnDesktop>
                 </Flex>
             </Box>
         </Box>
