@@ -46,9 +46,10 @@ import linkList from './components/project/links-list'
 import offlineBanner from './components/project/offline-banner'
 import pagination from './components/project/pagination'
 import productTile from './components/project/product-tile'
+import quantityPicker from './components/project/quantity-picker'
 import socialIcons from './components/project/social-icons'
 import swatchGroup from './components/project/swatch-group'
-// import ImageGallery from './components/project/image-gallery'
+import imageGallery from './components/project/image-gallery'
 
 // Please refer to the Chakra-Ui theme customization docs found
 // here https://chakra-ui.com/docs/theming/customize-theme to learn
@@ -110,10 +111,12 @@ export const overrides = defineConfig({
             checkoutFooter,
             footer,
             header,
+            imageGallery,
             linkList,
             offlineBanner,
             pagination,
             productTile,
+            quantityPicker,
             socialIcons,
             swatchGroup
         }
