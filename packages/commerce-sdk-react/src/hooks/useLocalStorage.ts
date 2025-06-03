@@ -49,38 +49,42 @@ function useLocalStorage(key: string): Value {
     // Check if useSyncExternalStore is available (React 18+)
     const useSyncExternalStore = (React as any).useSyncExternalStore
 
-    if (useSyncExternalStore) {
-        // Use the original useSyncExternalStore implementation for React 18+
-        const store: Value = useSyncExternalStore(
-            subscribeToLocalStorage(key),
-            getLocalStorageSnapshot,
-            getLocalStorageServerSnapshot
-        )
-        return store
-    }
+    // Create a fallback that returns null when useSyncExternalStore doesn't exist
+    const useSyncExternalStoreSafe = useSyncExternalStore || (() => null)
 
-    // Fallback implementation for React 17
-    // Use lazy initialization to avoid calling readValue on every render and prevent unnecessary localStorage access
+    // Always call useState and useEffect to comply with Rules of Hooks
     const [value, setValue] = useState<Value>(() => readValue(key))
 
     useEffect(() => {
-        setValue(readValue(key))
-    }, [key])
+        if (!useSyncExternalStore) {
+            setValue(readValue(key))
+        }
+    }, [key, useSyncExternalStore])
 
     useEffect(() => {
-        const handleStorageChange = (e: StorageEvent) => {
-            if (e.key === key) {
-                setValue(readValue(key))
+        if (!useSyncExternalStore) {
+            const handleStorageChange = (e: StorageEvent) => {
+                if (e.key === key) {
+                    setValue(readValue(key))
+                }
+            }
+            window.addEventListener('storage', handleStorageChange)
+
+            return () => {
+                window.removeEventListener('storage', handleStorageChange)
             }
         }
-        window.addEventListener('storage', handleStorageChange)
+    }, [key, useSyncExternalStore])
 
-        return () => {
-            window.removeEventListener('storage', handleStorageChange)
-        }
-    }, [key])
+    // Always call useSyncExternalStore (or its fallback) to comply with Rules of Hooks
+    const syncExternalStoreValue = useSyncExternalStoreSafe(
+        subscribeToLocalStorage(key),
+        getLocalStorageSnapshot,
+        getLocalStorageServerSnapshot
+    )
 
-    return value
+    // Return the appropriate value based on availability
+    return useSyncExternalStore ? syncExternalStoreValue : value
 }
 
 export default useLocalStorage
