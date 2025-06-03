@@ -18,7 +18,7 @@ const SizeRefinements = ({filter, toggleFilter, selectedFilters}) => {
     })
 
     return (
-        <SimpleGrid columns={4} spacing={2}>
+        <SimpleGrid templateColumns="repeat(auto-fit, 44px)" spacing={4} mt={1}>
             {filter.values?.map((value, idx) => {
                 // Note the loose comparison, for "string == number" checks.
                 const isSelected = selectedFilters.some((filterValue) => filterValue == value.value)
@@ -29,13 +29,19 @@ const SizeRefinements = ({filter, toggleFilter, selectedFilters}) => {
                 return (
                     <Button
                         key={idx}
-                        variant={isSelected ? 'solid' : 'outline'}
-                        colorScheme={isSelected ? 'blue' : 'gray'}
-                        size="sm"
+                        {...styles.swatch}
+                        borderColor={isSelected ? 'black' : 'gray.200'}
+                        backgroundColor={isSelected ? 'black' : 'white'}
+                        color={isSelected ? 'white' : 'gray.900'}
                         onClick={() => toggleFilter(value, filter.attributeId, isSelected)}
+                        aria-checked={isSelected}
+                        role="checkbox"
+                        variant="outline"
+                        marginBottom={0}
+                        marginRight={0}
                         aria-label={formatMessage(isSelected ? REMOVE_FILTER : ADD_FILTER, value)}
                     >
-                        <Center css={styles.swatchButton}>{value.label}</Center>
+                        <Center {...styles.swatchButton}>{value.label}</Center>
                     </Button>
                 )
             })}
