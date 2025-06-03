@@ -115,7 +115,7 @@ describe('useTrustedAgent', () => {
 
         let error: Error | null = null
         act(() => {
-            result.current.login('test_login_id').catch((e: any) => {
+            result.current.login('test_login_id').catch((e) => {
                 error = e
             })
         })
@@ -143,7 +143,7 @@ describe('useTrustedAgent', () => {
         // let error: Error | null = null
         let returnVal: ShopperLoginTypes.TokenResponse | null = null
         await act(async () => {
-            await result.current.login('test_login_id').then((data: any) => {
+            await result.current.login('test_login_id').then((data) => {
                 returnVal = data
             })
         })
