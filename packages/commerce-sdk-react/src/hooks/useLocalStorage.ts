@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 
 type Value = string | null
 
@@ -35,25 +35,32 @@ const subscribeToLocalStorage = (key: string) => (callback: () => void) => {
 /**
  * @internal
  */
+const getLocalStorageSnapshot = (key: string) => () => readValue(key)
+
+/**
+ * @internal
+ */
 const getLocalStorageServerSnapshot = () => {
     // local storage is not available on the server
     return null
 }
 
+/* eslint-disable react-hooks/rules-of-hooks */
+// NOTE: it's ok to disable the rules-of-hooks because the existence of useSyncExternalStore will be consistent
 /**
  * @internal
  */
 function useLocalStorage(key: string): Value {
-    const getLocalStorageSnapshot = () => readValue(key)
-
     // Check if useSyncExternalStore is available (React 18+)
     const useSyncExternalStore = (React as any).useSyncExternalStore
 
     if (useSyncExternalStore) {
-        // Use the original useSyncExternalStore implementation for React 18+
+        const _getLocalStorageSnapshot = useCallback(getLocalStorageSnapshot(key), [key])
+        const _subscribeToLocalStorage = useCallback(subscribeToLocalStorage(key), [key])
+
         const store: Value = useSyncExternalStore(
-            subscribeToLocalStorage(key),
-            getLocalStorageSnapshot,
+            _subscribeToLocalStorage,
+            _getLocalStorageSnapshot,
             getLocalStorageServerSnapshot
         )
         return store
@@ -82,5 +89,6 @@ function useLocalStorage(key: string): Value {
 
     return value
 }
+/* eslint-enable react-hooks/rules-of-hooks */
 
 export default useLocalStorage
