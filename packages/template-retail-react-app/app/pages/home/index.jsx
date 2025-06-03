@@ -20,7 +20,6 @@ import {
     Flex,
     Stack,
     Container,
-    Link
 } from '@salesforce/retail-react-app/app/components/shared/ui'
 
 // Project Components
@@ -47,6 +46,8 @@ import {
 import {useServerContext} from '@salesforce/pwa-kit-react-sdk/ssr/universal/hooks'
 import {useProductSearch} from '@salesforce/commerce-sdk-react'
 
+import Todo from '@salesforce/retail-react-app/app/components/todo'
+import Link from '@salesforce/retail-react-app/app/components/link'
 /**
  * This is the home page for Retail React App.
  * The page is created for demonstration purposes.
@@ -86,6 +87,23 @@ const Home = () => {
 
     return (
         <Box data-testid="home-page" layerStyle="page">
+            <Link color="teal.500" to={'/product-search?q=shirt'}>
+                Product Search Page
+            </Link>
+            <Section
+                padding={4}
+                paddingTop={16}
+                title={intl.formatMessage({
+                    defaultMessage: 'Todo List',
+                    id: 'home.heading.todo_list'
+                })}
+                subtitle={intl.formatMessage({
+                    defaultMessage: 'Example Todo list fetched from JSONPlaceholder API',
+                    id: 'home.description.todo_list'
+                })}
+            >
+                <Todo />
+            </Section>
             <Seo
                 title="Home Page"
                 description="Commerce Cloud Retail React App"

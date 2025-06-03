@@ -19,6 +19,7 @@ import {
 } from '@salesforce/commerce-sdk-react'
 import logger from '@salesforce/retail-react-app/app/utils/logger-instance'
 import {useAppOrigin} from '@salesforce/retail-react-app/app/hooks/use-app-origin'
+import {isAbsoluteURL} from '@salesforce/pwa-kit-react-sdk/utils/url'
 
 // Chakra
 import {
@@ -184,6 +185,9 @@ const App = (props) => {
         },
         enabled: isServer
     })
+
+    console.log('location?.pathname', location?.pathname)
+    console.log('isAbsoluteURL()', isAbsoluteURL(location?.pathname))
 
     // Used to conditionally render header/footer for checkout page
     const isCheckout = /\/checkout$/.test(location?.pathname)
