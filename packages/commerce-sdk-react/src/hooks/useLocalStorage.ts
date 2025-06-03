@@ -49,42 +49,38 @@ function useLocalStorage(key: string): Value {
     // Check if useSyncExternalStore is available (React 18+)
     const useSyncExternalStore = (React as any).useSyncExternalStore
 
-    // Create a fallback that returns null when useSyncExternalStore doesn't exist
-    const useSyncExternalStoreSafe = useSyncExternalStore || (() => null)
+    if (useSyncExternalStore) {
+        // Use the original useSyncExternalStore implementation for React 18+
+        const store: Value = useSyncExternalStore(
+            subscribeToLocalStorage(key),
+            getLocalStorageSnapshot,
+            getLocalStorageServerSnapshot
+        )
+        return store
+    }
 
-    // Always call useState and useEffect to comply with Rules of Hooks
+    // Fallback implementation for React 17
+    // Use lazy initialization to avoid calling readValue on every render and prevent unnecessary localStorage access
     const [value, setValue] = useState<Value>(() => readValue(key))
 
     useEffect(() => {
-        if (!useSyncExternalStore) {
-            setValue(readValue(key))
-        }
-    }, [key, useSyncExternalStore])
+        setValue(readValue(key))
+    }, [key])
 
     useEffect(() => {
-        if (!useSyncExternalStore) {
-            const handleStorageChange = (e: StorageEvent) => {
-                if (e.key === key) {
-                    setValue(readValue(key))
-                }
-            }
-            window.addEventListener('storage', handleStorageChange)
-
-            return () => {
-                window.removeEventListener('storage', handleStorageChange)
+        const handleStorageChange = (e: StorageEvent) => {
+            if (e.key === key) {
+                setValue(readValue(key))
             }
         }
-    }, [key, useSyncExternalStore])
+        window.addEventListener('storage', handleStorageChange)
 
-    // Always call useSyncExternalStore (or its fallback) to comply with Rules of Hooks
-    const syncExternalStoreValue = useSyncExternalStoreSafe(
-        subscribeToLocalStorage(key),
-        getLocalStorageSnapshot,
-        getLocalStorageServerSnapshot
-    )
+        return () => {
+            window.removeEventListener('storage', handleStorageChange)
+        }
+    }, [key])
 
-    // Return the appropriate value based on availability
-    return useSyncExternalStore ? syncExternalStoreValue : value
+    return value
 }
 
 export default useLocalStorage
