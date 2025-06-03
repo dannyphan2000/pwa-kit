@@ -18,7 +18,7 @@ const CheckoutHeader = () => {
         derivedData: {totalItems}
     } = useCurrentBasket()
     const {
-        pages: {Home: homeConfig}
+        pages: {home: homeConfig}
     } = getConfig()
     return (
         <Box px={[4, 4, 8]} bg="white" borderBottom="1px" borderColor="gray.100">

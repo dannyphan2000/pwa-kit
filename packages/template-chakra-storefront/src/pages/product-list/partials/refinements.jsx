@@ -42,7 +42,7 @@ const Refinements = ({
     isLoading
 }) => {
     const {
-        pages: {ProductList: productListConfig}
+        pages: {productList: productListConfig}
     } = getConfig()
     const FILTER_ACCORDION_STATE = productListConfig.filterAccordionState
     // Exclude filters in the exclude list.

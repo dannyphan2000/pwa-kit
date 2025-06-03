@@ -118,7 +118,7 @@ const ProductList = (props) => {
     const customerId = useCustomerId()
     const [searchParams, {stringify: stringifySearchParams}] = useSearchParams()
     const {
-        pages: {ProductList: productListConfig},
+        pages: {productList: productListConfig},
         maxCacheAge: MAX_CACHE_AGE,
         staleWhileRevalidate: STALE_WHILE_REVALIDATE,
         search: searchConfig

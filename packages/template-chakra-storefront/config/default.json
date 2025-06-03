@@ -49,22 +49,57 @@
     "defaultAppLocale": "en-US",
     "defaultSiteTitle": "Retail React App",
     "pages": {
-        "home":{
-            "title": "New Arrivals",
-            "href": "/",
+        "account": {
+            "path": "/account",
+            "orderSearchParam": {"limit": 10, "offset": 0, "sort": "best-matches", "refine": []}
+        },
+        "cart": {
+            "path": "/cart"
+        },
+        "checkout": {
+            "path": "/checkout",
+            "shippingCountryCode": [
+                {"value": "CA", "label": "Canada"},
+                {"value": "US", "label": "United States"}
+            ]
+        },
+        "checkoutConfirmation": {
+            "path": "/checkout/confirmation/:orderNo"
+        },
+        "home": {
+            "path": "/",
             "productLimit": 10,
             "mainCategory": "newarrivals"
         },
-        "productList":{
+        "login": {
+            "path": "/login"
+        },
+        "registration": {
+            "path": "/registration"
+        },
+        "resetPassword": {
+            "path": "/reset-password"
+        },
+        "resetPasswordLanding": {
+            "path": "/reset-password-landing"
+        },
+        "loginRedirect": {
+            "path": "/callback"
+        },
+        "passwordlessLoginLanding": {
+            "path": "/passwordless-login-landing"
+        },
+        "productDetail": {
+            "path": "/product/:productId"
+        },
+        "productList": {
             "path": ["/search", "/category/:categoryId"],
             "imageViewType": "large",
             "selectableAttributeId": "color",
             "filterAccordionSate": "filters-expanded-index"
         },
-        "productDetail":{
-            "path": "/product/:productId",
-            "imageViewType": "large",
-            "selectableAttributeId": "color"
+        "socialRedirect": {
+            "path": "/social-redirect"
         }
     },
     "defaultDnt": true,
@@ -90,7 +125,6 @@
             "redirectURI": "/social-callback"
         },
         "resetPassword": {
-            "callbackURI": "/reset-password-callback",
             "landingPath": "/reset-password-landing"
         }
     },

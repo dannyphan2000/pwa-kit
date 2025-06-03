@@ -74,12 +74,12 @@ export const routes = [
         exact: true
     },
     {
-        path: resetPasswordLandingPath,
+        path: '/reset-password-landing',
         component: ResetPassword,
         exact: true
     },
     {
-        path: passwordlessLoginLandingPath,
+        path: '/passwordless-login-landing',
         component: Login,
         exact: true
     },
@@ -102,7 +102,7 @@ export const routes = [
         exact: true
     },
     {
-        path: socialRedirectURI || '/social-callback',
+        path: '/social-callback',
         component: SocialLoginRedirect,
         exact: true
     },

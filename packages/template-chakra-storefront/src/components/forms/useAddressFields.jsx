@@ -45,7 +45,7 @@ export default function useAddressFields({
 }) {
     const {formatMessage} = useIntl()
     const {
-        pages: {Checkout: checkoutConfig}
+        pages: {checkout: checkoutConfig}
     } = getConfig()
     const countryCode = watch('countryCode')
 

@@ -81,7 +81,7 @@ const AccountOrderHistory = () => {
     const {formatMessage, formatDate} = useIntl()
     const navigate = useNavigation()
     const {
-        pages: {Account: accountConfig}
+        pages: {account: accountConfig}
     } = getConfig()
 
     const {data: customer} = useCurrentCustomer()
