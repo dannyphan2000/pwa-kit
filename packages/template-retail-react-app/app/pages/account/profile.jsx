@@ -25,8 +25,6 @@ import {ToggleCard, ToggleCardEdit, ToggleCardSummary} from '../../components/to
 import ProfileFields from '../../components/forms/profile-fields'
 import UpdatePasswordFields from '../../components/forms/update-password-fields'
 import FormActionButtons from '../../components/forms/form-action-buttons'
-import {isServer} from '../../utils/utils'
-import {useCustomerOrders} from '@salesforce/commerce-sdk-react/hooks'
 
 /**
  * This is a specialized Skeleton component that which uses the customers authtype as the
@@ -56,13 +54,6 @@ const ProfileCard = () => {
     const customer = useCustomer()
     const toast = useToast()
     const [isEditing, setIsEditing] = useState(false)
-
-    const {data: {data: orders, ...paging} = {}, isLoading} = useCustomerOrders(
-        {
-            parameters: {customerId: customer.customerId, limit: 10, offset: 0}
-        },
-        {enabled: !isServer && !!customer.customerId}
-    )
 
     const form = useForm({
         defaultValues: {
@@ -189,17 +180,6 @@ const ProfileCard = () => {
                             </Text>
                         </Skeleton>
                     </Box>
-                    {!isLoading && <Box>
-                        <Skeleton height="21px" width="80px" marginBottom={2}>
-                            <Text fontSize="sm" fontWeight="bold">
-                                Orders Placed
-                            </Text>
-                        </Skeleton>
-
-                        <Skeleton height="21px" width="120px">
-                            <Text fontSize="sm">{orders.length}</Text>
-                        </Skeleton>
-                    </Box>}
                 </SimpleGrid>
             </ToggleCardSummary>
         </ToggleCard>
