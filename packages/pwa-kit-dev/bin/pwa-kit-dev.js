@@ -455,8 +455,14 @@ const main = async () => {
                 "the 'name' key from package.json"
             )
         )
+        .addOption(
+            new program.Option(
+                '--logs-origin <origin>',
+                'the logs API origin to connect to (defaults to cloud origin with "cloud" replaced by "logs")'
+            )
+        )
         .requiredOption('-e, --environment <environmentSlug>', 'the environment slug')
-        .action(async ({project, environment, cloudOrigin, credentialsFile, user, key}) => {
+        .action(async ({project, environment, cloudOrigin, logsOrigin, credentialsFile, user, key}) => {
             if (!project) {
                 project = await getProjectName()
             }
@@ -479,7 +485,9 @@ const main = async () => {
 
             const token = await client.createLoggingToken(project, environment)
 
-            const url = new URL(cloudOrigin.replace('cloud', 'logs'))
+            // Use custom logs origin if provided, otherwise derive from cloud origin
+            const logsBaseUrl = logsOrigin || cloudOrigin.replace('cloud', 'logs')
+            const url = new URL(logsBaseUrl)
             url.protocol = 'wss'
             url.search = new URLSearchParams({
                 project,
