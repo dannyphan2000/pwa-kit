@@ -13,7 +13,7 @@
  * - assets/bootstrap/js/overrides/app/components/_app-config
  * - assets/templates/@salesforce/retail-react-app/app/components/_app-config
  */
-import React from 'react'
+import React, {useMemo} from 'react'
 import PropTypes from 'prop-types'
 import {ChakraProvider} from '@salesforce/retail-react-app/app/components/shared/ui'
 
@@ -78,47 +78,57 @@ const AppConfig = ({children, locals = {}}) => {
     const baseUrl = proxy.split(MOBIFY_PATH)[0]
     const privateClientEndpoint = `${baseUrl}${SLAS_PRIVATE_PROXY_PATH}`
 
-    const apiConfigs = {
-        shopperBaskets: {
-            sdkClass: ShopperBaskets
+    const {clientId, organizationId, shortCode} = commerceApiConfig.parameters
+
+    const {enablePWAKitPrivateClient} = commerceApiConfig
+
+    const siteId = locals.site?.id
+    const locale = locals.locale?.id
+    const currency = locals.locale?.preferredCurrency
+
+    const config = {
+        proxy,
+        headers: {
+            ...headers,
         },
-        shopperContexts: {
-            sdkClass: ShopperContexts
+        parameters: {
+            clientId,
+            organizationId,
+            shortCode,
+            siteId,
+            locale,
+            currency
         },
-        shopperCustomers: {
-            sdkClass: ShopperCustomers
-        },
-        shopperExperience: {
-            sdkClass: ShopperExperience
-        },
-        shopperGiftCertificates: {
-            sdkClass: ShopperGiftCertificates
-        },
-        shopperLogin: {
-            sdkClass: ShopperLogin,
-            config: {
-                proxy: commerceApiConfig.enablePWAKitPrivateClient ? privateClientEndpoint : proxy
-            }
-        },
-        shopperOrders: {
-            sdkClass: ShopperOrders
-        },
-        shopperProducts: {
-            sdkClass: ShopperProducts
-        },
-        shopperPromotions: {
-            sdkClass: ShopperPromotions
-        },
-        shopperSearch: {
-            sdkClass: ShopperSearch
-        },
-        shopperSeo: {
-            sdkClass: ShopperSeo
-        },
-        shopperStores: {
-            sdkClass: ShopperStores
-        }
     }
+
+    const apiClients = useMemo(() => {
+        return {
+            shopperBaskets: new ShopperBaskets(config),
+            shopperContexts: new ShopperContexts(config),
+            shopperCustomers: new ShopperCustomers(config),
+            shopperExperience: new ShopperExperience(config),
+            shopperGiftCertificates: new ShopperGiftCertificates(config),
+            shopperLogin: new ShopperLogin({
+                ...config,
+                proxy: enablePWAKitPrivateClient ? privateClientEndpoint : config.proxy
+            }),
+            shopperOrders: new ShopperOrders(config),
+            shopperProducts: new ShopperProducts(config),
+            shopperPromotions: new ShopperPromotions(config),
+            shopperSearch: new ShopperSearch(config),
+            shopperSeo: new ShopperSeo(config),
+            shopperStores: new ShopperStores(config)
+        }
+    }, [
+        clientId,
+        organizationId,
+        shortCode,
+        siteId,
+        proxy,
+        locale,
+        currency,
+        headers?.['correlation-id']
+    ])
 
     return (
         <CommerceApiProvider
@@ -134,7 +144,7 @@ const AppConfig = ({children, locals = {}}) => {
             headers={headers}
             defaultDnt={DEFAULT_DNT_STATE}
             logger={createLogger({packageName: 'commerce-sdk-react'})}
-            apiConfigs={apiConfigs}
+            apiClients={apiClients}
         >
             <MultiSiteProvider site={locals.site} locale={locals.locale} buildUrl={locals.buildUrl}>
                 <ChakraProvider theme={theme}>{children}</ChakraProvider>

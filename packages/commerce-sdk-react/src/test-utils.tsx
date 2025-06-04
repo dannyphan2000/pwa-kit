@@ -33,7 +33,6 @@ export const DEFAULT_TEST_CONFIG = {
     locale: 'en-US',
     currency: 'USD',
     fetchedToken: 'test-token',
-    apiConfigs: {}
 }
 
 export const createQueryClient = () => {
