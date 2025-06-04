@@ -129,7 +129,7 @@ class CommerceAPI {
                 ...self._sdkInstances,
                 [key]: withParameterInjection(sdkClient, {
                     props: this._config,
-                    transformer: (_, methodName, options) => {
+                    transformer: async (_, methodName, options) => {
                         const {fetchOptions = {}} = options
                         if (fetchOptions.ignoreHooks) {
                             return options
@@ -158,9 +158,11 @@ class CommerceAPI {
                             ...fetchOptions?.parameters
                         }
 
+                        await self.auth.ready()
+
                         // Handle auth logic (replacing willSendRequest functionality)
                         let dwsidHeader = {}
-                        const dwsid = this.auth.get('dwsid')
+                        const dwsid = self.auth.get('dwsid')
                         if (dwsid) {
                             dwsidHeader = {
                                 [DWSID_HEADER_KEY]: dwsid
@@ -184,7 +186,7 @@ class CommerceAPI {
                             }
                         }
 
-                        const token = this.auth.get('access_token')
+                        const token = self.auth.get('access_token')
 
                         return {
                             ...options,
