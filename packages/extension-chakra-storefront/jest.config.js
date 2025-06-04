@@ -19,6 +19,7 @@ module.exports = {
         '<rootDir>/src/components/hero/**/*.test.js',
         '<rootDir>/src/components/image-gallery/**/*.test.js',
         '<rootDir>/src/components/display-price/**/*.test.js',
+        '<rootDir>/src/components/nested-accordion/**/*.test.js',
         '<rootDir>/src/components/product-scroller/**/*.test.js',
         '<rootDir>/src/components/product-tile/**/*.test.js',
         '<rootDir>/src/components/quantity-picker/**/*.test.js',

@@ -14,9 +14,11 @@ import {Link as RouteLink, useHistory} from 'react-router-dom'
 import {
     Button,
     Flex,
-    Text
-    // TODO: Select component needs to be migrated to v3 compound pattern
-    // For now, we'll use a simple approach without Select
+    NativeSelect,
+    Text,
+
+    //Hooks
+    useSlotRecipe
 } from '@chakra-ui/react'
 
 // Icons
@@ -39,18 +41,20 @@ const Pagination = (props) => {
     const prev = urls[currentIndex - 1]
     const next = urls[currentIndex + 1]
 
+    const recipe = useSlotRecipe({key: 'pagination'})
+    const styles = recipe()
+
     // Determine the current page index.
     return (
         <Flex
             data-testid="sf-pagination"
             className="sf-pagination"
-            justifyContent="center"
-            alignItems="center"
+            css={styles.container}
             {...rest}
         >
             {/* Previous Button */}
             <Button
-                fontSize="sm"
+                css={styles.button}
                 as={RouteLink}
                 // Because we are using a button component as a link, the isDisabled flag isn't working
                 // as intended, the workaround is to use the current url when its disabled.
@@ -75,25 +79,41 @@ const Pagination = (props) => {
 
             {/* Direct Page Selection */}
             <Flex paddingLeft={4} paddingRight={4} alignItems="center">
-                {/* TODO: Migrate to Chakra UI v3 Select compound component pattern in separate PR */}
-                {/* For now, showing simple page indicator */}
-                <Text fontSize="sm" fontWeight="normal">
+                <NativeSelect.Root css={styles.text}>
+                    <NativeSelect.Field
+                        id={SELECT_ID}
+                        onChange={(e) => {
+                            history.push(e.target.value)
+                        }}
+                        value={currentURL}
+                        height={11}
+                        aria-label={intl.formatMessage({
+                            id: 'pagination.field.page_number_select',
+                            defaultMessage: 'Select page number'
+                        })}
+                    >
+                        {urls.map((href, index) => (
+                            <option key={index} value={href}>
+                                {index + 1}
+                            </option>
+                        ))}
+                    </NativeSelect.Field>
+                    <NativeSelect.Indicator />
+                </NativeSelect.Root>
+                <Text css={styles.text}>
                     {intl.formatMessage(
                         {
-                            id: 'pagination.current_page_info',
-                            defaultMessage: 'Page {currentPage} of {totalPages}'
+                            id: 'pagination.field.num_of_pages',
+                            defaultMessage: 'of {numOfPages}'
                         },
-                        {
-                            currentPage: currentIndex + 1,
-                            totalPages: urls.length
-                        }
+                        {numOfPages: urls.length}
                     )}
                 </Text>
             </Flex>
 
             {/* Next Button */}
             <Button
-                fontSize="sm"
+                css={styles.button}
                 as={RouteLink}
                 // Because we are using a button component as a link, the isDisabled flag isn't working
                 // as intended, the workaround is to use the current url when its disabled.
