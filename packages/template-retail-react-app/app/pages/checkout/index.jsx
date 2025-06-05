@@ -78,7 +78,7 @@ const Checkout = () => {
     }
 
     return (
-        <APIProvider apiKey={"AIzaSyAteZqkiezxcMTDEGIHt2QAhqTJ1f4qBX4"}>
+        <APIProvider apiKey={"YOUR_API_KEY"}>
             <Box background="gray.50" flex="1">
                 <Container
                     data-testid="sf-checkout-container"
