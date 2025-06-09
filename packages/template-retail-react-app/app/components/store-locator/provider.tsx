@@ -8,7 +8,6 @@
 import React, {useState, createContext, ReactNode} from 'react'
 
 export interface StoreLocatorConfig {
-    path?: string
     radius?: number
     radiusUnit?: string
     defaultPageSize?: number
