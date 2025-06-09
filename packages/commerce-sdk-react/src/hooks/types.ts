@@ -88,7 +88,7 @@ export interface ApiClients {
     shopperCustomers?: ShopperCustomers<ApiClientConfigParams>
     shopperExperience?: ShopperExperience<ApiClientConfigParams>
     shopperGiftCertificates?: ShopperGiftCertificates<ApiClientConfigParams>
-    shopperLogin: ShopperLogin<ApiClientConfigParams>
+    shopperLogin?: ShopperLogin<ApiClientConfigParams>
     shopperOrders: ShopperOrders<ApiClientConfigParams>
     shopperProducts: ShopperProducts<ApiClientConfigParams>
     shopperPromotions: ShopperPromotions<ApiClientConfigParams>
