@@ -185,23 +185,6 @@ export const REMOVE_UNAVAILABLE_CART_ITEM_DIALOG_CONFIG = {
     onPrimaryAction: noop
 }
 
-export const STORE_LOCATOR_SUPPORTED_COUNTRIES = [
-    {
-        countryCode: 'US',
-        countryName: 'United States'
-    },
-    {
-        countryCode: 'DE',
-        countryName: 'Germany'
-    }
-]
-export const STORE_LOCATOR_DEFAULT_POSTAL_CODE = '10178'
-export const STORE_LOCATOR_RADIUS = 100
-export const STORE_LOCATOR_RADIUS_UNIT = 'km'
-export const STORE_LOCATOR_DEFAULT_COUNTRY = 'DE'
-export const STORE_LOCATOR_DEFAULT_COUNTRY_CODE = 'DE'
-export const STORE_LOCATOR_DEFAULT_PAGE_SIZE = 10
-
 export const STORE_LOCATOR_IS_ENABLED = true
 
 export const DEFAULT_DNT_STATE = true
