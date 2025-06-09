@@ -15,6 +15,7 @@ import ProductView from '@salesforce/retail-react-app/app/components/product-vie
 import {renderWithProviders} from '@salesforce/retail-react-app/app/utils/test-utils'
 import userEvent from '@testing-library/user-event'
 import {useCurrentCustomer} from '@salesforce/retail-react-app/app/hooks/use-current-customer'
+import frMessages from '@salesforce/retail-react-app/app/static/translations/compiled/fr-FR.json'
 
 const MockComponent = (props) => {
     const {data: customer} = useCurrentCustomer()
@@ -345,4 +346,27 @@ test('renders a product bundle properly - child item', () => {
     expect(addToCartButton).toBeNull()
     expect(addToWishlistButton).toBeNull()
     expect(quantityPicker).toBeNull()
+})
+
+test('renders "Add to Cart" and "Add to Wishlist" buttons in French', async () => {
+    const addToCart = jest.fn()
+    const addToWishlist = jest.fn()
+    renderWithProviders(
+        <MockComponent
+            product={mockProductDetail}
+            addToCart={addToCart}
+            addToWishlist={addToWishlist}
+        />, {
+            wrapperProps: {locale: {id: 'fr-FR'}, messages: frMessages}
+        }
+    )
+    // Wait for at least one product title to be rendered
+    const titles = await screen.findAllByText(/Black Single Pleat Athletic Fit Wool Suit/i)
+    expect(titles.length).toBeGreaterThan(0)
+    // Check Add to Cart button in French
+    expect(screen.getByRole('button', {name: /ajouter au panier/i})).toBeInTheDocument()
+    // Check Add to Wishlist button in French
+    expect(
+        screen.getByRole('button', {name: /ajouter à la liste de souhaits/i})
+    ).toBeInTheDocument()
 })
