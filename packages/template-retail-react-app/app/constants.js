@@ -201,7 +201,6 @@ export const STORE_LOCATOR_SUPPORTED_COUNTRIES = [
         })
     }
 ]
-
 export const STORE_LOCATOR_COUNTRY = {
     countryCode: 'DE',
     countryName: defineMessage({

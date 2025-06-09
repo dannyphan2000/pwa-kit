@@ -72,6 +72,7 @@ const AppConfig = ({children, locals = {}}) => {
         defaultCountry: STORE_LOCATOR_DEFAULT_COUNTRY,
         defaultCountryCode: STORE_LOCATOR_DEFAULT_COUNTRY_CODE,
         defaultPostalCode: STORE_LOCATOR_DEFAULT_POSTAL_CODE,
+        defaultPageSize: STORE_LOCATOR_DEFAULT_PAGE_SIZE,
         supportedCountries: STORE_LOCATOR_SUPPORTED_COUNTRIES
     }
 
