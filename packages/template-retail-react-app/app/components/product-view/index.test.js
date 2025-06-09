@@ -356,7 +356,8 @@ test('renders "Add to Cart" and "Add to Wishlist" buttons in French', async () =
             product={mockProductDetail}
             addToCart={addToCart}
             addToWishlist={addToWishlist}
-        />, {
+        />,
+        {
             wrapperProps: {locale: {id: 'fr-FR'}, messages: frMessages}
         }
     )
