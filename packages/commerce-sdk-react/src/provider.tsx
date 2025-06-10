@@ -202,9 +202,15 @@ const CommerceApiProvider = (props: CommerceApiProviderProps): ReactElement => {
         if (apiClients) {
             const clients: Record<string, any> = {}
 
+            // transformSDKClient is simply a utility function that wraps the SDK Client instance
+            // in a Proxy that allows us to transform the method arguments and modify headers, parameters, and other options.
+            // We don't really need to pass in the children prop to the transformer function, so we'll just pass in the rest of the props.
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const {children, ...restProps} = props
+
             Object.entries(apiClients ?? {}).forEach(([key, apiClient]) => {
                 clients[key] = transformSDKClient(apiClient, {
-                    props,
+                    props: restProps,
                     transformer: _defaultTransformer
                 })
             })

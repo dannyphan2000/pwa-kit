@@ -47,8 +47,7 @@ describe('Utils', () => {
 
             mockConfig = {
                 props: {
-                    ...DEFAULT_TEST_CONFIG,
-                    children: null
+                    ...DEFAULT_TEST_CONFIG
                 },
                 transformer: jest.fn((params, methodName, options) => options),
                 onError: jest.fn()
@@ -101,10 +100,8 @@ describe('Utils', () => {
 
             await proxiedClient.getBasket(originalOptions)
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const {children, ...expectedParams} = mockConfig.props
             expect(mockConfig.transformer).toHaveBeenCalledWith(
-                expectedParams,
+                mockConfig.props,
                 'getBasket',
                 originalOptions
             )
@@ -157,8 +154,7 @@ describe('Utils', () => {
         test('should work without optional callbacks', async () => {
             const configWithoutCallbacks = {
                 props: {
-                    ...DEFAULT_TEST_CONFIG,
-                    children: null
+                    ...DEFAULT_TEST_CONFIG
                 }
             }
 
@@ -170,8 +166,7 @@ describe('Utils', () => {
         test('should work without transformer', async () => {
             const configWithoutTransformer = {
                 props: {
-                    ...DEFAULT_TEST_CONFIG,
-                    children: null
+                    ...DEFAULT_TEST_CONFIG
                 },
                 onError: jest.fn()
             }
@@ -208,27 +203,25 @@ describe('Utils', () => {
             expect(result).toBe('test-data')
         })
 
-        test('should extract props correctly excluding children', () => {
-            const propsWithChildren = {
+        test('should pass props correctly to transformer', () => {
+            const propsWithCustom = {
                 ...DEFAULT_TEST_CONFIG,
-                children: 'Test Child' as any,
                 customProp: 'custom-value'
             }
 
-            const configWithChildren = {
-                props: propsWithChildren,
+            const configWithCustomProps = {
+                props: propsWithCustom,
                 transformer: jest.fn((params) => {
-                    expect(params).not.toHaveProperty('children')
                     expect(params).toHaveProperty('customProp', 'custom-value')
                     return {}
                 })
             }
 
-            const proxiedClient = utils.transformSDKClient(mockClient, configWithChildren)
+            const proxiedClient = utils.transformSDKClient(mockClient, configWithCustomProps)
 
             proxiedClient.getBasket({})
 
-            expect(configWithChildren.transformer).toHaveBeenCalled()
+            expect(configWithCustomProps.transformer).toHaveBeenCalled()
         })
     })
 })

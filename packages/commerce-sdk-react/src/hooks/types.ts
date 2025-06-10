@@ -237,7 +237,7 @@ export type SDKClientTransformer<T> = (
 export type ErrorCallback<TParams> = (methodName: string, error: any, params: TParams) => void
 
 export interface SDKClientTransformConfig<TParams = Record<string, any>> {
-    props: CommerceApiProviderProps
+    props: Omit<CommerceApiProviderProps, 'children'>
     transformer?: SDKClientTransformer<TParams>
     onError?: ErrorCallback<TParams>
 }

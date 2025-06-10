@@ -176,9 +176,6 @@ export const transformSDKClient = <T extends Record<string, (...args: any[]) => 
 ): T => {
     const {props, transformer, onError} = config
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const {children, ...params} = props
-
     return new Proxy(client, {
         get(target, methodName: string) {
             const originalMethod = target[methodName]
@@ -190,7 +187,7 @@ export const transformSDKClient = <T extends Record<string, (...args: any[]) => 
             return async function (options: any = {}) {
                 try {
                     if (transformer) {
-                        options = await Promise.resolve(transformer(params, methodName, options))
+                        options = await Promise.resolve(transformer(props, methodName, options))
                     }
 
                     return await originalMethod.call(target, options)
