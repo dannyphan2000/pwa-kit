@@ -8,9 +8,9 @@
 import React from 'react'
 import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import {StoreLocatorForm} from './form'
-import {useStoreLocator} from './use-store-locator'
-import {useGeolocation} from './use-geo-location'
+import {StoreLocatorForm} from '@salesforce/retail-react-app/app/components/store-locator/form'
+import {useStoreLocator} from '@salesforce/retail-react-app/app/components/store-locator/use-store-locator'
+import {useGeolocation} from '@salesforce/retail-react-app/app/components/store-locator/use-geo-location'
 
 jest.mock('./use-store-locator', () => ({
     useStoreLocator: jest.fn()

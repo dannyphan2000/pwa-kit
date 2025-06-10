@@ -7,9 +7,9 @@
 
 import React, {useEffect, useState} from 'react'
 import {Accordion, AccordionItem, Box, Button} from '@chakra-ui/react'
-import {StoreLocatorListItem} from './list-item'
-import {useStoreLocator} from './use-store-locator'
-import {Stores, Store} from './types'
+import {StoreLocatorListItem} from '@salesforce/retail-react-app/app/components/store-locator/list-item'
+import {useStoreLocator} from '@salesforce/retail-react-app/app/components/store-locator/use-store-locator'
+import {Stores, Store} from '@salesforce/retail-react-app/app/components/store-locator/types'
 
 interface StoreLocatorListProps {
     storesInfo?: Stores

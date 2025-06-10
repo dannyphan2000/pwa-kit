@@ -7,7 +7,7 @@
 
 import React from 'react'
 import {AccordionItem, AccordionButton, AccordionIcon, AccordionPanel, Box} from '@chakra-ui/react'
-import {Store} from '../types/store'
+import {Store} from '@salesforce/retail-react-app/app/components/store-locator/types'
 
 interface StoreLocatorListItemProps {
     store: Store

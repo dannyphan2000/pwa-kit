@@ -13,7 +13,7 @@ import {
     ModalContent,
     useBreakpointValue
 } from '@chakra-ui/react'
-import {StoreLocator} from './main'
+import {StoreLocator} from '@salesforce/retail-react-app/app/components/store-locator/main'
 
 interface StoreLocatorModalProps {
     isOpen: boolean

@@ -7,9 +7,9 @@
 
 import React from 'react'
 
-import {StoreLocatorList} from './list'
-import {StoreLocatorForm} from './form'
-import {StoreLocatorHeading} from './heading'
+import {StoreLocatorList} from '@salesforce/retail-react-app/app/components/store-locator/list'
+import {StoreLocatorForm} from '@salesforce/retail-react-app/app/components/store-locator/form'
+import {StoreLocatorHeading} from '@salesforce/retail-react-app/app/components/store-locator/heading'
 
 export const StoreLocator = (): JSX.Element => {
     return (

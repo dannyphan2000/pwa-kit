@@ -7,7 +7,7 @@
 import React from 'react'
 import {screen} from '@testing-library/react'
 import {renderWithProviders} from '@salesforce/retail-react-app/app/utils/test-utils'
-import {StoreLocatorModal} from './modal'
+import {StoreLocatorModal} from '@salesforce/retail-react-app/app/components/store-locator/modal'
 
 const mockUseBreakpointValue = jest.fn()
 jest.mock('@chakra-ui/react', () => {

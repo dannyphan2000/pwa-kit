@@ -6,7 +6,11 @@
  */
 
 import React, {useState, createContext} from 'react'
-import {StoreLocatorContextValue, StoreLocatorState, StoreLocatorProviderProps} from './types'
+import {
+    StoreLocatorContextValue,
+    StoreLocatorState,
+    StoreLocatorProviderProps
+} from '@salesforce/retail-react-app/app/components/store-locator/types'
 export const StoreLocatorContext = createContext<StoreLocatorContextValue | null>(null)
 
 export const StoreLocatorProvider: React.FC<StoreLocatorProviderProps> = ({config, children}) => {

@@ -8,7 +8,7 @@ import React from 'react'
 import {screen} from '@testing-library/react'
 import {Accordion} from '@chakra-ui/react'
 import {renderWithProviders} from '@salesforce/retail-react-app/app/utils/test-utils'
-import {StoreLocatorListItem} from './list-item'
+import {StoreLocatorListItem} from '@salesforce/retail-react-app/app/components/store-locator/list-item'
 
 describe('StoreLocatorListItem', () => {
     const mockStore = {

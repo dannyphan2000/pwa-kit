@@ -7,7 +7,7 @@
 
 import React from 'react'
 import {render, screen} from '@testing-library/react'
-import {StoreLocator} from './main'
+import {StoreLocator} from '@salesforce/retail-react-app/app/components/store-locator/main'
 
 jest.mock('./list', () => ({
     StoreLocatorList: () => <div data-testid="store-locator-list">Store List Mock</div>

@@ -13,7 +13,7 @@
 
 import React from 'react'
 import {render, screen} from '@testing-library/react'
-import StoreLocatorPage from './index'
+import StoreLocatorPage from '@salesforce/retail-react-app/app/pages/store-locator/index'
 
 jest.mock('@salesforce/retail-react-app/app/components/store-locator', () => ({
     StoreLocator: () => <div data-testid="mock-store-locator-content">Mock Content</div>

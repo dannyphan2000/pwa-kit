@@ -6,7 +6,10 @@
  */
 import React from 'react'
 import {render, act} from '@testing-library/react'
-import {StoreLocatorProvider, StoreLocatorContext} from './provider'
+import {
+    StoreLocatorProvider,
+    StoreLocatorContext
+} from '@salesforce/retail-react-app/app/components/store-locator/provider'
 
 describe('StoreLocatorProvider', () => {
     const mockConfig = {

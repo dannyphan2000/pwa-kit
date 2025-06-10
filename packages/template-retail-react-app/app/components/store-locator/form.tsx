@@ -16,14 +16,14 @@ import {
     Input
 } from '@chakra-ui/react'
 import {useForm, Controller} from 'react-hook-form'
-import {useStoreLocator} from './use-store-locator'
-import type {FormValues} from './provider'
-import {useGeolocation} from './use-geo-location'
+import {useStoreLocator} from '@salesforce/retail-react-app/app/components/store-locator/use-store-locator'
+import {useGeolocation} from '@salesforce/retail-react-app/app/components/store-locator/use-geo-location'
+import type {StoreLocatorFormValues} from '@salesforce/retail-react-app/app/components/store-locator/types'
 
 export const StoreLocatorForm: React.FC = () => {
     const {config, formValues, setFormValues, setDeviceCoordinates} = useStoreLocator()
     const {coordinates, error, refresh} = useGeolocation()
-    const form = useForm<FormValues>({
+    const form = useForm<StoreLocatorFormValues>({
         mode: 'onChange',
         reValidateMode: 'onChange',
         defaultValues: {
@@ -40,7 +40,7 @@ export const StoreLocatorForm: React.FC = () => {
 
     const showCountrySelector = config.supportedCountries.length > 0
 
-    const submitForm = (formValues: FormValues) => {
+    const submitForm = (formValues: StoreLocatorFormValues) => {
         setFormValues(formValues)
     }
 

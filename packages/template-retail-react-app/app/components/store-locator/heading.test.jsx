@@ -7,7 +7,7 @@
 
 import React from 'react'
 import {render, screen} from '@testing-library/react'
-import {StoreLocatorHeading} from './heading'
+import {StoreLocatorHeading} from '@salesforce/retail-react-app/app/components/store-locator/heading'
 
 describe('StoreLocatorHeading', () => {
     test('renders heading with correct text', () => {

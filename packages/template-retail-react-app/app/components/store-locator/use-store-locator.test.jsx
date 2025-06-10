@@ -5,8 +5,8 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 import {renderHook, act} from '@testing-library/react'
-import {useStoreLocator} from './use-store-locator'
-import {StoreLocatorProvider} from './provider'
+import {useStoreLocator} from '@salesforce/retail-react-app/app/components/store-locator/use-store-locator'
+import {StoreLocatorProvider} from '@salesforce/retail-react-app/app/components/store-locator/provider'
 import {useSearchStores} from '@salesforce/commerce-sdk-react'
 import React from 'react'
 

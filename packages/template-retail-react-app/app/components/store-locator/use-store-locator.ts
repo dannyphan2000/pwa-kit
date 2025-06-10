@@ -7,8 +7,12 @@
 
 import {useContext} from 'react'
 import {useSearchStores} from '@salesforce/commerce-sdk-react'
-import {StoreLocatorContext} from './provider'
-import type {StoreLocatorState, StoreLocatorFormValues, StoreLocatorDeviceCoordinates} from './types'
+import {StoreLocatorContext} from '@salesforce/retail-react-app/app/components/store-locator/provider'
+import type {
+    StoreLocatorState,
+    StoreLocatorFormValues,
+    StoreLocatorDeviceCoordinates
+} from '@salesforce/retail-react-app/app/components/store-locator/types'
 
 interface StoreLocatorActions {
     setFormValues: (formValues: StoreLocatorFormValues) => void
