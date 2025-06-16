@@ -59,7 +59,7 @@ const PasswordlessEmailConfirmation = ({form, submitForm, email = ''}) => {
                         </Text>
                     </Stack>
                 </Stack>
-                <Button type="submit" aria-label={`Resend login link to ${email}`}>
+                <Button type="submit">
                     <FormattedMessage
                         defaultMessage="Resend Link"
                         id="auth_modal.check_email.button.resend_link"
