@@ -37,7 +37,7 @@ const PasswordlessLogin = ({
         }
     }
 
-    const handleSingleUseCodeButton = async (e) => {
+    const handleOtpButton = async (e) => {
         setLoginType(LOGIN_TYPES.OTP)
         const isValid = await form.trigger()
         // Manually trigger the browser native form validations
@@ -81,7 +81,7 @@ const PasswordlessLogin = ({
                     </Text>
                     <Stack spacing={4}>
                         <Button
-                            onClick={handleSingleUseCodeButton}
+                            onClick={handleOtpButton}
                             borderColor="gray.500"
                             color="blue.600"
                             variant="outline"
