@@ -8,7 +8,20 @@
 import React, {useState, useRef, useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {FormattedMessage, useIntl} from 'react-intl'
-import {Button, Divider, Stack, Text, Input, FormControl, FormLabel, FormErrorMessage, HStack, Alert, AlertIcon} from '@salesforce/retail-react-app/app/components/shared/ui'
+import {
+    Button,
+    Divider,
+    Stack,
+    Text,
+    Input,
+    FormControl,
+    FormLabel,
+    FormErrorMessage,
+    HStack,
+    Alert,
+    AlertIcon,
+    SimpleGrid
+} from '@salesforce/retail-react-app/app/components/shared/ui'
 import LoginFields from '@salesforce/retail-react-app/app/components/forms/login-fields'
 import StandardLogin from '@salesforce/retail-react-app/app/components/standard-login'
 import SocialLogin from '@salesforce/retail-react-app/app/components/social-login'
@@ -38,6 +51,7 @@ const PasswordlessLogin = ({
     }
 
     const handleOtpButton = async (e) => {
+        console.log("handleOtpButton");
         setLoginType(LOGIN_TYPES.OTP)
         const isValid = await form.trigger()
         // Manually trigger the browser native form validations
@@ -129,14 +143,13 @@ const PasswordlessLogin = ({
 }
 
 const OtpForm = ({form, setShowOtpView}) => {
-    const [otpValues, setOtpValues] = useState(['', '', '', ''])
+    const [otpValues, setOtpValues] = useState(['', '', '', '', '', '', '', ''])
     const [resendTimer, setResendTimer] = useState(0)
     const inputRefs = useRef([])
-    const {formatMessage} = useIntl()
 
     // Initialize refs array
     useEffect(() => {
-        inputRefs.current = inputRefs.current.slice(0, 4)
+        inputRefs.current = inputRefs.current.slice(0, 8)
     }, [])
 
     // Handle resend timer
@@ -160,7 +173,7 @@ const OtpForm = ({form, setShowOtpView}) => {
         form.setValue('otp', otpString)
 
         // Auto-focus next input
-        if (value && index < 3) {
+        if (value && index < 7) {
             inputRefs.current[index + 1]?.focus()
         }
     }
@@ -174,12 +187,12 @@ const OtpForm = ({form, setShowOtpView}) => {
 
     const handlePaste = (e) => {
         e.preventDefault()
-        const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 4)
-        if (pastedData.length === 4) {
+        const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 8)
+        if (pastedData.length === 8) {
             const newOtpValues = pastedData.split('')
             setOtpValues(newOtpValues)
-            // form.setValue('otp', pastedData)
-            inputRefs.current[3]?.focus()
+            form.setValue('otp', pastedData)
+            inputRefs.current[7]?.focus()
         }
     }
 
@@ -196,159 +209,108 @@ const OtpForm = ({form, setShowOtpView}) => {
         }
     }
 
-    const handleSendEmail = async () => {
-        setSendEmail(true)
-        try {
-            // Trigger the passwordless login flow again to resend the code
-            // await form.handleSubmit(() => {
-            //     // This will trigger the passwordless login API call
-            //     return Promise.resolve()
-            // })()
-            setResendTimer(60) // Start 60 second countdown
-        } catch (error) {
-            console.error('Error resending code:', error)
-        }
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        const otpString = otpValues.join('')
-        
-        if (otpString.length !== 4) {
-            form.setError('otp', {
-                type: 'manual',
-                message: formatMessage({
-                    defaultMessage: 'Please enter the 4-digit code',
-                    id: 'otp.error.incomplete_code'
-                })
-            })
-            return
-        }
-
-        // Clear any existing errors
-        form.clearErrors('otp')
-        
-        // Submit the form with the OTP code
-        // await form.handleSubmit(() => {
-        //     // The form submission will be handled by the parent component
-        //     return Promise.resolve()
-        // })()
-    }
-
     return (
-        <form onSubmit={handleSubmit}>
-            <Stack spacing={8} paddingLeft={4} paddingRight={4}>
-                <Stack spacing={4}>
-                    <Text align="center" fontSize="lg" fontWeight="semibold">
-                        <FormattedMessage
-                            defaultMessage="Enter Verification Code"
-                            id="otp.title.enter_verification_code"
+        <Stack spacing={8} paddingLeft={4} paddingRight={4}>
+            <Stack spacing={4}>
+                <Text align="center" fontSize="lg" fontWeight="semibold">
+                    <FormattedMessage
+                        defaultMessage="Enter Verification Code"
+                        id="otp.title.enter_verification_code"
+                    />
+                </Text>
+                <Text align="center" fontSize="sm" color="gray.600">
+                    <FormattedMessage
+                        defaultMessage="We've sent an 8-digit code to your email {email}"
+                        values={{email: form.getValues('email')}}
+                        id="otp.message.code_sent"
+                    />
+                </Text>
+            </Stack>
+
+            <Stack spacing={4}>
+                <SimpleGrid columns={8} spacing={2}>
+                    {otpValues.map((value, index) => (
+                        <Input
+                            key={index}
+                            ref={(el) => (inputRefs.current[index] = el)}
+                            value={value}
+                            onChange={(e) => handleOtpChange(index, e.target.value)}
+                            onKeyDown={(e) => handleKeyDown(index, e)}
+                            onPaste={handlePaste}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            textAlign="center"
+                            fontSize="md"
+                            fontWeight="bold"
+                            size="sm"
+                            width="36px"
+                            height="42px"
+                            borderRadius="md"
+                            borderColor='gray.300'
+                            _focus={{
+                                borderColor: 'blue.500',
+                                boxShadow: '0 0 0 1px var(--chakra-colors-blue-500)'
+                            }}
+                            _hover={{
+                                borderColor: 'gray.400'
+                            }}
                         />
-                    </Text>
-                    <Text align="center" fontSize="sm" color="gray.600">
-                        <FormattedMessage
-                            defaultMessage="We've sent a 4-digit code to your email {email}"
-                            values={{email: form.getValues('email')}}
-                            id="otp.message.code_sent"
-                        />
-                    </Text>
-                </Stack>
+                    ))}
+                </SimpleGrid>
+            </Stack>
 
-                <Stack spacing={4}>
-                    <FormControl isInvalid={!!form.formState.errors.otp}>
-                        <FormLabel>
-                            <FormattedMessage
-                                defaultMessage="Verification Code"
-                                id="otp.label.verification_code"
-                            />
-                        </FormLabel>
-                        <HStack spacing={3} justify="center">
-                            {otpValues.map((value, index) => (
-                                <Input
-                                    key={index}
-                                    ref={(el) => (inputRefs.current[index] = el)}
-                                    value={value}
-                                    onChange={(e) => handleOtpChange(index, e.target.value)}
-                                    onKeyDown={(e) => handleKeyDown(index, e)}
-                                    onPaste={handlePaste}
-                                    type="text"
-                                    inputMode="numeric"
-                                    maxLength={1}
-                                    textAlign="center"
-                                    fontSize="xl"
-                                    fontWeight="bold"
-                                    size="lg"
-                                    width="60px"
-                                    height="60px"
-                                    borderRadius="md"
-                                    borderColor={form.formState.errors.otp ? "red.500" : "gray.300"}
-                                    _focus={{
-                                        borderColor: "blue.500",
-                                        boxShadow: "0 0 0 1px var(--chakra-colors-blue-500)"
-                                    }}
-                                    _hover={{
-                                        borderColor: "gray.400"
-                                    }}
-                                />
-                            ))}
-                        </HStack>
-                        {form.formState.errors.otp && (
-                            <FormErrorMessage>
-                                {form.formState.errors.otp.message}
-                            </FormErrorMessage>
-                        )}
-                    </FormControl>
-                </Stack>
-
-                <Stack spacing={2}>
-                    <Button
-                        type="submit"
-                        isLoading={form.formState.isSubmitting}
-                        isDisabled={otpValues.join('').length !== 4}
-                    >
-                        <FormattedMessage
-                            defaultMessage="Verify & Sign In"
-                            id="otp.button.verify_sign_in"
-                        />
-                    </Button>
-
-                    <Button
-                        onClick={handleResendCode}
-                        variant="ghost"
-                        size="sm"
-                        isDisabled={resendTimer > 0}
-                        color="blue.600"
-                    >
-                        {resendTimer > 0 ? (
-                            <FormattedMessage
-                                defaultMessage="Resend code in {seconds}s"
-                                id="otp.button.resend_timer"
-                                values={{seconds: resendTimer}}
-                            />
-                        ) : (
-                            <FormattedMessage
-                                defaultMessage="Resend Code"
-                                id="otp.button.resend_code"
-                            />
-                        )}
-                    </Button>
-                </Stack>
-
-                <Divider />
-
+            <Stack spacing={2}>
                 <Button
-                    onClick={() => setShowOtpView(false)}
-                    borderColor="gray.500"
-                    color="blue.600"
-                    variant="outline"
+                    type="submit"
+                    onClick={() => {
+                        form.clearErrors('global')
+                    }}
+                    isLoading={form.formState.isSubmitting}
+                    isDisabled={otpValues.join('').length !== 8}
                 >
                     <FormattedMessage
-                        defaultMessage="Back to Sign In Options"
-                        id="login_form.button.back"
+                        defaultMessage="Verify & Sign In"
+                        id="otp.button.verify_sign_in"
                     />
                 </Button>
+
+                <Button
+                    onClick={handleResendCode}
+                    variant="ghost"
+                    size="sm"
+                    isDisabled={resendTimer > 0}
+                    color="blue.600"
+                >
+                    {resendTimer > 0 ? (
+                        <FormattedMessage
+                            defaultMessage="Resend code in {seconds}s"
+                            id="otp.button.resend_timer"
+                            values={{seconds: resendTimer}}
+                        />
+                    ) : (
+                        <FormattedMessage
+                            defaultMessage="Resend Code"
+                            id="otp.button.resend_code"
+                        />
+                    )}
+                </Button>
             </Stack>
-        </form>
+
+            <Divider />
+
+            <Button
+                onClick={() => setShowOtpView(false)}
+                borderColor="gray.500"
+                color="blue.600"
+                variant="outline"
+            >
+                <FormattedMessage
+                    defaultMessage="Back to Sign In Options"
+                    id="login_form.button.back"
+                />
+            </Button>
+        </Stack>
     )
 }
 
