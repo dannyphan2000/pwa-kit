@@ -1,3 +1,6 @@
+## v7.0.1-dev.0 (June 20, 2025)
+- Enable passwordless login for POC purposes. This changelog can be ignored. Adding to get though build. [#2611](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2611)
+
 ## v7.0.0-dev.0 (May 20, 2025)
 
 - Improved the layout of product tiles in product scroll and product list [#2446](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2446)
