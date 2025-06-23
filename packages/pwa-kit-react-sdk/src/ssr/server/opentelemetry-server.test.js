@@ -11,12 +11,6 @@
 // That conflicts with the monorepo header rule, so we must disable the rule!
 /* eslint-disable header/header */
 
-import {
-    initializeServerTracing,
-    shutdownServerTracing,
-    isServerTracingInitialized
-} from './opentelemetry-server'
-
 // Mock OpenTelemetry dependencies
 jest.mock('@opentelemetry/sdk-trace-node', () => ({
     NodeTracerProvider: jest.fn()
@@ -56,6 +50,7 @@ describe('OpenTelemetry Server Tracing', () => {
     let initializeServerTracing
     let shutdownServerTracing
     let isServerTracingInitialized
+    let getServerTracingProvider
 
     beforeEach(() => {
         // Reset all mocks
@@ -95,6 +90,13 @@ describe('OpenTelemetry Server Tracing', () => {
         mockResource.mockImplementation(() => mockResourceInstance)
         mockSimpleSpanProcessor.mockImplementation(() => mockSpanProcessorInstance)
         mockB3Propagator.mockImplementation(() => mockB3PropagatorInstance)
+
+        // Import the functions after mocks are set up
+        const opentelemetryServer = require('./opentelemetry-server')
+        initializeServerTracing = opentelemetryServer.initializeServerTracing
+        shutdownServerTracing = opentelemetryServer.shutdownServerTracing
+        isServerTracingInitialized = opentelemetryServer.isServerTracingInitialized
+        getServerTracingProvider = opentelemetryServer.getServerTracingProvider
     })
 
     afterEach(async () => {
