@@ -34,6 +34,8 @@ import {noop} from '@salesforce/retail-react-app/app/utils/utils'
 import {
     API_ERROR_MESSAGE,
     CREATE_ACCOUNT_FIRST_ERROR_MESSAGE,
+    INVALID_TOKEN_ERROR,
+    INVALID_TOKEN_ERROR_MESSAGE,
     FEATURE_UNAVAILABLE_ERROR_MESSAGE,
     LOGIN_TYPES,
     PASSWORDLESS_ERROR_MESSAGES,
@@ -92,6 +94,7 @@ export const AuthModal = ({
     const [passwordlessLoginEmail, setPasswordlessLoginEmail] = useState(initialEmail)
     const {getPasswordResetToken} = usePasswordReset()
     const authorizePasswordlessLogin = useAuthHelper(AuthHelpers.AuthorizePasswordless)
+    const loginPasswordless = useAuthHelper(AuthHelpers.LoginPasswordlessUser)
     const passwordlessConfigCallback = getConfig().app.login?.passwordless?.callbackURI
     const callbackURL = isAbsoluteURL(passwordlessConfigCallback)
         ? passwordlessConfigCallback
@@ -123,6 +126,20 @@ export const AuthModal = ({
                     ? formatMessage(CREATE_ACCOUNT_FIRST_ERROR_MESSAGE)
                     : PASSWORDLESS_ERROR_MESSAGES.some((msg) => msg.test(error.message))
                     ? formatMessage(FEATURE_UNAVAILABLE_ERROR_MESSAGE)
+                    : formatMessage(API_ERROR_MESSAGE)
+                form.setError('global', {type: 'manual', message})
+            }
+        }
+
+        const handleOtpLogin = async (token) => {
+            console.log('handleOtpLogin in use-auth-modal, token: ', token);
+            try {
+                await loginPasswordless.mutateAsync({pwdlessLoginToken: token})
+            } catch (e) {
+                console.error('e: ', e);
+                const errorData = await e.response?.json()
+                const message = INVALID_TOKEN_ERROR.test(errorData.message)
+                    ? formatMessage(INVALID_TOKEN_ERROR_MESSAGE)
                     : formatMessage(API_ERROR_MESSAGE)
                 form.setError('global', {type: 'manual', message})
             }
@@ -163,6 +180,9 @@ export const AuthModal = ({
                 } else if (loginType === LOGIN_TYPES.PASSWORDLESS) {
                     setPasswordlessLoginEmail(data.email)
                     await handlePasswordlessLogin(data.email)
+                } else if (loginType === LOGIN_TYPES.OTP) {
+                    console.log("Begin OTP login in use-auth-modal, entered otp: ", data.otp);
+                    await handleOtpLogin(data.otp)
                 }
             },
             register: async (data) => {
@@ -201,6 +221,22 @@ export const AuthModal = ({
                 await handlePasswordlessLogin(passwordlessLoginEmail)
             }
         }[currentView](data)
+    }
+    
+    const handleSendEmailOtp = async (email) => {
+        form.clearErrors('global')
+        console.log("Sending email OTP, email: ", email);
+        try {
+            await authorizePasswordlessLogin.mutateAsync({userid: email})
+        } catch (error) {
+            console.error('error: ', error);
+            const message = USER_NOT_FOUND_ERROR.test(error.message)
+                ? formatMessage(CREATE_ACCOUNT_FIRST_ERROR_MESSAGE)
+                : PASSWORDLESS_ERROR_MESSAGES.some((msg) => msg.test(error.message))
+                ? formatMessage(FEATURE_UNAVAILABLE_ERROR_MESSAGE)
+                : formatMessage(API_ERROR_MESSAGE)
+            form.setError('global', {type: 'manual', message})
+        }
     }
 
     // Reset form and local state when opening the modal
@@ -280,6 +316,9 @@ export const AuthModal = ({
     const onBackToSignInClick = () =>
         initialView === PASSWORD_VIEW ? onClose() : setCurrentView(LOGIN_VIEW)
 
+    console.log("currentView", currentView);
+    console.log("loginType", loginType);
+
     return (
         <Modal
             size="sm"
@@ -307,6 +346,8 @@ export const AuthModal = ({
                             handlePasswordlessLoginClick={() =>
                                 setLoginType(LOGIN_TYPES.PASSWORDLESS)
                             }
+                            handleOtpLoginClick={() => setLoginType(LOGIN_TYPES.OTP)}
+                            handleSendEmailOtp={handleSendEmailOtp}
                             handleForgotPasswordClick={() => setCurrentView(PASSWORD_VIEW)}
                             isPasswordlessEnabled={isPasswordlessEnabled}
                             isSocialEnabled={isSocialEnabled}
