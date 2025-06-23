@@ -107,8 +107,12 @@ const Login = ({initialView = LOGIN_VIEW}) => {
         }
     }
 
+    console.log("loginType", loginType);
+
     const submitForm = async (data) => {
         form.clearErrors()
+
+        console.log("submitForm", data);
 
         const handlePasswordlessLogin = async (email) => {
             try {
@@ -119,6 +123,20 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                     ? formatMessage(CREATE_ACCOUNT_FIRST_ERROR_MESSAGE)
                     : PASSWORDLESS_ERROR_MESSAGES.some((msg) => msg.test(error.message))
                     ? formatMessage(FEATURE_UNAVAILABLE_ERROR_MESSAGE)
+                    : formatMessage(API_ERROR_MESSAGE)
+                form.setError('global', {type: 'manual', message})
+            }
+        }
+
+        const handleOtpLogin = async (token) => {
+            console.log('handleOtpLogin in use-auth-modal, token: ', token);
+            try {
+                await loginPasswordless.mutateAsync({pwdlessLoginToken: token})
+            } catch (e) {
+                console.error('e: ', e);
+                const errorData = await e.response?.json()
+                const message = INVALID_TOKEN_ERROR.test(errorData.message)
+                    ? formatMessage(INVALID_TOKEN_ERROR_MESSAGE)
                     : formatMessage(API_ERROR_MESSAGE)
                 form.setError('global', {type: 'manual', message})
             }
@@ -140,13 +158,30 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                     setPasswordlessLoginEmail(data.email)
                     await handlePasswordlessLogin(data.email)
                 } else if (loginType === LOGIN_TYPES.OTP) {
-                    // TODO something here
+                    console.log("Begin OTP login in use-auth-modal, entered otp: ", data.otp);
+                    await handleOtpLogin(data.otp)
                 }
             },
             email: async () => {
                 await handlePasswordlessLogin(passwordlessLoginEmail)
             }
         }[currentView](data)
+    }
+
+    const handleSendEmailOtp = async (email) => {
+        form.clearErrors('global')
+        console.log("Sending email OTP, email: ", email);
+        try {
+            await authorizePasswordlessLogin.mutateAsync({userid: email})
+        } catch (error) {
+            console.error('error: ', error);
+            const message = USER_NOT_FOUND_ERROR.test(error.message)
+                ? formatMessage(CREATE_ACCOUNT_FIRST_ERROR_MESSAGE)
+                : PASSWORDLESS_ERROR_MESSAGES.some((msg) => msg.test(error.message))
+                ? formatMessage(FEATURE_UNAVAILABLE_ERROR_MESSAGE)
+                : formatMessage(API_ERROR_MESSAGE)
+            form.setError('global', {type: 'manual', message})
+        }
     }
 
     // Handles passwordless login by retrieving the 'token' from the query parameters and
@@ -191,6 +226,8 @@ const Login = ({initialView = LOGIN_VIEW}) => {
         dataCloud.sendViewPage(location.pathname)
     }, [])
 
+    console.log("currentView", currentView);
+
     return (
         <Box data-testid="login-page" bg="gray.50" py={[8, 16]}>
             <Seo title="Sign in" description="Customer sign in" />
@@ -211,6 +248,8 @@ const Login = ({initialView = LOGIN_VIEW}) => {
                         handlePasswordlessLoginClick={() => {
                             setLoginType(LOGIN_TYPES.PASSWORDLESS)
                         }}
+                        handleOtpLoginClick={() => setLoginType(LOGIN_TYPES.OTP)}
+                        handleSendEmailOtp={handleSendEmailOtp}
                         handleForgotPasswordClick={() => navigate('/reset-password')}
                         isPasswordlessEnabled={isPasswordlessEnabled}
                         isSocialEnabled={isSocialEnabled}

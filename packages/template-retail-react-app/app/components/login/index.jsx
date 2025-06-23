@@ -18,6 +18,8 @@ const LoginForm = ({
     submitForm,
     handleForgotPasswordClick,
     handlePasswordlessLoginClick,
+    handleOtpLoginClick,
+    handleSendEmailOtp,
     clickCreateAccount = noop,
     form,
     isPasswordlessEnabled = false,
@@ -55,6 +57,8 @@ const LoginForm = ({
                             form={form}
                             handleForgotPasswordClick={handleForgotPasswordClick}
                             handlePasswordlessLoginClick={handlePasswordlessLoginClick}
+                            handleOtpLoginClick={handleOtpLoginClick}
+                            handleSendEmailOtp={handleSendEmailOtp}
                             isSocialEnabled={isSocialEnabled}
                             idps={idps}
                             setLoginType={setLoginType}
@@ -93,6 +97,8 @@ LoginForm.propTypes = {
     handleForgotPasswordClick: PropTypes.func,
     clickCreateAccount: PropTypes.func,
     handlePasswordlessLoginClick: PropTypes.func,
+    handleOtpLoginClick: PropTypes.func,
+    handleSendEmailOtp: PropTypes.func,
     form: PropTypes.object,
     isPasswordlessEnabled: PropTypes.bool,
     isSocialEnabled: PropTypes.bool,
