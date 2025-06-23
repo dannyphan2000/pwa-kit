@@ -5,11 +5,15 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {McpServer} from '@modelcontextprotocol/sdk/server/mcp.js'
+import {McpServer, ResourceTemplate} from '@modelcontextprotocol/sdk/server/mcp.js'
 import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js'
+import {z} from 'zod'
 import {AddComponentTool} from '../utils/AddComponentTool.js'
 import {InsertExistingComponentTool} from '../utils/InsertExistingComponentTool.js'
 import {CreateNewComponentTool} from '../utils/CreateNewComponentTool.js'
+import fs from 'fs/promises'
+import path from 'path'
+import {fileURLToPath} from 'url'
 import {DevelopmentGuidelinesTool} from '../utils/DevelopmentGuidelinesTool.js'
 
 class PwaStorefrontMCPServerHighLevel {
@@ -17,7 +21,7 @@ class PwaStorefrontMCPServerHighLevel {
         // Using McpServer instead of Server
         this.server = new McpServer(
             {
-                name: 'pwa-commerce-storefront-code',
+                name: 'pwa-storefront-mcp-server',
                 version: '0.1.0'
             },
             {
