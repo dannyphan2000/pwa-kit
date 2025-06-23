@@ -99,12 +99,12 @@ describe('OpenTelemetry Server Tracing', () => {
 
     afterEach(async () => {
         consoleWarnSpy.mockRestore()
-        
+
         // Clean up any existing provider
         if (shutdownServerTracing) {
             await shutdownServerTracing()
         }
-        
+
         // Reset module state to ensure clean state between tests
         jest.resetModules()
     })
