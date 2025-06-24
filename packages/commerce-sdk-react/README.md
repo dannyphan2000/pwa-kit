@@ -483,6 +483,128 @@ useEncUserId() => {encUserId: String, getEncUserIdWhenReady: Promise}
 useUsid() => {usid: String, getUsidWhenReady: Promise}
 ```
 
+## Advanced: Customizing SDK Clients with `transformSDKClient`
+
+To support advanced use cases, such as integrating with older templates or customizing API client behavior, `commerce-sdk-react` provides a utility called `transformSDKClient`. This utility wraps any Commerce SDK client instance in a JavaScript Proxy, allowing you to intercept and transform method arguments, headers, parameters, and other options before each SDK call is made.
+
+This is especially useful for:
+-   Adapting SDK clients for legacy or custom templates.
+-   Removing references to unused SDK clients.
+
+### How It Works
+
+`transformSDKClient` takes an SDK client instance and a configuration object. The configuration can include:
+-   `props`: Arbitrary props you want to pass to your transformer.
+-   `transformer`: A function that receives the props, method name, and options, and returns the transformed options.
+-   `onError`: (Optional) A function to handle errors thrown by SDK methods.
+
+Every method call on the proxied client will pass through your transformer before being executed.
+
+#### Example: Passing Custom SDK Clients to the Provider
+
+You can use this utility to pass in your own SDK clients to the `CommerceApiProvider` via the `apiClients` prop, and apply custom transformations globally:
+
+```js
+import {CommerceApiProvider, transformSDKClient} from '@salesforce/commerce-sdk-react'
+import {ShopperProducts} from 'commerce-sdk-isomorphic'
+
+// Example transformer: inject a custom header and log method calls
+const myTransformer = (props, methodName, options) => {
+    return {
+        ...options,
+        headers: {
+            ...options.headers,
+            'X-Custom-Header': 'my-value'
+        }
+    }
+}
+
+const myShopperProductsClient = new ShopperProducts({
+    // ...your config
+})
+
+const proxiedShopperProducts = transformSDKClient(myShopperProductsClient, {
+    props: {}, // any other data you want access to inside the transformer fn.
+    transformer: myTransformer
+})
+
+const apiClients = {
+    shopperProducts: proxiedShopperProducts
+    // ...add other clients as needed
+}
+
+const App = ({children}) => (
+    <CommerceApiProvider
+        // ...other required props
+        apiClients={apiClients}
+    >
+        {children}
+    </CommerceApiProvider>
+)
+```
+
+#### Example: Customizing All SDK Clients
+
+If you want to apply a transformation to all SDK clients, you can do so in a loop:
+
+```js
+import {
+    ShopperBaskets,
+    ShopperProducts,
+    // ...other clients
+} from 'commerce-sdk-isomorphic'
+import {transformSDKClient} from '@salesforce/commerce-sdk-react'
+
+const config = { /* ... */ }
+const transformer = (props, methodName, options) => ({
+    ...options,
+    headers: {
+        ...options.headers,
+        'X-Feature-Flag': 'enabled'
+    }
+})
+
+const apiClients = {
+    shopperBaskets: transformSDKClient(new ShopperBaskets(config), {props: {}, transformer}),
+    shopperProducts: transformSDKClient(new ShopperProducts(config), {props: {}, transformer}),
+    // ...other clients
+}
+```
+
+### API Reference
+
+```ts
+transformSDKClient<T>(
+    client: T,
+    config: {
+        props?: any,
+        transformer?: (props, methodName: string, options: any) => any,
+        onError?: (methodName: string, error: any, options: any) => void
+    }
+): T
+```
+
+- **client**: The SDK client instance to wrap.
+- **config**:
+  - **props**: Any extra data you want to pass to your transformer.
+  - **transformer**: Function to transform method arguments before each SDK call.
+  - **onError**: (Optional) Function to handle errors from SDK methods.
+
+
+> **Note:** If you choose to pass the `apiClients` prop, you are responsible for providing all SDK clients you intend to use in your application. Any hooks or features that rely on a missing client will throw an error at runtime. This allows for customization, but requires you to explicitly include each client you need.
+
+### Handling Missing SDK Clients
+
+With the introduction of the optional `apiClients` prop and support for custom SDK client injection, `commerce-sdk-react` now provides robust error handling for missing clients. If you attempt to use a query or mutation hook for a client that was not initialized or passed to the `CommerceApiProvider`, a clear error will be thrown.
+
+For example, if you call a hook like `useShopperProducts` but did not provide a `shopperProducts` client in your `apiClients` prop, you will see an error message such as:
+
+```text
+Missing required client: shopperProducts. Please initialize shopperProducts class and provide it in CommerceApiProvider's apiClients prop.
+```
+
+This ensures that your application fails fast and provides actionable feedback, making it easier to debug configuration issues—especially when integrating with older templates or customizing your SDK client setup.
+
 ## Roadmap
 
 -   Optimistic update support
