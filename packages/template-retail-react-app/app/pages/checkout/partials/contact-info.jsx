@@ -32,6 +32,7 @@ import {
 } from '@salesforce/retail-react-app/app/components/toggle-card'
 import Field from '@salesforce/retail-react-app/app/components/field'
 import LoginState from '@salesforce/retail-react-app/app/pages/checkout/partials/login-state'
+import OtpForm from '@salesforce/retail-react-app/app/components/otp-form'
 import {
     AuthModal,
     EMAIL_VIEW,
@@ -50,7 +51,9 @@ import {
     FEATURE_UNAVAILABLE_ERROR_MESSAGE,
     CREATE_ACCOUNT_FIRST_ERROR_MESSAGE,
     PASSWORDLESS_ERROR_MESSAGES,
-    USER_NOT_FOUND_ERROR
+    USER_NOT_FOUND_ERROR,
+    INVALID_TOKEN_ERROR,
+    INVALID_TOKEN_ERROR_MESSAGE
 } from '@salesforce/retail-react-app/app/constants'
 
 const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, idps = []}) => {
@@ -61,6 +64,7 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
     const appOrigin = useAppOrigin()
     const login = useAuthHelper(AuthHelpers.LoginRegisteredUserB2C)
     const logout = useAuthHelper(AuthHelpers.Logout)
+    const loginPasswordless = useAuthHelper(AuthHelpers.LoginPasswordlessUser)
     const authorizePasswordlessLogin = useAuthHelper(AuthHelpers.AuthorizePasswordless)
     const updateCustomerForBasket = useShopperBasketsMutation('updateCustomerForBasket')
     const mergeBasket = useShopperBasketsMutation('mergeBasket')
@@ -77,6 +81,7 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
     const [error, setError] = useState(null)
     const [showPasswordField, setShowPasswordField] = useState(false)
     const [signOutConfirmDialogIsOpen, setSignOutConfirmDialogIsOpen] = useState(false)
+    const [showOtpView, setShowOtpView] = useState(false)
 
     const [authModalView, setAuthModalView] = useState(PASSWORD_VIEW)
     const authModal = useAuthModal(authModalView)
@@ -105,6 +110,47 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
         }
     }
 
+    const handleOtpButton = async (e) => {
+        const email = form.getValues('email')
+        console.log('Clicking OTP button, email: ', email)
+        const isValid = await form.trigger()
+        // Manually trigger the browser native form validations
+        if (isValid) {
+            setShowOtpView(true)
+            // handleOtpLoginClick()
+            await handleSendEmailOtp(email)
+        } else {
+            form.reportValidity()
+        }
+    }
+
+    const handleOtpLogin = async (token) => {
+        console.log('handleOtpLogin in contact-info, token: ', token);
+        try {
+            await loginPasswordless.mutateAsync({pwdlessLoginToken: token})
+            
+            // Handle basket merging similar to password login
+            const hasBasketItem = basket.productItems?.length > 0
+            if (hasBasketItem) {
+                mergeBasket.mutate({
+                    parameters: {
+                        createDestinationBasket: true
+                    }
+                })
+            }
+            
+            // Go to next step after successful login
+            goToNextStep()
+        } catch (e) {
+            console.error('e: ', e);
+            const errorData = await e.response?.json()
+            const message = INVALID_TOKEN_ERROR.test(errorData.message)
+                ? formatMessage(INVALID_TOKEN_ERROR_MESSAGE)
+                : formatMessage(API_ERROR_MESSAGE)
+            setError(message)
+        }
+    }
+
     const submitForm = async (data) => {
         setError(null)
         if (isPasswordlessLoginClicked) {
@@ -112,6 +158,13 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
             setIsPasswordlessLoginClicked(false)
             return
         }
+
+        // Handle OTP submission
+        if (showOtpView && data.otp) {
+            await handleOtpLogin(data.otp)
+            return
+        }
+
         try {
             if (!data.password) {
                 await updateCustomerForBasket.mutateAsync({
@@ -160,6 +213,22 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
         authModal.onOpen()
     }
 
+    const handleSendEmailOtp = async (email) => {
+        form.clearErrors('global')
+        console.log("Sending email OTP, email: ", email);
+        try {
+            await authorizePasswordlessLogin.mutateAsync({userid: email})
+        } catch (error) {
+            console.error('error: ', error);
+            const message = USER_NOT_FOUND_ERROR.test(error.message)
+                ? formatMessage(CREATE_ACCOUNT_FIRST_ERROR_MESSAGE)
+                : PASSWORDLESS_ERROR_MESSAGES.some((msg) => msg.test(error.message))
+                ? formatMessage(FEATURE_UNAVAILABLE_ERROR_MESSAGE)
+                : formatMessage(API_ERROR_MESSAGE)
+            setError(message)
+        }
+    }
+
     useEffect(() => {
         if (!showPasswordField) {
             form.unregister('password')
@@ -200,62 +269,73 @@ const ContactInfo = ({isSocialEnabled = false, isPasswordlessEnabled = false, id
         >
             <ToggleCardEdit>
                 <Container variant="form">
-                    <form onSubmit={form.handleSubmit(submitForm)}>
-                        <Stack spacing={6}>
-                            {error && (
-                                <Alert status="error">
-                                    <AlertIcon />
-                                    {error}
-                                </Alert>
-                            )}
-
-                            <Stack spacing={5} position="relative">
-                                <Field {...fields.email} inputRef={emailRef} />
-                                {showPasswordField && (
-                                    <Stack>
-                                        <Field {...fields.password} />
-                                        <Box>
-                                            <Button
-                                                variant="link"
-                                                size="sm"
-                                                onClick={onForgotPasswordClick}
-                                            >
-                                                <FormattedMessage
-                                                    defaultMessage="Forgot password?"
-                                                    id="contact_info.link.forgot_password"
-                                                />
-                                            </Button>
-                                        </Box>
-                                    </Stack>
+                    {!showOtpView ? (
+                        <form onSubmit={form.handleSubmit(submitForm)}>
+                            <Stack spacing={6}>
+                                {error && (
+                                    <Alert status="error">
+                                        <AlertIcon />
+                                        {error}
+                                    </Alert>
                                 )}
-                            </Stack>
 
-                            <Stack spacing={3}>
-                                <Button type="submit">
-                                    {!showPasswordField ? (
-                                        <FormattedMessage
-                                            defaultMessage="Checkout as Guest"
-                                            id="contact_info.button.checkout_as_guest"
-                                        />
-                                    ) : (
-                                        <FormattedMessage
-                                            defaultMessage="Log In"
-                                            id="contact_info.button.login"
-                                        />
+                                <Stack spacing={5} position="relative">
+                                    <Field {...fields.email} inputRef={emailRef} />
+                                    {showPasswordField && (
+                                        <Stack>
+                                            <Field {...fields.password} />
+                                            <Box>
+                                                <Button
+                                                    variant="link"
+                                                    size="sm"
+                                                    onClick={onForgotPasswordClick}
+                                                >
+                                                    <FormattedMessage
+                                                        defaultMessage="Forgot password?"
+                                                        id="contact_info.link.forgot_password"
+                                                    />
+                                                </Button>
+                                            </Box>
+                                        </Stack>
                                     )}
-                                </Button>
-                                <LoginState
-                                    form={form}
-                                    isSocialEnabled={isSocialEnabled}
-                                    isPasswordlessEnabled={isPasswordlessEnabled}
-                                    idps={idps}
-                                    showPasswordField={showPasswordField}
-                                    togglePasswordField={togglePasswordField}
-                                    handlePasswordlessLoginClick={onPasswordlessLoginClick}
-                                />
+                                </Stack>
+
+                                <Stack spacing={3}>
+                                    <Button type="submit">
+                                        {!showPasswordField ? (
+                                            <FormattedMessage
+                                                defaultMessage="Checkout as Guest"
+                                                id="contact_info.button.checkout_as_guest"
+                                            />
+                                        ) : (
+                                            <FormattedMessage
+                                                defaultMessage="Log In"
+                                                id="contact_info.button.login"
+                                            />
+                                        )}
+                                    </Button>
+                                    <LoginState
+                                        form={form}
+                                        isSocialEnabled={isSocialEnabled}
+                                        isPasswordlessEnabled={isPasswordlessEnabled}
+                                        idps={idps}
+                                        showPasswordField={showPasswordField}
+                                        togglePasswordField={togglePasswordField}
+                                        handlePasswordlessLoginClick={onPasswordlessLoginClick}
+                                        handleOtpButton={handleOtpButton}
+                                    />
+                                </Stack>
                             </Stack>
-                        </Stack>
-                    </form>
+                        </form>
+                    ) : (
+                        <form onSubmit={form.handleSubmit(submitForm)}>
+                            <OtpForm
+                                form={form}
+                                setShowOtpView={setShowOtpView}
+                                handleSendEmailOtp={handleSendEmailOtp}
+                            />
+                        </form>
+                    )}
                 </Container>
                 <AuthModal {...authModal} initialEmail={form.getValues().email} />
             </ToggleCardEdit>
