@@ -1,6 +1,6 @@
 :loudspeaker: Hey there, Salesforce Commerce Cloud community!
 
-We’re excited to hear your thoughts on your developer experience with PWA Kit and the Composable Storefront generally! Your feedback is incredibly valuable in helping us guide our roadmap and improve our offering.
+We're excited to hear your thoughts on your developer experience with PWA Kit and the Composable Storefront generally! Your feedback is incredibly valuable in helping us guide our roadmap and improve our offering.
 
 :clipboard: Take our quick survey here: [Survey](https://forms.gle/bUZNxQ3QKUcrjhV18) 
 
@@ -505,31 +505,17 @@ Every method call on the proxied client will pass through your transformer befor
 You can use this utility to pass in your own SDK clients to the `CommerceApiProvider` via the `apiClients` prop, and apply custom transformations globally:
 
 ```js
-import {CommerceApiProvider, transformSDKClient} from '@salesforce/commerce-sdk-react'
+import {CommerceApiProvider} from '@salesforce/commerce-sdk-react'
 import {ShopperProducts} from 'commerce-sdk-isomorphic'
 
-// Example transformer: inject a custom header and log method calls
-const myTransformer = (props, methodName, options) => {
-    return {
-        ...options,
-        headers: {
-            ...options.headers,
-            'X-Custom-Header': 'my-value'
-        }
-    }
-}
-
+// Create your SDK client instances as usual
 const myShopperProductsClient = new ShopperProducts({
     // ...your config
 })
 
-const proxiedShopperProducts = transformSDKClient(myShopperProductsClient, {
-    props: {}, // any other data you want access to inside the transformer fn.
-    transformer: myTransformer
-})
-
+// Pass your client(s) in the apiClients prop
 const apiClients = {
-    shopperProducts: proxiedShopperProducts
+    shopperProducts: myShopperProductsClient
     // ...add other clients as needed
 }
 
@@ -537,39 +523,14 @@ const App = ({children}) => (
     <CommerceApiProvider
         // ...other required props
         apiClients={apiClients}
+        // You can also pass custom headers, fetchOptions, etc.
     >
         {children}
     </CommerceApiProvider>
 )
 ```
 
-#### Example: Customizing All SDK Clients
-
-If you want to apply a transformation to all SDK clients, you can do so in a loop:
-
-```js
-import {
-    ShopperBaskets,
-    ShopperProducts,
-    // ...other clients
-} from 'commerce-sdk-isomorphic'
-import {transformSDKClient} from '@salesforce/commerce-sdk-react'
-
-const config = { /* ... */ }
-const transformer = (props, methodName, options) => ({
-    ...options,
-    headers: {
-        ...options.headers,
-        'X-Feature-Flag': 'enabled'
-    }
-})
-
-const apiClients = {
-    shopperBaskets: transformSDKClient(new ShopperBaskets(config), {props: {}, transformer}),
-    shopperProducts: transformSDKClient(new ShopperProducts(config), {props: {}, transformer}),
-    // ...other clients
-}
-```
+> **Note:** The `CommerceApiProvider` will automatically wrap each client in `apiClients` with `transformSDKClient`, using a default transformer that injects headers and fetch options from the provider props. You must use props passed to `CommerceApiProvider` for setting custom headers and fetch options. `transformSDKClient` will merge headers and options passed in as props with the default values.
 
 ### API Reference
 
@@ -605,6 +566,26 @@ Missing required client: shopperProducts. Please initialize shopperProducts clas
 
 This ensures that your application fails fast and provides actionable feedback, making it easier to debug configuration issues—especially when integrating with older templates or customizing your SDK client setup.
 
+### Disabling Automatic Auth Initialization
+
+By default, `CommerceApiProvider` will automatically initialize authentication by calling `auth.ready()` as soon as the provider renders. This is the standard and recommended behavior for most applications.
+
+**New in v3.4.0:** You can now optionally disable this automatic initialization by passing the `disableAuthInit` prop:
+
+```jsx
+<CommerceApiProvider
+    // ...other required props
+    disableAuthInit={true}
+>
+    {children}
+</CommerceApiProvider>
+```
+
+- **Default:** `disableAuthInit` is `false` (auth will be initialized automatically).
+- **When to use:** Set `disableAuthInit` to `true` if you are initializing authentication outside of the provider (for example, in legacy PWA Kit templates or when using SSR with `getProps`). This prevents duplicate initialization and potential issues with tokens or customer information.
+
+> **Note:** For most modern PWA Kit and React Query-based apps, you do **not** need to set this prop.
+
 ## Roadmap
 
 -   Optimistic update support
@@ -623,3 +604,4 @@ This ensures that your application fails fast and provides actionable feedback, 
 -   [Routing](https://developer.salesforce.com/docs/commerce/pwa-kit-managed-runtime/guide/routing.html)
 -   [Phased Headless Rollouts](https://developer.salesforce.com/docs/commerce/pwa-kit-managed-runtime/guide/phased-headless-rollouts.html)
 -   [Launch Your Storefront](https://developer.salesforce.com/docs/commerce/pwa-kit-managed-runtime/guide/launching-your-storefront.html)
+
