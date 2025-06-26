@@ -28,16 +28,17 @@ jest.mock('@opentelemetry/resources', () => ({
     Resource: jest.fn()
 }))
 
-jest.mock('@opentelemetry/semantic-conventions', () => ({
-    SemanticResourceAttributes: {
-        SERVICE_NAME: 'service.name'
-    }
-}))
-
 jest.mock('@opentelemetry/api', () => ({
     propagation: {
         setGlobalPropagator: jest.fn()
     }
+}))
+
+jest.mock('../../utils/logger-instance', () => ({
+    warn: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn()
 }))
 
 describe('OpenTelemetry Server Tracing', () => {
@@ -46,7 +47,7 @@ describe('OpenTelemetry Server Tracing', () => {
     let mockB3Propagator
     let mockResource
     let mockPropagation
-    let consoleWarnSpy
+    let mockLogger
     let initializeServerTracing
     let shutdownServerTracing
     let isServerTracingInitialized
@@ -55,9 +56,6 @@ describe('OpenTelemetry Server Tracing', () => {
         // Reset all mocks
         jest.clearAllMocks()
 
-        // Set up console.warn spy
-        consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
-
         // Get mocked constructors
         /* eslint-disable @typescript-eslint/no-var-requires */
         const {NodeTracerProvider} = require('@opentelemetry/sdk-trace-node')
@@ -65,6 +63,7 @@ describe('OpenTelemetry Server Tracing', () => {
         const {B3Propagator} = require('@opentelemetry/propagator-b3')
         const {Resource} = require('@opentelemetry/resources')
         const {propagation} = require('@opentelemetry/api')
+        const logger = require('../../utils/logger-instance')
         const opentelemetryServer = require('./opentelemetry-server')
         /* eslint-enable @typescript-eslint/no-var-requires */
 
@@ -73,10 +72,10 @@ describe('OpenTelemetry Server Tracing', () => {
         mockB3Propagator = B3Propagator
         mockResource = Resource
         mockPropagation = propagation
+        mockLogger = logger
 
         // Set up mock instances
         const mockProviderInstance = {
-            addSpanProcessor: jest.fn(),
             register: jest.fn(),
             shutdown: jest.fn()
         }
@@ -98,8 +97,6 @@ describe('OpenTelemetry Server Tracing', () => {
     })
 
     afterEach(async () => {
-        consoleWarnSpy.mockRestore()
-
         // Clean up any existing provider
         if (shutdownServerTracing) {
             await shutdownServerTracing()
@@ -110,12 +107,13 @@ describe('OpenTelemetry Server Tracing', () => {
     })
 
     describe('initializeServerTracing', () => {
-        test('should successfully initialize OpenTelemetry tracing', () => {
+        test('should successfully initialize OpenTelemetry tracing with default options', () => {
             const result = initializeServerTracing()
 
-            // Verify NodeTracerProvider was called with correct resource
+            // Verify NodeTracerProvider was called with correct resource and span processor
             expect(mockNodeTracerProvider).toHaveBeenCalledWith({
-                resource: expect.any(Object)
+                resource: expect.any(Object),
+                spanProcessor: expect.any(Object)
             })
 
             // Verify Resource was created with correct service name
@@ -123,9 +121,8 @@ describe('OpenTelemetry Server Tracing', () => {
                 'service.name': 'pwa-kit-react-sdk'
             })
 
-            // Verify span processor was added
+            // Verify span processor was created
             expect(mockSimpleSpanProcessor).toHaveBeenCalled()
-            expect(result.addSpanProcessor).toHaveBeenCalledWith(expect.any(Object))
 
             // Verify B3 propagator was set globally
             expect(mockB3Propagator).toHaveBeenCalled()
@@ -141,6 +138,58 @@ describe('OpenTelemetry Server Tracing', () => {
             expect(isServerTracingInitialized()).toBe(true)
         })
 
+        test('should initialize with custom service name', () => {
+            const customServiceName = 'my-custom-service'
+            const result = initializeServerTracing({ serviceName: customServiceName })
+
+            // Verify Resource was created with custom service name
+            expect(mockResource).toHaveBeenCalledWith({
+                'service.name': customServiceName
+            })
+
+            expect(result).toBeDefined()
+        })
+
+        test('should initialize with service version', () => {
+            const serviceVersion = '1.2.3'
+            const result = initializeServerTracing({ serviceVersion })
+
+            // Verify Resource was created with service version
+            expect(mockResource).toHaveBeenCalledWith({
+                'service.name': 'pwa-kit-react-sdk',
+                'service.version': serviceVersion
+            })
+
+            expect(result).toBeDefined()
+        })
+
+        test('should initialize with both service name and version', () => {
+            const customServiceName = 'my-service'
+            const serviceVersion = '2.0.0'
+            const result = initializeServerTracing({ 
+                serviceName: customServiceName, 
+                serviceVersion 
+            })
+
+            // Verify Resource was created with both attributes
+            expect(mockResource).toHaveBeenCalledWith({
+                'service.name': customServiceName,
+                'service.version': serviceVersion
+            })
+
+            expect(result).toBeDefined()
+        })
+
+        test('should return null when tracing is disabled', () => {
+            const result = initializeServerTracing({ enabled: false })
+
+            // Verify no provider was created
+            expect(mockNodeTracerProvider).not.toHaveBeenCalled()
+            expect(mockResource).not.toHaveBeenCalled()
+            expect(result).toBeNull()
+            expect(isServerTracingInitialized()).toBe(false)
+        })
+
         test('should handle initialization errors gracefully', () => {
             // Mock NodeTracerProvider to throw an error
             mockNodeTracerProvider.mockImplementation(() => {
@@ -150,9 +199,12 @@ describe('OpenTelemetry Server Tracing', () => {
             const result = initializeServerTracing()
 
             // Verify error was logged
-            expect(consoleWarnSpy).toHaveBeenCalledWith(
-                'Failed to initialize OpenTelemetry provider:',
-                'OpenTelemetry initialization failed'
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                'Failed to initialize OpenTelemetry provider',
+                {
+                    namespace: 'opentelemetry-server.initializeServerTracing',
+                    additionalProperties: {error: 'OpenTelemetry initialization failed'}
+                }
             )
 
             // Verify null was returned
@@ -171,9 +223,12 @@ describe('OpenTelemetry Server Tracing', () => {
             const result = initializeServerTracing()
 
             // Verify error was logged
-            expect(consoleWarnSpy).toHaveBeenCalledWith(
-                'Failed to initialize OpenTelemetry provider:',
-                'Resource creation failed'
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                'Failed to initialize OpenTelemetry provider',
+                {
+                    namespace: 'opentelemetry-server.initializeServerTracing',
+                    additionalProperties: {error: 'Resource creation failed'}
+                }
             )
 
             // Verify null was returned
@@ -183,7 +238,6 @@ describe('OpenTelemetry Server Tracing', () => {
         test('should handle provider registration errors', () => {
             // Set up mock provider that throws on register
             const mockProviderInstance = {
-                addSpanProcessor: jest.fn(),
                 register: jest.fn().mockImplementation(() => {
                     throw new Error('Provider registration failed')
                 }),
@@ -194,13 +248,99 @@ describe('OpenTelemetry Server Tracing', () => {
             const result = initializeServerTracing()
 
             // Verify error was logged
-            expect(consoleWarnSpy).toHaveBeenCalledWith(
-                'Failed to initialize OpenTelemetry provider:',
-                'Provider registration failed'
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                'Failed to initialize OpenTelemetry provider',
+                {
+                    namespace: 'opentelemetry-server.initializeServerTracing',
+                    additionalProperties: {error: 'Provider registration failed'}
+                }
             )
 
             // Verify null was returned
             expect(result).toBeNull()
+        })
+
+        describe('environment variable handling', () => {
+            const originalEnv = process.env
+
+            beforeEach(() => {
+                jest.resetModules()
+                process.env = { ...originalEnv }
+            })
+
+            afterEach(() => {
+                process.env = originalEnv
+            })
+
+            test('should use OTEL_SERVICE_NAME environment variable when provided', () => {
+                process.env.OTEL_SERVICE_NAME = 'env-service-name'
+                
+                // Re-import to get fresh module with updated env
+                const opentelemetryServer = require('./opentelemetry-server')
+                const { initializeServerTracing } = opentelemetryServer
+                
+                const result = initializeServerTracing()
+
+                expect(mockResource).toHaveBeenCalledWith({
+                    'service.name': 'env-service-name'
+                })
+                expect(result).toBeDefined()
+            })
+
+            test('should use npm_package_version environment variable when provided', () => {
+                process.env.npm_package_version = '3.0.0'
+                
+                // Re-import to get fresh module with updated env
+                const opentelemetryServer = require('./opentelemetry-server')
+                const { initializeServerTracing } = opentelemetryServer
+                
+                const result = initializeServerTracing()
+
+                expect(mockResource).toHaveBeenCalledWith({
+                    'service.name': 'pwa-kit-react-sdk',
+                    'service.version': '3.0.0'
+                })
+                expect(result).toBeDefined()
+            })
+
+            test('should enable tracing when OTEL_SDK_ENABLED is true', () => {
+                process.env.OTEL_SDK_ENABLED = 'true'
+                
+                // Re-import to get fresh module with updated env
+                const opentelemetryServer = require('./opentelemetry-server')
+                const { initializeServerTracing } = opentelemetryServer
+                
+                const result = initializeServerTracing()
+
+                expect(mockNodeTracerProvider).toHaveBeenCalled()
+                expect(result).toBeDefined()
+            })
+
+            test('should disable tracing when OTEL_SDK_ENABLED is false', () => {
+                process.env.OTEL_SDK_ENABLED = 'false'
+                
+                // Re-import to get fresh module with updated env
+                const opentelemetryServer = require('./opentelemetry-server')
+                const { initializeServerTracing } = opentelemetryServer
+                
+                const result = initializeServerTracing()
+
+                expect(mockNodeTracerProvider).not.toHaveBeenCalled()
+                expect(result).toBeNull()
+            })
+
+            test('should disable tracing when OTEL_SDK_ENABLED is not set', () => {
+                delete process.env.OTEL_SDK_ENABLED
+                
+                // Re-import to get fresh module with updated env
+                const opentelemetryServer = require('./opentelemetry-server')
+                const { initializeServerTracing } = opentelemetryServer
+                
+                const result = initializeServerTracing()
+
+                expect(mockNodeTracerProvider).not.toHaveBeenCalled()
+                expect(result).toBeNull()
+            })
         })
     })
 
@@ -227,13 +367,12 @@ describe('OpenTelemetry Server Tracing', () => {
             await shutdownServerTracing()
 
             // Verify no error was logged (graceful handling)
-            expect(consoleWarnSpy).not.toHaveBeenCalled()
+            expect(mockLogger.warn).not.toHaveBeenCalled()
         })
 
         test('should handle shutdown errors gracefully', async () => {
             // Set up mock provider that throws on shutdown
             const mockProviderInstance = {
-                addSpanProcessor: jest.fn(),
                 register: jest.fn(),
                 shutdown: jest.fn().mockRejectedValue(new Error('Shutdown failed'))
             }
@@ -247,9 +386,12 @@ describe('OpenTelemetry Server Tracing', () => {
             await expect(shutdownServerTracing()).resolves.not.toThrow()
 
             // Verify error was logged
-            expect(consoleWarnSpy).toHaveBeenCalledWith(
-                'Failed to shutdown OpenTelemetry provider:',
-                'Shutdown failed'
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                'Failed to shutdown OpenTelemetry provider',
+                {
+                    namespace: 'opentelemetry-server.shutdownServerTracing',
+                    additionalProperties: {error: 'Shutdown failed'}
+                }
             )
         })
     })
@@ -304,9 +446,12 @@ describe('OpenTelemetry Server Tracing', () => {
             const provider = initializeServerTracing()
             expect(provider).toBeNull()
             expect(isServerTracingInitialized()).toBe(false)
-            expect(consoleWarnSpy).toHaveBeenCalledWith(
-                'Failed to initialize OpenTelemetry provider:',
-                'Initialization failed'
+            expect(mockLogger.warn).toHaveBeenCalledWith(
+                'Failed to initialize OpenTelemetry provider',
+                {
+                    namespace: 'opentelemetry-server.initializeServerTracing',
+                    additionalProperties: {error: 'Initialization failed'}
+                }
             )
 
             // Shutdown should still work gracefully

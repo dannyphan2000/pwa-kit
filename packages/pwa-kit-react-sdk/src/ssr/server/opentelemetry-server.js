@@ -9,35 +9,61 @@ import {NodeTracerProvider} from '@opentelemetry/sdk-trace-node'
 import {SimpleSpanProcessor} from '@opentelemetry/sdk-trace-base'
 import {B3Propagator} from '@opentelemetry/propagator-b3'
 import {Resource} from '@opentelemetry/resources'
-import {SemanticResourceAttributes} from '@opentelemetry/semantic-conventions'
 import {propagation} from '@opentelemetry/api'
+import logger from '../../utils/logger-instance'
 
-const SERVICE_NAME = 'pwa-kit-react-sdk'
+const DEFAULT_SERVICE_NAME = 'pwa-kit-react-sdk'
 
 let provider = null
 
 /**
  * Initialize OpenTelemetry tracing for server-side rendering
+ * @param {Object} options - Configuration options for OpenTelemetry
+ * @param {string} [options.serviceName] - Service name for the resource (defaults to OTEL_SERVICE_NAME env var or DEFAULT_SERVICE_NAME)
+ * @param {string} [options.serviceVersion] - Service version (defaults to npm_package_version env var)
+ * @param {boolean} [options.enabled] - Whether to enable tracing (defaults to OTEL_SDK_ENABLED env var === 'true')
  * @returns {NodeTracerProvider|null} The initialized provider or null if initialization failed
  */
-export const initializeServerTracing = () => {
+export const initializeServerTracing = (options = {}) => {
+    const {
+        serviceName = process.env.OTEL_SERVICE_NAME || DEFAULT_SERVICE_NAME,
+        serviceVersion = process.env.npm_package_version,
+        enabled = process.env.OTEL_SDK_ENABLED === 'true'
+    } = options
+
+    // If tracing is disabled, return null without initializing
+    if (!enabled) {
+        return null
+    }
+
     try {
+        // Build resource attributes
+        const resourceAttributes = {
+            'service.name': serviceName
+        }
+
+        // Add service version if provided
+        if (serviceVersion) {
+            resourceAttributes['service.version'] = serviceVersion
+        }
+
         // Initialize the tracer provider
         provider = new NodeTracerProvider({
-            resource: new Resource({
-                [SemanticResourceAttributes.SERVICE_NAME]: SERVICE_NAME
-            })
+            resource: new Resource(resourceAttributes),
+            spanProcessor: new SimpleSpanProcessor()
         })
 
         // Add B3 propagator
-        provider.addSpanProcessor(new SimpleSpanProcessor())
         propagation.setGlobalPropagator(new B3Propagator())
         provider.register()
 
         return provider
     } catch (error) {
         // Log errors from OpenTelemetry initialization
-        console.warn('Failed to initialize OpenTelemetry provider:', error.message)
+        logger.warn('Failed to initialize OpenTelemetry provider', {
+            namespace: 'opentelemetry-server.initializeServerTracing',
+            additionalProperties: {error: error.message}
+        })
         return null
     }
 }
@@ -52,7 +78,10 @@ export const shutdownServerTracing = async () => {
             await provider.shutdown()
             provider = null // Clean up after successful shutdown
         } catch (error) {
-            console.warn('Failed to shutdown OpenTelemetry provider:', error.message)
+            logger.warn('Failed to shutdown OpenTelemetry provider', {
+                namespace: 'opentelemetry-server.shutdownServerTracing',
+                additionalProperties: {error: error.message}
+            })
         }
     }
 }
