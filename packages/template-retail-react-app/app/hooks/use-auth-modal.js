@@ -118,7 +118,7 @@ export const AuthModal = ({
                 const redirectPath = window.location.pathname + window.location.search
                 await authorizePasswordlessLogin.mutateAsync({
                     userid: email,
-                    callbackURI: `${callbackURL}?redirectUrl=${redirectPath}`
+                    callbackURI: `${callbackURL}?mode=magic_link&redirectUrl=${redirectPath}`
                 })
                 setCurrentView(EMAIL_VIEW)
             } catch (error) {
@@ -227,7 +227,10 @@ export const AuthModal = ({
         form.clearErrors('global')
         console.log("Sending email OTP, email: ", email);
         try {
-            await authorizePasswordlessLogin.mutateAsync({userid: email})
+            await authorizePasswordlessLogin.mutateAsync({
+                userid: email,
+                callbackURI: `${callbackURL}?mode=otp_email`
+            })
         } catch (error) {
             console.error('error: ', error);
             const message = USER_NOT_FOUND_ERROR.test(error.message)
