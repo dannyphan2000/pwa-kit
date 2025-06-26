@@ -603,7 +603,7 @@
                 "name": "Valid URL",
                 "description": "Ensures the value is an absolute URL.",
                 "message": "Value must be an absolute URL",
-                "regex": "^(https?|ftp):\\/\\/[^\\s/$.?#].[^\\s]*$"
+                "regex": "^(https?):\\/\\/[^\\s/$.?#].[^\\s]*$"
             },
             {
                 "id": "validSiteId",
