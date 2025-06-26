@@ -568,7 +568,7 @@ This ensures that your application fails fast and provides actionable feedback, 
 
 ### Disabling Automatic Auth Initialization
 
-By default, `CommerceApiProvider` will automatically initialize authentication by calling `auth.ready()` as soon as the provider renders. This is the standard and recommended behavior for most applications.
+By default, `CommerceApiProvider` automatically initializes authentication by calling `auth.ready()` as soon as the provider renders. This is the standard and recommended behavior for most applications.
 
 **New in v3.4.0:** You can now optionally disable this automatic initialization by passing the `disableAuthInit` prop:
 
