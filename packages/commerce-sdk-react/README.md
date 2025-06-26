@@ -502,7 +502,7 @@ Every method call on the proxied client passes through your transformer before b
 
 #### Example: Passing Custom SDK Clients to the Provider
 
-You can use this utility to pass in your own SDK clients to the `CommerceApiProvider` via the `apiClients` prop, and apply custom transformations globally:
+You can use this utility to pass in your own SDK clients to the `CommerceApiProvider` via the `apiClients` prop, and apply custom transformations globally.
 
 ```js
 import {CommerceApiProvider} from '@salesforce/commerce-sdk-react'
