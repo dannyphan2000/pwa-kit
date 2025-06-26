@@ -17,7 +17,8 @@ const LoginState = ({
     isPasswordlessEnabled,
     idps,
     showPasswordField,
-    togglePasswordField
+    togglePasswordField,
+    handleOtpButton
 }) => {
     const [showLoginButtons, setShowLoginButtons] = useState(true)
 
@@ -31,6 +32,21 @@ const LoginState = ({
                         id="contact_info.message.or_login_with"
                     />
                 </Text>
+                {/* OTP Login - Need to add a check if OTP is enabled once we have the enum for it*/}
+                <Button
+                    borderColor="gray.500"
+                    color="blue.600"
+                    variant="outline"
+                    onClick={() => {
+                        console.log('Clicking OTP button')
+                        handleOtpButton()
+                    }}
+                >
+                    <FormattedMessage
+                        defaultMessage="One-Time Password (OTP)"
+                        id="contact_info.button.otp"
+                    />
+                </Button>
 
                 {/* Passwordless Login */}
                 {isPasswordlessEnabled && (
@@ -110,7 +126,8 @@ LoginState.propTypes = {
     isPasswordlessEnabled: PropTypes.bool,
     idps: PropTypes.arrayOf(PropTypes.string),
     showPasswordField: PropTypes.bool,
-    togglePasswordField: PropTypes.func
+    togglePasswordField: PropTypes.func,
+    handleOtpButton: PropTypes.func
 }
 
 export default LoginState
