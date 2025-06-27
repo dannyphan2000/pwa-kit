@@ -18,11 +18,11 @@ let provider = null
 
 /**
  * Initialize OpenTelemetry tracing for server-side rendering
- * @param {Object} options - Configuration options for OpenTelemetry
- * @param {string} [options.serviceName] - Service name for the resource (defaults to OTEL_SERVICE_NAME env var or DEFAULT_SERVICE_NAME)
- * @param {string} [options.serviceVersion] - Service version (defaults to npm_package_version env var)
- * @param {boolean} [options.enabled] - Whether to enable tracing (defaults to OTEL_SDK_ENABLED env var === 'true')
- * @returns {NodeTracerProvider|null} The initialized provider or null if initialization failed
+ * @param {Object} options
+ * @param {string} [options.serviceName]
+ * @param {string} [options.serviceVersion]
+ * @param {boolean} [options.enabled]
+ * @returns {NodeTracerProvider|null}
  */
 export const initializeServerTracing = (options = {}) => {
     const {
@@ -60,7 +60,7 @@ export const initializeServerTracing = (options = {}) => {
         return provider
     } catch (error) {
         // Log errors from OpenTelemetry initialization
-        logger.warn('Failed to initialize OpenTelemetry provider', {
+        logger.error('Failed to initialize OpenTelemetry provider', {
             namespace: 'opentelemetry-server.initializeServerTracing',
             additionalProperties: {error: error.message}
         })
