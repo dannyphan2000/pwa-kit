@@ -4,9 +4,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {zodToJsonSchema} from 'zod-to-json-schema'
-import {z} from 'zod'
-import {EmptyJsonSchema} from './utils.js'
 
 const hookRecommendations = {
     product: [

@@ -19,13 +19,11 @@ export function toKebabCase(str) {
     return str
         .replace(/([a-z])([A-Z])/g, '$1-$2')
         .replace(/\s+/g, '-')
-        .toLowerCase();
+        .toLowerCase()
 }
 
 /**
  * Converts a string to PascalCase (e.g., product-card -> ProductCard)
  */
-export function toPascalCase(str) {
-    return str
-        .replace(/(^\w|[-_\s]\w)/g, match => match.replace(/[-_\s]/, '').toUpperCase());
-}
+export const toPascalCase = (str) =>
+    str.replace(/(^\w|[-_\s]\w)/g, (match) => match.replace(/[-_\s]/, '').toUpperCase())

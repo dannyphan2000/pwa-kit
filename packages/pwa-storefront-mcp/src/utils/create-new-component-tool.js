@@ -6,7 +6,7 @@
  */
 import fs from 'fs/promises'
 import path from 'path'
-import {HookRecommenderTool} from './HookRecommenderTool.js'
+import {HookRecommenderTool} from './hook-recommender-tool.js'
 import {toKebabCase, toPascalCase} from './utils.js'
 
 export const getCopyrightHeader = () => {
@@ -197,7 +197,13 @@ describe('${pascalComponentName}', () => {
      * @param {string} location - The absolute path to the component's parent directory.
      * @param {object} dataModel - The data model schema (properties object).
      */
-    async updateComponentToPresentational(entityType, componentName, location, dataModel, options = {}) {
+    async updateComponentToPresentational(
+        entityType,
+        componentName,
+        location,
+        dataModel,
+        options = {}
+    ) {
         const kebabDirName = toKebabCase(componentName)
         const pascalComponentName = toPascalCase(componentName)
         const componentDir = path.join(location, kebabDirName)
@@ -205,6 +211,7 @@ describe('${pascalComponentName}', () => {
         const componentFilePath = path.join(componentDir, 'index.jsx')
         const fields = Object.keys(dataModel)
         let code = ''
+
         // Special logic for product entity
         if (entityType === 'product') {
             // If options.list is true, generate a list-of-products component
@@ -393,10 +400,72 @@ ${pascalComponentName}.propTypes = {
 export default ${pascalComponentName};
 `
             }
-            await fs.writeFile(componentFilePath, code, 'utf-8')
-            return `✅ Updated ${componentFilePath} to presentational component for ${entityType}`
+        } else {
+            // Generic component for other entities
+            const propName = options.propName || entityType
+            const isArray = options.array || false
+
+            if (isArray) {
+                // Array of entities
+                code = `${getCopyrightHeader()}
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Box, Text, Stack } from '@chakra-ui/react';
+
+const ${pascalComponentName} = ({ ${propName} }) => (
+    <Stack spacing={4}>
+        {${propName}.map(item => (
+            <Box key={item.id || item.${entityType}Id} borderWidth="1px" borderRadius="md" p={4}>
+${fields
+    .map((field) => `                <Text>${field}: {item.${field}?.toString?.() ?? ''}</Text>`)
+    .join('\n')}
+            </Box>
+        ))}
+    </Stack>
+);
+
+${pascalComponentName}.propTypes = {
+    ${propName}: PropTypes.arrayOf(PropTypes.shape({
+${fields.map((field) => `        ${field}: PropTypes.any`).join(',\n')}
+    })).isRequired
+};
+
+export default ${pascalComponentName};
+`
+            } else {
+                // Single entity
+                code = `${getCopyrightHeader()}
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Box, Text, Stack } from '@chakra-ui/react';
+
+const ${pascalComponentName} = ({ ${propName} }) => (
+    <Box>
+        <Text fontSize="2xl" fontWeight="bold" mb={4}>{${propName}.name || ${propName}.id || '${pascalComponentName}'}</Text>
+        <Stack spacing={2}>
+${fields
+    .map(
+        (field) =>
+            `            <Text><strong>${field}:</strong> {${propName}.${field}?.toString?.() ?? ''}</Text>`
+    )
+    .join('\n')}
+        </Stack>
+    </Box>
+);
+
+${pascalComponentName}.propTypes = {
+    ${propName}: PropTypes.shape({
+${fields.map((field) => `        ${field}: PropTypes.any`).join(',\n')}
+    }).isRequired
+};
+
+export default ${pascalComponentName};
+`
+            }
         }
-       
+
+        await fs.writeFile(componentFilePath, code, 'utf-8')
+        return `✅ Updated ${componentFilePath} to presentational component for ${entityType}`
     }
 
     /**
@@ -412,7 +481,7 @@ export default ${pascalComponentName};
                     componentName,
                     location,
                     dataModels.product.properties,
-                    { array: false, propName: 'product' }
+                    {array: false, propName: 'product'}
                 )
             }
             if (selectedHook === 'useProducts' || selectedHook === 'useProductSearch') {
@@ -421,7 +490,7 @@ export default ${pascalComponentName};
                     componentName,
                     location,
                     dataModels.product.properties,
-                    { array: true, propName: 'products' }
+                    {array: true, propName: 'products'}
                 )
             }
         }
