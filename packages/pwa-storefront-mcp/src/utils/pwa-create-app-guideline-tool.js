@@ -4,11 +4,20 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-// First party dependencies
-import CREATE_APP_SCHEMA from '@salesforce/pwa-kit-create-app/program.json' with {type: 'json'}
+import path from 'path'
 
 // Project dependencies
-import {EmptyJsonSchema} from './utils.js'
+import {EmptyJsonSchema, isMonoRepo, runWithPty} from './utils.js'
+
+// const CREATE_APP_VERSION = 'latest'
+const CREATE_APP_VERSION = '3.11.0-nightly-20250630080227'
+const CREATE_APP_COMMAND = isMonoRepo()
+    ? path.resolve(
+          `${process.env.WORKSPACE_FOLDER_PATHS}/packages/pwa-kit-create-app/scripts/create-mobify-app.js`
+      )
+    : `@salesforce/pwa-kit-create-app@${CREATE_APP_VERSION}`
+const DISPLAY_PROGRAM_COMMAND = '--displayProgram'
+const NPX_COMMAND = 'npx'
 
 const guidelinesText = `
 # PWA Kit Create App — Agent Usage Guidelines
@@ -55,27 +64,49 @@ If the user requests a project using a **template**:
 - Never attempt to create a project without using this tool.
 - When gathering answers for a template, ask questions one at a time to maintain clarity.
 - Presets and templates are mutually exclusive paths. Do not offer both options unless explicitly requested.
+- Use the \`${NPX_COMMAND}\` command to run the \`${CREATE_APP_COMMAND}\` CLI tool when creating a new project.
 `
 
 export default {
     name: 'create-app_guidelines',
     description: `This tool is used to provide the agent with the instructions on how to use the @salesforce/pwa-kit-create-app CLI tool to create a new PWA Kit projects. Do not attempt to create a project without using this tool first.`,
     inputSchema: EmptyJsonSchema,
-    fn: async () => ({
-        content: [
-            {
-                type: 'text',
-                text: JSON.stringify(
-                    {
-                        guidelines: guidelinesText,
-                        cli: CREATE_APP_SCHEMA.metadata.description,
-                        schemas: {...CREATE_APP_SCHEMA.schemas},
-                        data: {...CREATE_APP_SCHEMA.data}
-                    },
-                    null,
-                    2
-                )
-            }
-        ]
-    })
+    fn: async () => {
+        let programOutput = ''
+
+        // Run the display program and get the output.
+        try {
+            programOutput = await runWithPty(NPX_COMMAND, [
+                CREATE_APP_COMMAND,
+                DISPLAY_PROGRAM_COMMAND
+            ])
+        } catch (err) {
+            console.error('Failed to run display program:', err)
+        }
+
+        // Parse the output and get the data, metadata, and schemas.
+        const {
+            data,
+            metadata: {description: cli},
+            schemas
+        } = JSON.parse(programOutput)
+
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify(
+                        {
+                            guidelines: guidelinesText,
+                            cli,
+                            schemas,
+                            data
+                        },
+                        null,
+                        2
+                    )
+                }
+            ]
+        }
+    }
 }
