@@ -1,20 +1,20 @@
 # PWA Storefront MCP Server
 
-An Model Context Protocol (MCP) server that works together with IDEs with AI coding assistant ability to help PWA Storefront developers with their development.
+A Model Context Protocol (MCP) server that provides AI coding assistance for developing  PWA-kit-based storefront apps in an IDE.
 
-This MCP server should be run as a local MCP server installed by developers or run locally via npx (when it's available on npm in feature).
+Install and run this MCP server as a local MCP server or run locally via `npx` (when it's available on `npm` in feature).
 
 ## What is MCP?
 
-The Model Context Protocol (MCP) is an open protocol that enables secure connections between host applications (like Claude Desktop or other AI assistants) and external data sources and tools.
+The Model Context Protocol (MCP) is an open protocol that enables secure connections between host applications, such as Claude Desktop or other AI assistants, and external data sources and tools.
 
 ## Features
 
-This MCP server provides:
+The PWA Storefront MCP Server provides these features.
 
-- `development_guidelines`: Help developers to understand and follow PWA Storefront developer guidelines and best practices
-- `create_new_component`: Help developers to create a new PWA Storefront component. It will guide developers through a few simple questions and then generate code for the component based on the commerce data model used, layouts, etc.
-- `submit_pwa_kit_project_answers`: Help developers to generate a new PWA Storefront project
+- `development_guidelines`: Helps developers understand and follow PWA Storefront developer guidelines and best practices.
+- `create_new_component`: Helps developers create a new PWA Storefront component. This feature guides developers through a few simple questions and then generates code for the component based on the commerce data model used, layouts, etc.
+- `submit_pwa_kit_project_answers`: Helps developers generate a new PWA Storefront project.
 
 ## Setup
 
@@ -26,19 +26,19 @@ npm install
 
 ## Run the MCP Server
 
-### Method 1: Run MCP Server From Cursor
+### Method 1: Run MCP Server from Cursor
 
-Open Cursor Application
+1. Open the Cursor application.
 
-Go to Cursor Menu on top menu bar, then *Settings* > *Cursor Settings...* 
+2. In the Cursor Menu on the top menu bar, click **Settings** > **Cursor Settings...**. 
 
 <img src="./docs/images/cursor-settings.png" alt="Cursor Settings Screenshot" width="50%" />
 
-Select Tools & Integrations > MCP Tools > New MCP Server
+3. Click **Tools & Integrations** > **MCP Tools** > **New MCP Server**.
 
 <img src="./docs/images/cursor-mcp-tools.png" alt="Cursor MCP Tools Screenshot" width="50%" />
 
-You will be led to mcp.json file. Add this to your mcp.json:
+The `mcp.json` file opens. Add this definition to your `mcp.json` file.
 
 ```json
 {
@@ -53,24 +53,24 @@ You will be led to mcp.json file. Add this to your mcp.json:
 } 
 ```
 
-Cursor will:
+After you modify the `mcp.json` file, cursor will do these actions.
 
-- Start the MCP server
-- Connect to it as a client
-- List available tools
+- Start the MCP server.
+- Connect to the MCP server as a client.
+- List available tools.
 
-You can go back to MCP Tools choose to enable/disable any MCP Server or tools.
+You can go back to MCP Tools and choose to enable/disable any MCP Server or tools.
 
 ### Method 2: Run MCP Server from Claude
 
 #### Using Claude Desktop
 
-1. Go to Claude menu on top menu bar then "Developer" > "Edit Config"
-This will lead you to "claude_desktop_config.json" file.
+1. In the Claude app menu, on the top menu bar, click **Developer** > **Edit Config**.
+The `claude_desktop_config.json` file opens.
 
 <img src="./docs/images/claude-config.png" alt="Claude MCP Config Screenshot" width="50%" />
 
-2. Add this server to your claude_desktop_config.json:
+2. Add this server definition to your `claude_desktop_config.json`.
 
 ```json
 {
@@ -84,11 +84,11 @@ This will lead you to "claude_desktop_config.json" file.
 }
 ```
 
-Claude will:
+After you modify the `claude_desktop_config.json` file, Claude will do these actions.
 
-- Start the MCP server
-- Connect to it as a client
-- List available tools
+- Start the MCP server.
+- Connect to the MCP server as a client.
+- List available tools.
 
 <img src="./docs/images/claude-list-tools.png" alt="Claude MCP Tools Screenshot" width="40%" />
 
@@ -99,7 +99,7 @@ The server runs on stdio, so you can test it with any MCP-compatible client.
 
 ### Method 3: Manually start MCP Server
 
-You can also manually the server from command line and sending JSON-RPC messages:
+You can also manually start the server from command line and sending JSON-RPC messages:
 
 ```bash
 cd {{dir-to-mcp}}
@@ -125,7 +125,7 @@ To run the server in development mode:
 npm start
 ```
 
-The server will output debug information to stderr and handle MCP protocol messages via stdio.
+The server outputs debug information to stderr and handle MCP protocol messages via stdio.
 
 # Project Structure
 

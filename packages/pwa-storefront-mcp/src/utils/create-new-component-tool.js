@@ -6,8 +6,8 @@
  */
 import fs from 'fs/promises'
 import path from 'path'
-import {HookRecommenderTool} from './hook-recommender-tool.js'
-import {toKebabCase, toPascalCase} from './utils.js'
+import {HookRecommenderTool} from './hook-recommender-tool'
+import {toKebabCase, toPascalCase} from './utils'
 
 export const getCopyrightHeader = () => {
     const year = new Date().getFullYear()
@@ -29,7 +29,7 @@ function inferEntityFromComponentName(componentName) {
     return null
 }
 
-export class CreateNewComponentTool {
+class CreateNewComponentTool {
     constructor() {
         this.currentStep = 0
         this.componentData = {
@@ -498,3 +498,5 @@ export default ${pascalComponentName};
         return 'Selected hook/entity not supported for presentational generation.'
     }
 }
+
+export default CreateNewComponentTool

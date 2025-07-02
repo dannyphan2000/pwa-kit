@@ -5,7 +5,7 @@ This guide shows different methods to programmatically insert code blocks in fil
 ## Method 1: Using Your MCP Server (Recommended)
 
 ### Setup
-1. **Configure the MCP Server in Cursor:**
+1. **Configure the MCP Server in Cursor.**
    ```json
    // Add to your Cursor MCP configuration
    {
@@ -18,7 +18,7 @@ This guide shows different methods to programmatically insert code blocks in fil
    }
    ```
 
-2. **Restart Cursor** to load the MCP server
+2. **Restart Cursor** to load the MCP server.
 
 ### Using the Tools
 
@@ -172,7 +172,7 @@ await insertReactComponent('./src/App.js', 'button', {
 
 ### 2. **Structured Prompts:**
 ```
-Please insert a React component with these specifications:
+Insert a React component with these specifications.
 - Type: ProductCard
 - Name: FeaturedProduct
 - Styling: Tailwind CSS
@@ -182,7 +182,7 @@ Please insert a React component with these specifications:
 
 ### 3. **Code Generation Prompts:**
 ```
-Generate and insert a complete React component:
+Generate and insert a complete React component.
 
 ```typescript
 interface ProductCardProps {
@@ -197,7 +197,7 @@ interface ProductCardProps {
 }
 ```
 
-Please create a ProductCard component using this interface.
+Create a ProductCard component using this interface.
 ```
 
 ## Method 4: VSCode/Cursor Extensions
@@ -290,11 +290,11 @@ generateComponents().catch(console.error);
 
 ## Best Practices
 
-1. **Use the MCP Server**: It provides intelligent analysis and proper code insertion
-2. **Validate Syntax**: Always check generated code for syntax errors
-3. **Preserve Formatting**: Maintain consistent code style and indentation
-4. **Handle Imports**: Ensure necessary imports are added when inserting components
-5. **Test Integration**: Verify that inserted components work with existing code
+1. **Use the MCP Server**: The MCP server provides intelligent analysis and proper code insertion.
+2. **Validate Syntax**: Always check generated code for syntax errors.
+3. **Preserve Formatting**: Maintain consistent code style and indentation.
+4. **Handle Imports**: Ensure necessary imports are added when inserting components.
+5. **Test Integration**: Verify that inserted components work with existing code.
 
 ## Demo Commands
 
@@ -303,7 +303,7 @@ Run the demo to see the MCP server in action:
 npm run demo  # or: node demo.js
 ```
 
-This will demonstrate:
+This demo demonstrates the following:
 - Code structure analysis
 - Component insertion
 - New file creation

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
-import {EmptyJsonSchema} from './utils.js'
+import {EmptyJsonSchema} from './utils'
 
 const guidelinesText = `# Salesforce Commerce Composable Storefront Development Guidelines
 
@@ -105,7 +105,7 @@ This document offers guidelines in the development of Salesforce Commerce Compos
 - Follow security best practices for all code.
 `
 
-export const DeveloperGuidelinesTool = {
+export default {
     name: 'development_guidelines',
     description: `You must follow this development guidelines before attempting to analyze/ generate / refactor / modify / fix code.
     - e.g. "Create a customer service Chat component", "Find bugs in my_script.jsx", "Refactor my_script.jsx to use React Hooks"`,
