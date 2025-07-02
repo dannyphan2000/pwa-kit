@@ -197,6 +197,29 @@ describe('OpenTelemetry Utilities', () => {
             expect(result).toBe(mockSpan)
         })
 
+        test('should handle performance mark with non-string detail', () => {
+            const result = opentelemetryUtils.createChildSpan('perf-span', {
+                performance_mark: 'test-mark',
+                performance_detail: {key: 'value'},
+                other: 'value'
+            })
+
+            expect(mockTracer.startSpan).toHaveBeenCalledWith(
+                'perf-span',
+                {
+                    attributes: {
+                        'service.name': 'pwa-kit-react-sdk',
+                        'performance.mark': 'test-mark',
+                        'performance.type': 'start',
+                        'performance.detail': '{"key":"value"}',
+                        other: 'value'
+                    }
+                },
+                'test-context'
+            )
+            expect(result).toBe(mockSpan)
+        })
+
         test('should handle errors gracefully', () => {
             mockTracer.startSpan.mockImplementation(() => {
                 throw new Error('Child span creation failed')
@@ -213,6 +236,45 @@ describe('OpenTelemetry Utilities', () => {
                     stack: expect.any(String)
                 }
             })
+        })
+
+        test('should return parent span when duplicate performance mark is detected', () => {
+            // Mock a parent span with matching performance_mark
+            const parentSpanWithMark = {
+                ...mockSpan,
+                attributes: {
+                    performance_mark: 'duplicate-span'
+                }
+            }
+            mockTrace.getSpan.mockReturnValue(parentSpanWithMark)
+
+            const result = opentelemetryUtils.createChildSpan('duplicate-span', {
+                performance_mark: 'duplicate-span'
+            })
+
+            expect(result).toBe(parentSpanWithMark)
+            expect(mockTracer.startSpan).not.toHaveBeenCalled()
+        })
+
+        test('should create span without parent span context', () => {
+            // Mock no parent span
+            mockTrace.getSpan.mockReturnValue(null)
+
+            const result = opentelemetryUtils.createChildSpan('child-span', {
+                test: 'value'
+            })
+
+            expect(mockTracer.startSpan).toHaveBeenCalledWith(
+                'child-span',
+                {
+                    attributes: {
+                        'service.name': 'pwa-kit-react-sdk',
+                        test: 'value'
+                    }
+                },
+                undefined
+            )
+            expect(result).toBe(mockSpan)
         })
     })
 
@@ -385,6 +447,29 @@ describe('OpenTelemetry Utilities', () => {
                         'performance.mark': 'test-mark',
                         'performance.type': 'end',
                         'performance.detail': 'test-detail',
+                        other: 'value'
+                    }
+                },
+                'test-context'
+            )
+        })
+
+        test('should handle performance mark with non-string detail in metric', () => {
+            opentelemetryUtils.logPerformanceMetric('test-metric', 150, {
+                performance_mark: 'test-mark',
+                performance_detail: {key: 'value'},
+                other: 'value'
+            })
+
+            expect(mockTracer.startSpan).toHaveBeenCalledWith(
+                'test-metric',
+                {
+                    attributes: {
+                        'service.name': 'pwa-kit-react-sdk',
+                        'metric.duration': 150,
+                        'performance.mark': 'test-mark',
+                        'performance.type': 'end',
+                        'performance.detail': '{"key":"value"}',
                         other: 'value'
                     }
                 },
