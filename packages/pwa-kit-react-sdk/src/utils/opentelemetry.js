@@ -51,7 +51,7 @@ function logSpanData(span, event = 'start', res = null) {
     }
 
     // Only log if this is an end event or if it's a start event for a new span
-    if (event === 'end' || !span.attributes.hasOwnProperty('event')) {
+    if (event === 'end' || !Object.prototype.hasOwnProperty.call(span.attributes, 'event')) {
         logger.info('OpenTelemetry span data', {
             namespace: 'opentelemetry.logSpanData',
             additionalProperties: spanData
@@ -70,7 +70,7 @@ export const createSpan = (name, options = {}) => {
         const tracer = trace.getTracer(SERVICE_NAME)
         // Get the current context and active span
         const ctx = context.active()
-        const currentSpan = trace.getSpan(ctx)
+        // Note: currentSpan is not used in this implementation
 
         // Create a new span with the current context
         const span = tracer.startSpan(
@@ -167,7 +167,7 @@ export const endSpan = (span) => {
 
     try {
         const ctx = context.active()
-        const parentSpan = trace.getSpan(ctx)
+        // Note: parentSpan is not used in this implementation
 
         span.end()
 
@@ -284,7 +284,6 @@ export const logPerformanceMetric = (name, duration, attributes = {}) => {
             ctx
         )
 
-        const endTime = hrTimeToTimeStamp(process.hrtime())
         span.end()
 
         // Log completion data

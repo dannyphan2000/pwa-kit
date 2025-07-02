@@ -1,5 +1,8 @@
-/**
- * @jest-environment node
+/*
+ * Copyright (c) 2025, Salesforce, Inc.
+ * All rights reserved.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 /*
  * Copyright (c) 2025, Salesforce, Inc.
@@ -52,10 +55,13 @@ describe('OpenTelemetry Utilities', () => {
         jest.clearAllMocks()
 
         // Get mocked modules
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const api = require('@opentelemetry/api')
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const core = require('@opentelemetry/core')
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const logger = require('./logger-instance')
-        
+
         mockTracer = {
             startSpan: jest.fn()
         }
@@ -92,6 +98,7 @@ describe('OpenTelemetry Utilities', () => {
             OK: 1,
             ERROR: 2
         }
+
         mockCore = core
         mockLogger = logger
 
@@ -101,8 +108,6 @@ describe('OpenTelemetry Utilities', () => {
         // Import the module after mocks are set up
         opentelemetryUtils = require('./opentelemetry')
     })
-
-
 
     describe('createSpan', () => {
         test('should create a span successfully', () => {
@@ -122,16 +127,13 @@ describe('OpenTelemetry Utilities', () => {
             )
             expect(mockTrace.setSpan).toHaveBeenCalledWith('test-context', mockSpan)
             expect(result).toBe('new-context')
-            expect(mockLogger.info).toHaveBeenCalledWith(
-                'OpenTelemetry span data',
-                {
-                    namespace: 'opentelemetry.logSpanData',
-                    additionalProperties: expect.objectContaining({
-                        traceId: 'test-trace-id',
-                        name: 'test-span'
-                    })
-                }
-            )
+            expect(mockLogger.info).toHaveBeenCalledWith('OpenTelemetry span data', {
+                namespace: 'opentelemetry.logSpanData',
+                additionalProperties: expect.objectContaining({
+                    traceId: 'test-trace-id',
+                    name: 'test-span'
+                })
+            })
         })
 
         test('should handle errors gracefully', () => {
@@ -142,16 +144,13 @@ describe('OpenTelemetry Utilities', () => {
             const result = opentelemetryUtils.createSpan('test-span')
 
             expect(result).toBeNull()
-            expect(mockLogger.error).toHaveBeenCalledWith(
-                'Failed to create span',
-                {
-                    namespace: 'opentelemetry',
-                    additionalProperties: {
-                        spanName: 'test-span',
-                        error: 'Span creation failed'
-                    }
+            expect(mockLogger.error).toHaveBeenCalledWith('Failed to create span', {
+                namespace: 'opentelemetry',
+                additionalProperties: {
+                    spanName: 'test-span',
+                    error: 'Span creation failed'
                 }
-            )
+            })
         })
     })
 
@@ -206,17 +205,14 @@ describe('OpenTelemetry Utilities', () => {
             const result = opentelemetryUtils.createChildSpan('child-span')
 
             expect(result).toBeNull()
-            expect(mockLogger.error).toHaveBeenCalledWith(
-                'Error creating OpenTelemetry span',
-                {
-                    namespace: 'opentelemetry',
-                    additionalProperties: {
-                        spanName: 'child-span',
-                        error: 'Child span creation failed',
-                        stack: expect.any(String)
-                    }
+            expect(mockLogger.error).toHaveBeenCalledWith('Error creating OpenTelemetry span', {
+                namespace: 'opentelemetry',
+                additionalProperties: {
+                    spanName: 'child-span',
+                    error: 'Child span creation failed',
+                    stack: expect.any(String)
                 }
-            )
+            })
         })
     })
 
@@ -225,16 +221,13 @@ describe('OpenTelemetry Utilities', () => {
             opentelemetryUtils.endSpan(mockSpan)
 
             expect(mockSpan.end).toHaveBeenCalled()
-            expect(mockLogger.info).toHaveBeenCalledWith(
-                'OpenTelemetry span data',
-                {
-                    namespace: 'opentelemetry.logSpanData',
-                    additionalProperties: expect.objectContaining({
-                        traceId: 'test-trace-id',
-                        name: 'test-span'
-                    })
-                }
-            )
+            expect(mockLogger.info).toHaveBeenCalledWith('OpenTelemetry span data', {
+                namespace: 'opentelemetry.logSpanData',
+                additionalProperties: expect.objectContaining({
+                    traceId: 'test-trace-id',
+                    name: 'test-span'
+                })
+            })
         })
 
         test('should handle null span gracefully', () => {
@@ -250,16 +243,13 @@ describe('OpenTelemetry Utilities', () => {
 
             opentelemetryUtils.endSpan(mockSpan)
 
-            expect(mockLogger.error).toHaveBeenCalledWith(
-                'Error ending OpenTelemetry span',
-                {
-                    namespace: 'opentelemetry',
-                    additionalProperties: {
-                        error: 'Span end failed',
-                        stack: expect.any(String)
-                    }
+            expect(mockLogger.error).toHaveBeenCalledWith('Error ending OpenTelemetry span', {
+                namespace: 'opentelemetry',
+                additionalProperties: {
+                    error: 'Span end failed',
+                    stack: expect.any(String)
                 }
-            )
+            })
         })
     })
 
@@ -296,8 +286,9 @@ describe('OpenTelemetry Utilities', () => {
             // Mock context.with to execute the function and throw the error
             mockContext.with.mockImplementation((ctx, fn) => fn())
 
-            await expect(opentelemetryUtils.tracePerformance('perf-test', mockFn, mockRes))
-                .rejects.toThrow('Function failed')
+            await expect(
+                opentelemetryUtils.tracePerformance('perf-test', mockFn, mockRes)
+            ).rejects.toThrow('Function failed')
 
             expect(mockSpan.setStatus).toHaveBeenCalledWith({
                 code: 2, // ERROR
@@ -309,7 +300,7 @@ describe('OpenTelemetry Utilities', () => {
         test('should inject B3 headers when tracing is enabled', async () => {
             const originalEnv = process.env.DISABLE_B3_TRACING
             process.env.DISABLE_B3_TRACING = 'false'
-            
+
             const mockFn = jest.fn().mockResolvedValue('test-result')
             const mockRes = {
                 setHeader: jest.fn()
@@ -323,7 +314,10 @@ describe('OpenTelemetry Utilities', () => {
             expect(mockRes.setHeader).toHaveBeenCalledWith('x-b3-traceid', 'test-trace-id')
             expect(mockRes.setHeader).toHaveBeenCalledWith('x-b3-spanid', 'test-span-id')
             expect(mockRes.setHeader).toHaveBeenCalledWith('x-b3-sampled', '1')
-            expect(mockRes.setHeader).toHaveBeenCalledWith('x-b3-parentspanid', 'test-parent-span-id')
+            expect(mockRes.setHeader).toHaveBeenCalledWith(
+                'x-b3-parentspanid',
+                'test-parent-span-id'
+            )
 
             process.env.DISABLE_B3_TRACING = originalEnv
         })
@@ -331,7 +325,7 @@ describe('OpenTelemetry Utilities', () => {
         test('should not inject B3 headers when tracing is disabled', async () => {
             const originalEnv = process.env.DISABLE_B3_TRACING
             process.env.DISABLE_B3_TRACING = 'true'
-            
+
             const mockFn = jest.fn().mockResolvedValue('test-result')
             const mockRes = {
                 setHeader: jest.fn()
@@ -354,24 +348,25 @@ describe('OpenTelemetry Utilities', () => {
                 test: 'value'
             })
 
-            expect(mockTracer.startSpan).toHaveBeenCalledWith('test-metric', {
-                attributes: {
-                    'service.name': 'pwa-kit-react-sdk',
-                    'metric.duration': 150,
-                    test: 'value'
-                }
-            }, 'test-context')
-            expect(mockSpan.end).toHaveBeenCalled()
-            expect(mockLogger.info).toHaveBeenCalledWith(
-                'OpenTelemetry span data',
+            expect(mockTracer.startSpan).toHaveBeenCalledWith(
+                'test-metric',
                 {
-                    namespace: 'opentelemetry.logSpanData',
-                    additionalProperties: expect.objectContaining({
-                        traceId: 'test-trace-id',
-                        name: 'test-span'
-                    })
-                }
+                    attributes: {
+                        'service.name': 'pwa-kit-react-sdk',
+                        'metric.duration': 150,
+                        test: 'value'
+                    }
+                },
+                'test-context'
             )
+            expect(mockSpan.end).toHaveBeenCalled()
+            expect(mockLogger.info).toHaveBeenCalledWith('OpenTelemetry span data', {
+                namespace: 'opentelemetry.logSpanData',
+                additionalProperties: expect.objectContaining({
+                    traceId: 'test-trace-id',
+                    name: 'test-span'
+                })
+            })
         })
 
         test('should handle performance mark attributes', () => {
@@ -381,16 +376,20 @@ describe('OpenTelemetry Utilities', () => {
                 other: 'value'
             })
 
-            expect(mockTracer.startSpan).toHaveBeenCalledWith('test-metric', {
-                attributes: {
-                    'service.name': 'pwa-kit-react-sdk',
-                    'metric.duration': 150,
-                    'performance.mark': 'test-mark',
-                    'performance.type': 'end',
-                    'performance.detail': 'test-detail',
-                    other: 'value'
-                }
-            }, 'test-context')
+            expect(mockTracer.startSpan).toHaveBeenCalledWith(
+                'test-metric',
+                {
+                    attributes: {
+                        'service.name': 'pwa-kit-react-sdk',
+                        'metric.duration': 150,
+                        'performance.mark': 'test-mark',
+                        'performance.type': 'end',
+                        'performance.detail': 'test-detail',
+                        other: 'value'
+                    }
+                },
+                'test-context'
+            )
         })
 
         test('should warn when no parent span is found', () => {
@@ -398,13 +397,10 @@ describe('OpenTelemetry Utilities', () => {
 
             opentelemetryUtils.logPerformanceMetric('test-metric', 150)
 
-            expect(mockLogger.warn).toHaveBeenCalledWith(
-                'No parent span found in context',
-                {
-                    namespace: 'opentelemetry',
-                    additionalProperties: {metricName: 'test-metric'}
-                }
-            )
+            expect(mockLogger.warn).toHaveBeenCalledWith('No parent span found in context', {
+                namespace: 'opentelemetry',
+                additionalProperties: {metricName: 'test-metric'}
+            })
             expect(mockTracer.startSpan).not.toHaveBeenCalled()
         })
 
@@ -416,17 +412,14 @@ describe('OpenTelemetry Utilities', () => {
 
             opentelemetryUtils.logPerformanceMetric('test-metric', 150)
 
-            expect(mockLogger.error).toHaveBeenCalledWith(
-                'Error logging performance metric',
-                {
-                    namespace: 'opentelemetry',
-                    additionalProperties: {
-                        metricName: 'test-metric',
-                        error: 'Metric logging failed',
-                        stack: expect.any(String)
-                    }
+            expect(mockLogger.error).toHaveBeenCalledWith('Error logging performance metric', {
+                namespace: 'opentelemetry',
+                additionalProperties: {
+                    metricName: 'test-metric',
+                    error: 'Metric logging failed',
+                    stack: expect.any(String)
                 }
-            )
+            })
         })
     })
 
@@ -453,8 +446,9 @@ describe('OpenTelemetry Utilities', () => {
         test('should handle function errors', async () => {
             const mockFn = jest.fn().mockRejectedValue(new Error('Child function failed'))
 
-            await expect(opentelemetryUtils.traceChildPerformance('child-perf', mockFn))
-                .rejects.toThrow('Child function failed')
+            await expect(
+                opentelemetryUtils.traceChildPerformance('child-perf', mockFn)
+            ).rejects.toThrow('Child function failed')
 
             expect(mockSpan.setStatus).toHaveBeenCalledWith({
                 code: 2, // ERROR
@@ -477,4 +471,4 @@ describe('OpenTelemetry Utilities', () => {
             expect(mockSpan.end).not.toHaveBeenCalled()
         })
     })
-}) 
+})
