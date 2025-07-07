@@ -82,10 +82,18 @@ export default class PerformanceTimer {
      * This is a utility function to create performance marks.
      * The data will be used in console logs and the http response header `server-timing`.
      *
-     * @function
-     * @private
+     * @param {string} name - Unique identifier for the performance measurement.
+     * Must be the same for both start and end marks of a pair. E.g. 'ssr.render-to-string'
+     *
+     * @param {string} type - Mark type, either 'start' or 'end'. 'start' creates spans and browser marks,
+     * 'end' completes measurement and cleanup.
+     *
+     * @param {Object} [options={}] - Optional configuration object
+     * @param {string|Object} [options.detail=''] - Additional metadata for the mark 
+     * included in logs and tracing attributes.
      */
-    mark(name, type, detail = '') {
+    mark(name, type, options = {}) {
+        const {detail = ''} = options
         if (!name || !type || !this.enabled) {
             return
         }
@@ -147,7 +155,8 @@ export default class PerformanceTimer {
                         name,
                         error: error.message,
                         startMark,
-                        endMark
+                        endMark,
+                        namespace: 'PerformanceTimer.mark'
                     })
                 }
             }
@@ -156,7 +165,8 @@ export default class PerformanceTimer {
                 name,
                 type,
                 error: error.message,
-                stack: error.stack
+                stack: error.stack,
+                namespace: 'PerformanceTimer.mark'
             })
         }
     }
