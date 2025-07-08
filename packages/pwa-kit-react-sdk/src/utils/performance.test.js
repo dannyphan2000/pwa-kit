@@ -17,22 +17,22 @@ describe('PerformanceTimer', () => {
     test('is disabled by default', () => {
         const timer = new PerformanceTimer()
         timer.mark('test', 'start')
-        expect(timer.marks.start.size).toBe(0)
+        expect(timer.spans.size).toBe(0)
     })
 
     test('can be enabled', () => {
         const timer = new PerformanceTimer({enabled: true})
         timer.mark('test', 'start')
-        console.log('(JEREMY) timer.marks.start.size: ', timer.marks.start.size)
-        expect(timer.marks.start.size).toBe(1)
+        expect(timer.spans.size).toBe(1)
+        expect(timer.spans.has('test')).toBe(true)
     })
 
     test('marks can be added for both types', () => {
         const timer = new PerformanceTimer({enabled: true})
         timer.mark('test', 'start')
         timer.mark('test', 'end')
-        expect(timer.marks.start.size).toBe(1)
-        expect(timer.marks.end.size).toBe(1)
+        expect(timer.spans.size).toBe(0)
+        expect(timer.metrics).toHaveLength(1)
     })
 
     test('measurements are created when a pair of marks is added', () => {
