@@ -6,7 +6,6 @@
  */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-
 const base = require('internal-lib-build/configs/jest/jest.config')
 module.exports = {
     ...base,
