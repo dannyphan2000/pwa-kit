@@ -108,14 +108,19 @@ export const createSpan = (name, options = {}) => {
  */
 export const createChildSpan = (name, attributes = {}) => {
     try {
+        console.log('(JEREMY) createChildSpan. FLAG A')
         const tracer = trace.getTracer(SERVICE_NAME)
+        console.log('(JEREMY) createChildSpan. FLAG B')
         const ctx = context.active()
+        console.log('(JEREMY) createChildSpan. FLAG C')
         const parentSpan = trace.getSpan(ctx)
+        console.log('(JEREMY) createChildSpan. FLAG D')
 
         // Don't create duplicate spans
         if (parentSpan?.attributes?.performance_mark === name) {
             return parentSpan
         }
+        console.log('(JEREMY) createChildSpan. FLAG E')
 
         const {performance_mark, performance_detail, ...otherAttributes} = attributes
 
@@ -140,8 +145,9 @@ export const createChildSpan = (name, attributes = {}) => {
             },
             parentSpan ? ctx : undefined
         )
-
+        console.log('(JEREMY) createChildSpan. FLAG F')
         logSpanData(span, 'start')
+        console.log('(JEREMY) createChildSpan. FLAG G')
         return span
     } catch (error) {
         logger.error('Error creating OpenTelemetry span', {

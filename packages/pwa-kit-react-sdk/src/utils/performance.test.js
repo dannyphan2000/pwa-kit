@@ -23,6 +23,7 @@ describe('PerformanceTimer', () => {
     test('can be enabled', () => {
         const timer = new PerformanceTimer({enabled: true})
         timer.mark('test', 'start')
+        console.log('(JEREMY) timer.marks.start.size: ', timer.marks.start.size)
         expect(timer.marks.start.size).toBe(1)
     })
 

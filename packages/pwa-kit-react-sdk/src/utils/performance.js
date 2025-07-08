@@ -94,13 +94,18 @@ export default class PerformanceTimer {
      */
     mark(name, type, options = {}) {
         const {detail = ''} = options
+        console.log('(JEREMY) name: ', name)
+        console.log('(JEREMY) type: ', type)
+        console.log('(JEREMY) this.enabled: ', this.enabled)
         if (!name || !type || !this.enabled) {
             return
         }
+        console.log('(JEREMY) FLAG A')
 
         try {
             // Format detail as a string if it's an object
             const formattedDetail = typeof detail === 'object' ? JSON.stringify(detail) : detail
+            console.log('(JEREMY) FLAG B')
 
             const mark = {
                 name: `${name}.${type}`,
@@ -112,20 +117,24 @@ export default class PerformanceTimer {
             performance.mark(mark.name, {
                 detail: mark.detail
             })
+            console.log('(JEREMY) FLAG C')
 
             // Only create spans for 'start' events and store them for later use
             if (type === 'start') {
+                console.log('(JEREMY) FLAG D')
                 if (!this.spans.has(name)) {
                     const span = createChildSpan(name, {
                         performance_mark: name,
                         performance_type: type,
                         performance_detail: formattedDetail
                     })
+                    console.log('(JEREMY) span: ', span)
                     if (span) {
                         this.spans.set(name, span)
                     }
                 }
             } else if (type === 'end') {
+                console.log('(JEREMY) FLAG E')
                 const startMark = `${name}.start`
                 const endMark = `${name}.end`
 
