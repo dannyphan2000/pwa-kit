@@ -48,7 +48,7 @@ const Checkout = () => {
     const {data: basket} = useCurrentBasket()
     const [isLoading, setIsLoading] = useState(false)
     const {mutateAsync: createOrder} = useShopperOrdersMutation('createOrder')
-    const {passwordless = {}, social = {}} = getConfig().app.login || {}
+    const {googleCloudAPI = {}, login: {passwordless = {}, social = {}}} = getConfig().app || {}
     const idps = social?.idps
     const isSocialEnabled = !!social?.enabled
     const isPasswordlessEnabled = !!passwordless?.enabled
@@ -78,7 +78,7 @@ const Checkout = () => {
     }
 
     return (
-        <APIProvider apiKey={"YOUR_API_KEY"}>
+        <APIProvider apiKey={googleCloudAPI.apiKey}>
             <Box background="gray.50" flex="1">
                 <Container
                     data-testid="sf-checkout-container"
