@@ -57,8 +57,3 @@ if (global.performance) {
 } else {
     global.performance = performance
 }
-
-// This is needed for spans created in jest environment to not be no-op spans, otherwise the spans will lack attributes
-import {BasicTracerProvider} from '@opentelemetry/sdk-trace-base'
-const provider = new BasicTracerProvider()
-provider.register()

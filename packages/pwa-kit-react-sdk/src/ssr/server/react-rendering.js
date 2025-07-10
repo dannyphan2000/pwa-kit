@@ -8,6 +8,7 @@
 /**
  * @module progressive-web-sdk/ssr/server/react-rendering
  */
+import {initializeServerTracing, isServerTracingInitialized} from './opentelemetry-server'
 
 import path from 'path'
 import React from 'react'
@@ -122,6 +123,12 @@ export const getLocationSearch = (req, opts = {}) => {
 export const render = async (req, res, next) => {
     const includeServerTimingHeader = '__server_timing' in req.query
     const shouldTrackPerformance = includeServerTimingHeader || process.env.SERVER_TIMING
+
+    if (!isServerTracingInitialized() && shouldTrackPerformance) {
+        // TODO: does this need to be synced with the config OTEL_SDK_ENABLED?
+        initializeServerTracing({enabled: true})
+    }
+
     res.__performanceTimer = new PerformanceTimer({enabled: shouldTrackPerformance})
     res.__performanceTimer.mark(PERFORMANCE_MARKS.total, 'start')
     const AppConfig = getAppConfig()

@@ -12,9 +12,11 @@ import logger from './logger-instance'
 const DEFAULT_SERVICE_NAME = 'pwa-kit-react-sdk'
 
 export const OTEL_CONFIG = {
-    serviceName: process.env.OTEL_SERVICE_NAME || DEFAULT_SERVICE_NAME,
-    enabled: process.env.OTEL_SDK_ENABLED === 'true',
-    b3TracingEnabled: process.env.OTEL_B3_TRACING_ENABLED === 'true'
+    serviceName:
+        (typeof process !== 'undefined' && process.env.OTEL_SERVICE_NAME) || DEFAULT_SERVICE_NAME,
+    enabled: typeof process !== 'undefined' && process.env.OTEL_SDK_ENABLED === 'true',
+    b3TracingEnabled:
+        typeof process !== 'undefined' && process.env.OTEL_B3_TRACING_ENABLED === 'true'
 }
 
 export const getServiceName = () => OTEL_CONFIG.serviceName
@@ -22,6 +24,7 @@ export const getServiceName = () => OTEL_CONFIG.serviceName
 const logSpanData = (span, event = 'start', res = null) => {
     const spanContext = span.spanContext()
     const startTime = span.startTime
+
     const endTime = event === 'start' ? startTime : span.endTime
     const duration = event === 'start' ? 0 : hrTimeToMilliseconds(span.duration)
 
@@ -47,8 +50,13 @@ const logSpanData = (span, event = 'start', res = null) => {
         forwardTrace: OTEL_CONFIG.b3TracingEnabled
     }
 
-    // Inject B3 headers into response if available
-    if (res && process.env.DISABLE_B3_TRACING !== 'true' && event === 'start') {
+    // Inject B3 headers into response if available (server-side only)
+    if (
+        res &&
+        typeof process !== 'undefined' &&
+        process.env.DISABLE_B3_TRACING !== 'true' &&
+        event === 'start'
+    ) {
         res.setHeader('x-b3-traceid', spanContext.traceId)
         res.setHeader('x-b3-spanid', spanContext.spanId)
         res.setHeader('x-b3-sampled', '1')
