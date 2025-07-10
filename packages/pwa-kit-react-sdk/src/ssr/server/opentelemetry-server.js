@@ -11,8 +11,7 @@ import {B3Propagator} from '@opentelemetry/propagator-b3'
 import {Resource} from '@opentelemetry/resources'
 import {propagation} from '@opentelemetry/api'
 import logger from '../../utils/logger-instance'
-
-const DEFAULT_SERVICE_NAME = 'pwa-kit-react-sdk'
+import {getServiceName, OTEL_CONFIG} from '../../utils/opentelemetry'
 
 let provider = null
 
@@ -26,9 +25,9 @@ let provider = null
  */
 export const initializeServerTracing = (options = {}) => {
     const {
-        serviceName = process.env.OTEL_SERVICE_NAME || DEFAULT_SERVICE_NAME,
+        serviceName = options.serviceName || getServiceName(),
         serviceVersion,
-        enabled = process.env.OTEL_SDK_ENABLED === 'true'
+        enabled = OTEL_CONFIG.enabled
     } = options
 
     // If tracing is disabled, return null without initializing

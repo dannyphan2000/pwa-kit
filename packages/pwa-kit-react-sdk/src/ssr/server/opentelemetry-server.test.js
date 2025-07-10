@@ -41,6 +41,16 @@ jest.mock('../../utils/logger-instance', () => ({
     debug: jest.fn()
 }))
 
+// Mock the opentelemetry utils
+jest.mock('../../utils/opentelemetry', () => ({
+    getServiceName: jest.fn(() => 'pwa-kit-react-sdk'),
+    OTEL_CONFIG: {
+        serviceName: 'pwa-kit-react-sdk',
+        enabled: true,
+        b3TracingEnabled: true
+    }
+}))
+
 describe('OpenTelemetry Server Tracing', () => {
     let mockNodeTracerProvider
     let mockSimpleSpanProcessor
@@ -65,6 +75,7 @@ describe('OpenTelemetry Server Tracing', () => {
         const {Resource} = require('@opentelemetry/resources')
         const {propagation} = require('@opentelemetry/api')
         const logger = require('../../utils/logger-instance')
+        const {getServiceName, OTEL_CONFIG} = require('../../utils/opentelemetry')
         const opentelemetryServer = require('./opentelemetry-server')
         /* eslint-enable @typescript-eslint/no-var-requires */
 
@@ -278,57 +289,48 @@ describe('OpenTelemetry Server Tracing', () => {
                 process.env = originalEnv
             })
 
-            test('should use OTEL_SERVICE_NAME environment variable when provided', () => {
+            test('should use custom service name when provided', () => {
                 // Clear previous mock calls
                 mockResource.mockClear()
                 mockNodeTracerProvider.mockClear()
 
-                process.env.OTEL_SERVICE_NAME = 'env-service-name'
-
-                const result = initializeServerTracing({enabled: true})
+                const result = initializeServerTracing({
+                    enabled: true,
+                    serviceName: 'custom-service-name'
+                })
 
                 expect(mockResource).toHaveBeenCalledWith({
-                    'service.name': 'env-service-name'
+                    'service.name': 'custom-service-name'
                 })
                 expect(result).toBeDefined()
             })
 
-            test('should enable tracing when OTEL_SDK_ENABLED is true', () => {
+            test('should use getServiceName when no service name provided', () => {
                 // Clear previous mock calls
                 mockResource.mockClear()
                 mockNodeTracerProvider.mockClear()
 
-                process.env.OTEL_SDK_ENABLED = 'true'
+                const result = initializeServerTracing({enabled: true})
 
-                const result = initializeServerTracing()
+                expect(mockResource).toHaveBeenCalledWith({
+                    'service.name': 'pwa-kit-react-sdk'
+                })
+                expect(result).toBeDefined()
+            })
+
+            test('should enable tracing when enabled is true', () => {
+                // Clear previous mock calls
+                mockResource.mockClear()
+                mockNodeTracerProvider.mockClear()
+
+                const result = initializeServerTracing({enabled: true})
 
                 expect(mockNodeTracerProvider).toHaveBeenCalled()
                 expect(result).toBeDefined()
             })
 
-            test('should disable tracing when OTEL_SDK_ENABLED is false', () => {
-                process.env.OTEL_SDK_ENABLED = 'false'
-
-                // Re-import to get fresh module with updated env
-                // eslint-disable-next-line @typescript-eslint/no-var-requires
-                const opentelemetryServer = require('./opentelemetry-server')
-                const {initializeServerTracing} = opentelemetryServer
-
-                const result = initializeServerTracing(defaultOptions)
-
-                expect(mockNodeTracerProvider).not.toHaveBeenCalled()
-                expect(result).toBeNull()
-            })
-
-            test('should disable tracing when OTEL_SDK_ENABLED is not set', () => {
-                delete process.env.OTEL_SDK_ENABLED
-
-                // Re-import to get fresh module with updated env
-                // eslint-disable-next-line @typescript-eslint/no-var-requires
-                const opentelemetryServer = require('./opentelemetry-server')
-                const {initializeServerTracing} = opentelemetryServer
-
-                const result = initializeServerTracing(defaultOptions)
+            test('should disable tracing when enabled is false', () => {
+                const result = initializeServerTracing({enabled: false})
 
                 expect(mockNodeTracerProvider).not.toHaveBeenCalled()
                 expect(result).toBeNull()
