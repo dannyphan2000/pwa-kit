@@ -124,28 +124,29 @@ class PwaStorefrontMCPServerHighLevel {
     _handleComponentNameStep(session, answer, sessionId) {
         if (answer) {
             session.answers.name = answer
-            session.step = 2
-            const defaultDir = process.env.PWA_STOREFRONT_APP_PATH
-                ? process.env.PWA_STOREFRONT_APP_PATH + '/components'
-                : '/components'
-            return this._next(
-                sessionId,
-                `Answer yes to use the default components directory (${defaultDir}), or no if you want to specify the full absolute path to use a different directory:`
-            )
+
+            // If PWA_STOREFRONT_APP_PATH is defined, automatically set location and go to step 3
+            if (process.env.PWA_STOREFRONT_APP_PATH) {
+                session.answers.location = process.env.PWA_STOREFRONT_APP_PATH + '/components'
+                session.step = 3
+                return this._next(
+                    sessionId,
+                    'Should this component display a single product or a list of products? Reply with "single" or "list".'
+                )
+            } else {
+                session.step = 2
+                return this._next(
+                    sessionId,
+                    'What should be the directory where the component should be created? Please provide the full absolute path.'
+                )
+            }
         }
         return this._next(sessionId, 'What would you like to name your new React component?')
     }
 
     _handleDirectoryStep(session, answer, sessionId) {
-        const defaultDir = process.env.PWA_STOREFRONT_APP_PATH
-            ? process.env.PWA_STOREFRONT_APP_PATH + '/components'
-            : '/components'
         if (answer) {
-            if (/^(yes|y|true|1)$/i.test(answer)) {
-                session.answers.location = defaultDir
-            } else {
-                session.answers.location = answer
-            }
+            session.answers.location = answer
             session.step = 3
             return this._next(
                 sessionId,
@@ -154,64 +155,43 @@ class PwaStorefrontMCPServerHighLevel {
         }
         return this._next(
             sessionId,
-            `Answer yes to use the default components directory (${defaultDir}), or no if you want to specify the full absolute path to use a different directory:`
+            'What should be the directory where the component should be created? Please provide the full absolute path.'
         )
     }
 
     async _handleSingleOrListStep(session, answer, sessionId) {
+        let isList = null
         if (answer && /list/i.test(answer)) {
-            // List of products
-            const tool = new CreateNewComponentTool()
-            tool.componentData = {
-                name: session.answers.name,
-                location: session.answers.location,
-                createTestFile: false,
-                customCode: '',
-                entityType: 'product'
-            }
-            const dataModel = this.getDataModel('product')
-            let schemaObj = dataModel && dataModel.properties ? dataModel.properties : {}
-            let presentationalResult = await tool.updateComponentToPresentational(
-                'product',
-                session.answers.name,
-                session.answers.location,
-                schemaObj,
-                {list: true}
-            )
-            session.step = 99
-            return this._done(
-                sessionId,
-                (session.basicComponentResult || '') +
-                    `\n\n${presentationalResult}\nComponent creation flow complete.`
-            )
+            isList = true
         } else if (answer && /single/i.test(answer)) {
-            // Single product
-            const tool = new CreateNewComponentTool()
-            tool.componentData = {
-                name: session.answers.name,
-                location: session.answers.location,
-                createTestFile: false,
-                customCode: '',
-                entityType: 'product'
-            }
-            const dataModel = this.getDataModel('product')
-            let schemaObj = dataModel && dataModel.properties ? dataModel.properties : {}
-            let presentationalResult = await tool.updateComponentToPresentational(
-                'product',
-                session.answers.name,
-                session.answers.location,
-                schemaObj,
-                {list: false}
-            )
-            session.step = 99
-            return this._done(
-                sessionId,
-                (session.basicComponentResult || '') +
-                    `\n\n${presentationalResult}\nComponent creation flow complete.`
-            )
+            isList = false
         } else {
             return this._next(sessionId, 'Please reply with "single" or "list".')
         }
+
+        const tool = new CreateNewComponentTool()
+        tool.componentData = {
+            name: session.answers.name,
+            location: session.answers.location,
+            createTestFile: false,
+            customCode: '',
+            entityType: 'product'
+        }
+        const dataModel = this.getDataModel('product')
+        let schemaObj = dataModel && dataModel.properties ? dataModel.properties : {}
+        let presentationalResult = await tool.updateComponentToPresentational(
+            'product',
+            session.answers.name,
+            session.answers.location,
+            schemaObj,
+            {list: isList}
+        )
+        session.step = 99
+        return this._done(
+            sessionId,
+            (session.basicComponentResult || '') +
+                `\n\n${presentationalResult}\nComponent creation flow complete.`
+        )
     }
 
     _handleDoneStep(sessionId) {
