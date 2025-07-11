@@ -125,8 +125,7 @@ export const render = async (req, res, next) => {
     const shouldTrackPerformance = includeServerTimingHeader || process.env.SERVER_TIMING
 
     if (!isServerTracingInitialized() && shouldTrackPerformance) {
-        // TODO: does this need to be synced with the config OTEL_SDK_ENABLED?
-        initializeServerTracing({enabled: true})
+        initializeServerTracing()
     }
 
     res.__performanceTimer = new PerformanceTimer({enabled: shouldTrackPerformance})
