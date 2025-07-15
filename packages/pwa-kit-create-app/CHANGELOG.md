@@ -1,12 +1,9 @@
-## v3.12.0-dev.0
-- Add development guidelines and create page Cursor rules for generated project [2786](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2786)
-
 ## v3.11.0-dev.0 (May 23, 2025)
 - Fix exiting before `program.json` content can be flushed [#2699](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2699)
 - Add `program.json` + Support for Agent-Friendly CLI Input via stdio [#2662](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2662)
 - Change the default ECOM instance in the generated application [#2610](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2610)
 - Load active data scripts on demand only [#2623](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2623)
-- Introduce the cursor rules to assist storefront project developers [#2578](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2578) [#2754](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2754)
+- Introduce the cursor rules to assist storefront project developers [#2578](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2578) [#2754](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2754) [#2820](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2820)
 - Add `StoreLocatorProvider` to the `AppConfig` template to support BOPIS [#2753](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2753)
 
 ## v3.10.0 (May 22, 2025)
