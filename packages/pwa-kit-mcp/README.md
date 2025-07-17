@@ -45,11 +45,9 @@ The `mcp.json` file opens. Add this definition to your `mcp.json` file and repla
 ```json
 {
   "mcpServers": {
-
     "pwa-kit-mcp": {
-      "command": "node {{parent-dir-to-mcp}}/pwa-kit-mcp/dist/server/server.js",
-      "transport": "stdio",
-      "args": [],
+      "command": "npx",
+      "args": ["-y", "@salesforce/pwa-kit-mcp@0.1.0-preview.1"],
       "env": {
         "PWA_STOREFRONT_APP_PATH": "{{path-to-app-directory}}"
       }
@@ -82,7 +80,7 @@ The `claude_desktop_config.json` file opens.
   "mcpServers": {
     "pwa-kit-mcp": {
       "command": "npx",
-      "args": ["-y", "@salesforce/pwa-kit-mcp-server@0.1.0-preview.0"],
+      "args": ["-y", "@salesforce/pwa-kit-mcp@0.1.0-preview.1"],
       "env": {
         "PWA_STOREFRONT_APP_PATH": "{{path-to-app-directory}}"
       }
