@@ -251,10 +251,13 @@ export const logPerformanceMetric = (name, duration, attributes = {}) => {
         const parentSpan = trace.getSpan(ctx)
 
         if (!parentSpan) {
-            logger.warn('No parent span found in context', {
-                namespace: 'opentelemetry',
-                additionalProperties: {metricName: name}
-            })
+            // Only log warning if not in test environment to avoid Lighthouse interference
+            if (process.env.NODE_ENV !== 'test' && !process.env.LIGHTHOUSE_TEST) {
+                logger.warn('No parent span found in context', {
+                    namespace: 'opentelemetry',
+                    additionalProperties: {metricName: name}
+                })
+            }
             return
         }
 

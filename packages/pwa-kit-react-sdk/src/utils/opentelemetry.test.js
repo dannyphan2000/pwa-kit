@@ -476,11 +476,26 @@ describe('OpenTelemetry Utilities', () => {
 
             opentelemetryUtils.logPerformanceMetric('test-metric', 150)
 
+            // In test environment, warnings are suppressed to avoid Lighthouse interference
+            expect(mockLogger.warn).not.toHaveBeenCalled()
+            expect(mockTracer.startSpan).not.toHaveBeenCalled()
+        })
+
+        test('should warn when no parent span is found in production', () => {
+            const originalEnv = process.env.NODE_ENV
+            process.env.NODE_ENV = 'production'
+
+            mockTrace.getSpan.mockReturnValue(null)
+
+            opentelemetryUtils.logPerformanceMetric('test-metric', 150)
+
             expect(mockLogger.warn).toHaveBeenCalledWith('No parent span found in context', {
                 namespace: 'opentelemetry',
                 additionalProperties: {metricName: 'test-metric'}
             })
             expect(mockTracer.startSpan).not.toHaveBeenCalled()
+
+            process.env.NODE_ENV = originalEnv
         })
 
         test('should handle errors gracefully', () => {
