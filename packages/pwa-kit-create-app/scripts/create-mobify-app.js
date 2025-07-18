@@ -234,6 +234,38 @@ const expandObject = (obj = {}) =>
     Object.keys(obj).reduce((acc, curr) => merge(acc, expandKey(curr, obj[curr])), {})
 
 /**
+ * If the generated project is based on a template that includes '.cursor/rules',
+ * this function copies the rules from the installed node_modules into the
+ * top-level of the generated project.
+ * @param {string} outputDir - The directory of the generated project
+ * @private
+ */
+const copyCursorRules = (outputDir) => {
+    const cursorRulesFromDir = p.join(
+        outputDir,
+        'node_modules',
+        '@salesforce',
+        'retail-react-app',
+        '.cursor',
+        'rules'
+    )
+    if (sh.test('-e', cursorRulesFromDir)) {
+        const outputCursorRulesDir = p.join(outputDir, '.cursor', 'rules')
+
+        // Create the directory if it doesn't exist
+        if (!sh.test('-e', outputCursorRulesDir)) {
+            fs.mkdirSync(outputCursorRulesDir, {recursive: true})
+        }
+
+        // Copy the contents of cursorRulesFromDir to outputCursorRulesDir
+        const files = fs.readdirSync(cursorRulesFromDir)
+        files.forEach((file) => {
+            sh.cp('-rf', p.join(cursorRulesFromDir, file), outputCursorRulesDir)
+        })
+    }
+}
+
+/**
  * Envoke the "npm install" command for the provided project directory.
  *
  * @param {*} outputDir
@@ -351,6 +383,11 @@ const runGenerator = (context, {outputDir, templateVersion, verbose}) => {
         assets.forEach((asset) => {
             sh.cp('-rf', p.join(packagePath, asset), outputDir)
         })
+        // Install dependencies for the newly minted project.
+        npmInstall(outputDir, {verbose})
+
+        // Extended project does not contain cursor rules and need explicit copy
+        copyCursorRules(outputDir)
     } else {
         console.log('Copying base template from package or npm: ', packagePath, outputDir)
         // Copy the base template either from the package or npm.
@@ -388,33 +425,9 @@ const runGenerator = (context, {outputDir, templateVersion, verbose}) => {
 
         // Clean up
         sh.rm('-rf', tmp)
-    }
 
-    // Install dependencies for the newly minted project.
-    npmInstall(outputDir, {verbose})
-
-    // Copy the .cursor/rules directory from installed node_modules if it exists
-    const cursorRulesFromDir = p.join(
-        outputDir,
-        'node_modules',
-        '@salesforce',
-        'retail-react-app',
-        '.cursor',
-        'rules'
-    )
-    if (sh.test('-e', cursorRulesFromDir)) {
-        const outputCursorRulesDir = p.join(outputDir, '.cursor', 'rules')
-
-        // Create the directory if it doesn't exist
-        if (!sh.test('-e', outputCursorRulesDir)) {
-            fs.mkdirSync(outputCursorRulesDir, {recursive: true})
-        }
-
-        // Copy the contents of cursorRulesFromDir to outputCursorRulesDir
-        const files = fs.readdirSync(cursorRulesFromDir)
-        files.forEach((file) => {
-            sh.cp('-rf', p.join(cursorRulesFromDir, file), outputCursorRulesDir)
-        })
+        // Install dependencies for the newly minted project.
+        npmInstall(outputDir, {verbose})
     }
 }
 
