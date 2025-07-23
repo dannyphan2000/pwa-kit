@@ -476,8 +476,10 @@ describe('OpenTelemetry Utilities', () => {
 
             opentelemetryUtils.logPerformanceMetric('test-metric', 150)
 
-            // In test environment, warnings are suppressed to avoid Lighthouse interference
-            expect(mockLogger.warn).not.toHaveBeenCalled()
+            expect(mockLogger.warn).toHaveBeenCalledWith('No parent span found in context', {
+                namespace: 'opentelemetry',
+                additionalProperties: {metricName: 'test-metric'}
+            })
             expect(mockTracer.startSpan).not.toHaveBeenCalled()
         })
 

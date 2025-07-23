@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025, salesforce.com, inc.
+ * Copyright (c) 2021, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
@@ -23,6 +23,7 @@ import {proxyConfigs} from '@salesforce/pwa-kit-runtime/utils/ssr-shared'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {NO_CACHE} from '@salesforce/pwa-kit-runtime/ssr/server/constants'
 import {isServerTracingInitialized} from './opentelemetry-server'
+import {initializeServerTracing} from './opentelemetry-server'
 
 import {getAssetUrl} from '../universal/utils'
 import {ServerContext, CorrelationIdProvider} from '../universal/contexts'
@@ -126,7 +127,7 @@ export const render = async (req, res, next) => {
     const shouldTrackPerformance = includeServerTimingHeader || process.env.SERVER_TIMING
 
     if (!isServerTracingInitialized() && shouldTrackPerformance) {
-        // Optionally: log a warning if tracing is not initialized but should be
+        initializeServerTracing()
         console.warn(
             '[OpenTelemetry] Server tracing is not initialized but should be. Tracing will be skipped.'
         )
@@ -135,10 +136,9 @@ export const render = async (req, res, next) => {
     return tracePerformance(
         'ssr.render',
         async () => {
-            // Route matching span
-            const routeMatchingSpan = createChildSpan('Route Matching')
             res.__performanceTimer = new PerformanceTimer({enabled: shouldTrackPerformance})
             res.__performanceTimer.mark(PERFORMANCE_MARKS.total, 'start')
+            const routeMatchingSpan = createChildSpan('Route Matching')
             const AppConfig = getAppConfig()
             const config = getConfig()
 
@@ -198,6 +198,7 @@ export const render = async (req, res, next) => {
                 appState = {}
                 appStateError = new errors.HTTPNotFound('Not found')
             } else {
+                const fetchStrategiesSpan = createChildSpan('Fetch Strategies')
                 res.__performanceTimer.mark(PERFORMANCE_MARKS.fetchStrategies, 'start')
                 const ret = await AppConfig.initAppState({
                     App: WrappedApp,
@@ -215,8 +216,10 @@ export const render = async (req, res, next) => {
                 }
                 appStateError = ret.error
                 res.__performanceTimer.mark(PERFORMANCE_MARKS.fetchStrategies, 'end')
+                endSpan(fetchStrategiesSpan)
             }
 
+            const renderToStringSpan = createChildSpan('Render To String')
             res.__performanceTimer.mark(PERFORMANCE_MARKS.renderToString, 'start')
             appJSX = React.cloneElement(appJSX, {error: appStateError, appState})
 
@@ -240,6 +243,9 @@ export const render = async (req, res, next) => {
                 }
                 return next(e)
             }
+
+            res.__performanceTimer.mark(PERFORMANCE_MARKS.renderToString, 'end')
+            endSpan(renderToStringSpan)
 
             // Step 5 - Determine what is going to happen, redirect, or send html with
             // the correct status code.

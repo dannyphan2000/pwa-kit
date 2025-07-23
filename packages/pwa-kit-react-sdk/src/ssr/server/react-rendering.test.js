@@ -1089,6 +1089,14 @@ describe('Additional branch coverage for react-rendering', () => {
             .catch(() => {})
         expect(cleanupSpy).toHaveBeenCalled()
     })
+
+    test('calls performance timer cleanup after successful render', async () => {
+        const cleanupSpy = jest.spyOn(PerformanceTimer.prototype, 'cleanup')
+        const app = RemoteServerFactory._createApp(opts())
+        app.get('/*', render)
+        await request(app).get('/pwa/')
+        expect(cleanupSpy).toHaveBeenCalled()
+    })
 })
 
 describe('getLocationSearch', function () {

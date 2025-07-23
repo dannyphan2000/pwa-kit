@@ -6,7 +6,7 @@
  */
 
 import {trace, context, SpanStatusCode} from '@opentelemetry/api'
-import {hrTimeToMilliseconds, hrTimeToTimeStamp} from '@opentelemetry/core'
+import {hrTimeToTimeStamp} from '@opentelemetry/core'
 import logger from './logger-instance'
 import {getOTELConfig, getServiceName} from './opentelemetry-config'
 
@@ -22,7 +22,6 @@ const logSpanData = (span, event = 'start', res = null) => {
         startTime.length !== 2 ||
         (duration !== 0 && (!Array.isArray(duration) || duration.length !== 2))
     ) {
-        // Optionally log a warning here
         return
     }
 
@@ -34,7 +33,7 @@ const logSpanData = (span, event = 'start', res = null) => {
         id: spanContext.spanId,
         kind: span.kind,
         timestamp: hrTimeToTimeStamp(startTime),
-        duration: event === 'start' ? 0 : hrTimeToMilliseconds(duration),
+        duration: duration,
         attributes: {
             'service.name': getServiceName(),
             ...span.attributes,
@@ -252,13 +251,10 @@ export const logPerformanceMetric = (name, duration, attributes = {}) => {
         const parentSpan = trace.getSpan(ctx)
 
         if (!parentSpan) {
-            // Only log warning if not in test environment to avoid Lighthouse interference
-            if (process.env.NODE_ENV !== 'test' && !process.env.LIGHTHOUSE_TEST) {
-                logger.warn('No parent span found in context', {
-                    namespace: 'opentelemetry',
-                    additionalProperties: {metricName: name}
-                })
-            }
+            logger.warn('No parent span found in context', {
+                namespace: 'opentelemetry',
+                additionalProperties: {metricName: name}
+            })
             return
         }
 
