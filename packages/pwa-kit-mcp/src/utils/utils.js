@@ -10,6 +10,8 @@ import path from 'path'
 import {spawn} from 'cross-spawn'
 import {zodToJsonSchema} from 'zod-to-json-schema'
 import {z} from 'zod'
+import os from 'os'
+import {exec} from 'child_process'
 
 // CONSTANTS
 const CREATE_APP_VERSION = 'latest'
