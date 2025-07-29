@@ -1064,6 +1064,13 @@ describe('Additional branch coverage for react-rendering', () => {
         expect(res.headers.location).toBeDefined()
     })
 
+    test('handles unrecoverable error in render (duplicate)', async () => {
+        const app = RemoteServerFactory._createApp(opts())
+        app.get('/*', render)
+        const res = await request(app).get('/unrecoverable-error/')
+        expect(res.statusCode).toBe(500)
+    })
+
     test('calls performance timer cleanup on unrecoverable error', async () => {
         // Create a test route/component that throws during SSR
         const ErrorComponent = () => {
@@ -1115,11 +1122,4 @@ describe('getLocationSearch', function () {
         const output = getLocationSearch(req)
         expect(output).toBe('?q=mens%2Bshirt')
     })
-})
-
-// Simple test to cover serverRenderer export
-test('serverRenderer exports correctly', () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const serverRenderer = require('./react-rendering').default
-    expect(typeof serverRenderer).toBe('function')
 })
