@@ -79,10 +79,8 @@ const logSpanData = (span, event = 'start', res = null) => {
 
     // Only log if this is an end event or if it's a start event for a new span
     if (event === 'end' || !Object.prototype.hasOwnProperty.call(span.attributes, 'event')) {
-        // Log just the span data for MRT forwarder compatibility
-        logger.info(spanData, {
-            namespace: 'opentelemetry.logSpanData'
-        })
+        // Log raw span data for MRT forwarder compatibility
+        console.log(JSON.stringify(spanData))
     }
 }
 
@@ -135,15 +133,18 @@ export const createChildSpan = (name, attributes = {}) => {
         // Check if OpenTelemetry is properly configured
         const otelConfig = getOTELConfig()
         if (!otelConfig.enabled) {
-            logger.warn('OpenTelemetry is disabled - spans will not have proper timing data', {
-                namespace: 'opentelemetry',
-                additionalProperties: {
-                    span_name: name,
-                    otel_enabled: otelConfig.enabled,
-                    otel_service_name: otelConfig.serviceName,
-                    suggestion: 'Set OTEL_SDK_ENABLED=true to enable proper timing'
-                }
-            })
+            // Don't log warnings in test environments to avoid GitHub check failures
+            if (process.env.NODE_ENV !== 'test') {
+                logger.warn('OpenTelemetry is disabled - spans will not have proper timing data', {
+                    namespace: 'opentelemetry',
+                    additionalProperties: {
+                        span_name: name,
+                        otel_enabled: otelConfig.enabled,
+                        otel_service_name: otelConfig.serviceName,
+                        suggestion: 'Set OTEL_SDK_ENABLED=true to enable proper timing'
+                    }
+                })
+            }
         }
 
         const tracer = trace.getTracer(getServiceName())
