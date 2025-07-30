@@ -23,7 +23,11 @@ const logSpanData = (span, event = 'start', res = null) => {
         (duration !== 0 && (!Array.isArray(duration) || duration.length !== 2))
     ) {
         // Don't log warnings in test environments to avoid GitHub check failures
-        if (process.env.NODE_ENV !== 'test') {
+        const isTestEnvironment =
+            process.env.NODE_ENV === 'test' ||
+            process.env.JEST_WORKER_ID ||
+            (process.env.CI === 'true' && process.env.GITHUB_ACTIONS === 'true')
+        if (!isTestEnvironment) {
             logger.warn(
                 'Invalid timing data detected - OpenTelemetry may not be properly initialized',
                 {
@@ -133,7 +137,11 @@ export const createChildSpan = (name, attributes = {}) => {
         const otelConfig = getOTELConfig()
         if (!otelConfig.enabled) {
             // Don't log warnings in test environments to avoid GitHub check failures
-            if (process.env.NODE_ENV !== 'test') {
+            const isTestEnvironment =
+                process.env.NODE_ENV === 'test' ||
+                process.env.JEST_WORKER_ID ||
+                (process.env.CI === 'true' && process.env.GITHUB_ACTIONS === 'true')
+            if (!isTestEnvironment) {
                 logger.warn('OpenTelemetry is disabled - spans will not have proper timing data', {
                     namespace: 'opentelemetry',
                     additionalProperties: {
@@ -301,7 +309,11 @@ export const logPerformanceMetric = (name, duration, attributes = {}) => {
 
         if (!parentSpan) {
             // Don't log warnings in test environments to avoid GitHub check failures
-            if (process.env.NODE_ENV !== 'test') {
+            const isTestEnvironment =
+                process.env.NODE_ENV === 'test' ||
+                process.env.JEST_WORKER_ID ||
+                (process.env.CI === 'true' && process.env.GITHUB_ACTIONS === 'true')
+            if (!isTestEnvironment) {
                 logger.warn('No parent span found in context', {
                     namespace: 'opentelemetry',
                     additionalProperties: {metricName: name}

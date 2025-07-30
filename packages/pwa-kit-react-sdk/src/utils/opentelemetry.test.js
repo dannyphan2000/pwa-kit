@@ -481,7 +481,13 @@ describe('OpenTelemetry Utilities', () => {
 
         test('should warn when no parent span is found in production', () => {
             const originalEnv = process.env.NODE_ENV
+            const originalCI = process.env.CI
+            const originalGithubActions = process.env.GITHUB_ACTIONS
+
+            // Set up production environment (not test, not CI)
             process.env.NODE_ENV = 'production'
+            process.env.CI = 'false'
+            process.env.GITHUB_ACTIONS = 'false'
 
             mockTrace.getSpan.mockReturnValue(null)
 
@@ -493,7 +499,10 @@ describe('OpenTelemetry Utilities', () => {
             })
             expect(mockTracer.startSpan).not.toHaveBeenCalled()
 
+            // Restore environment
             process.env.NODE_ENV = originalEnv
+            process.env.CI = originalCI
+            process.env.GITHUB_ACTIONS = originalGithubActions
         })
 
         test('should handle errors gracefully', () => {
@@ -641,6 +650,15 @@ describe('OpenTelemetry Utilities', () => {
     // Test to cover OpenTelemetry disabled conditions (lines 168, 264)
     describe('OpenTelemetry disabled scenarios', () => {
         test('should warn when OpenTelemetry is disabled in createChildSpan', () => {
+            const originalEnv = process.env.NODE_ENV
+            const originalCI = process.env.CI
+            const originalGithubActions = process.env.GITHUB_ACTIONS
+
+            // Set up production environment (not test, not CI)
+            process.env.NODE_ENV = 'production'
+            process.env.CI = 'false'
+            process.env.GITHUB_ACTIONS = 'false'
+
             // Mock getOTELConfig to return enabled: false
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const opentelemetryConfig = require('./opentelemetry-config')
@@ -666,9 +684,23 @@ describe('OpenTelemetry Utilities', () => {
                 }
             )
             expect(result).toBe(mockSpan)
+
+            // Restore environment
+            process.env.NODE_ENV = originalEnv
+            process.env.CI = originalCI
+            process.env.GITHUB_ACTIONS = originalGithubActions
         })
 
         test('should warn when OpenTelemetry is disabled in tracePerformance', async () => {
+            const originalEnv = process.env.NODE_ENV
+            const originalCI = process.env.CI
+            const originalGithubActions = process.env.GITHUB_ACTIONS
+
+            // Set up production environment (not test, not CI)
+            process.env.NODE_ENV = 'production'
+            process.env.CI = 'false'
+            process.env.GITHUB_ACTIONS = 'false'
+
             // Mock getOTELConfig to return enabled: false
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const opentelemetryConfig = require('./opentelemetry-config')
@@ -700,6 +732,11 @@ describe('OpenTelemetry Utilities', () => {
                 }
             )
             expect(result).toBe('test-result')
+
+            // Restore environment
+            process.env.NODE_ENV = originalEnv
+            process.env.CI = originalCI
+            process.env.GITHUB_ACTIONS = originalGithubActions
         })
     })
 })
