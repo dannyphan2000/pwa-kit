@@ -79,9 +79,9 @@ const logSpanData = (span, event = 'start', res = null) => {
 
     // Only log if this is an end event or if it's a start event for a new span
     if (event === 'end' || !Object.prototype.hasOwnProperty.call(span.attributes, 'event')) {
-        logger.info('OpenTelemetry span data', {
-            namespace: 'opentelemetry.logSpanData',
-            additionalProperties: spanData
+        // Log just the span data for MRT forwarder compatibility
+        logger.info(spanData, {
+            namespace: 'opentelemetry.logSpanData'
         })
     }
 }
