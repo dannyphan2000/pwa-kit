@@ -16,7 +16,7 @@ const logSpanData = (span, event = 'start', res = null) => {
     const endTime = event === 'start' ? startTime : span.endTime
     const duration = event === 'start' ? 0 : span.duration
 
-    // Defensive: Only log if startTime and duration are valid
+    // Only log if OpenTelemetry timing data is valid
     if (
         !Array.isArray(startTime) ||
         startTime.length !== 2 ||

@@ -141,6 +141,7 @@ export const render = async (req, res, next) => {
         async () => {
             res.__performanceTimer = new PerformanceTimer({enabled: shouldTrackPerformance})
             res.__performanceTimer.mark(PERFORMANCE_MARKS.total, 'start')
+            const totalSpan = createChildSpan('ssr.total')
             const routeMatchingSpan = createChildSpan('ssr.route-matching')
             const AppConfig = getAppConfig()
             const config = getConfig()
@@ -256,8 +257,8 @@ export const render = async (req, res, next) => {
             const redirectUrl = routerContext.url
             const status = (error && error.status) || res.statusCode
 
-            res.__performanceTimer.mark(PERFORMANCE_MARKS.renderToString, 'end')
             res.__performanceTimer.mark(PERFORMANCE_MARKS.total, 'end')
+            endSpan(totalSpan)
             res.__performanceTimer.log()
 
             if (includeServerTimingHeader) {
