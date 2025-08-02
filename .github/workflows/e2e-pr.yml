@@ -42,6 +42,12 @@ jobs:
                   node-version: 22
                   cache: npm
 
+            - name: Install Monorepo Dependencies
+              if: ${{ env.SKIP_WORKFLOW != 'true' }}
+              run: |-
+                  # Install node dependencies
+                  node ./scripts/gtime.js monorepo_install npm ci
+
             # Check central resource allocation on AWS and get a lock on an available environment from the pool.
             # Returns the MRT target ID if lock is acquired, otherwise returns an error state.
             - name: Get MRT Target lock
@@ -111,4 +117,4 @@ jobs:
             - name: Release MRT Target Lock
               if: always() # Always release the target lock back to the pool even if the tests fail.
               run: |
-                echo "TODO: Implement .github/actions/release_mrt_target_lock"
+                  echo "TODO: Implement .github/actions/release_mrt_target_lock"
