@@ -13,7 +13,7 @@ class MRTTargetManager {
         this.s3Client = new SecureS3Client({
             region: options.region,
             readOnly: !process.env.CI,
-            roleArn: options.roleArn,
+            roleArn: process.env.CI ? null : options.roleArn, // Don't use role ARN in CI since AWS credentials action handles it
             roleSessionName: options.roleSessionName || 'LocalDev'
         })
     }
