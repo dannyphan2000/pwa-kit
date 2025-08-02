@@ -19,6 +19,10 @@ jobs:
             AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
             AWS_REGION: ${{ vars.AWS_REGION }}
             AWS_S3_POOL_DATA_FILE_KEY: ${{ vars.AWS_S3_POOL_DATA_FILE_KEY }}
+        outputs:
+            mrt_env_id: ${{ steps.get_mrt_target_lock.outputs.mrt_env_id }}
+            mrt_env_url: ${{ steps.get_mrt_target_lock.outputs.mrt_env_url }}
+            status: ${{ steps.get_mrt_target_lock.outputs.status }}
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -73,9 +77,9 @@ jobs:
             - name: Echo MRT Target Outputs
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               run: |
-                  echo "MRT Environment ID: ${{ steps.get_mrt_target_lock.outputs.mrt_env_id }}"
-                  echo "MRT Environment URL: ${{ steps.get_mrt_target_lock.outputs.mrt_env_url }}"
-                  echo "Status: ${{ steps.get_mrt_target_lock.outputs.status }}"
+                  echo "MRT Environment ID: ${{needs.get_mrt_target_lock.outputs.mrt_env_id}}"
+                  echo "MRT Environment URL: ${{needs.get_mrt_target_lock.outputs.mrt_env_url}}"
+                  echo "Status: ${{needs.get_mrt_target_lock.outputs.status}}"
 
             # Skipping the rest of the workflow for now
             - name: Skip the rest of the workflow
