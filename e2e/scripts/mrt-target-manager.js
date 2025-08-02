@@ -3,8 +3,8 @@ const {Command} = require('commander')
 
 class MRTTargetManager {
     constructor(options = {}) {
-        this.bucket = options.bucket || 'cc-pwa-kit'
-        this.poolKey = options.poolKey || 'pwa-kit-ci/e2e-mrt-env-pool.json'
+        this.bucket = options.bucket
+        this.poolDataFileKey = options.poolDataFileKey
         this.maxRetries = options.maxRetries || 3
         this.retryDelay = options.retryDelay || 10000 // 10 seconds
         this.prNumber = options.prNumber || process.env.GITHUB_PR_NUMBER || null
@@ -12,7 +12,7 @@ class MRTTargetManager {
         this.runId = options.runId || null
 
         const clientOptions = {
-            region: options.region || 'us-east-2',
+            region: options.region,
             readOnly: !process.env.CI
         }
 
@@ -45,7 +45,7 @@ class MRTTargetManager {
      */
     async downloadPoolFile() {
         try {
-            const downloadResult = await this.s3Client.download(this.bucket, this.poolKey)
+            const downloadResult = await this.s3Client.download(this.bucket, this.poolDataFileKey)
             // Convert stream to string and parse JSON
             const contentString = await this.streamToString(downloadResult.body)
             const poolData = JSON.parse(contentString)
@@ -176,7 +176,7 @@ class MRTTargetManager {
                 // Step 4: Try to upload with ETag precondition
                 await this.s3Client.upload(
                     this.bucket,
-                    this.poolKey,
+                    this.poolDataFileKey,
                     JSON.stringify(updatedPoolData, null, 2),
                     downloadResponse.etag
                 )
@@ -244,7 +244,7 @@ class MRTTargetManager {
 
                 await this.s3Client.upload(
                     this.bucket,
-                    this.poolKey,
+                    this.poolDataFileKey,
                     JSON.stringify(updatedPoolData, null, 2),
                     poolData.etag
                 )
@@ -298,9 +298,10 @@ async function main() {
         .description('Show pool status')
         .action(async () => {
             const mrtTargetManager = new MRTTargetManager({
-                bucket: process.env.AWS_S3_BUCKET || 'cc-pwa-kit',
+                bucket: process.env.AWS_S3_BUCKET,
+                poolDataFileKey: process.env.AWS_S3_POOL_DATA_FILE_KEY,
                 roleArn: process.env.AWS_ROLE_ARN,
-                region: process.env.AWS_REGION || 'us-east-2'
+                region: process.env.AWS_REGION
             })
 
             await mrtTargetManager.initialize()
@@ -322,9 +323,10 @@ async function main() {
             const globalOpts = program.opts()
 
             const mrtTargetManager = new MRTTargetManager({
-                bucket: process.env.AWS_S3_BUCKET || 'cc-pwa-kit',
+                bucket: process.env.AWS_S3_BUCKET,
+                poolDataFileKey: process.env.AWS_S3_POOL_DATA_FILE_KEY,
                 roleArn: process.env.AWS_ROLE_ARN,
-                region: process.env.AWS_REGION || 'us-east-2',
+                region: process.env.AWS_REGION,
                 prNumber: globalOpts.prNumber,
                 branch: globalOpts.branch,
                 runId: globalOpts.runId,
@@ -361,9 +363,10 @@ async function main() {
             const globalOpts = program.opts()
 
             const mrtTargetManager = new MRTTargetManager({
-                bucket: process.env.AWS_S3_BUCKET || 'cc-pwa-kit',
+                bucket: process.env.AWS_S3_BUCKET,
+                poolDataFileKey: process.env.AWS_S3_POOL_DATA_FILE_KEY,
                 roleArn: process.env.AWS_ROLE_ARN,
-                region: process.env.AWS_REGION || 'us-east-2',
+                region: process.env.AWS_REGION,
                 maxRetries: parseInt(globalOpts.maxRetries),
                 retryDelay: parseInt(globalOpts.retryDelay)
             })

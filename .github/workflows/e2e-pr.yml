@@ -12,9 +12,10 @@ jobs:
     test_e2e_private:
         runs-on: ubuntu-latest
         env:
-            AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+            AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
             AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-            AWS_REGION: ${{ secrets.AWS_REGION }}
+            AWS_REGION: ${{ vars.AWS_REGION }}
+            AWS_S3_POOL_DATA_FILE_KEY: ${{ vars.AWS_S3_POOL_DATA_FILE_KEY }}
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -35,6 +36,7 @@ jobs:
 
             # Only test for latest Node version supported by MRT
             - name: Setup Node
+              if: ${{ env.SKIP_WORKFLOW != 'true' }}
               uses: actions/setup-node@v4
               with:
                   node-version: 22
@@ -44,6 +46,7 @@ jobs:
             # Returns the MRT target ID if lock is acquired, otherwise returns an error state.
             - name: Get MRT Target lock
               id: get_mrt_target_lock
+              if: ${{ env.SKIP_WORKFLOW != 'true' }}
               uses: ./.github/actions/e2e_acquire_mrt_target
               with:
                   BRANCH: ${{ github.ref_name }}
