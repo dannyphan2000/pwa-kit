@@ -1,0 +1,422 @@
+const SecureS3Client = require('./aws-s3-client')
+const {Command} = require('commander')
+
+class MRTTargetManager {
+    constructor(options = {}) {
+        this.bucket = options.bucket || 'cc-pwa-kit'
+        this.poolKey = options.poolKey || 'pwa-kit-ci/e2e-mrt-env-pool.json'
+        this.maxRetries = options.maxRetries || 3
+        this.retryDelay = options.retryDelay || 10000 // 10 seconds
+        this.prNumber = options.prNumber || process.env.GITHUB_PR_NUMBER || null
+        this.gitBranch = options.gitBranch || null
+        this.actionId = options.actionId || null
+        this.s3Client = new SecureS3Client({
+            roleArn: options.roleArn,
+            roleSessionName: options.roleSessionName || 'LocalDev',
+            region: options.region || 'us-east-2',
+            readOnly: false
+        })
+    }
+
+    async initialize() {
+        await this.s3Client.initialize()
+    }
+
+    /**
+     * Convert a ReadableStream object returned by the S3 client to a string
+     * @param {Stream} stream - The stream to convert
+     * @returns {Promise<string>} - The string representation of the stream
+     */
+    async streamToString(stream) {
+        const chunks = []
+        for await (const chunk of stream) {
+            chunks.push(chunk)
+        }
+        return Buffer.concat(chunks).toString()
+    }
+
+    /**
+     * Acquire an MRT environment with optimistic locking
+     * @param {string} environmentType - Type of environment to acquire (e.g., 'staging', 'production')
+     * @returns {Object} - Acquired environment details
+     */
+    async acquireEnvironment() {
+        const prInfo = this.prNumber ? ` for PR #${this.prNumber}` : ` for "${this.branch}" branch`
+        console.log(`🎯 Attempting to acquire environment${prInfo}`)
+
+        let retryCount = 0
+
+        while (retryCount < this.maxRetries) {
+            try {
+                console.log(`\n🔄 Attempt ${retryCount + 1}/${this.maxRetries}`)
+
+                // Step 1: Download pool file and get ETag
+                const downloadResponse = await this.downloadPoolFile()
+
+                // Step 2: Find available environment
+                const availableEnv = this.findAvailableEnvironment(downloadResponse.poolData)
+
+                if (!availableEnv) {
+                    throw new Error(`❌ No available environments found`)
+                }
+
+                // Step 3: Mark environment as in-use
+                const updatedPoolData = this.markEnvironmentInUse(
+                    downloadResponse.poolData,
+                    availableEnv
+                )
+
+                // Step 4: Try to upload with ETag precondition
+                await this.s3Client.upload(
+                    this.bucket,
+                    this.poolKey,
+                    JSON.stringify(updatedPoolData, null, 2),
+                    downloadResponse.etag
+                )
+
+                // Step 5: Success! Return acquired environment
+                console.log(`✅ Successfully acquired environment: ${availableEnv.mrtEnvId}`)
+                return {
+                    environment: availableEnv,
+                    poolData: updatedPoolData,
+                    attempt: retryCount + 1
+                }
+            } catch (error) {
+                retryCount++
+
+                if (error.name === 'PreconditionFailedException') {
+                    console.log(`⚠️ ETag mismatch on attempt ${retryCount}, retrying...`)
+
+                    if (retryCount < this.maxRetries) {
+                        await this.sleep(this.retryDelay)
+                        continue
+                    } else {
+                        throw new Error(
+                            `❌ Failed to acquire environment after ${this.maxRetries} attempts due to concurrent modifications`
+                        )
+                    }
+                } else {
+                    // Non-retryable error
+                    throw error
+                }
+            }
+        }
+
+        throw new Error(`❌ Failed to acquire environment after ${this.maxRetries} attempts`)
+    }
+
+    /**
+     * Download the pool file and return data with ETag
+     */
+    async downloadPoolFile() {
+        try {
+            const downloadResult = await this.s3Client.download(this.bucket, this.poolKey)
+            // Convert stream to string and parse JSON
+            const contentString = await this.streamToString(downloadResult.body)
+            const poolData = JSON.parse(contentString)
+
+            return {
+                ...downloadResult,
+                poolData
+            }
+        } catch (error) {
+            if (error.name === 'NoSuchKey') {
+                console.log('❌ Pool file not found.')
+            }
+            throw error
+        }
+    }
+
+    /**
+     * Find an available environment of the specified type
+     */
+    findAvailableEnvironment(poolData) {
+        const availableEnvs = poolData.environments.filter((env) => env.status === 'available')
+
+        if (availableEnvs.length === 0) {
+            return null
+        }
+
+        return availableEnvs[0]
+    }
+
+    /**
+     * Mark environment as in-use by current PR
+     */
+    markEnvironmentInUse(poolData, environment) {
+        const updatedPoolData = {
+            ...poolData,
+            environments: poolData.environments.map((env) => {
+                if (env.mrtEnvId === environment.mrtEnvId) {
+                    return {
+                        ...env,
+                        status: 'in-use',
+                        ...(this.prNumber && { prNumber: this.prNumber }),
+                        ...(this.gitBranch && { branch: this.gitBranch }),
+                        ...(this.actionId && { actionId: this.actionId }),
+                        acquiredAt: new Date().toISOString(),
+                        lastUsed: new Date().toISOString()
+                    }
+                }
+                return env
+            })
+        }
+
+        return updatedPoolData
+    }
+
+    /**
+     * Release an environment back to the pool
+     */
+    async releaseEnvironment(environmentName) {
+        console.log(`🔓 Releasing environment: ${environmentName}`)
+
+        let retryCount = 0
+
+        while (retryCount < this.maxRetries) {
+            try {
+                const poolData = await this.downloadPoolFile()
+
+                const updatedPoolData = {
+                    ...poolData,
+                    environments: poolData.environments.map((env) => {
+                        if (env.name === environmentName) {
+                            return {
+                                ...env,
+                                status: 'available',
+                                inUseBy: null,
+                                acquiredAt: null,
+                                lastUsed: new Date().toISOString()
+                            }
+                        }
+                        return env
+                    })
+                }
+
+                await this.s3Client.upload(
+                    this.bucket,
+                    this.poolKey,
+                    JSON.stringify(updatedPoolData, null, 2),
+                    poolData.etag
+                )
+
+                console.log(`✅ Successfully released environment: ${environmentName}`)
+                return true
+            } catch (error) {
+                retryCount++
+
+                if (error.name === 'PreconditionFailedException') {
+                    console.log(`⚠️ ETag mismatch on release attempt ${retryCount}, retrying...`)
+
+                    if (retryCount < this.maxRetries) {
+                        await this.sleep(this.retryDelay)
+                        continue
+                    } else {
+                        throw new Error(
+                            `❌ Failed to release environment after ${this.maxRetries} attempts`
+                        )
+                    }
+                } else {
+                    throw error
+                }
+            }
+        }
+
+        throw new Error(`❌ Failed to release environment after ${this.maxRetries} attempts`)
+    }
+
+    /**
+     * Get current pool status
+     */
+    async getPoolStatus() {
+        try {
+            const poolData = await this.downloadPoolFile()
+
+            const status = {
+                total: poolData.environments.length,
+                available: poolData.environments.filter((env) => env.status === 'available').length,
+                inUse: poolData.environments.filter((env) => env.status === 'in-use').length,
+                environments: poolData.environments.map((env) => ({
+                    name: env.name,
+                    type: env.type,
+                    status: env.status,
+                    inUseBy: env.inUseBy,
+                    lastUsed: env.lastUsed
+                }))
+            }
+
+            return status
+        } catch (error) {
+            console.error('❌ Failed to get pool status:', error)
+            throw error
+        }
+    }
+
+    /**
+     * Utility function for delays
+     */
+    sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms))
+    }
+}
+
+async function main() {
+    const program = new Command()
+
+    program
+        .description('Acquire and manage MRT environments with optimistic locking')
+        .option('--pr-number <number>', 'PR number')
+        .option('--branch <string>', 'Branch name')
+        .option('--action-id <string>', 'Action ID')
+        .option('--max-retries <number>', 'Maximum retry attempts', '3')
+        .option('--retry-delay <ms>', 'Delay between retries in milliseconds', '10000')
+
+    // Acquire command
+    program
+        .command('acquire')
+        .description('Acquire an MRT environment')
+        .action(async () => {
+            const globalOpts = program.opts()
+
+            const mrtTargetManager = new MRTTargetManager({
+                bucket: process.env.AWS_S3_BUCKET || 'cc-pwa-kit',
+                roleArn: process.env.AWS_ROLE_ARN,
+                region: process.env.AWS_REGION || 'us-east-2',
+                prNumber: globalOpts.prNumber,
+                gitBranch: globalOpts.branch,
+                actionId: globalOpts.actionId,
+                maxRetries: parseInt(globalOpts.maxRetries),
+                retryDelay: parseInt(globalOpts.retryDelay)
+            })
+
+            await mrtTargetManager.initialize()
+
+            try {
+                const result = await mrtTargetManager.acquireEnvironment()
+
+                console.log('\n🎉 Environment acquired successfully!')
+                console.log(`Environment: ${result.environment.mrtEnvId}`)
+                console.log(`URL: ${result.environment.envURL}`)
+
+                // Output for GitHub Actions
+                console.log(`::set-output name=mrt_env_id::${result.environment.mrtEnvId}`)
+                console.log(`::set-output name=mrt_env_url::${result.environment.envURL}`)
+                console.log(`::set-output name=status::success`)
+            } catch (error) {
+                console.error('❌ Error:', error.message)
+                process.exit(1)
+            }
+        })
+
+    // Release command
+    program
+        .command('release')
+        .description('Release an MRT environment')
+        .argument('<name>', 'Environment name to release')
+        .action(async (name, options) => {
+            const globalOpts = program.opts()
+
+            const mrtTargetManager = new MRTTargetManager({
+                bucket: process.env.MRT_POOL_BUCKET || 'mrt-env-pool',
+                roleArn: process.env.AWS_ROLE_ARN,
+                region: process.env.AWS_REGION || 'us-east-1',
+                prNumber: globalOpts.prNumber,
+                maxRetries: parseInt(globalOpts.maxRetries),
+                retryDelay: parseInt(globalOpts.retryDelay)
+            })
+
+            await mrtTargetManager.initialize()
+
+            try {
+                await mrtTargetManager.releaseEnvironment(name)
+                console.log(`✅ Environment ${name} released successfully`)
+            } catch (error) {
+                console.error('❌ Error:', error.message)
+                process.exit(1)
+            }
+        })
+
+    // Status command
+    program
+        .command('status')
+        .description('Show pool status')
+        .action(async (options) => {
+            const globalOpts = program.opts()
+
+            const mrtTargetManager = new MRTTargetManager({
+                bucket: process.env.MRT_POOL_BUCKET || 'mrt-env-pool',
+                roleArn: process.env.AWS_ROLE_ARN,
+                region: process.env.AWS_REGION || 'us-east-1',
+                prNumber: globalOpts.prNumber
+            })
+
+            await mrtTargetManager.initialize()
+
+            try {
+                const status = await mrtTargetManager.getPoolStatus()
+
+                if (options.output === 'json') {
+                    console.log(JSON.stringify(status, null, 2))
+                } else {
+                    console.log('\n📊 Pool Status:')
+                    console.log(`Total environments: ${status.total}`)
+                    console.log(`Available: ${status.available}`)
+                    console.log(`In use: ${status.inUse}`)
+                    console.log('\nEnvironments:')
+
+                    status.environments.forEach((env) => {
+                        const statusIcon = env.status === 'available' ? '🟢' : '🔴'
+                        const inUseBy = env.inUseBy ? ` (PR: ${env.inUseBy})` : ''
+                        console.log(
+                            `${statusIcon} ${env.name} (${env.type}) - ${env.status}${inUseBy}`
+                        )
+                    })
+                }
+            } catch (error) {
+                console.error('❌ Error:', error.message)
+                process.exit(1)
+            }
+        })
+
+    // List command
+    program
+        .command('list')
+        .description('List all environments')
+        .option('-s, --status <status>', 'Filter by status (available, in-use)')
+        .action(async (options) => {
+            const globalOpts = program.opts()
+
+            const mrtTargetManager = new MRTTargetManager({
+                bucket: process.env.MRT_POOL_BUCKET || 'mrt-env-pool',
+                roleArn: process.env.AWS_ROLE_ARN,
+                region: process.env.AWS_REGION || 'us-east-1',
+                prNumber: globalOpts.prNumber
+            })
+
+            await mrtTargetManager.initialize()
+
+            try {
+                const poolData = await mrtTargetManager.downloadPoolFile()
+                let environments = poolData.environments
+
+                if (options.status) {
+                    environments = environments.filter((env) => env.status === options.status)
+                }
+
+                console.log(JSON.stringify(environments, null, 2))
+            } catch (error) {
+                console.error('❌ Error:', error.message)
+                process.exit(1)
+            }
+        })
+
+    await program.parseAsync()
+}
+
+// Export for use as module
+module.exports = MRTTargetManager
+
+// Run CLI if called directly
+if (require.main === module) {
+    main()
+}

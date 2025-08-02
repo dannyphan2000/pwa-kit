@@ -18,7 +18,6 @@ class SecureS3Client {
     }
 
     async initialize() {
-        // If role ARN is provided, assume the role
         if (this.roleArn) {
             await this._assumeRole()
         }
