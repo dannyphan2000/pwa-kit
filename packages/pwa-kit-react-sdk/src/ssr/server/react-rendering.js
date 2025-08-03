@@ -236,6 +236,11 @@ export const render = async (req, res, next) => {
                     appJSX
                 })
             } catch (e) {
+                // This is an unrecoverable error.
+                // (errors handled by the AppErrorBoundary are considered recoverable)
+                // Here, we use Express's convention to invoke error middleware.
+                // Note, we don't have an error handling middleware yet! This is calling the
+                // default error handling middleware provided by Express
                 if (res.__performanceTimer) {
                     res.__performanceTimer.cleanup()
                 }
@@ -256,6 +261,9 @@ export const render = async (req, res, next) => {
 
             if (includeServerTimingHeader) {
                 res.setHeader('Server-Timing', res.__performanceTimer.buildServerTimingHeader())
+                // Override cache-control header to no caching when __server_timing is used
+                // This happens after React rendering is complete, ensuring it overrides any
+                // cache headers set by individual page components
                 res.set('Cache-Control', NO_CACHE)
             }
 
