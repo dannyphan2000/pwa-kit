@@ -1,6 +1,7 @@
 const SecureS3Client = require('./aws-s3-client')
 const {Command} = require('commander')
-const githubActionsCore = require('@actions/core');
+import fs from 'fs-extra'
+import { MRT_TARGET_DETAILS_FILE } from '../config'
 
 class MRTTargetManager {
     constructor(options = {}) {
@@ -319,8 +320,6 @@ async function main() {
         .action(async () => {
             const globalOpts = program.opts()
 
-            console.log("Global opts", process.env.AWS_ROLE_ARN)
-
             const mrtTargetManager = new MRTTargetManager({
                 bucket: process.env.AWS_S3_BUCKET,
                 poolDataFileKey: process.env.AWS_S3_POOL_DATA_FILE_KEY,
@@ -336,17 +335,30 @@ async function main() {
 
             await mrtTargetManager.initialize()
 
+            await fs.ensureFile(MRT_TARGET_DETAILS_FILE)
+
             try {
                 const result = await mrtTargetManager.acquireEnvironment()
 
                 console.log(`Environment: ${result.environment.mrtEnvId}`)
                 console.log(`URL: ${result.environment.envURL}`)
 
-                githubActionsCore.setOutput('mrt_env_id', result.environment.mrtEnvId)
-                githubActionsCore.setOutput('mrt_env_url', result.environment.envURL)
-                githubActionsCore.setOutput('status', 'SUCCESS')
+                /**
+                 * We need to write the environment details and status to a file so that the workflow can use it.
+                 * Propagating outputs from node to composite actions to workflow is not robust enough.
+                 */
+                const mrtTargetDetails = {
+                    ...result.environment,
+                    status: 'ACQUIRE_TARGET_SUCCESS'
+                }
+
+                await fs.writeJson(MRT_TARGET_DETAILS_FILE, mrtTargetDetails)
             } catch (error) {
                 console.error('❌ Error:', error.message)
+                await fs.writeJson(MRT_TARGET_DETAILS_FILE, {
+                    status: 'ACQUIRE_TARGET_FAILED',
+                    error: error.message
+                })
                 process.exit(1)
             }
         })

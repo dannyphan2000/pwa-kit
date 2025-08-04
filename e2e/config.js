@@ -5,11 +5,14 @@
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/BSD-3-Clause
  */
 
+import path from 'path'
+
 module.exports = {
   RETAIL_APP_HOME:
     process.env.RETAIL_APP_HOME ||
     "https://scaffold-pwa-e2e-tests-pwa-kit.mobify-storefront.com",
   RETAIL_APP_HOME_SITE: "RefArch",
+  MRT_TARGET_DETAILS_FILE: path.join(__dirname, './mrt-target/mrt-target-details.json'),
   GENERATED_PROJECTS_DIR: "../generated-projects",
   GENERATE_PROJECTS: ["retail-app-demo", "retail-app-ext", "retail-app-no-ext"],
   GENERATOR_CMD:
