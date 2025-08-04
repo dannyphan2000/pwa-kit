@@ -303,7 +303,6 @@ export const tracePerformance = async (name, fn, res = null) => {
  * @param {Object} attributes - Additional attributes for the metric
  */
 
-
 /**
  * Traces a performance operation
  * @param {string} name - The name of the operation
