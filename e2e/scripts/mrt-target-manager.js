@@ -1,7 +1,7 @@
 const SecureS3Client = require('./aws-s3-client')
 const {Command} = require('commander')
-import fs from 'fs-extra'
-import { MRT_TARGET_DETAILS_FILE } from '../config'
+const fs = require('fs-extra')
+const { MRT_TARGET_DETAILS_FILE } = require('../config')
 
 class MRTTargetManager {
     constructor(options = {}) {
