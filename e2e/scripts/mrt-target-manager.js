@@ -208,68 +208,6 @@ class MRTTargetManager {
     }
 
     /**
-     * Release an environment back to the pool
-     */
-    async releaseEnvironment(slug) {
-        if (!process.env.CI) {
-            throw new Error(`❌ Cannot release environment in local development - Read only access`)
-        }
-        console.log(`🔓 Releasing environment: ${slug}`)
-
-        let retryCount = 0
-
-        while (retryCount < this.maxRetries) {
-            try {
-                // Step 1: Download pool file and get ETag
-                const downloadResponse = await this.downloadPoolFile()
-                const poolData = downloadResponse.poolData
-
-                const envToRelease = poolData.environments.find((env) => env.slug === slug)
-
-                if (!envToRelease) {
-                    throw new Error(`❌ Environment ${slug} not found`)
-                }
-
-                // Step 3: Mark environment as in-use
-                const updatedPoolData = this.updateMRTTargetStatus(
-                    downloadResponse.poolData,
-                    envToRelease,
-                    'available'
-                )
-
-                await this.s3Client.upload(
-                    this.bucket,
-                    this.poolDataFileKey,
-                    JSON.stringify(updatedPoolData, null, 2),
-                    poolData.etag
-                )
-
-                console.log(`✅ Successfully released environment: ${slug}`)
-                return true
-            } catch (error) {
-                retryCount++
-
-                if (error.name === 'PreconditionFailedException') {
-                    console.log(`⚠️ ETag mismatch on release attempt ${retryCount}, retrying...`)
-
-                    if (retryCount < this.maxRetries) {
-                        await this.sleep(this.retryDelay)
-                        continue
-                    } else {
-                        throw new Error(
-                            `❌ Failed to release environment after ${this.maxRetries} attempts`
-                        )
-                    }
-                } else {
-                    throw error
-                }
-            }
-        }
-
-        throw new Error(`❌ Failed to release environment after ${this.maxRetries} attempts`)
-    }
-
-    /**
      * Utility function for delays
      */
     sleep(ms) {
@@ -368,45 +306,6 @@ async function main() {
                     error: error.message
                 })
                 process.exit(1)
-            }
-        })
-
-    // Release command
-    program
-        .command('release')
-        .description('Release an MRT environment')
-        .argument('<slug>', 'Environment Id to release')
-        .option('--max-retries <number>', 'Maximum retry attempts', '3')
-        .option('--retry-delay <ms>', 'Delay between retries in milliseconds', '10000')
-        .action(async (slug) => {
-            const globalOpts = program.opts()
-
-            const mrtTargetManager = new MRTTargetManager({
-                bucket: process.env.AWS_S3_BUCKET,
-                poolDataFileKey: process.env.AWS_S3_POOL_DATA_FILE_KEY,
-                roleArn: process.env.AWS_ROLE_ARN,
-                region: process.env.AWS_REGION,
-                maxRetries: parseInt(globalOpts.maxRetries),
-                retryDelay: parseInt(globalOpts.retryDelay),
-                roleSessionName: process.env.CI ? 'GithubActions-E2E-CI' : 'LocalDev'
-            })
-
-            await mrtTargetManager.initialize()
-
-            try {
-                await mrtTargetManager.releaseEnvironment(slug)
-                
-                // Delete the target details file on successful release
-                await fs.remove(MRT_TARGET_DETAILS_FILE)
-                console.log(`✅ Deleted target details file: ${MRT_TARGET_DETAILS_FILE}`)
-            } catch (error) {
-                // Check if it's a file deletion error
-                if (error.code === 'ENOENT' || error.message.includes('target details file')) {
-                    console.warn(`⚠️ Warning: Could not delete target details file: ${error.message}`)
-                } else {
-                    console.error('❌ Error:', error.message)
-                    process.exit(1)
-                }
             }
         })
     await program.parseAsync()
