@@ -38,6 +38,9 @@ Please provide the following details:
 - Components should be created in the components folder under PWA_STOREFRONT_APP_PATH, at: [PWA_STOREFRONT_APP_PATH]/components/[component-name]/index.jsx
 `
 
+const systemPromptForComponentPurpose = `
+What is the main purpose of this component? Reply with exactly one of the following options: "Display a single Product", "Display a list of Products", or "Other (please specify)".`
+
 class CreateNewComponentTool {
     constructor() {
         this.name = 'create_new_component'
@@ -50,7 +53,8 @@ class CreateNewComponentTool {
                 .min(
                     1,
                     'The Purpose of the new component (e.g., Display a single Product, Display a list of Products or something else)'
-                ),
+                )
+                .describe(systemPromptForComponentPurpose),
             location: z
                 .string()
                 .describe('The location of the component to be created')
@@ -63,56 +67,40 @@ class CreateNewComponentTool {
                     content: [{type: 'text', text: systemPrompt}]
                 }
             }
-            return this.createComponent(args.componentName, args.purpose, args.location)
+            const normalizedPurpose = args.purpose.trim().toLowerCase()
+            const isSingleProduct = normalizedPurpose === 'display a single product'
+            const isProductList = normalizedPurpose === 'display a list of products'
+
+            if (isSingleProduct) {
+                // Proceed with standard component creation
+                return this.createComponent(args.componentName, args.location, 'singleProduct')
+            } else if (isProductList) {
+                return this.createComponent(args.componentName, args.location, 'productList')
+            } else {
+                // Custom purpose: let Cursor take over and ask clarifying questions
+                return {
+                    role: 'system',
+                    content: [{type: 'text', text: systemPromptForCustomComponent}]
+                }
+            }
         }
     }
 
-    async createComponent(componentName, purpose, location) {
-        const purposeLC = purpose.trim().toLowerCase()
-        if (purposeLC.includes('single') && purposeLC.includes('product')) {
-            try {
-                const result = await this.generateComponentFiles(
-                    componentName,
-                    location,
-                    'singleProduct'
-                )
-                return {
-                    role: 'system',
-                    content: [{type: 'text', text: result}]
-                }
-            } catch (error) {
-                return {
-                    role: 'developer',
-                    content: [{type: 'text', text: `Error creating component: ${error.message}`}]
-                }
-            }
-        } else if (purposeLC.includes('list') && purposeLC.includes('product')) {
-            try {
-                const result = await this.generateComponentFiles(
-                    componentName,
-                    location,
-                    'productList'
-                )
-                return {
-                    role: 'system',
-                    content: [{type: 'text', text: result}]
-                }
-            } catch (error) {
-                return {
-                    role: 'developer',
-                    content: [{type: 'text', text: `Error creating component: ${error.message}`}]
-                }
-            }
-        } else {
-            // Custom component flow: prompt for more details
+    async createComponent(componentName, location, entityType) {
+        try {
+            const result = await this.generateComponentFiles(componentName, location, entityType)
             return {
                 role: 'system',
-                content: [{type: 'text', text: systemPromptForCustomComponent}]
+                content: [{type: 'text', text: result}]
+            }
+        } catch (error) {
+            return {
+                role: 'developer',
+                content: [{type: 'text', text: `Error creating component: ${error.message}`}]
             }
         }
     }
 
-    // Rename the old createComponent to generateComponentFiles
     async generateComponentFiles(componentName, location, entityType) {
         const componentsDir = path.join(location, 'components')
         if (entityType === 'singleProduct' || entityType === 'productList') {
@@ -123,9 +111,6 @@ class CreateNewComponentTool {
                 componentsDir,
                 {list: entityType === 'productList'}
             )
-        } else {
-            // Fallback: create a basic component file
-            return await this.createComponentFile(componentName, componentsDir)
         }
     }
 
