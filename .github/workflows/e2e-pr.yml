@@ -78,12 +78,6 @@ jobs:
                   cat e2e/mrt-target/mrt-target-details.json
                   echo "SKIP_WORKFLOW=true" >> "$GITHUB_ENV"
 
-            - name: Create MRT target
-              id: create_mrt_target
-              if: ${{ env.SKIP_WORKFLOW != 'true' && steps.get_mrt_target_lock.outputs.status == 'ERR_NO_AVAILABLE_TARGETS' }}
-              run: |
-                  echo "TODO: Call .github/actions/create_mrt_target with correct inputs"
-
             - name: Get Template Version
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               run: |-

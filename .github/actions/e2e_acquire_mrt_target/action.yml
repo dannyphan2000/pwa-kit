@@ -11,7 +11,7 @@ inputs:
         description: 'GitHub PR number from workflow invoking this action'
         required: false
     MAX_RETRIES:
-        description: 'Maximum retry attempts'
+        description: 'Maximum retry attempts to acquire MRT target'
         required: false
         default: '3'
     RETRY_DELAY:
