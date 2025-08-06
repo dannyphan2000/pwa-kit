@@ -22,6 +22,7 @@ class MRTTargetManager {
         this.prNumber = options.prNumber || process.env.GITHUB_PR_NUMBER || null
         this.branch = options.branch || null
         this.runId = options.runId || null
+        // TODO: Update roleArn to null for CI since AWS credentials action handles it.
         this.s3Client = new SecureS3Client({
             region: options.region,
             readOnly: !process.env.CI,
