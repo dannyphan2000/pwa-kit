@@ -319,4 +319,4 @@ export default ${pascalComponentName};
     }
 }
 
-export default new CreateNewComponentTool()
+export default CreateNewComponentTool

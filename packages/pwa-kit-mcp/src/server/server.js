@@ -37,7 +37,7 @@ class PwaStorefrontMCPServerHighLevel {
                 }
             }
         )
-        this.CreateNewComponentTool = CreateNewComponentTool
+        this.createNewComponentTool = new CreateNewComponentTool()
         this.testWithPlaywrightTool = new TestWithPlaywrightTool()
         this.setupTools()
     }
@@ -66,10 +66,10 @@ class PwaStorefrontMCPServerHighLevel {
             ({testType, siteUrl}) => this.testWithPlaywrightTool.run(testType, siteUrl)
         )
         this.server.tool(
-            this.CreateNewComponentTool.name,
-            this.CreateNewComponentTool.description,
-            this.CreateNewComponentTool.inputSchema,
-            this.CreateNewComponentTool.handler
+            this.createNewComponentTool.name,
+            this.createNewComponentTool.description,
+            this.createNewComponentTool.inputSchema,
+            this.createNewComponentTool.handler
         )
         this.server.tool(
             CreateNewPageTool.name,
