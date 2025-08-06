@@ -19,6 +19,7 @@ class SecureS3Client {
         this.roleSessionName = options.roleSessionName || PWA_KIT_BOT_USER_SESSION
         this.region = options.region || 'us-east-1'
         this.readOnly = options.readOnly
+        this.externalId = options.externalId
         this.credentials = null
     }
 
@@ -41,11 +42,14 @@ class SecureS3Client {
     async _assumeRole() {
         try {
             const sts = new STSClient({region: this.region})
+            /**
+             * Authentication for GithubActions user is handled via OIDC and does not require an external ID.
+             */
             const command = new AssumeRoleCommand({
                 RoleArn: this.roleArn,
                 RoleSessionName: this.roleSessionName,
                 DurationSeconds: 3600,
-                ExternalId: 'developer-access'
+                ...(!process.env.CI && {ExternalId: this.externalId})
             })
 
             const data = await sts.send(command)

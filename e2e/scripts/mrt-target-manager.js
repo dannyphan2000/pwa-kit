@@ -8,7 +8,9 @@ const {
     CI_AVAILABILITY_AVAILABLE,
     CI_AVAILABILITY_IN_USE,
     AWS_S3_ERR_NO_SUCH_KEY,
-    AWS_S3_ERR_PRECONDITION_FAILED
+    AWS_S3_ERR_PRECONDITION_FAILED,
+    ACQUIRE_TARGET_STATUS_SUCCESS,
+    ACQUIRE_TARGET_STATUS_FAILED
 } = require('./constants')
 
 class MRTTargetManager {
@@ -24,7 +26,8 @@ class MRTTargetManager {
             region: options.region,
             readOnly: !process.env.CI,
             roleArn: process.env.CI ? options.roleArn : options.roleArn, // Don't use role ARN in CI since AWS credentials action handles it
-            roleSessionName: options.roleSessionName || PWA_KIT_BOT_USER_SESSION
+            roleSessionName: options.roleSessionName || PWA_KIT_BOT_USER_SESSION,
+            externalId: options.externalId
         })
     }
 
@@ -252,6 +255,7 @@ async function main() {
                 poolDataFileKey: process.env.AWS_S3_POOL_DATA_FILE_KEY,
                 roleArn: process.env.AWS_ROLE_ARN,
                 region: process.env.AWS_REGION,
+                externalId: process.env.AWS_EXTERNAL_ID,
                 roleSessionName: process.env.CI
                     ? GITHUB_ACTIONS_E2E_SESSION
                     : PWA_KIT_BOT_USER_SESSION
@@ -283,6 +287,7 @@ async function main() {
                 poolDataFileKey: process.env.AWS_S3_POOL_DATA_FILE_KEY,
                 roleArn: process.env.AWS_ROLE_ARN,
                 region: process.env.AWS_REGION,
+                externalId: process.env.AWS_EXTERNAL_ID,
                 prNumber,
                 branch,
                 runId,
@@ -309,14 +314,14 @@ async function main() {
                  */
                 const mrtTargetDetails = {
                     ...result.environment,
-                    status: 'ACQUIRE_TARGET_SUCCESS'
+                    status: ACQUIRE_TARGET_STATUS_SUCCESS
                 }
 
                 await fs.writeJson(MRT_TARGET_DETAILS_FILE, mrtTargetDetails)
             } catch (error) {
                 console.error('❌ Error:', error.message)
                 await fs.writeJson(MRT_TARGET_DETAILS_FILE, {
-                    status: 'ACQUIRE_TARGET_FAILED',
+                    status: ACQUIRE_TARGET_STATUS_FAILED,
                     error: error.message
                 })
                 process.exit(1)
