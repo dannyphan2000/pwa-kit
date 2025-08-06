@@ -23,6 +23,10 @@ class SecureS3Client {
         this.credentials = null
     }
 
+    /**
+     * Initializes the S3 client with credentials. If running the script locally, you must provide credentials and roleArn for cc-pwa-kit-bot user.
+     * If running the script in Github Actions, AWS credentials action automatically authenticates using OIDC and handles the role assumption.
+     */
     async initialize() {
         if (this.roleArn) {
             await this._assumeRole()
@@ -39,6 +43,10 @@ class SecureS3Client {
         )
     }
 
+    /**
+     * Assumes the role for the cc-pwa-kit-bot user based on the roleArn provided.
+     * @throws {Error} - If the role assumption fails.
+     */
     async _assumeRole() {
         try {
             const sts = new STSClient({region: this.region})
@@ -68,6 +76,18 @@ class SecureS3Client {
         }
     }
 
+    /**
+     * Uploads a file to S3 with the ETag precondition to ensure the file is not modified by another process.
+     * If the file is modified by another process,
+     * the upload will fail with an ETag mismatch error.
+     *
+     * @param {string} bucket - The name of the bucket to upload to.
+     * @param {string} key - The key to upload the file to.
+     * @param {Buffer|Stream} body - The file to upload.
+     * @param {string} expectedETag - The ETag of the file to upload.
+     * @returns {Promise<Object>} - The result of the upload.
+     * @throws {Error} - If the upload fails.
+     */
     async upload(bucket, key, body, expectedETag = null) {
         if (this.readOnly) {
             throw new Error('❌ Upload not allowed - read-only access')
@@ -102,6 +122,13 @@ class SecureS3Client {
         }
     }
 
+    /**
+     * Downloads a file from S3 with its ETag.
+     * @param {string} bucket - The name of the bucket to download from.
+     * @param {string} key - The key of the file to download.
+     * @returns {Promise<Object>} - The result of the download.
+     * @throws {Error} - If the download fails.
+     */
     async download(bucket, key) {
         try {
             console.log(`📥 Downloading from s3://${bucket}/${key}`)
@@ -123,67 +150,6 @@ class SecureS3Client {
             }
         } catch (error) {
             console.error('❌ Download failed:', error)
-            throw error
-        }
-    }
-
-    async listFiles(bucket, prefix = '') {
-        try {
-            console.log(`📋 Listing files in s3://${bucket}/${prefix}`)
-
-            const command = new ListObjectsV2Command({
-                Bucket: bucket,
-                Prefix: prefix
-            })
-
-            const result = await this.s3.send(command)
-
-            console.log('✅ List successful')
-            return result.Contents || []
-        } catch (error) {
-            console.error('❌ List failed:', error)
-            throw error
-        }
-    }
-
-    async getETag(bucket, key) {
-        try {
-            console.log(`🏷️ Getting ETag for s3://${bucket}/${key}`)
-
-            const command = new HeadObjectCommand({
-                Bucket: bucket,
-                Key: key
-            })
-
-            const result = await this.s3.send(command)
-
-            console.log('✅ ETag retrieved:', result.ETag)
-            return result.ETag
-        } catch (error) {
-            console.error('❌ ETag retrieval failed:', error)
-            throw error
-        }
-    }
-
-    async delete(bucket, key) {
-        if (this.readOnly) {
-            throw new Error('❌ Delete not allowed - read-only access')
-        }
-
-        try {
-            console.log(`🗑️ Deleting s3://${bucket}/${key}`)
-
-            const command = new DeleteObjectCommand({
-                Bucket: bucket,
-                Key: key
-            })
-
-            const result = await this.s3.send(command)
-
-            console.log('✅ Delete successful')
-            return result
-        } catch (error) {
-            console.error('❌ Delete failed:', error)
             throw error
         }
     }

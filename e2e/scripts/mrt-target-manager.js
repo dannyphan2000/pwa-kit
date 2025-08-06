@@ -49,7 +49,9 @@ class MRTTargetManager {
     }
 
     /**
-     * Download the pool file and return data with ETag
+     * Download the pool file from S3 and return data with ETag
+     * @returns {Promise<{body: StreamingBlobPayloadOutputTypes, etag: string, lastModified: Date, contentType: string, contentLength: number, poolData: Object}>} - S3 response properties and pool data
+     * @throws {Error} - If the pool file is not found or there is an error (e.g. authentication issues) downloading it.
      */
     async downloadPoolFile() {
         try {
@@ -71,7 +73,9 @@ class MRTTargetManager {
     }
 
     /**
-     * Find an available environment of the specified type
+     * Find an available environment in the pool data.
+     * @param {Object} poolData - The pool data to search in
+     * @returns {Object} - The first available environment or null if no available environments are found.
      */
     findAvailableEnvironment(poolData) {
         const availableEnvs = poolData.environments.filter(
@@ -86,7 +90,12 @@ class MRTTargetManager {
     }
 
     /**
-     * Mark environment as in-use by current PR
+     * Marks environment as in-use when acquired or available when released by current workflow run.
+     * In case of acquiring, it also adds the PR number, branch, and run ID to the environment object.
+     * @param {Object} poolData - The pool data array to update.
+     * @param {Object} environment - The environment to mark as in-use or available.
+     * @param {string} ciAvailability - The availability status of the environment.
+     * @returns {Object} - The updated pool data.
      */
     updateMRTTargetStatus(poolData, environment, ciAvailability) {
         const updatedPoolData = {
@@ -123,7 +132,10 @@ class MRTTargetManager {
     }
 
     /**
-     * Get current pool status
+     * Downloads the pool file and returns the json contents.
+     * Also returns the total number of environments, number of available environments, and number of in-use environments.
+     * @returns {Promise<Object>} - The pool status.
+     * @throws {Error} - If the pool file is not found or there is an error (e.g. authentication issues) downloading it.
      */
     async getPoolStatus() {
         try {
@@ -149,9 +161,9 @@ class MRTTargetManager {
     }
 
     /**
-     * Acquire an MRT environment with optimistic locking
-     * @param {string} environmentType - Type of environment to acquire (e.g., 'staging', 'production')
-     * @returns {Object} - Acquired environment details
+     * Acquires an MRT environment with optimistic locking.
+     * @returns {Promise<Object>} - Acquired environment details.
+     * @throws {Error} - If the environment is not found or there is an error (e.g. authentication issues) acquiring it.
      */
     async acquireEnvironment() {
         if (!process.env.CI) {
