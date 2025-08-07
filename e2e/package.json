@@ -7,8 +7,8 @@
         "test": "pwa-kit-dev test",
         "test:watch": "pwa-kit-dev test --watch",
         "test:coverage": "pwa-kit-dev test --coverage",
-        "lint": "eslint \"*.js\"",
-        "lint:fix": "eslint \"*.js\" --fix"
+        "lint": "eslint \"**/*.js\"",
+        "lint:fix": "eslint \"**/*.js\" --fix"
     },
     "devDependencies": {
         "@actions/core": "^1.11.1",

@@ -35,7 +35,7 @@ module.exports = {
             }
         },
         {
-            files: ['pageHelpers.js'],
+            files: ['scripts/pageHelpers.js'],
             parserOptions: {
                 ecmaVersion: 2020,
                 sourceType: 'module'
