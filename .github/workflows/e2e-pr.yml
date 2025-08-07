@@ -50,7 +50,7 @@ jobs:
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               run: |-
                   # Install node dependencies
-                  npm ci
+                  node ./scripts/gtime.js monorepo_install npm ci
 
             # Check central resource allocation on AWS and get a lock on an available environment from the pool.
             # Returns the MRT target ID if lock is acquired, otherwise returns an error state.
