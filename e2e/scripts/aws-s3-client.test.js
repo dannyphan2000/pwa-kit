@@ -7,12 +7,7 @@
 const {S3Client, PutObjectCommand, GetObjectCommand} = require('@aws-sdk/client-s3')
 const {STSClient, AssumeRoleCommand} = require('@aws-sdk/client-sts')
 const SecureS3Client = require('./aws-s3-client')
-const {
-    PWA_KIT_BOT_USER_SESSION,
-    AWS_ACCESS_READ_ONLY,
-    AWS_ACCESS_READ_WRITE,
-    AWS_DEFAULT_REGION
-} = require('./constants')
+const {PWA_KIT_BOT_USER_SESSION, AWS_ACCESS_READ_WRITE, AWS_DEFAULT_REGION} = require('./constants')
 
 // Mock AWS SDK modules
 jest.mock('@aws-sdk/client-s3')
