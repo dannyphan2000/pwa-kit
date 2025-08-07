@@ -67,7 +67,7 @@ const logSpanData = (span, event = 'start', res = null) => {
     }
 
     // Inject B3 headers into response if available
-    if (res && process.env.DISABLE_B3_TRACING !== 'true' && event === 'start') {
+    if (res && getOTELConfig().b3TracingEnabled && event === 'start') {
         res.setHeader('x-b3-traceid', spanContext.traceId)
         res.setHeader('x-b3-spanid', spanContext.spanId)
         res.setHeader('x-b3-sampled', '1')
@@ -79,10 +79,7 @@ const logSpanData = (span, event = 'start', res = null) => {
 
     // Only log if this is an end event or if it's a start event for a new span
     if (event === 'end' || !Object.prototype.hasOwnProperty.call(span.attributes, 'event')) {
-        logger.info('OpenTelemetry span data', {
-            namespace: 'opentelemetry.logSpanData',
-            additionalProperties: spanData
-        })
+        console.info(JSON.stringify(spanData))
     }
 }
 

@@ -42,7 +42,7 @@ import * as errors from '../universal/errors'
 import logger from '../../utils/logger-instance'
 
 import PerformanceTimer, {PERFORMANCE_MARKS} from '../../utils/performance'
-import {tracePerformance, createChildSpan, endSpan} from '../../utils/opentelemetry'
+import {tracePerformance} from '../../utils/opentelemetry'
 
 const CWD = process.cwd()
 const BUNDLES_PATH = path.resolve(CWD, 'build/loadable-stats.json')
@@ -87,7 +87,7 @@ const logAndFormatError = (err) => {
 // as best as we can.
 export const getLocationSearch = (req, opts = {}) => {
     const {interpretPlusSignAsSpace = false} = opts
-    const [_, search] = req.originalUrl.split('?')
+    const [, search] = req.originalUrl.split('?')
     const params = new URLSearchParams(search)
 
     const newParams = new URLSearchParams()
@@ -129,9 +129,14 @@ export const render = async (req, res, next) => {
     const includeServerTimingHeader = '__server_timing' in req.query
     const shouldTrackPerformance = includeServerTimingHeader || process.env.SERVER_TIMING
 
-    // Auto-enable OpenTelemetry when performance tracking is requested
-    if (shouldTrackPerformance && !process.env.SERVER_TIMING) {
-        process.env.SERVER_TIMING = 'true'
+    // Auto-enable OpenTelemetry and B3 tracing when performance tracking is requested
+    if (shouldTrackPerformance) {
+        if (!process.env.OTEL_SDK_ENABLED) {
+            process.env.OTEL_SDK_ENABLED = 'true'
+        }
+        if (!process.env.OTEL_B3_TRACING_ENABLED) {
+            process.env.OTEL_B3_TRACING_ENABLED = 'true'
+        }
     }
 
     // Initialize server tracing if needed
@@ -440,5 +445,13 @@ const serverRenderer =
     ({clientStats, serverStats}) => {
         return (req, res, next) => render(req, res, next)
     }
+
+/**
+ * Cleanup function to shut down OpenTelemetry tracing
+ * Call this when the server is shutting down to properly clean up resources
+ */
+export const cleanup = async () => {
+    await shutdownServerTracing()
+}
 
 export default serverRenderer

@@ -61,8 +61,6 @@ describe('OpenTelemetry Utilities', () => {
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         const api = require('@opentelemetry/api')
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const core = require('@opentelemetry/core')
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const logger = require('./logger-instance')
 
         mockTracer = {
@@ -362,8 +360,17 @@ describe('OpenTelemetry Utilities', () => {
         })
 
         test('should inject B3 headers when tracing is enabled', async () => {
-            const originalEnv = process.env.DISABLE_B3_TRACING
-            process.env.DISABLE_B3_TRACING = 'false'
+            const originalEnv = process.env.OTEL_B3_TRACING_ENABLED
+            process.env.OTEL_B3_TRACING_ENABLED = 'true'
+
+            // Ensure the mock returns enabled B3 tracing
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const opentelemetryConfig = require('./opentelemetry-config')
+            opentelemetryConfig.getOTELConfig.mockReturnValue({
+                serviceName: 'pwa-kit-react-sdk',
+                enabled: true,
+                b3TracingEnabled: true
+            })
 
             const mockFn = jest.fn().mockResolvedValue('test-result')
             const mockRes = {
@@ -383,12 +390,21 @@ describe('OpenTelemetry Utilities', () => {
                 'test-parent-span-id'
             )
 
-            process.env.DISABLE_B3_TRACING = originalEnv
+            process.env.OTEL_B3_TRACING_ENABLED = originalEnv
         })
 
         test('should not inject B3 headers when tracing is disabled', async () => {
-            const originalEnv = process.env.DISABLE_B3_TRACING
-            process.env.DISABLE_B3_TRACING = 'true'
+            const originalEnv = process.env.OTEL_B3_TRACING_ENABLED
+            process.env.OTEL_B3_TRACING_ENABLED = 'false'
+
+            // Update the mock to return disabled B3 tracing
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const opentelemetryConfig = require('./opentelemetry-config')
+            opentelemetryConfig.getOTELConfig.mockReturnValue({
+                serviceName: 'pwa-kit-react-sdk',
+                enabled: true,
+                b3TracingEnabled: false
+            })
 
             const mockFn = jest.fn().mockResolvedValue('test-result')
             const mockRes = {
@@ -402,7 +418,13 @@ describe('OpenTelemetry Utilities', () => {
 
             expect(mockRes.setHeader).not.toHaveBeenCalled()
 
-            process.env.DISABLE_B3_TRACING = originalEnv
+            // Restore the original mock
+            opentelemetryConfig.getOTELConfig.mockReturnValue({
+                enabled: true,
+                serviceName: 'pwa-kit-react-sdk',
+                b3TracingEnabled: true
+            })
+            process.env.OTEL_B3_TRACING_ENABLED = originalEnv
         })
     })
 
