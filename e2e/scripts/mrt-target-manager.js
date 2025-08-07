@@ -325,6 +325,8 @@ async function main() {
                 /**
                  * We need to write the environment details and status to a file so that the workflow can use it.
                  * Propagating outputs from node to composite actions to workflow is not robust enough.
+                 * The file is used by the workflow to determine if the environment was acquired successfully and will be deleted when the MRT target is released back to the pool.
+                 * Also, since each workflow run spins up a new container/server instance, the file is deleted when the workflow ends.
                  */
                 const mrtTargetDetails = {
                     ...result.environment,

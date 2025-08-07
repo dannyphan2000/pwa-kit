@@ -3,14 +3,15 @@ const {STSClient, AssumeRoleCommand} = require('@aws-sdk/client-sts')
 const {
     PWA_KIT_BOT_USER_SESSION,
     AWS_ACCESS_READ_ONLY,
-    AWS_ACCESS_READ_WRITE
+    AWS_ACCESS_READ_WRITE,
+    AWS_DEFAULT_REGION
 } = require('./constants')
 
 class SecureS3Client {
     constructor(options = {}) {
         this.roleArn = options.roleArn
         this.roleSessionName = options.roleSessionName || PWA_KIT_BOT_USER_SESSION
-        this.region = options.region || 'us-east-1'
+        this.region = options.region || AWS_DEFAULT_REGION
         this.readOnly = options.readOnly
         this.externalId = options.externalId
         this.credentials = null
