@@ -142,10 +142,12 @@ const performRender = async (req, res, next) => {
         initializeServerTracing()
     }
 
+    // Initialize performance timer outside tracePerformance to ensure it's always available
+    res.__performanceTimer = new PerformanceTimer({enabled: shouldTrackPerformance})
+
     return tracePerformance(
         'ssr.render',
         async () => {
-            res.__performanceTimer = new PerformanceTimer({enabled: shouldTrackPerformance})
             res.__performanceTimer.mark(PERFORMANCE_MARKS.total, 'start')
 
             const AppConfig = getAppConfig()
@@ -278,10 +280,8 @@ const performRender = async (req, res, next) => {
                 res.status(status).send(html)
             }
 
-            // Cleanup OpenTelemetry tracing after response is sent
-
+            // Cleanup performance timer and OpenTelemetry tracing after response is sent
             res.__performanceTimer.cleanup()
-
             shutdownServerTracing()
         },
         res
