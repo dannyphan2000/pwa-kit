@@ -125,15 +125,20 @@ export const getLocationSearch = (req, opts = {}) => {
  *
  * @return {Promise}
  */
-export const render = async (req, res, next) => {
+// Initialize server tracing once at module load if performance tracking is enabled
+if (process.env.SERVER_TIMING && !isServerTracingInitialized()) {
+    initializeServerTracing()
+}
+
+const performRender = async (req, res, next) => {
     const includeServerTimingHeader = '__server_timing' in req.query
     const shouldTrackPerformance = includeServerTimingHeader || process.env.SERVER_TIMING
 
     // Note: B3 headers require OTEL_SDK_ENABLED=true and OTEL_B3_TRACING_ENABLED=true environment variables
     // to be set at runtime. Auto-enable logic removed per review feedback.
 
-    // Initialize server tracing if needed
-    if (shouldTrackPerformance && !isServerTracingInitialized()) {
+    // Initialize server tracing if needed for this request
+    if (includeServerTimingHeader && !isServerTracingInitialized()) {
         initializeServerTracing()
     }
 
@@ -274,11 +279,16 @@ export const render = async (req, res, next) => {
             }
 
             // Cleanup OpenTelemetry tracing after response is sent
+
+            res.__performanceTimer.cleanup()
+
             shutdownServerTracing()
         },
         res
     )
 }
+
+export const render = performRender
 
 const OuterApp = ({req, res, error, App, appState, routes, routerContext, location}) => {
     const AppConfig = getAppConfig()
