@@ -129,15 +129,8 @@ export const render = async (req, res, next) => {
     const includeServerTimingHeader = '__server_timing' in req.query
     const shouldTrackPerformance = includeServerTimingHeader || process.env.SERVER_TIMING
 
-    // Auto-enable OpenTelemetry and B3 tracing when performance tracking is requested
-    if (shouldTrackPerformance) {
-        if (!process.env.OTEL_SDK_ENABLED) {
-            process.env.OTEL_SDK_ENABLED = 'true'
-        }
-        if (!process.env.OTEL_B3_TRACING_ENABLED) {
-            process.env.OTEL_B3_TRACING_ENABLED = 'true'
-        }
-    }
+    // Note: B3 headers require OTEL_SDK_ENABLED=true and OTEL_B3_TRACING_ENABLED=true environment variables
+    // to be set at runtime. Auto-enable logic removed per review feedback.
 
     // Initialize server tracing if needed
     if (shouldTrackPerformance && !isServerTracingInitialized()) {
