@@ -53,7 +53,7 @@ jobs:
                   node ./scripts/gtime.js monorepo_install npm ci
 
             # Check central resource allocation on AWS and get a lock on an available environment from the pool.
-            # Returns the MRT target ID if lock is acquired, otherwise returns an error state.
+            # Sets the MRT target details in the workflow output.
             - name: Configure AWS Credentials
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               uses: aws-actions/configure-aws-credentials@v4
@@ -71,11 +71,31 @@ jobs:
                   RUN_ID: ${{ github.run_id }}
                   PR_NUMBER: ${{ github.event.pull_request.number }}
 
-            # Skipping the rest of the workflow for now
-            - name: Print MRT Target Details and Skip Workflow
+            - name: Read MRT Target Details and Skip Workflow
+              id: mrt_target_details
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               run: |
-                  cat e2e/mrt-target/mrt-target-details.json
+                  jq -r 'to_entries[] | "\(.key)=\(.value // "")"' e2e/mrt-target/mrt-target-details.json >> "$GITHUB_OUTPUT"
+
+            # Engage post-run cleanup via a Node action that has a post hook.
+            # - The action defines `runs.post` so its post step runs at the
+            #   end of this job even if earlier steps fail or the job is cancelled.
+            # - This step passes the slug, maxRetries and retryDelay; the action's main saves it to state.
+            # - The actual release happens in the action's post script (post.js).
+            # - This replaces a separate cleanup job and avoids double-release.
+            # - This step is only engaged if the workflow is not skipped.
+            - name: Engage Post hook to release MRT target back to the pool
+              if: ${{ env.SKIP_WORKFLOW != 'true' }}
+              uses: ./.github/actions/mrt_post_release
+              with:
+                  SLUG: ${{ steps.mrt_target_details.outputs.slug }}
+                  MAX_RETRIES: 3
+                  RETRY_DELAY: 10000
+
+            # Skip the rest of the workflow for now.
+            - name: Skip Workflow
+              if: ${{ env.SKIP_WORKFLOW != 'true' }}
+              run: |
                   echo "SKIP_WORKFLOW=true" >> "$GITHUB_ENV"
 
             - name: Get Template Version
@@ -126,8 +146,3 @@ jobs:
             - name: Run Playwright a11y tests
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               run: npm run test:e2e:a11y
-
-            - name: Release MRT Target Lock
-              if: always() # Always release the target lock back to the pool even if the tests fail.
-              run: |
-                  echo "TODO: Implement .github/actions/release_mrt_target_lock"
