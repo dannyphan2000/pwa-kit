@@ -14,7 +14,7 @@ inputs:
         default: '10000'
 
 runs:
-    using: node22
+    using: node20 # Only 'node12', 'node16', 'node20' or 'node24' are supported.
     main: dist/main.js
     post: dist/post.js
     post-if: always()
