@@ -745,6 +745,12 @@ export const RemoteServerFactory = {
                         })
                     }
 
+                    if (incomingRequest.path?.match(/\/oauth2\/trusted-agent\/token/)) {
+                        // /oauth2/trusted-agent/token endpoint auth header comes from Account Manager
+                        // so the SLAS private client is sent via this special header
+                        proxyRequest.setHeader('_sfdc_client_auth', encodedSlasCredentials)
+                    }
+
                     // We pattern match and add client secrets only to endpoints that
                     // match the regex specified by options.applySLASPrivateClientToEndpoints.
                     //
@@ -753,10 +759,6 @@ export const RemoteServerFactory = {
                     // purpose so we don't want to overwrite the header for those calls.
                     if (incomingRequest.path?.match(options.applySLASPrivateClientToEndpoints)) {
                         proxyRequest.setHeader('Authorization', `Basic ${encodedSlasCredentials}`)
-                    } else if (incomingRequest.path?.match(/\/oauth2\/trusted-agent\/token/)) {
-                        // /oauth2/trusted-agent/token endpoint auth header comes from Account Manager
-                        // so the SLAS private client is sent via this special header
-                        proxyRequest.setHeader('_sfdc_client_auth', encodedSlasCredentials)
                     }
                 }
             })
