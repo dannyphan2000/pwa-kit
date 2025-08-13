@@ -125,11 +125,6 @@ export const getLocationSearch = (req, opts = {}) => {
  *
  * @return {Promise}
  */
-// Initialize server tracing once at module load if performance tracking is enabled
-if (process.env.SERVER_TIMING && !isServerTracingInitialized()) {
-    initializeServerTracing()
-}
-
 const performRender = async (req, res, next) => {
     const includeServerTimingHeader = '__server_timing' in req.query
     const shouldTrackPerformance = includeServerTimingHeader || process.env.SERVER_TIMING
@@ -141,9 +136,7 @@ const performRender = async (req, res, next) => {
 
     // Initialize performance timer outside tracePerformance to ensure it's always available
     res.__performanceTimer = new PerformanceTimer({enabled: shouldTrackPerformance})
-
     res.__performanceTimer.mark(PERFORMANCE_MARKS.total, 'start')
-
     const AppConfig = getAppConfig()
     // Get the application config which should have been stored at this point.
     const config = getConfig()
@@ -219,7 +212,6 @@ const performRender = async (req, res, next) => {
         appStateError = ret.error
         res.__performanceTimer.mark(PERFORMANCE_MARKS.fetchStrategies, 'end')
     }
-
     res.__performanceTimer.mark(PERFORMANCE_MARKS.renderToString, 'start')
     appJSX = React.cloneElement(appJSX, {error: appStateError, appState})
 
@@ -249,7 +241,6 @@ const performRender = async (req, res, next) => {
     }
 
     res.__performanceTimer.mark(PERFORMANCE_MARKS.renderToString, 'end')
-
     // Step 5 - Determine what is going to happen, redirect, or send html with
     // the correct status code.
     const {html, routerContext, error} = renderResult

@@ -172,6 +172,7 @@ export const createChildSpan = (name, attributes = {}) => {
             },
             parentSpan ? ctx : undefined
         )
+
         logSpanData(span, 'start')
         return span
     } catch (error) {
