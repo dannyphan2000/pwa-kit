@@ -765,8 +765,14 @@ export const RemoteServerFactory = {
                 },
                 onProxyRes: responseInterceptor((responseBuffer, proxyRes, req, res) => {
                     try {
-                        // Responses from SLAS are in expected to be in json format format
-                        let body = JSON.parse(responseBuffer.toString('utf8'))
+                        let data = responseBuffer.toString('utf8')
+                        // If the SLAS response has no body, just return the empty buffer
+                        if (!data) {
+                            return responseBuffer
+                        }
+
+                        // If the response from SLAS has a body, it's expected to be in json format
+                        let body = JSON.parse(data)
                         const message = body.message
 
                         // If the message contains the string "user not found", return a 200 OK response
