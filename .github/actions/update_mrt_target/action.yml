@@ -76,7 +76,7 @@ runs:
                   ARGS+=("--ssr-region" "${{ inputs.SSR_REGION }}")
               fi
               
-              if [ -n "${{ inputs.SSR_WHITELISTED_IPS }}" ]; then
+              if [ -n ${{ inputs.SSR_WHITELISTED_IPS }} ]; then
                   ARGS+=("--ssr-whitelisted-ips" "${{ inputs.SSR_WHITELISTED_IPS }}")
               fi
               
