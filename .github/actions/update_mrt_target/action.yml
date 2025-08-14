@@ -47,14 +47,14 @@ runs:
           shell: bash
           run: |-
               set -e
-              
+
               # Build arguments for the Node.js script
               ARGS=(
                   "--project-slug" "${{ inputs.PROJECT_SLUG }}"
                   "--target-slug" "${{ inputs.TARGET_SLUG }}"
                   "--mobify-api-key" "${{ inputs.MOBIFY_API_KEY }}"
               )
-              
+
               # Add optional arguments only if they have values
               if [ -n "${{ inputs.CLOUD_ORIGIN }}" ]; then
                   ARGS+=("--cloud-origin" "${{ inputs.CLOUD_ORIGIN }}")
@@ -63,35 +63,34 @@ runs:
               if [ -n "${{ inputs.NAME }}" ]; then
                   ARGS+=("--name" "${{ inputs.NAME }}")
               fi
-              
+
               if [ -n "${{ inputs.SSR_EXTERNAL_HOSTNAME }}" ]; then
                   ARGS+=("--ssr-external-hostname" "${{ inputs.SSR_EXTERNAL_HOSTNAME }}")
               fi
-              
+
               if [ -n "${{ inputs.SSR_EXTERNAL_DOMAIN }}" ]; then
                   ARGS+=("--ssr-external-domain" "${{ inputs.SSR_EXTERNAL_DOMAIN }}")
               fi
-              
+
               if [ -n "${{ inputs.SSR_REGION }}" ]; then
                   ARGS+=("--ssr-region" "${{ inputs.SSR_REGION }}")
               fi
-              
+
               if [ -n ${{ inputs.SSR_WHITELISTED_IPS }} ]; then
                   ARGS+=("--ssr-whitelisted-ips" "${{ inputs.SSR_WHITELISTED_IPS }}")
               fi
-              
+
               if [ -n "${{ inputs.SSR_PROXY_CONFIGS }}" ]; then
-                  ARGS+=("--ssr-proxy-configs")
-                  ARGS+=("${{ inputs.SSR_PROXY_CONFIGS }}")
+                  ARGS+=("--ssr-proxy-configs" ${{ inputs.SSR_PROXY_CONFIGS }})
               fi
-              
+
               if [ -n "${{ inputs.ALLOW_COOKIES }}" ]; then
                   ARGS+=("--allow-cookies" "${{ inputs.ALLOW_COOKIES }}")
               fi
-              
+
               if [ -n "${{ inputs.ENABLE_SOURCE_MAPS }}" ]; then
                   ARGS+=("--enable-source-maps" "${{ inputs.ENABLE_SOURCE_MAPS }}")
               fi
-              
+
               # Run the Node.js script
               node e2e/scripts/update-mrt-target.js "${ARGS[@]}"
