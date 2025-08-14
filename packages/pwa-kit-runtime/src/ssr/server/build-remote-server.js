@@ -769,16 +769,20 @@ export const RemoteServerFactory = {
                         let body = JSON.parse(responseBuffer.toString('utf8'))
                         const message = body.message
 
-                        // If the message contains the string "user not found", replace it with a more generic
-                        // message that prevents user enumeration.
+                        // If the message contains the string "user not found", return a 200 OK response
+                        // so it is not obvious that the user does not exist.
                         if (SLAS_USER_NOT_FOUND_ERROR.test(message)) {
-                            body = Object.assign({}, body, {
-                                message: "Something's not right with your login. Try again"
-                            })
+                            res.statusCode = 200
+                            res.statusMessage = 'OK'
+
+                            // User not found errors tend to come from the /passwordless/login endpoint.
+                            // When a /passwordless/login endpoint response returns 200, it has no body
+                            // so we return an empty body here to match an actual 200 response.
+                            return Buffer.from('', 'utf8')
                         }
                         return Buffer.from(JSON.stringify(body), 'utf8')
                     } catch (error) {
-                        console.error('Error in responseInterceptor:', error)
+                        console.error('There is an error processing the response from SLAS. Returning original response.', error)
                         return responseBuffer
                     }
                 })
