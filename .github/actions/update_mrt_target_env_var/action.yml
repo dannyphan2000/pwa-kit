@@ -34,6 +34,7 @@ runs:
                   "--target-slug" "${{ inputs.TARGET_SLUG }}"
                   "--mobify-api-key" "${{ inputs.MOBIFY_API_KEY }}"
                   "--env-file" "${{ inputs.ENV_FILE_PATH }}"
+                  "--cloud-origin" "${{ inputs.CLOUD_ORIGIN }}"
               )
 
               # Run the Node.js script
