@@ -70,11 +70,18 @@ jobs:
       # Step 7: Install dependencies after a successful rebase.
       # The '--yes' flag for lerna is crucial for non-interactive environments.
       - name: Install Dependencies
-        run: npx lerna clean --yes && npm i
+        run: |
+          if ! npx lerna clean --yes && npm i; then
+            echo "Generating package-lock files after rebase failed!"
+            exit 1
+          fi
 
       # Step 8: Push the changes only if all previous steps were successful.
       - name: Push Changes
-        run: git push origin adyenExpressPaymentsDreamForceTestAlertBranch --force-with-lease
+        run: |
+          git add .
+          git commit -m "chore: regenerated package-lock.json files after rebase"
+          git push origin adyenExpressPaymentsDreamForceTestAlertBranch --force-with-lease
 
       # Step 9: This notification step will run if any of the above steps fail.
       - name: Notify on Failure
@@ -88,4 +95,3 @@ jobs:
         env:
           # You must store your Slack Bot Token as a secret in your repository settings.
           SLACK_BOT_TOKEN: '${{ secrets.AGENT_CHECKOUT_SLACK_BOT_TOKEN }}'
-          # Forcing a re-index
