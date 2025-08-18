@@ -6,7 +6,6 @@
 - Fix Einstein event tracking for `addToCart` event [#2558](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2558)
 - Update latest translations for all languages [#2616](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2616)
 - Bundlesize update [#2722](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2722)
--  Updating react-rendering.js to trace the performance of the SSR process [#2834](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2834)
 
 ## v6.1.0 (May 22, 2025)
 
