@@ -1284,7 +1284,7 @@ describe('SLAS private client proxy', () => {
         const testProxyApp = express()
         const testProxyPort = 12346
         const testSlasTarget = `http://localhost:${testProxyPort}/shopper/auth/responseHeaders`
-        
+
         // Set up the mock server to return a 404 for passwordless login
         testProxyApp.use('/shopper/auth/responseHeaders', (req, res) => {
             if (req.url.includes('/oauth2/passwordless/login')) {

@@ -753,7 +753,9 @@ export const RemoteServerFactory = {
                         // /oauth2/trusted-agent/token endpoint auth header comes from Account Manager
                         // so the SLAS private client is sent via this special header
                         proxyRequest.setHeader('_sfdc_client_auth', encodedSlasCredentials)
-                    } else if (incomingRequest.path?.match(options.applySLASPrivateClientToEndpoints)) {
+                    } else if (
+                        incomingRequest.path?.match(options.applySLASPrivateClientToEndpoints)
+                    ) {
                         // We pattern match and add client secrets only to endpoints that
                         // match the regex specified by options.applySLASPrivateClientToEndpoints.
                         //
@@ -766,10 +768,13 @@ export const RemoteServerFactory = {
                 onProxyRes: responseInterceptor((responseBuffer, proxyRes, req, res) => {
                     try {
                         // If the passwordless login endpoint returns a 404, which corresponds to a user
-                        // email not being found, we mask it with a 200 OK response so that it is not 
+                        // email not being found, we mask it with a 200 OK response so that it is not
                         // obvious that the user does not exist.
                         // We do this to prevent user enumeration.
-                        if (req.path?.match(/\/oauth2\/passwordless\/login/) && proxyRes.statusCode === 404) {
+                        if (
+                            req.path?.match(/\/oauth2\/passwordless\/login/) &&
+                            proxyRes.statusCode === 404
+                        ) {
                             res.statusCode = 200
                             res.statusMessage = 'OK'
 
