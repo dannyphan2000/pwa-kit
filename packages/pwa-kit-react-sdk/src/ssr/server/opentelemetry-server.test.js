@@ -51,6 +51,38 @@ jest.mock('../../utils/opentelemetry', () => ({
     }
 }))
 
+jest.mock('../../utils/opentelemetry-config', () => ({
+    getOTELConfig: jest.fn(() => ({
+        enabled: true,
+        serviceName: 'pwa-kit-react-sdk',
+        b3TracingEnabled: true
+    })),
+    getServiceName: jest.fn(() => 'pwa-kit-react-sdk')
+}))
+
+jest.mock('../../utils/opentelemetry', () => ({
+    logSpanData: jest.fn()
+}))
+
+jest.mock('@opentelemetry/api', () => ({
+    trace: {
+        getTracer: jest.fn(),
+        setSpan: jest.fn()
+    },
+    context: {
+        active: jest.fn(),
+        with: jest.fn()
+    },
+    propagation: {
+        setGlobalPropagator: jest.fn()
+    },
+    SpanStatusCode: {
+        UNSET: 0,
+        OK: 1,
+        ERROR: 2
+    }
+}))
+
 describe('OpenTelemetry Server Tracing', () => {
     let mockNodeTracerProvider
     let mockSimpleSpanProcessor
@@ -75,7 +107,7 @@ describe('OpenTelemetry Server Tracing', () => {
         const {Resource} = require('@opentelemetry/resources')
         const {propagation} = require('@opentelemetry/api')
         const logger = require('../../utils/logger-instance')
-        const {getServiceName, OTEL_CONFIG} = require('../../utils/opentelemetry')
+
         const opentelemetryServer = require('./opentelemetry-server')
         /* eslint-enable @typescript-eslint/no-var-requires */
 
@@ -450,6 +482,145 @@ describe('OpenTelemetry Server Tracing', () => {
 
             // Shutdown should still work gracefully
             await expect(shutdownServerTracing()).resolves.not.toThrow()
+        })
+    })
+
+    describe('tracePerformance', () => {
+        let tracePerformance
+        let mockSpan, mockTracer
+
+        beforeEach(() => {
+            // Setup span mock
+            mockSpan = {
+                spanContext: jest.fn(() => ({
+                    traceId: 'test-trace-id',
+                    spanId: 'test-span-id'
+                })),
+                end: jest.fn(),
+                setStatus: jest.fn(),
+                parentSpanId: 'test-parent-span-id'
+            }
+
+            // Setup tracer mock
+            mockTracer = {
+                startSpan: jest.fn(() => mockSpan)
+            }
+
+            // Get the mocked OpenTelemetry API and configure it
+            const otelApi = jest.requireMock('@opentelemetry/api')
+            otelApi.trace.getTracer.mockReturnValue(mockTracer)
+            otelApi.trace.setSpan.mockImplementation((ctx, span) => ({...ctx, span}))
+            otelApi.context.active.mockReturnValue({})
+            otelApi.context.with.mockImplementation((ctx, fn) => fn())
+
+            // Import tracePerformance after setting up mocks
+            const opentelemetryServer = jest.requireActual('./opentelemetry-server')
+            tracePerformance = opentelemetryServer.tracePerformance
+        })
+
+        test('should trace performance successfully', async () => {
+            const mockFn = jest.fn().mockResolvedValue('test-result')
+            const mockRes = {
+                setHeader: jest.fn()
+            }
+            const mockReq = {
+                query: {__server_timing: ''}
+            }
+
+            const result = await tracePerformance('perf-test', mockFn, mockRes, mockReq)
+
+            expect(mockTracer.startSpan).toHaveBeenCalledWith('perf-test', {
+                attributes: {
+                    'service.name': 'pwa-kit-react-sdk'
+                }
+            })
+            const otelApi = jest.requireMock('@opentelemetry/api')
+            expect(otelApi.context.with).toHaveBeenCalled()
+            expect(mockFn).toHaveBeenCalled()
+            expect(result).toBe('test-result')
+            expect(mockSpan.end).toHaveBeenCalled()
+        })
+
+        test('should handle function errors', async () => {
+            const mockFn = jest.fn().mockRejectedValue(new Error('Function failed'))
+            const mockRes = {
+                setHeader: jest.fn()
+            }
+            const mockReq = {
+                query: {__server_timing: ''}
+            }
+
+            await expect(tracePerformance('perf-test', mockFn, mockRes, mockReq)).rejects.toThrow(
+                'Function failed'
+            )
+
+            expect(mockSpan.setStatus).toHaveBeenCalledWith({
+                code: 2, // ERROR
+                message: 'Function failed'
+            })
+            expect(mockSpan.end).toHaveBeenCalled()
+        })
+
+        test('should inject B3 headers when tracing is enabled', async () => {
+            const originalEnv = process.env.OTEL_B3_TRACING_ENABLED
+            process.env.OTEL_B3_TRACING_ENABLED = 'true'
+
+            // Ensure the mock returns enabled B3 tracing
+            const opentelemetryConfig = jest.requireMock('../../utils/opentelemetry-config')
+            opentelemetryConfig.getOTELConfig.mockReturnValue({
+                serviceName: 'pwa-kit-react-sdk',
+                enabled: true,
+                b3TracingEnabled: true
+            })
+
+            const mockFn = jest.fn().mockResolvedValue('test-result')
+            const mockRes = {
+                setHeader: jest.fn()
+            }
+            const mockReq = {
+                query: {__server_timing: ''}
+            }
+
+            await tracePerformance('perf-test', mockFn, mockRes, mockReq)
+
+            expect(mockRes.setHeader).toHaveBeenCalledWith('x-b3-traceid', 'test-trace-id')
+            expect(mockRes.setHeader).toHaveBeenCalledWith('x-b3-spanid', 'test-span-id')
+            expect(mockRes.setHeader).toHaveBeenCalledWith('x-b3-sampled', '1')
+
+            process.env.OTEL_B3_TRACING_ENABLED = originalEnv
+        })
+
+        test('should not inject B3 headers when tracing is disabled', async () => {
+            const originalEnv = process.env.OTEL_B3_TRACING_ENABLED
+            process.env.OTEL_B3_TRACING_ENABLED = 'false'
+
+            // Update the mock to return disabled B3 tracing
+            const opentelemetryConfig = jest.requireMock('../../utils/opentelemetry-config')
+            opentelemetryConfig.getOTELConfig.mockReturnValue({
+                serviceName: 'pwa-kit-react-sdk',
+                enabled: true,
+                b3TracingEnabled: false
+            })
+
+            const mockFn = jest.fn().mockResolvedValue('test-result')
+            const mockRes = {
+                setHeader: jest.fn()
+            }
+            const mockReq = {
+                query: {__server_timing: ''}
+            }
+
+            await tracePerformance('perf-test', mockFn, mockRes, mockReq)
+
+            expect(mockRes.setHeader).not.toHaveBeenCalled()
+
+            // Restore the original mock
+            opentelemetryConfig.getOTELConfig.mockReturnValue({
+                enabled: true,
+                serviceName: 'pwa-kit-react-sdk',
+                b3TracingEnabled: true
+            })
+            process.env.OTEL_B3_TRACING_ENABLED = originalEnv
         })
     })
 })

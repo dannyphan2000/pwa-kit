@@ -147,7 +147,7 @@ export default class PerformanceTimer {
                     performance.clearMarks(endMark)
                     performance.clearMeasures(name)
                 } catch (error) {
-                    logger.warn('Failed to measure performance mark', {
+                    logger.warn('Failed to measure performance mark: ' + error.message, {
                         name,
                         error: error.message,
                         startMark,
@@ -160,7 +160,7 @@ export default class PerformanceTimer {
             if (error.name === 'SyntaxError') {
                 logger.warn('Invalid performance mark name', {name, error: error.message})
             } else {
-                logger.error('Error creating performance mark', {
+                logger.error('Error creating performance mark: ' + error.message, {
                     name,
                     type,
                     error: error.message,

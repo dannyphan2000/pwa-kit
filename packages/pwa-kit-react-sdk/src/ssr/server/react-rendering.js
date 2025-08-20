@@ -22,11 +22,7 @@ import {isRemote} from '@salesforce/pwa-kit-runtime/utils/ssr-server'
 import {proxyConfigs} from '@salesforce/pwa-kit-runtime/utils/ssr-shared'
 import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 import {NO_CACHE} from '@salesforce/pwa-kit-runtime/ssr/server/constants'
-import {
-    isServerTracingInitialized,
-    initializeServerTracing,
-    shutdownServerTracing
-} from './opentelemetry-server'
+import {shutdownServerTracing, tracePerformance} from './opentelemetry-server'
 
 import {getAssetUrl} from '../universal/utils'
 import {ServerContext, CorrelationIdProvider} from '../universal/contexts'
@@ -42,7 +38,6 @@ import * as errors from '../universal/errors'
 import logger from '../../utils/logger-instance'
 
 import PerformanceTimer, {PERFORMANCE_MARKS} from '../../utils/performance'
-import {tracePerformance} from '../../utils/opentelemetry'
 
 const CWD = process.cwd()
 const BUNDLES_PATH = path.resolve(CWD, 'build/loadable-stats.json')
@@ -128,11 +123,6 @@ export const getLocationSearch = (req, opts = {}) => {
 const performRender = async (req, res, next) => {
     const includeServerTimingHeader = '__server_timing' in req.query
     const shouldTrackPerformance = includeServerTimingHeader || process.env.SERVER_TIMING
-
-    // Initialize server tracing if needed for this request
-    if (includeServerTimingHeader && !isServerTracingInitialized()) {
-        initializeServerTracing()
-    }
 
     // Initialize performance timer outside tracePerformance to ensure it's always available
     res.__performanceTimer = new PerformanceTimer({enabled: shouldTrackPerformance})
@@ -249,7 +239,7 @@ const performRender = async (req, res, next) => {
 
     res.__performanceTimer.mark(PERFORMANCE_MARKS.total, 'end')
 
-    if (includeServerTimingHeader) {
+    if (shouldTrackPerformance) {
         res.setHeader('Server-Timing', res.__performanceTimer.buildServerTimingHeader())
         // Override cache-control header to no caching when __server_timing is used
         // This happens after React rendering is complete, ensuring it overrides any
@@ -269,7 +259,7 @@ const performRender = async (req, res, next) => {
 }
 
 export const render = (req, res, next) =>
-    tracePerformance('ssr.render', () => performRender(req, res, next), res)
+    tracePerformance('ssr.render', () => performRender(req, res, next), res, req)
 
 const OuterApp = ({req, res, error, App, appState, routes, routerContext, location}) => {
     const AppConfig = getAppConfig()

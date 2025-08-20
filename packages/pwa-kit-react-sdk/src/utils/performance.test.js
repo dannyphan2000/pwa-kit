@@ -574,7 +574,7 @@ describe('PerformanceTimer', () => {
             timer.mark('test', 'end')
 
             expect(logger.warn).toHaveBeenCalledWith(
-                'Failed to measure performance mark',
+                'Failed to measure performance mark: Measure failed',
                 expect.objectContaining({
                     name: 'test',
                     error: 'Measure failed',

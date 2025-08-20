@@ -10,7 +10,7 @@ import {hrTimeToTimeStamp} from '@opentelemetry/core'
 import logger from './logger-instance'
 import {getOTELConfig, getServiceName} from './opentelemetry-config'
 
-const logSpanData = (span, event = 'start', res = null) => {
+export const logSpanData = (span, event = 'start') => {
     const spanContext = span.spanContext()
     const startTime = span.startTime
     const endTime = event === 'start' ? startTime : span.endTime
@@ -38,7 +38,6 @@ const logSpanData = (span, event = 'start', res = null) => {
                 }
             }
         )
-        return
     }
 
     // Create the span data object that matches the expected format
@@ -61,17 +60,6 @@ const logSpanData = (span, event = 'start', res = null) => {
         start_time: startTime,
         end_time: endTime,
         forwardTrace: getOTELConfig().b3TracingEnabled
-    }
-
-    // Inject B3 headers into response if available
-    if (res && getOTELConfig().b3TracingEnabled && event === 'start') {
-        res.setHeader('x-b3-traceid', spanContext.traceId)
-        res.setHeader('x-b3-spanid', spanContext.spanId)
-        res.setHeader('x-b3-sampled', '1')
-
-        if (span.parentSpanId) {
-            res.setHeader('x-b3-parentspanid', span.parentSpanId)
-        }
     }
 
     if (event === 'end') {
@@ -102,8 +90,6 @@ export const createSpan = (name, options = {}) => {
             context.active()
         )
 
-        // Set the new span as active
-        logSpanData(span, 'start')
         return trace.setSpan(context.active(), span)
     } catch (error) {
         logger.error('Failed to create span', {
@@ -172,7 +158,6 @@ export const createChildSpan = (name, attributes = {}) => {
             parentSpan ? ctx : undefined
         )
 
-        logSpanData(span, 'start')
         return span
     } catch (error) {
         logger.error('Error creating OpenTelemetry span', {
@@ -209,74 +194,5 @@ export const endSpan = (span) => {
                 stack: error.stack
             }
         })
-    }
-}
-
-/**
- * Creates a span for performance measurement
- * @param {string} name - The name of the performance span
- * @param {Function} fn - The function to measure
- * @param {Object} res - The response object (optional)
- * @returns {Promise<any>} The result of the function
- */
-export const tracePerformance = async (name, fn, res = null) => {
-    // Check if OpenTelemetry is properly configured
-    const otelConfig = getOTELConfig()
-    if (!otelConfig.enabled) {
-        logger.warn(
-            'OpenTelemetry is disabled - performance tracing will not have proper timing data',
-            {
-                namespace: 'opentelemetry',
-                additionalProperties: {
-                    trace_name: name,
-                    otel_enabled: otelConfig.enabled,
-                    otel_service_name: otelConfig.serviceName,
-                    suggestion: 'Set OTEL_SDK_ENABLED=true to enable proper timing'
-                }
-            }
-        )
-    }
-
-    const tracer = trace.getTracer(getServiceName())
-    // Create the root span
-    const rootSpan = tracer.startSpan(name, {
-        attributes: {
-            'service.name': getServiceName()
-        }
-    })
-
-    // Create a new context with the root span
-    const ctx = trace.setSpan(context.active(), rootSpan)
-
-    // Log start event
-    logSpanData(rootSpan, 'start', res)
-
-    try {
-        // Run the function within the context of the root span
-        const result = await context.with(ctx, async () => {
-            try {
-                return await fn()
-            } catch (error) {
-                rootSpan.setStatus({
-                    code: SpanStatusCode.ERROR,
-                    message: error.message
-                })
-                throw error
-            }
-        })
-
-        rootSpan.end()
-
-        // Log completion data
-        logSpanData(rootSpan, 'end', res)
-
-        return result
-    } catch (error) {
-        rootSpan.end()
-
-        // Log error completion
-        logSpanData(rootSpan, 'end', res)
-
-        throw error
     }
 }

@@ -12,6 +12,8 @@ import {Resource} from '@opentelemetry/resources'
 import {propagation} from '@opentelemetry/api'
 import logger from '../../utils/logger-instance'
 import {getServiceName, getOTELConfig} from '../../utils/opentelemetry-config'
+import {trace, context, SpanStatusCode} from '@opentelemetry/api'
+import {logSpanData} from '../../utils/opentelemetry'
 
 let provider = null
 
@@ -29,7 +31,6 @@ export const initializeServerTracing = (options = {}) => {
         serviceVersion,
         enabled = getOTELConfig().enabled
     } = options
-
     // If tracing is disabled, return null without initializing
     if (!enabled) {
         return null
@@ -99,4 +100,73 @@ export const getServerTracingProvider = () => {
  */
 export const isServerTracingInitialized = () => {
     return provider !== null
+}
+
+/**
+ * Creates a span for performance measurement
+ * @param {string} name - The name of the performance span
+ * @param {Function} fn - The function to measure
+ * @param {Object} res - The response object (optional)
+ * @returns {Promise<any>} The result of the function
+ */
+export const tracePerformance = async (name, fn, res = null, req = null) => {
+    // Check if OpenTelemetry is properly configured
+    const otelConfig = getOTELConfig()
+    let rootSpan = null
+    let ctx = null
+    if (otelConfig.enabled) {
+        const includeServerTimingHeader = '__server_timing' in req.query
+        const shouldTrackPerformance = includeServerTimingHeader || process.env.SERVER_TIMING
+        // Initialize server tracing if needed for this request
+        if (shouldTrackPerformance && !isServerTracingInitialized()) {
+            initializeServerTracing()
+        }
+
+        const tracer = trace.getTracer(getServiceName())
+        // Create the root span
+        rootSpan = tracer.startSpan(name, {
+            attributes: {
+                'service.name': getServiceName()
+            }
+        })
+
+        // Create a new context with the root span
+        ctx = trace.setSpan(context.active(), rootSpan)
+
+        // Inject B3 headers into response if available
+        if (res && getOTELConfig().b3TracingEnabled && shouldTrackPerformance) {
+            res.setHeader('x-b3-traceid', rootSpan.spanContext().traceId)
+            res.setHeader('x-b3-spanid', rootSpan.spanContext().spanId)
+            res.setHeader('x-b3-sampled', '1')
+        }
+    }
+
+    try {
+        // Run the function within the context of the root span
+        const result = await context.with(ctx, async () => {
+            try {
+                return await fn()
+            } catch (error) {
+                rootSpan.setStatus({
+                    code: SpanStatusCode.ERROR,
+                    message: error.message
+                })
+                throw error
+            }
+        })
+
+        if (otelConfig.enabled) {
+            rootSpan.end()
+            logSpanData(rootSpan, 'end', res)
+        }
+
+        return result
+    } catch (error) {
+        if (otelConfig.enabled) {
+            rootSpan.end()
+            logSpanData(rootSpan, 'end', res)
+        }
+
+        throw error
+    }
 }
