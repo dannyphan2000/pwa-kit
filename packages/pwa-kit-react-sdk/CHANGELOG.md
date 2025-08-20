@@ -1,11 +1,7 @@
 ## v3.12.0-dev (Jul 22, 2025)
 ## v3.11.0 (Jul 22, 2025)
 - Fix the performance logging so that it'll capture all SSR queries, even those that result in errors [#2486](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2486)
-- Created an opentelemetry server for SSR tracer intialization [#2617](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2617)
-- Created opentelemetry.js file with utility functions to log OTel spans and metrics [#2705] (https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2705)
-- Update performance.js with usage of opentelemetry spans and add cleanups [#2722](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2722)
--  Updating react-rendering.js to trace the performance of the SSR process [#2834](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2834)
--  E2E tests for Log Tracing [#3028](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/3028)
+- Opentelemetry integration for SSR tracing [#3133](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/3133)
 
 ## v3.10.0 (May 22, 2025)
 - Fix the performance logging util to use the correct delimiter for the server-timing header. [#2225](https://github.com/SalesforceCommerceCloud/pwa-kit/pull/2295)

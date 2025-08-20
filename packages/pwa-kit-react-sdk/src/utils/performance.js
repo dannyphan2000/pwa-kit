@@ -62,6 +62,20 @@ export default class PerformanceTimer {
     }
 
     /**
+     * A utility function to format and log the performance metrics.
+     *
+     * @function
+     * @private
+     */
+    log() {
+        this.metrics.forEach((metric) => {
+            logger.info(`${metric.name} - ${metric.duration}ms ${metric.detail || ''}`, {
+                namespace: 'performance'
+            })
+        })
+    }
+
+    /**
      * This is a utility function to create performance marks.
      * The data will be used in console logs and the http response header `server-timing`.
      *
@@ -147,7 +161,7 @@ export default class PerformanceTimer {
                     performance.clearMarks(endMark)
                     performance.clearMeasures(name)
                 } catch (error) {
-                    logger.warn('Failed to measure performance mark: ' + error.message, {
+                    logger.error('Failed to measure performance mark', {
                         name,
                         error: error.message,
                         startMark,
@@ -158,9 +172,9 @@ export default class PerformanceTimer {
             }
         } catch (error) {
             if (error.name === 'SyntaxError') {
-                logger.warn('Invalid performance mark name', {name, error: error.message})
+                logger.error('Invalid performance mark name', {name, error: error.message})
             } else {
-                logger.error('Error creating performance mark: ' + error.message, {
+                logger.error('Error creating performance mark:', {
                     name,
                     type,
                     error: error.message,

@@ -124,7 +124,6 @@ const performRender = async (req, res, next) => {
     const includeServerTimingHeader = '__server_timing' in req.query
     const shouldTrackPerformance = includeServerTimingHeader || process.env.SERVER_TIMING
 
-    // Initialize performance timer outside tracePerformance to ensure it's always available
     res.__performanceTimer = new PerformanceTimer({enabled: shouldTrackPerformance})
     res.__performanceTimer.mark(PERFORMANCE_MARKS.total, 'start')
     const AppConfig = getAppConfig()
@@ -230,14 +229,14 @@ const performRender = async (req, res, next) => {
         return next(e)
     }
 
-    res.__performanceTimer.mark(PERFORMANCE_MARKS.renderToString, 'end')
     // Step 5 - Determine what is going to happen, redirect, or send html with
     // the correct status code.
     const {html, routerContext, error} = renderResult
     const redirectUrl = routerContext.url
     const status = (error && error.status) || res.statusCode
-
+    res.__performanceTimer.mark(PERFORMANCE_MARKS.renderToString, 'end')
     res.__performanceTimer.mark(PERFORMANCE_MARKS.total, 'end')
+    res.__performanceTimer.log()
 
     if (shouldTrackPerformance) {
         res.setHeader('Server-Timing', res.__performanceTimer.buildServerTimingHeader())

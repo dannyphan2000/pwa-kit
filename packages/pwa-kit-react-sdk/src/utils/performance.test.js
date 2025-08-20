@@ -560,7 +560,7 @@ describe('PerformanceTimer', () => {
             )
         })
 
-        test('warns when performance.measure fails', () => {
+        test('error when performance.measure fails', () => {
             const timer = new PerformanceTimer({enabled: true})
             jest.clearAllMocks()
 
@@ -573,8 +573,8 @@ describe('PerformanceTimer', () => {
             timer.mark('test', 'start')
             timer.mark('test', 'end')
 
-            expect(logger.warn).toHaveBeenCalledWith(
-                'Failed to measure performance mark: Measure failed',
+            expect(logger.error).toHaveBeenCalledWith(
+                'Failed to measure performance mark',
                 expect.objectContaining({
                     name: 'test',
                     error: 'Measure failed',
@@ -587,7 +587,7 @@ describe('PerformanceTimer', () => {
             performance.measure = originalMeasure
         })
 
-        test('warns for invalid performance mark name (SyntaxError)', () => {
+        test('errors for invalid performance mark name (SyntaxError)', () => {
             const timer = new PerformanceTimer({enabled: true})
             jest.clearAllMocks()
 
@@ -601,7 +601,7 @@ describe('PerformanceTimer', () => {
 
             timer.mark('test', 'start')
 
-            expect(logger.warn).toHaveBeenCalledWith(
+            expect(logger.error).toHaveBeenCalledWith(
                 'Invalid performance mark name',
                 expect.objectContaining({
                     name: 'test',
