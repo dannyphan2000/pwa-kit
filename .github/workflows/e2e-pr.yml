@@ -160,6 +160,7 @@ jobs:
               uses: './.github/actions/push_to_mrt'
               with:
                   CWD: ${{ steps.generate_app.outputs.project_path }}
+                  PROJECT: ${{ vars.MRT_STG_PWA_KIT_PROJECT_ID }}
                   TARGET: ${{ steps.mrt_target_details.outputs.slug }}
                   CLOUD_ORIGIN: ${{ vars.MRT_STG_CLOUD_ORIGIN }}
                   FLAGS: --wait
