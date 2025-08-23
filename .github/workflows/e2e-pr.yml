@@ -133,6 +133,7 @@ jobs:
                   echo "retail_app_template_version=$version" >> "$GITHUB_ENV"
 
             - name: Generate Retail App Private Client
+              id: generate_app
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               uses: ./.github/actions/e2e_generate_app
               with:
@@ -159,7 +160,7 @@ jobs:
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               uses: './.github/actions/push_to_mrt'
               with:
-                  CWD: '../generated-projects/retail-app-no-ext'
+                  CWD: ${{ steps.generate_app.outputs.project_path }}
                   TARGET: ${{ steps.mrt_target_details.outputs.slug }}
                   CLOUD_ORIGIN: ${{ vars.MRT_STG_CLOUD_ORIGIN }}
                   FLAGS: --wait

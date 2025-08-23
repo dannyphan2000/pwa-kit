@@ -6,7 +6,7 @@ inputs:
   TARGET:
     description: MRT target environment
   FLAGS:
-    description: Push flags
+    description: The rest of the flags for the push command
   PROJECT:
     description: MRT target project
     default: "scaffold-pwa"
@@ -16,6 +16,9 @@ inputs:
   CLOUD_ORIGIN:
     description: MRT Cloud origin
     default: "https://cloud.mobify.com"
+  CREDENTIALS_FILE_PATH:
+    description: 'Path to the credentials file'
+    default: '~/.mobify'
 runs:
   using: composite
   steps:
@@ -23,6 +26,6 @@ runs:
       run: |-
         cd ${{ inputs.CWD }}
         if [[ ${{ inputs.TARGET }} ]]; then
-          npm run push -- -s ${{ inputs.PROJECT }} --message "${{ inputs.MESSAGE }}" --target ${{ inputs.TARGET }} --cloud-origin ${{ inputs.CLOUD_ORIGIN }} ${{ inputs.FLAGS }}
+          npm run push -- -s ${{ inputs.PROJECT }} --message "${{ inputs.MESSAGE }}" --target ${{ inputs.TARGET }} --cloud-origin ${{ inputs.CLOUD_ORIGIN }} --credentialsFile ${{ inputs.CREDENTIALS_FILE_PATH }} ${{ inputs.FLAGS }}
         fi
       shell: bash
