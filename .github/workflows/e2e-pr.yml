@@ -13,7 +13,7 @@ permissions:
     contents: read
 
 jobs:
-    test_e2e_private:
+    test_e2e_private_client:
         runs-on: ubuntu-latest
         env:
             AWS_S3_BUCKET: ${{ vars.AWS_S3_BUCKET }}
