@@ -13,6 +13,9 @@ inputs:
   MESSAGE:
     description: Bundle message / name
     default: "build ${{ github.run_id }} on ${{ github.ref }} (${{ github.sha }})"
+  CLOUD_ORIGIN:
+    description: MRT Cloud origin
+    default: "https://cloud.mobify.com"
 runs:
   using: composite
   steps:
@@ -20,6 +23,6 @@ runs:
       run: |-
         cd ${{ inputs.CWD }}
         if [[ ${{ inputs.TARGET }} ]]; then
-          npm run push -- -s ${{ inputs.PROJECT }} --message "${{ inputs.MESSAGE }}" --target ${{ inputs.TARGET }} ${{ inputs.FLAGS }}
+          npm run push -- -s ${{ inputs.PROJECT }} --message "${{ inputs.MESSAGE }}" --target ${{ inputs.TARGET }} --cloud-origin ${{ inputs.CLOUD_ORIGIN }} ${{ inputs.FLAGS }}
         fi
       shell: bash

@@ -33,8 +33,8 @@ jobs:
             - name: Skip if PWA Kit version older than v3.x
               run: |-
                   major_version=$(echo "${{ env.pwa_kit_version }}" | cut -d. -f1)
-                   if [ "$major_version" -lt 3 ]; then
-                     echo "PWA Kit version is older than v3.x, skipping workflow."
+                   if [ "$major_version" -ne 3 ]; then
+                     echo "PWA Kit version is does not match v3.x, skipping workflow."
                      echo "SKIP_WORKFLOW=true" >> "$GITHUB_ENV"
                    fi
 
@@ -76,6 +76,9 @@ jobs:
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               run: |-
                   jq -r 'to_entries[] | "\(.key)=\(.value // "")"' e2e/mrt-target/mrt-target-details.json >> "$GITHUB_OUTPUT"
+                  # Set the RETAIL_APP_HOME environment variable to the MRT target URL.
+                  # This is used by the e2e tests to run the tests against the MRT target.
+                  echo "RETAIL_APP_HOME=${{ steps.mrt_target_details.outputs.envURL }}" >> "$GITHUB_ENV"
 
             # Engage post-run cleanup via a Node action that has a post hook.
             # - The action defines `runs.post` so its post step runs at the
@@ -123,18 +126,6 @@ jobs:
                   MRT_TARGET_SETTINGS_FILE_PATH: ${{ vars.MRT_ENV_SETTINGS_E2E_BASE_FILENAME }}
                   MRT_TARGET_VARS_FILE_PATH: ${{ vars.MRT_ENV_VARS_E2E_BASE_FILENAME }}
 
-            # Skip the rest of the workflow for now.
-            - name: Simulating Test Run
-              if: ${{ env.SKIP_WORKFLOW != 'true' }}
-              run: |-
-                  sleep 30
-
-            # Skip the rest of the workflow for now.
-            - name: Skip Workflow
-              if: ${{ env.SKIP_WORKFLOW != 'true' }}
-              run: |-
-                  echo "SKIP_WORKFLOW=true" >> "$GITHUB_ENV"
-
             - name: Get Template Version
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               run: |-
@@ -160,16 +151,17 @@ jobs:
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               uses: './.github/actions/create_mrt'
               with:
-                  mobify_user: ${{ secrets.MOBIFY_CLIENT_USER }}
-                  mobify_api_key: ${{ secrets.MOBIFY_CLIENT_API_KEY }}
+                  mobify_user: ${{ secrets.MRT_STG_PWA_KIT_CI_USER }}
+                  mobify_api_key: ${{ secrets.MRT_STG_PWA_KIT_CI_API_KEY }}
+                  cloud_origin: ${{ vars.MRT_STG_CLOUD_ORIGIN }}
 
             - name: Push Bundle to MRT (E2E Test PWA Kit)
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               uses: './.github/actions/push_to_mrt'
               with:
                   CWD: '../generated-projects/retail-app-no-ext'
-                  # TODO: Use the MRT target ID from the target lock step above.
-                  TARGET: e2e-tests-pwa-kit
+                  TARGET: ${{ steps.mrt_target_details.outputs.slug }}
+                  CLOUD_ORIGIN: ${{ vars.MRT_STG_CLOUD_ORIGIN }}
                   FLAGS: --wait
 
             - name: Install Playwright Browsers
