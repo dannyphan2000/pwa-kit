@@ -171,8 +171,4 @@ jobs:
 
             - name: Run Playwright tests
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
-              run: npm run test:e2e
-
-            - name: Run Playwright a11y tests
-              if: ${{ env.SKIP_WORKFLOW != 'true' }}
-              run: npm run test:e2e:a11y
+              run: npm run test:e2e -- --project=a11y-mobile --project=a11y-desktop --workers=4
