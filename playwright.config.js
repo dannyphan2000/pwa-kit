@@ -12,8 +12,8 @@ const {defineConfig, devices} = require('@playwright/test')
  */
 module.exports = defineConfig({
     testDir: './e2e',
-    /* E2E tests are defined in .spec.js files while unit tests are defined in .test.js files.
-     * We need to use the .spec.js files for the tests.
+    /* E2E tests are defined in *.spec.js files while unit tests are defined in *.test.js files.
+     * Playwright should only run the *.spec.js files.
      */
     testMatch: '**/*.spec.js',
     timeout: 60000,
