@@ -171,9 +171,9 @@ jobs:
               run: npx playwright install chromium --with-deps
 
               # Run all 4 playwright projects in parallel to reduce run time.
-              # Number of workers must match number of projects for parallel runs.
+              # Number of workers must match number of projects for parallel runs so we have it set to 4.
               # Limit the number of workers to 2x the number of cores on the machine to avoid overloading the machine (Github-hosted runner).
-              # This job uses "ubuntu-latest" which has 4 cores so we limit the number of workers to 8.
+              # Note: This job uses "ubuntu-latest" which has 4 cores so we limit the number of workers to 8.
               # See: https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories for runner specs.
             - name: Run Playwright tests
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
