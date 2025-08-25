@@ -11,6 +11,10 @@ import logger from './logger-instance'
 import {getOTELConfig, getServiceName} from './opentelemetry-config'
 
 export const logSpanData = (span, event = 'start') => {
+    if (!getOTELConfig().enabled) {
+        return
+    }
+
     const spanContext = span.spanContext()
     const startTime = span.startTime
     const endTime = event === 'start' ? startTime : span.endTime
