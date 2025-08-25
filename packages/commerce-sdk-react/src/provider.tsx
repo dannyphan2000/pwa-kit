@@ -14,15 +14,15 @@ import {
     ShopperContexts,
     ShopperCustomers,
     ShopperExperience,
+    ShopperGiftCertificates,
     ShopperLogin,
     ShopperOrders,
     ShopperProducts,
     ShopperPromotions,
-    ShopperGiftCertificates,
     ShopperSearch,
-    ShopperSeo,
-    ShopperBasketsTypes,
-    ShopperStores
+    ShopperSEO,
+    ShopperStores,
+    FetchOptions
 } from 'commerce-sdk-isomorphic'
 import {transformSDKClient} from './utils'
 
@@ -32,7 +32,7 @@ export interface CommerceApiProviderProps extends ApiClientConfigParams {
     locale: string
     currency: string
     redirectURI: string
-    fetchOptions?: ShopperBasketsTypes.FetchOptions
+    fetchOptions?: FetchOptions
     headers?: Record<string, string>
     fetchedToken?: string
     enablePWAKitPrivateClient?: boolean
@@ -266,7 +266,7 @@ const CommerceApiProvider = (props: CommerceApiProviderProps): ReactElement => {
             shopperProducts: new ShopperProducts(config),
             shopperPromotions: new ShopperPromotions(config),
             shopperSearch: new ShopperSearch(config),
-            shopperSeo: new ShopperSeo(config),
+            shopperSeo: new ShopperSEO(config),
             shopperStores: new ShopperStores(config)
         }
     }, [
