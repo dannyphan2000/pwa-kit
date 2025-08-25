@@ -144,7 +144,7 @@ jobs:
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               uses: ./.github/actions/e2e_validate_generated_app
               with:
-                  PROJECT_KEY: 'invalid-project-key'
+                  PROJECT_KEY: 'retail-app-private-client'
                   TEMPLATE_VERSION: ${{ env.retail_app_template_version }}
 
             - name: Create MRT credentials file
