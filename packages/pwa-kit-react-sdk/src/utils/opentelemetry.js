@@ -163,8 +163,7 @@ export const createChildSpan = (name, attributes = {}) => {
             namespace: 'opentelemetry',
             additionalProperties: {
                 spanName: name,
-                error: error.message,
-                stack: error.stack
+                error: error.message
             }
         })
         return null
@@ -189,8 +188,7 @@ export const endSpan = (span) => {
         logger.error('Error ending OpenTelemetry span', {
             namespace: 'opentelemetry',
             additionalProperties: {
-                error: error.message,
-                stack: error.stack
+                error: error.message
             }
         })
     }

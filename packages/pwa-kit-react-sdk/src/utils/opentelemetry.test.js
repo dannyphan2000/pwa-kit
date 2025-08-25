@@ -236,8 +236,7 @@ describe('OpenTelemetry Utilities', () => {
                 namespace: 'opentelemetry',
                 additionalProperties: {
                     spanName: 'child-span',
-                    error: 'Child span creation failed',
-                    stack: expect.any(String)
+                    error: 'Child span creation failed'
                 }
             })
         })
@@ -306,8 +305,7 @@ describe('OpenTelemetry Utilities', () => {
             expect(mockLogger.error).toHaveBeenCalledWith('Error ending OpenTelemetry span', {
                 namespace: 'opentelemetry',
                 additionalProperties: {
-                    error: 'Span end failed',
-                    stack: expect.any(String)
+                    error: 'Span end failed'
                 }
             })
         })
