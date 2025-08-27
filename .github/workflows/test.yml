@@ -298,7 +298,7 @@ jobs:
 
       - name: Generate ${{ matrix.template }} project
         run: |-
-          node packages/pwa-kit-create-app/scripts/create-mobify-app-dev.js --outputDir ${{ env.PROJECT_DIR }}
+          node packages/pwa-kit-create-app/scripts/create-mobify-app-dev.js --outputDir ../generated-projects/${{ env.PROJECT_DIR }}
         env:
           GENERATOR_PRESET: ${{ matrix.template }}
         timeout-minutes: 7
@@ -309,13 +309,13 @@ jobs:
         if: env.IS_TEMPLATE_FROM_RETAIL_REACT_APP == 'true'
         uses: "./.github/actions/unit_tests"
         with:
-          cwd: ${{ env.PROJECT_DIR }}
+          cwd: ../generated-projects/${{ env.PROJECT_DIR }}
 
       - name: Run smoke tests
         if: env.IS_TEMPLATE_FROM_RETAIL_REACT_APP == 'true'
         uses: "./.github/actions/smoke_tests"
         with:
-          dir: ${{ env.PROJECT_DIR }}
+          dir: ../generated-projects/${{ env.PROJECT_DIR }}
 
       - name: Count Generated Project Dependencies
         if: env.IS_TEMPLATE_FROM_RETAIL_REACT_APP == 'true'
