@@ -208,7 +208,81 @@ jobs:
           GENERATOR_PRESET: ${{ matrix.template }}
         timeout-minutes: 8
 
+      - name: Check Generated Project
+        run: |-
+          PROJECT_PATH="../generated-projects/$PROJECT_DIR"
 
+          echo "🔍 Checking generated project: $PROJECT_PATH"
+          echo "======================================================"
+
+          # Check if project directory exists
+          if [ ! -d "$PROJECT_PATH" ]; then
+              echo "❌ Project directory not found: $PROJECT_PATH"
+              exit 1
+          fi
+
+          # Check for overrides directory
+          echo -n "📁 Overrides directory: "
+          if [ -d "$PROJECT_PATH/overrides" ]; then
+              echo "✅ EXISTS at $PROJECT_PATH/overrides"
+              
+              # List contents of overrides directory if it exists
+              echo "   Contents:"
+              if [ "$(ls -A "$PROJECT_PATH/overrides" 2>/dev/null)" ]; then
+                  ls -la "$PROJECT_PATH/overrides" | sed 's/^/     /'
+              else
+                  echo "     (empty directory)"
+              fi
+          else
+              echo "❌ NOT FOUND at $PROJECT_PATH/overrides"
+          fi
+
+          echo ""
+
+          # Check for .test.js files
+          echo "🧪 Checking for .test.js files:"
+          TEST_FILES=$(find "$PROJECT_PATH" -name "*.test.js" -type f 2>/dev/null)
+
+          if [ -n "$TEST_FILES" ]; then
+              TEST_COUNT=$(echo "$TEST_FILES" | wc -l)
+              echo "✅ Found $TEST_COUNT .test.js files:"
+              echo "$TEST_FILES" | sed 's/^/   /'
+          else
+              echo "❌ No .test.js files found"
+          fi
+
+          echo ""
+
+          # Check for .test.jsx files as well (since React projects often use .jsx)
+          echo "🧪 Checking for .test.jsx files:"
+          TEST_JSX_FILES=$(find "$PROJECT_PATH" -name "*.test.jsx" -type f 2>/dev/null)
+
+          if [ -n "$TEST_JSX_FILES" ]; then
+              TEST_JSX_COUNT=$(echo "$TEST_JSX_FILES" | wc -l)
+              echo "✅ Found $TEST_JSX_COUNT .test.jsx files:"
+              echo "$TEST_JSX_FILES" | sed 's/^/   /'
+          else
+              echo "❌ No .test.jsx files found"
+          fi
+
+          echo ""
+
+          # Summary
+          echo "📊 SUMMARY:"
+          echo "======================================================"
+          [ -d "$PROJECT_PATH/overrides" ] && echo "✅ Overrides directory: PRESENT" || echo "❌ Overrides directory: MISSING"
+
+          TOTAL_TEST_FILES=0
+          [ -n "$TEST_FILES" ] && TOTAL_TEST_FILES=$((TOTAL_TEST_FILES + $(echo "$TEST_FILES" | wc -l)))
+          [ -n "$TEST_JSX_FILES" ] && TOTAL_TEST_FILES=$((TOTAL_TEST_FILES + $(echo "$TEST_JSX_FILES" | wc -l)))
+
+          if [ $TOTAL_TEST_FILES -gt 0 ]; then
+              echo "✅ Test files: $TOTAL_TEST_FILES total (.test.js + .test.jsx)"
+          else
+              echo "❌ Test files: NONE FOUND"
+          fi
+
+          echo ""
 
       - name: Run unit tests
         if: env.IS_TEMPLATE_FROM_RETAIL_REACT_APP == 'true'
