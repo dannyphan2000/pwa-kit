@@ -178,4 +178,5 @@ jobs:
             - name: Run Playwright tests
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
               run: |
+                  echo "Running Playwright tests against $RETAIL_APP_HOME"
                   npx playwright test --project=chromium --project=mobile-chrome --project=a11y-mobile --project=a11y-desktop --workers=4
