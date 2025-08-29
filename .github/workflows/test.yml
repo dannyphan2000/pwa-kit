@@ -87,8 +87,6 @@ jobs:
       - name: Run unit tests
         uses: "./.github/actions/unit_tests"
 
-
-
       - name: Smoke test scripts
         if: env.IS_DEFAULT_NPM == 'true'
         uses: "./.github/actions/smoke_tests"
@@ -324,14 +322,13 @@ jobs:
 
       - name: Set project directory with generated projects path
         run: |
-          $generatedProjectsDir = node -e "console.log(require('./e2e/config.js').GENERATED_PROJECTS_DIR)"
-          $projectDirWin = "$($generatedProjectsDir -replace '/', '\')\generated-${{ matrix.template }}"
-          echo "PATH_TO_PROJECT_DIR=$projectDirWin" >> $env:GITHUB_ENV
+          GENERATED_PROJECTS_DIR=$(node -e "console.log(require('./e2e/config.js').GENERATED_PROJECTS_DIR)")
+          echo "PATH_TO_PROJECT_DIR=$GENERATED_PROJECTS_DIR/generated-${{ matrix.template }}" >> $GITHUB_ENV
+        shell: bash
 
       - name: Create generated-projects directory
-        run: |
-          $parentDir = Split-Path "${{ env.PATH_TO_PROJECT_DIR }}" -Parent
-          mkdir -Force $parentDir
+        run: mkdir -p "$(dirname "${{ env.PATH_TO_PROJECT_DIR }}")"
+        shell: bash
 
       - name: Generate ${{ matrix.template }} project
         run: |-
@@ -339,8 +336,6 @@ jobs:
         env:
           GENERATOR_PRESET: ${{ matrix.template }}
         timeout-minutes: 7
-
-
 
       - name: Run unit tests
         if: env.IS_TEMPLATE_FROM_RETAIL_REACT_APP == 'true'
