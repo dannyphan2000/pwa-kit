@@ -78,7 +78,7 @@ test('Guest shopper can checkout items as guest', async ({page}) => {
     // Confirm the shipping options form toggles to show edit button on clicking "Checkout as guest"
     const step3Card = page.locator("div[data-testid='sf-toggle-card-step-3']")
 
-    await expect(step3Card.getByRole('button', {name: /Edit/i})).toBeVisible()
+    await expect(step3Card.getByRole('button', {name: /Edit Shipping Options/i})).toBeVisible()
     page.getByRole('button', {name: /Place Order/i})
         .first()
         .click()
