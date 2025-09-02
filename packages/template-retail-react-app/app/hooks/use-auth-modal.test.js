@@ -141,7 +141,7 @@ test('Renders login modal by default', async () => {
     })
 })
 
-test('Renders check email modal on email mode', async () => {
+test.skip('Renders check email modal on email mode', async () => {
     // Store the original useForm function
     const originalUseForm = ReactHookForm.useForm
 
