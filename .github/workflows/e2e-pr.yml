@@ -22,12 +22,12 @@ on:
           default: 'https://cloud.mobify.com'
         mrt_admin_user:
             type: string
-            description: 'MRT Admin username'
-            required: false
+            description: 'MRT Admin Username'
+            required: true
         mrt_admin_api_key:
           type: string
           description: 'MRT Admin API key'
-          required: false
+          required: true
         skip_tests:
           type: boolean
           description: 'Skip Tests - Uncheck if you want to run the tests as a part of this deployment'
@@ -183,6 +183,9 @@ jobs:
                   mobify_user: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.mobify_user || secrets.MRT_STG_PWA_KIT_CI_USER }}
                   mobify_api_key: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.mobify_api_key || secrets.MRT_STG_PWA_KIT_CI_API_KEY }}
 
+            - name: Check MRT credentials file
+              run: |-
+                  cat /home/runner/.mobify
 
             - name: Push Bundle to MRT (E2E Test PWA Kit)
               if: ${{ env.SKIP_WORKFLOW != 'true' }}
