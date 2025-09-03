@@ -5,15 +5,15 @@ on:
       inputs:
         mrt_project_slug:
           type: string
-          description: 'Find it in Project Settings -> Project ID in MRT Admin'
+          description: 'MRT Project ID'
           required: true
         mrt_target_slug:
           type: string
-          description: 'Find it in Environment Settings -> Environment ID in MRT Admin'
+          description: 'MRT Environment ID'
           required: true
         mrt_target_external_hostname:
           type: string
-          description: 'Find it in Environment Settings -> External Hostname in MRT Admin'
+          description: 'MRT Target External Hostname'
           required: true
         mrt_admin_cloud_origin:
           type: string
