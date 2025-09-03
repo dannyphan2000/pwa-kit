@@ -49,10 +49,10 @@ The PWA Kit MCP Server offers the following intelligent tools tailored to Salesf
 1. Open **Cursor**.
 
 2. Navigate to **Settings > Cursor Settings...**
-![](https://raw.githubusercontent.com/SalesforceCommerceCloud/pwa-kit/refs/heads/develop/packages/pwa-kit-mcp/docs/images/cursor-settings.png)
+<img src="https://raw.githubusercontent.com/SalesforceCommerceCloud/pwa-kit/refs/heads/develop/packages/pwa-kit-mcp/docs/images/cursor-settings.png" alt="Cursor Settings Screenshot" width="50%" />
 
 3. Go to **Tools & Integrations > MCP Tools > New MCP Server**
-![](https://raw.githubusercontent.com/SalesforceCommerceCloud/pwa-kit/refs/heads/develop/packages/pwa-kit-mcp/docs/images/cursor-mcp-tools.png)
+<img src="https://raw.githubusercontent.com/SalesforceCommerceCloud/pwa-kit/refs/heads/develop/packages/pwa-kit-mcp/docs/images/cursor-mcp-tools.png" alt="Cursor MCP Tools Screenshot" width="50%" />
 
 4. Update your `mcp.json` like this (edit the placeholders as needed):
 ```json
