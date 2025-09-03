@@ -196,7 +196,7 @@ jobs:
               # Only install chromium since we're only testing for chrome and chrome mobile for per-pr test runs.
               # Nightly tests will run against multiple browsers.
             - name: Install Playwright Browsers
-              if: ${{ env.SKIP_WORKFLOW != 'true' }}
+              if: ${{ env.SKIP_WORKFLOW != 'true' && !github.event.inputs.skip_tests }}
               run: npx playwright install chromium --with-deps
 
               # Run all 4 playwright projects in parallel to reduce run time.
