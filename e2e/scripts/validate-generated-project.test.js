@@ -23,8 +23,8 @@ jest.mock('./utils.js', () => ({
 }))
 
 // Import the functions to test
-const { diffArrays } = require('./utils.js')
-const { validateGeneratedArtifacts } = require('./validate-generated-project.js')
+const {diffArrays} = require('./utils.js')
+const {validateGeneratedArtifacts} = require('./validate-generated-project.js')
 
 describe('validateGeneratedArtifacts', () => {
     beforeEach(() => {
@@ -117,7 +117,9 @@ describe('validateExtensibilityConfig validation logic', () => {
         expect(Object.hasOwn(validConfig.ccExtensibility, 'extends')).toBe(true)
         expect(Object.hasOwn(validConfig.ccExtensibility, 'overridesDir')).toBe(true)
 
-        expect(Object.hasOwn(invalidConfigMissingProperty.ccExtensibility, 'overridesDir')).toBe(false)
+        expect(Object.hasOwn(invalidConfigMissingProperty.ccExtensibility, 'overridesDir')).toBe(
+            false
+        )
 
         const isValidConfig = (pkg) => {
             return (
@@ -135,8 +137,8 @@ describe('validateExtensibilityConfig validation logic', () => {
     })
 
     test('validates template version matching logic', () => {
-        const pkg = { version: '1.0.0' }
-        
+        const pkg = {version: '1.0.0'}
+
         const validateVersion = (pkg, templateVersion) => {
             return !templateVersion || pkg.version === templateVersion
         }
