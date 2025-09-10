@@ -105,7 +105,6 @@ const StoreDistance = ({store, textSize, intl}) => (
         alignItems="center"
         minW="80px"
         whiteSpace="nowrap"
-        mr={5}
     >
         <LocationIcon />
         {intl.formatMessage(
@@ -128,34 +127,54 @@ StoreDistance.propTypes = {
 
 const StoreContactInfo = ({store, textSize, intl, showEmail, showPhone}) => (
     <>
-        {showEmail && store.c_customerServiceEmail && (
-            <>
-                <br />
-                <Box fontSize={textSize} color="gray.600">
-                    {intl.formatMessage(
-                        {
-                            id: 'store_locator.description.email',
-                            defaultMessage: 'Email: {email}'
-                        },
-                        {email: store.c_customerServiceEmail}
-                    )}
-                </Box>
-            </>
-        )}
-        {showPhone && store.phone && (
-            <>
-                <br />
-                <Box fontSize={textSize} color="gray.600">
-                    {intl.formatMessage(
-                        {
-                            id: 'store_locator.description.phone',
-                            defaultMessage: 'Phone: {phone}'
-                        },
-                        {phone: store.phone}
-                    )}
-                </Box>
-            </>
-        )}
+        <Box mt={0} w="100%">
+            <Accordion allowToggle w="100%">
+                <AccordionItem border="none">
+                    <AccordionButton
+                        px={0}
+                        py={0}
+                        color="blue.700"
+                        fontSize="sm"
+                        fontWeight="semibold"
+                        _hover={{bg: 'transparent'}}
+                        w="100%"
+                    >
+                        <Box flex="1" textAlign="left">
+                            {intl.formatMessage({
+                                id: 'store_display.label.store_contact_info',
+                                defaultMessage: 'Store Contact Info'
+                            })}
+                        </Box>
+                        <AccordionIcon />
+                    </AccordionButton>
+                    <AccordionPanel px={0} pb={2} w="100%">
+                        <Box fontSize={textSize} color="gray.600">
+                            {showEmail && store.c_customerServiceEmail && (
+                                <>
+                                    {intl.formatMessage(
+                                        {
+                                            id: 'store_locator.description.email',
+                                            defaultMessage: 'Email: {email}'
+                                        },
+                                        {email: store.c_customerServiceEmail}
+                                    )}
+                                    {showPhone && store.phone && <br />}
+                                </>
+                            )}
+                            {showPhone &&
+                                store.phone &&
+                                intl.formatMessage(
+                                    {
+                                        id: 'store_locator.description.phone',
+                                        defaultMessage: 'Phone: {phone}'
+                                    },
+                                    {phone: store.phone}
+                                )}
+                        </Box>
+                    </AccordionPanel>
+                </AccordionItem>
+            </Accordion>
+        </Box>
     </>
 )
 StoreContactInfo.propTypes = {
@@ -176,16 +195,16 @@ const StoreDisplay = ({
     textSize = 'sm',
     accordionButtonStyle = {},
     accordionPanelStyle = {},
-    onChangeStore,
-    useAltLayoutforPickupStoreInfo = false
+    onChangeStore
 }) => {
     const intl = useIntl()
     const isDesktop = useBreakpointValue({base: false, lg: true})
     if (!store) {
         return null
     }
+    const showContactInfo = store.phone !== undefined || store.c_customerServiceEmail !== undefined
 
-    if (isDesktop && useAltLayoutforPickupStoreInfo) {
+    if (isDesktop) {
         return (
             <Box id={`store-info-${store.id}`}>
                 <Flex direction="column" align="flex-start" gap={1} w="100%">
@@ -211,30 +230,61 @@ const StoreDisplay = ({
                             </Button>
                         )}
                     </Flex>
-                    {store.distance !== undefined && store.distanceUnit !== undefined ? (
-                        <Flex align="center" gap={3} mt={2} w="100%">
-                            <StoreDistance store={store} textSize={textSize} intl={intl} />
-                            {showStoreHours && store.storeHours && (
-                                <StoreHoursAccordion
-                                    store={store}
-                                    textSize={textSize}
-                                    accordionButtonStyle={accordionButtonStyle}
-                                    accordionPanelStyle={accordionPanelStyle}
-                                    intl={intl}
-                                />
-                            )}
+                    {showDistance &&
+                    store.distance !== undefined &&
+                    store.distanceUnit !== undefined ? (
+                        <Flex align="stretch" gap={3} mt={2} w="100%">
+                            <Box flex="1" minW={0}>
+                                <StoreDistance store={store} textSize={textSize} intl={intl} />
+                            </Box>
+                            <Box flex="1" minW={0}>
+                                {showContactInfo && (
+                                    <StoreContactInfo
+                                        store={store}
+                                        textSize={textSize}
+                                        intl={intl}
+                                        showEmail={showEmail}
+                                        showPhone={showPhone}
+                                    />
+                                )}
+                            </Box>
+                            <Box flex="1" minW={0}>
+                                {showStoreHours && store.storeHours && (
+                                    <StoreHoursAccordion
+                                        store={store}
+                                        textSize={textSize}
+                                        accordionButtonStyle={accordionButtonStyle}
+                                        accordionPanelStyle={accordionPanelStyle}
+                                        intl={intl}
+                                    />
+                                )}
+                            </Box>
                         </Flex>
                     ) : (
-                        showStoreHours &&
-                        store.storeHours && (
-                            <StoreHoursAccordion
-                                store={store}
-                                textSize={textSize}
-                                accordionButtonStyle={accordionButtonStyle}
-                                accordionPanelStyle={accordionPanelStyle}
-                                intl={intl}
-                            />
-                        )
+                        <Flex align="stretch" gap={3} mt={2} w="100%">
+                            <Box flex="1" minW={0}>
+                                {showContactInfo && (
+                                    <StoreContactInfo
+                                        store={store}
+                                        textSize={textSize}
+                                        intl={intl}
+                                        showEmail={showEmail}
+                                        showPhone={showPhone}
+                                    />
+                                )}
+                            </Box>
+                            <Box flex="1" minW={0}>
+                                {showStoreHours && store.storeHours && (
+                                    <StoreHoursAccordion
+                                        store={store}
+                                        textSize={textSize}
+                                        accordionButtonStyle={accordionButtonStyle}
+                                        accordionPanelStyle={accordionPanelStyle}
+                                        intl={intl}
+                                    />
+                                )}
+                            </Box>
+                        </Flex>
                     )}
                 </Flex>
             </Box>
@@ -279,19 +329,22 @@ const StoreDisplay = ({
                     }
                 )}
             </Box>
-            {showDistance && store.distance !== undefined && (
+            {showDistance && store.distance !== undefined && store.distanceUnit !== undefined && (
                 <>
                     <br />
                     <StoreDistance store={store} textSize={textSize} intl={intl} />
                 </>
             )}
-            <StoreContactInfo
-                store={store}
-                textSize={textSize}
-                intl={intl}
-                showEmail={showEmail}
-                showPhone={showPhone}
-            />
+            <br />
+            {showContactInfo && (
+                <StoreContactInfo
+                    store={store}
+                    textSize={textSize}
+                    intl={intl}
+                    showEmail={showEmail}
+                    showPhone={showPhone}
+                />
+            )}
             {showStoreHours && store.storeHours && (
                 <StoreHoursAccordion
                     store={store}
@@ -337,9 +390,7 @@ StoreDisplay.propTypes = {
     /** Custom style props for accordion panel */
     accordionPanelStyle: PropTypes.object,
     /** Callback function to handle change store action */
-    onChangeStore: PropTypes.func,
-    /** style for pickup store info section on cart page */
-    useAltLayoutforPickupStoreInfo: PropTypes.bool
+    onChangeStore: PropTypes.func
 }
 
 export default StoreDisplay

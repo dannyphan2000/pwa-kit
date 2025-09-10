@@ -42,8 +42,9 @@ describe('StoreDisplay component', () => {
         expect(screen.getByText('Downtown Store')).toBeInTheDocument()
 
         // Address
-        expect(screen.getByText('123 Main Street')).toBeInTheDocument()
-        expect(screen.getByText('San Francisco, CA 94105')).toBeInTheDocument()
+        // Address line can be nested within elements; use a relaxed matcher
+        expect(screen.getByText(/123 Main Street/)).toBeInTheDocument()
+        expect(screen.getByText(/San Francisco, CA 94105/)).toBeInTheDocument()
 
         // Phone - using regex to match across DOM elements
         expect(screen.getByText(/Phone:/)).toBeInTheDocument()
@@ -70,8 +71,8 @@ describe('StoreDisplay component', () => {
         renderWithProviders(<StoreDisplay store={storeWithoutOptionalFields} />)
 
         expect(screen.getByText('Simple Store')).toBeInTheDocument()
-        expect(screen.getByText('456 Oak Avenue')).toBeInTheDocument()
-        expect(screen.getByText('Los Angeles, CA 90210')).toBeInTheDocument()
+        expect(screen.getByText(/456 Oak Avenue/)).toBeInTheDocument()
+        expect(screen.getByText(/Los Angeles, CA 90210/)).toBeInTheDocument()
 
         // Should not render optional fields
         expect(screen.queryByText(/Phone:/)).not.toBeInTheDocument()
@@ -99,7 +100,7 @@ describe('StoreDisplay component', () => {
         renderWithProviders(<StoreDisplay store={storeWithoutName} />)
 
         expect(screen.queryByText('Downtown Store')).not.toBeInTheDocument()
-        expect(screen.getByText('123 Main Street')).toBeInTheDocument()
+        expect(screen.getByText(/123 Main Street/)).toBeInTheDocument()
     })
 
     test('renders distance when showDistance is true', () => {
@@ -204,10 +205,10 @@ describe('StoreDisplay component', () => {
         expect(storeName).toBeInTheDocument()
 
         // Check that address elements are rendered
-        const address1 = screen.getByText('123 Main Street')
+        const address1 = screen.getByText(/123 Main Street/)
         expect(address1).toBeInTheDocument()
 
-        const cityStateZip = screen.getByText('San Francisco, CA 94105')
+        const cityStateZip = screen.getByText(/San Francisco, CA 94105/)
         expect(cityStateZip).toBeInTheDocument()
     })
 
@@ -224,8 +225,8 @@ describe('StoreDisplay component', () => {
 
         // Should still render basic store info
         expect(screen.getByText('Downtown Store')).toBeInTheDocument()
-        expect(screen.getByText('123 Main Street')).toBeInTheDocument()
-        expect(screen.getByText('San Francisco, CA 94105')).toBeInTheDocument()
+        expect(screen.getByText(/123 Main Street/)).toBeInTheDocument()
+        expect(screen.getByText(/San Francisco, CA 94105/)).toBeInTheDocument()
 
         // Should not render optional sections
         expect(screen.queryByText(/Phone:/)).not.toBeInTheDocument()
@@ -249,7 +250,8 @@ describe('StoreDisplay component', () => {
 
         renderWithProviders(<StoreDisplay store={storeWithoutDistanceUnit} showDistance={true} />)
 
-        expect(screen.getByText(/2\.5.*away/)).toBeInTheDocument()
+        // With missing distanceUnit, distance should not render now
+        expect(screen.queryByText(/2\.5.*away/)).not.toBeInTheDocument()
     })
 
     test('renders with empty string values', () => {
@@ -268,7 +270,7 @@ describe('StoreDisplay component', () => {
         renderWithProviders(<StoreDisplay store={storeWithEmptyStrings} />)
 
         // Should render address
-        expect(screen.getByText('789 Empty Street')).toBeInTheDocument()
+        expect(screen.getByText(/789 Empty Street/)).toBeInTheDocument()
         expect(screen.getByText(/Empty City.*12345/)).toBeInTheDocument()
 
         // Should not render empty phone or email
@@ -307,7 +309,7 @@ describe('StoreDisplay component', () => {
             expect(mockOnChangeStore).toHaveBeenCalledTimes(1)
         })
 
-        test('does not render Change Store button when store has no name', () => {
+        test('still renders Change Store button when store has no name (callback provided)', () => {
             const storeWithoutName = {
                 ...mockStore,
                 name: null
@@ -317,7 +319,7 @@ describe('StoreDisplay component', () => {
                 <StoreDisplay store={storeWithoutName} onChangeStore={mockOnChangeStore} />
             )
 
-            expect(screen.queryByTestId('change-store-button')).not.toBeInTheDocument()
+            expect(screen.getByTestId('change-store-button')).toBeInTheDocument()
         })
 
         test('renders Change Store button with correct styling', () => {
@@ -333,7 +335,7 @@ describe('StoreDisplay component', () => {
             expect(changeStoreButton.tagName).toBe('BUTTON')
         })
 
-        test('positions Change Store button next to store name', () => {
+        test('positions Change Store button after store name in the header row', () => {
             const mockOnChangeStore = jest.fn()
             renderWithProviders(
                 <StoreDisplay store={mockStore} onChangeStore={mockOnChangeStore} />
@@ -342,14 +344,16 @@ describe('StoreDisplay component', () => {
             const storeName = screen.getByText('Downtown Store')
             const changeStoreButton = screen.getByTestId('change-store-button')
 
-            // Both should be in the same parent container (Flex)
-            expect(storeName.parentElement).toBe(changeStoreButton.parentElement)
+            // Ensure the button follows the store name in DOM order within the header row
+            const relation = storeName.compareDocumentPosition(changeStoreButton)
+            expect(relation & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
         })
     })
 })
 
-describe('Desktop Pickup In Store Layout', () => {
-    test('renders store name, address on the same line, and store hours button spanning full width', () => {
+describe('Desktop rows structure', () => {
+    test('row 1 has name + address; row 2 has accordions for contact info and store hours', async () => {
+        const user = userEvent.setup()
         const store = {
             id: 'store-999',
             name: 'Boston Back Bay Retail Store',
@@ -357,21 +361,36 @@ describe('Desktop Pickup In Store Layout', () => {
             city: 'Boston',
             stateCode: 'MA',
             postalCode: '02116',
+            phone: '111-111-1111',
+            c_customerServiceEmail: 'contact@example.com',
             storeHours:
                 'Monday 8AM–5PM Tuesday 8AM–5PM Wednesday 8AM–5PM Thursday 8AM–5PM Friday 8AM–5PM Saturday Closed Sunday Closed'
         }
-        renderWithProviders(<StoreDisplay store={store} useAltLayoutforPickupStoreInfo={true} />)
-        // Store name and address should be in the same row
+        renderWithProviders(<StoreDisplay store={store} />)
+
+        // Row 1: store name and address share the same immediate parent container
         const storeName = screen.getByText('Boston Back Bay Retail Store')
-        expect(storeName).toBeInTheDocument()
-        expect(screen.getByText(/500 Boylston St/, {exact: false})).toBeInTheDocument()
-        // Store Hours button should be present and not in the same parent as the address
-        const storeHoursButton = screen.getByRole('button', {name: /store hours/i})
-        expect(storeHoursButton).toBeInTheDocument()
-        expect(storeHoursButton).toBeVisible()
-        // The button should not be in the same parent as the address
         const address = screen.getByText(/500 Boylston St/, {exact: false})
-        expect(storeHoursButton.parentElement).not.toBe(address.parentElement)
+        expect(storeName.parentElement).toBe(address.parentElement)
+
+        // Row 2: both accordions exist and are not inside the row 1 container
+        const contactInfoButton = screen.getByRole('button', {name: /store contact info/i})
+        const storeHoursButton = screen.getByRole('button', {name: /store hours/i})
+        expect(contactInfoButton).toBeInTheDocument()
+        expect(storeHoursButton).toBeInTheDocument()
+        expect(storeName.parentElement.contains(contactInfoButton)).toBe(false)
+        expect(storeName.parentElement.contains(storeHoursButton)).toBe(false)
+
+        // Expanding contact info shows email/phone
+        await user.click(contactInfoButton)
+        expect(screen.getByText(/Email:/)).toBeInTheDocument()
+        expect(screen.getByText(/111-111-1111/)).toBeInTheDocument()
+
+        // Expanding store hours shows the hours content
+        await user.click(storeHoursButton)
+        expect(
+            screen.getByText(/Monday 8AM–5PM Tuesday 8AM–5PM Wednesday 8AM–5PM Thursday 8AM–5PM/)
+        ).toBeInTheDocument()
     })
 })
 describe('Default Mobile Layout', () => {
@@ -413,17 +432,8 @@ describe('Default Mobile Layout', () => {
     })
 })
 describe('Default Desktop Layout with Distance', () => {
-    test('renders store name, address, distance, and store hours button in default desktop layout', () => {
-        // Mock useBreakpointValue to always return true for desktop
-        jest.mock('@salesforce/retail-react-app/app/components/shared/ui', () => {
-            const actual = jest.requireActual(
-                '@salesforce/retail-react-app/app/components/shared/ui'
-            )
-            return {
-                ...actual,
-                useBreakpointValue: jest.fn(() => true)
-            }
-        })
+    test('row 1: name+address; row 2: distance + accordions (contact info, hours)', async () => {
+        const user = userEvent.setup()
         const store = {
             id: 'store-999',
             name: 'Cambridge Retail Store',
@@ -433,6 +443,8 @@ describe('Default Desktop Layout with Distance', () => {
             postalCode: '02142',
             distance: 1,
             distanceUnit: 'km',
+            phone: '111-111-1111',
+            c_customerServiceEmail: 'contact@example.com',
             storeHours:
                 'Monday 8AM–5PM Tuesday 8AM–5PM Wednesday 8AM–5PM Thursday 8AM–5PM Friday 8AM–5PM Saturday Closed Sunday Closed'
         }
@@ -443,14 +455,33 @@ describe('Default Desktop Layout with Distance', () => {
                 useAltLayoutforPickupStoreInfo={false}
             />
         )
-        // Store name and address should be present
-        expect(screen.getByText('Cambridge Retail Store')).toBeInTheDocument()
-        expect(screen.getByText(/100 Main St/, {exact: false})).toBeInTheDocument()
-        // Distance string should be present
-        expect(screen.getByText(/1 km away/)).toBeInTheDocument()
-        // Store Hours button should be present and visible
+        // Row 1: store name and address share same parent
+        const storeName = screen.getByText('Cambridge Retail Store')
+        const address = screen.getByText(/100 Main St/, {exact: false})
+        expect(storeName).toBeInTheDocument()
+        expect(address).toBeInTheDocument()
+        const row1 = storeName.parentElement
+        expect(row1).toBe(address.parentElement)
+
+        // Row 2: distance text and both accordions exist and are not children of row1
+        const distanceText = screen.getByText(/1 km away/)
+        const contactInfoButton = screen.getByRole('button', {name: /store contact info/i})
         const storeHoursButton = screen.getByRole('button', {name: /store hours/i})
-        expect(storeHoursButton).toBeInTheDocument()
+        expect(distanceText).toBeInTheDocument()
         expect(storeHoursButton).toBeVisible()
+        expect(contactInfoButton).toBeVisible()
+        expect(row1.contains(distanceText)).toBe(false)
+        expect(row1.contains(contactInfoButton)).toBe(false)
+        expect(row1.contains(storeHoursButton)).toBe(false)
+
+        // Expand accordions: contact info shows phone/email, store hours shows hours
+        await user.click(contactInfoButton)
+        expect(screen.getByText(/Email:/)).toBeInTheDocument()
+        expect(screen.getByText(/111-111-1111/)).toBeInTheDocument()
+
+        await user.click(storeHoursButton)
+        expect(
+            screen.getByText(/Monday 8AM–5PM Tuesday 8AM–5PM Wednesday 8AM–5PM Thursday 8AM–5PM/)
+        ).toBeInTheDocument()
     })
 })
