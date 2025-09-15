@@ -2,7 +2,7 @@ name: SalesforceCommerceCloud/pwa-kit/mrt-pool-cleanup
 on:
     workflow_dispatch:
     schedule:
-        # Run every day at 1am PST (10am UTC) - cron uses UTC times
+        # Run every day at 1am PST (9am UTC) - cron uses UTC times
         # Staggering run by an hour to avoid rate-limiting on NPM.
         - cron: '0 9 * * *'
 
