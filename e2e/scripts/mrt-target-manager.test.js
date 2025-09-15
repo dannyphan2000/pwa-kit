@@ -13,7 +13,8 @@ const {
     CI_AVAILABILITY_AVAILABLE,
     CI_AVAILABILITY_IN_USE,
     AWS_S3_ERR_NO_SUCH_KEY,
-    AWS_S3_ERR_PRECONDITION_FAILED
+    AWS_S3_ERR_PRECONDITION_FAILED,
+    MRT_CLEANUP_TTL_MINUTES_DEFAULT
 } = require('./constants')
 
 // Mock dependencies
@@ -925,11 +926,16 @@ describe('MRTTargetManager', () => {
             expect(mockCommand.description).toHaveBeenCalledWith(
                 'Clean up expired environments that have been in-use for longer than the TTL'
             )
-            expect(mockCommand.option).toHaveBeenCalledWith(
-                '--ttl-minutes <minutes>',
-                'Time-to-live in minutes (can also be set via MRT_CLEANUP_TTL_MINUTES env var)',
-                '60'
+            // Check that the cleanup command's option was called with the correct parameters
+            const optionCalls = mockCommand.option.mock.calls
+            const cleanupOptionCall = optionCalls.find(
+                (call) => call[0] === '--ttl-minutes <minutes>'
             )
+            expect(cleanupOptionCall).toBeDefined()
+            expect(cleanupOptionCall[1]).toBe(
+                'Time-to-live in minutes (can also be set via MRT_CLEANUP_TTL_MINUTES env var)'
+            )
+            expect(cleanupOptionCall[2]).toBe(MRT_CLEANUP_TTL_MINUTES_DEFAULT) // Default value from constant
         })
     })
 
@@ -1011,7 +1017,7 @@ describe('MRTTargetManager', () => {
             mockS3Client.download.mockResolvedValue(mockDownloadResult)
             mockS3Client.upload.mockResolvedValue({})
 
-            const result = await manager.cleanupExpiredEnvironments(60)
+            const result = await manager.cleanupExpiredEnvironments(MRT_CLEANUP_TTL_MINUTES_DEFAULT)
 
             expect(result.releasedCount).toBe(1)
             expect(result.releasedEnvironments).toHaveLength(1)
@@ -1085,7 +1091,7 @@ describe('MRTTargetManager', () => {
             mockS3Client.download.mockResolvedValue(mockDownloadResult)
             mockS3Client.upload.mockResolvedValue({})
 
-            const result = await manager.cleanupExpiredEnvironments(60)
+            const result = await manager.cleanupExpiredEnvironments(MRT_CLEANUP_TTL_MINUTES_DEFAULT)
 
             expect(result.releasedCount).toBe(2)
             expect(result.releasedEnvironments).toHaveLength(2)
@@ -1140,7 +1146,7 @@ describe('MRTTargetManager', () => {
             mockS3Client.download.mockResolvedValue(mockDownloadResult)
             mockS3Client.upload.mockResolvedValue({})
 
-            const result = await manager.cleanupExpiredEnvironments(60)
+            const result = await manager.cleanupExpiredEnvironments(MRT_CLEANUP_TTL_MINUTES_DEFAULT)
 
             expect(result.releasedCount).toBe(1)
             expect(result.releasedEnvironments).toHaveLength(1)
@@ -1232,7 +1238,7 @@ describe('MRTTargetManager', () => {
             mockS3Client.download.mockResolvedValue(mockDownloadResult)
 
             // Use 60 minute TTL - should NOT cleanup the 45 minute old environment
-            const result = await manager.cleanupExpiredEnvironments(60)
+            const result = await manager.cleanupExpiredEnvironments(MRT_CLEANUP_TTL_MINUTES_DEFAULT)
 
             expect(result.releasedCount).toBe(0)
             expect(mockS3Client.upload).not.toHaveBeenCalled()
@@ -1275,7 +1281,7 @@ describe('MRTTargetManager', () => {
             // Second attempt succeeds
             mockS3Client.upload.mockResolvedValueOnce({})
 
-            const result = await manager.cleanupExpiredEnvironments(60)
+            const result = await manager.cleanupExpiredEnvironments(MRT_CLEANUP_TTL_MINUTES_DEFAULT)
 
             expect(result.attempt).toBe(2)
             expect(result.releasedCount).toBe(1)
@@ -1317,7 +1323,9 @@ describe('MRTTargetManager', () => {
             etagError.name = AWS_S3_ERR_PRECONDITION_FAILED
             mockS3Client.upload.mockRejectedValue(etagError)
 
-            await expect(manager.cleanupExpiredEnvironments(60)).rejects.toThrow(
+            await expect(
+                manager.cleanupExpiredEnvironments(MRT_CLEANUP_TTL_MINUTES_DEFAULT)
+            ).rejects.toThrow(
                 '❌ Failed to cleanup expired environments after 2 attempts due to concurrent modifications'
             )
         })
@@ -1351,7 +1359,9 @@ describe('MRTTargetManager', () => {
             const error = new Error('Upload failed')
             mockS3Client.upload.mockRejectedValue(error)
 
-            await expect(manager.cleanupExpiredEnvironments(60)).rejects.toThrow('Upload failed')
+            await expect(
+                manager.cleanupExpiredEnvironments(MRT_CLEANUP_TTL_MINUTES_DEFAULT)
+            ).rejects.toThrow('Upload failed')
         })
     })
 })

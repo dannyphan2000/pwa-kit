@@ -17,7 +17,8 @@ const {
     AWS_S3_ERR_NO_SUCH_KEY,
     AWS_S3_ERR_PRECONDITION_FAILED,
     ACQUIRE_TARGET_STATUS_SUCCESS,
-    ACQUIRE_TARGET_STATUS_FAILED
+    ACQUIRE_TARGET_STATUS_FAILED,
+    MRT_CLEANUP_TTL_MINUTES_DEFAULT
 } = require('./constants')
 
 class MRTTargetManager {
@@ -307,11 +308,11 @@ class MRTTargetManager {
     /**
      * Clean up expired environments that have been in-use for longer than the TTL.
      * Releases environments back to the pool if they've been acquired for more than the specified time.
-     * @param {number} ttlMinutes - Time-to-live in minutes (defaults to 60 minutes)
+     * @param {number} ttlMinutes - Time-to-live in minutes (defaults to MRT_CLEANUP_TTL_MINUTES_DEFAULT)
      * @returns {Promise<Object>} - Cleanup result with released environments count and details
      * @throws {Error} - If there is an error accessing the pool file or releasing environments
      */
-    async cleanupExpiredEnvironments(ttlMinutes = 60) {
+    async cleanupExpiredEnvironments(ttlMinutes = MRT_CLEANUP_TTL_MINUTES_DEFAULT) {
         console.log(`🧹 Starting cleanup of environments older than ${ttlMinutes} minute(s)`)
 
         let retryCount = 0
@@ -574,7 +575,7 @@ async function main() {
         .option(
             '--ttl-minutes <minutes>',
             'Time-to-live in minutes (can also be set via MRT_CLEANUP_TTL_MINUTES env var)',
-            process.env.MRT_CLEANUP_TTL_MINUTES || '60'
+            process.env.MRT_CLEANUP_TTL_MINUTES || MRT_CLEANUP_TTL_MINUTES_DEFAULT
         )
         .action(async ({ttlMinutes}) => {
             const globalOpts = program.opts()

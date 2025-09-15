@@ -49,4 +49,4 @@ jobs:
                   echo "Starting MRT pool cleanup with TTL: ${MRT_CLEANUP_TTL_MINUTES:-60} minutes"
                   node e2e/scripts/mrt-target-manager.js cleanup
               env:
-                  MRT_CLEANUP_TTL_MINUTES: ${{ vars.MRT_CLEANUP_TTL_MINUTES || '60' }}
+                  MRT_CLEANUP_TTL_MINUTES: ${{ vars.MRT_CLEANUP_TTL_MINUTES }}
