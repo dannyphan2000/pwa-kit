@@ -20,6 +20,9 @@ const {
 jest.mock('./aws-s3-client')
 jest.mock('fs-extra')
 jest.mock('commander')
+jest.mock('./utils', () => ({
+    sleep: jest.fn()
+}))
 
 // Mock console methods to avoid cluttering test output
 const originalConsoleLog = console.log
@@ -53,6 +56,10 @@ describe('MRTTargetManager', () => {
         }
         fs.ensureFile = mockFs.ensureFile
         fs.writeJson = mockFs.writeJson
+
+        // Mock sleep function
+        const {sleep} = require('./utils')
+        sleep.mockImplementation((ms) => new Promise((resolve) => setTimeout(resolve, ms)))
 
         // Mock process.env - default to non-CI environment
         process.env.CI = 'false'
@@ -587,20 +594,6 @@ describe('MRTTargetManager', () => {
 
             // Reset to original value
             process.env.CI = originalCI
-        })
-    })
-
-    describe('sleep', () => {
-        beforeEach(() => {
-            manager = new MRTTargetManager()
-        })
-
-        test('should delay for specified milliseconds', async () => {
-            const start = Date.now()
-            await manager.sleep(100)
-            const end = Date.now()
-
-            expect(end - start).toBeGreaterThanOrEqual(100)
         })
     })
 
