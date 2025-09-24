@@ -1,7 +1,6 @@
 name: SalesforceCommerceCloud/pwa-kit/e2e
 on:
   workflow_dispatch:
-  pull_request:
   schedule:
     # Run every day at 12am (PST) - cron uses UTC times
     - cron: "0 8 * * *"
@@ -445,7 +444,7 @@ jobs:
     steps:
       - name: Send GitHub Action data to Slack workflow (Success)
         id: slack-success
-        if: ${{ needs.test-extra-features.result == 'success' }}
+        if: ${{ github.event_name == 'schedule' && needs.test-extra-features.result == 'success' }}
         uses: slackapi/slack-github-action@v1.23.0
         with:
           payload: |
@@ -457,7 +456,7 @@ jobs:
 
       - name: Send GitHub Action data to Slack workflow (Failure)
         id: slack-failure
-        if: ${{ needs.test-extra-features.result != 'success' }}
+        if: ${{ github.event_name == 'schedule' && needs.test-extra-features.result != 'success' }}
         uses: slackapi/slack-github-action@v1.23.0
         with:
           payload: |
