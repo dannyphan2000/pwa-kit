@@ -25,6 +25,7 @@ export {
 export {
     getQualifyingProductIdForBonusItem,
     getBonusProductsInCartForProduct,
+    getBonusProductsForSpecificCartItem,
     getQualifyingProductForBonusProductInCart,
     findAllBonusProductItemsToRemove
 } from '@salesforce/retail-react-app/app/utils/bonus-product/cart'
@@ -49,3 +50,18 @@ export {
     useAvailableBonusItemsForProduct,
     useRemainingAvailableBonusProductsForProduct
 } from '@salesforce/retail-react-app/app/utils/bonus-product/hooks'
+
+// Shipment management utilities
+export const getBonusProductsForQualifyingItems = (basket, qualifyingItems) => {
+    if (!basket?.productItems || !qualifyingItems?.length) return []
+
+    return basket.productItems.filter((productItem) => {
+        if (!productItem.bonusProductLineItem) return false
+
+        return qualifyingItems.some(
+            (qualifyingItem) =>
+                productItem.qualifyingProductItemId === qualifyingItem.itemId ||
+                productItem.shipmentId === qualifyingItem.shipmentId
+        )
+    })
+}
