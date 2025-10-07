@@ -466,4 +466,13 @@ describe('serverSafeEncode', () => {
         const decoded = decodeURIComponent(encoded)
         expect(decoded).toBe(input)
     })
+
+    test('correctly double encodes', () => {
+        const input = 'My%20Address%20%26%20Co.'
+        const encoded = serverSafeEncode(input)
+
+        // Decode should give us original string
+        const decoded = decodeURIComponent(encoded)
+        expect(decoded).toBe(input)
+    })
 })
