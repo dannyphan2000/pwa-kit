@@ -170,20 +170,7 @@ function parseReturnType(returnTypeString, fileContent) {
 }
 
 function extractReturnTypeStructure(typeName, fileContent) {
-    // Common Commerce SDK return types with their key properties (hardcoded for core types)
-    const commonTypes = {
-        Product: ['id', 'name', 'price', 'currency', 'imageGroups', 'variationAttributes'],
-        ProductSearchResult: ['hits', 'query', 'total', 'count', 'searchPhraseSuggestions'],
-        Basket: ['basketId', 'productItems', 'productSubTotal', 'productTotal', 'currency'],
-        Customer: ['customerId', 'customerName', 'email', 'firstName', 'lastName'],
-        Order: ['orderNo', 'orderToken', 'productItems', 'orderTotal', 'status'],
-        Category: ['id', 'name', 'description', 'parentCategoryId', 'subCategories']
-    }
-    if (commonTypes[typeName]) {
-        return {
-            properties: commonTypes[typeName].map((prop) => ({name: prop, type: 'unknown'}))
-        }
-    }
+    if (!typeName) return {properties: []}
     // Try to find interface/type definition in the file content
     const interfaceRegex = new RegExp(`interface\\s+${typeName}\\s*{([^}]*)}`, 'ms')
     const typeRegex = new RegExp(`type\\s+${typeName}\\s*=\\s*{([^}]*)}`, 'ms')

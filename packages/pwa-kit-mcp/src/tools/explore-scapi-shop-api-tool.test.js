@@ -120,10 +120,6 @@ describe('parseReturnType & extractReturnTypeStructure', () => {
         expect(parseReturnType('Promise<Product>', '')).toMatchObject({type: 'Promise<Product>'})
         expect(parseReturnType('boolean', '')).toMatchObject({type: 'boolean'})
     })
-    it('extracts structure for common types', () => {
-        const result = extractReturnTypeStructure('Product', '')
-        expect(result.properties.map((p) => p.name)).toContain('id')
-    })
     it('attempts to extract for interfaces/types in file', () => {
         const resultI = extractReturnTypeStructure('User', FILE_CONTENT_WITH_INTERFACE)
         // still expect undefined for 'email' as the single-line interface may not be parsed, but:
