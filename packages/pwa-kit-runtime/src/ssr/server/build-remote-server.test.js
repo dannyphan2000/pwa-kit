@@ -289,7 +289,7 @@ describe('SLAS private proxy', () => {
         const mockSlasPort = mockSlasServerInstance.address().port
 
         try {
-            const onSLASPrivateProxyReqMock = jest.fn((proxyRequest, incomingRequest, res) => {
+            const onSLASPrivateProxyReqMock = jest.fn((proxyRequest) => {
                 proxyRequest.setHeader('X-Custom-Request-Header', 'CustomRequestValue')
             })
 
