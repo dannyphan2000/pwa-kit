@@ -25,6 +25,9 @@ jest.mock('../utils/utils.js', () => ({
     loadCustomApiFromFallbackPath: jest.fn()
 }))
 
+// Import mocked utilities
+import {loadConfig, loadCustomApiFromFallbackPath} from '../utils/utils.js'
+
 // Mock fetch globally
 global.fetch = jest.fn()
 
@@ -391,8 +394,6 @@ describe('CustomApiTool', () => {
         })
 
         test('should use fallback path when all SFCC config fields are null', async () => {
-            const {loadConfig, loadCustomApiFromFallbackPath} = require('../utils/utils.js')
-
             // Mock all config fields as null (triggers fallback)
             loadConfig.mockReturnValue({
                 clientId: null,
@@ -424,13 +425,11 @@ describe('CustomApiTool', () => {
             const parsedResult = JSON.parse(result.content[0].text)
             expect(parsedResult.metadata.fallback).toBe(true)
             expect(parsedResult.metadata.source).toBe('SFCC_CARTRIDGE_PATH')
-            expect(parsedResult.customApis.length).toBe(1)
+            expect(parsedResult.customApis).toHaveLength(1)
             expect(parsedResult.customApis[0].apiName).toBe('reviews')
         })
 
         test('should return empty response when fallback path returns no data', async () => {
-            const {loadConfig, loadCustomApiFromFallbackPath} = require('../utils/utils.js')
-
             // Mock all config fields as null (triggers fallback)
             loadConfig.mockReturnValue({
                 clientId: null,
@@ -455,8 +454,6 @@ describe('CustomApiTool', () => {
         })
 
         test('should use fallback when 4+ config fields are missing', async () => {
-            const {loadConfig, loadCustomApiFromFallbackPath} = require('../utils/utils.js')
-
             // Mock 4 fields as null (triggers fallback)
             loadConfig.mockReturnValue({
                 clientId: null,
@@ -485,8 +482,6 @@ describe('CustomApiTool', () => {
         })
 
         test('should not use fallback when only 1-2 config fields are missing', async () => {
-            const {loadConfig} = require('../utils/utils.js')
-
             // Mock only 2 fields as null (should throw error, not use fallback)
             loadConfig.mockReturnValue({
                 clientId: 'test-id',
