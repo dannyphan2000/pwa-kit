@@ -25,7 +25,7 @@ function resolveGoogleCloudAPIKey(configurations) {
         (config) => config.id === 'gcp'
     )?.value
 
-    return platformProvidedKey || null
+    return platformProvidedKey
 }
 
 export const GoogleAPIProvider = ({children}) => {
