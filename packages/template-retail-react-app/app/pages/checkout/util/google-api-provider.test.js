@@ -39,26 +39,15 @@ describe('GoogleAPIProvider', () => {
         jest.resetModules()
     })
 
-    test('should render children directly when platform provided key is not present', () => {
+    test('should render children directly when platform provided key is not present and no custom key', () => {
         mockUseCheckout.mockReturnValue({
             configurations: {
                 configurations: []
             }
         })
 
-        const {getByTestId, queryByTestId} = render(
-            <GoogleAPIProvider>
-                <div data-testid="test-child">Test Child</div>
-            </GoogleAPIProvider>
-        )
-
-        expect(getByTestId('test-child')).toBeInTheDocument()
-        expect(queryByTestId('api-provider')).not.toBeInTheDocument()
-    })
-
-    test('should render children directly when configurations is undefined', () => {
-        mockUseCheckout.mockReturnValue({
-            configurations: undefined
+        mockGetConfig.mockReturnValue({
+            app: {}
         })
 
         const {getByTestId, queryByTestId} = render(
@@ -71,9 +60,32 @@ describe('GoogleAPIProvider', () => {
         expect(queryByTestId('api-provider')).not.toBeInTheDocument()
     })
 
-    test('should render children directly when configurations is null', () => {
+    test('should render children directly when configurations is undefined and no custom key', () => {
+        mockUseCheckout.mockReturnValue({
+            configurations: undefined
+        })
+
+        mockGetConfig.mockReturnValue({
+            app: {}
+        })
+
+        const {getByTestId, queryByTestId} = render(
+            <GoogleAPIProvider>
+                <div data-testid="test-child">Test Child</div>
+            </GoogleAPIProvider>
+        )
+
+        expect(getByTestId('test-child')).toBeInTheDocument()
+        expect(queryByTestId('api-provider')).not.toBeInTheDocument()
+    })
+
+    test('should render children directly when configurations is null and no custom key', () => {
         mockUseCheckout.mockReturnValue({
             configurations: null
+        })
+
+        mockGetConfig.mockReturnValue({
+            app: {}
         })
 
         const {getByTestId, queryByTestId} = render(
@@ -246,6 +258,83 @@ describe('GoogleAPIProvider', () => {
                     }
                 ]
             }
+        })
+
+        mockGetConfig.mockReturnValue({
+            app: {
+                googleCloudAPI: {
+                    apiKey: 'custom-api-key'
+                }
+            }
+        })
+
+        const {getByTestId} = render(
+            <GoogleAPIProvider>
+                <div data-testid="test-child">Test Child</div>
+            </GoogleAPIProvider>
+        )
+
+        const apiProvider = getByTestId('api-provider')
+        expect(apiProvider).toBeInTheDocument()
+        expect(apiProvider).toHaveAttribute('data-api-key', 'custom-api-key')
+        expect(getByTestId('test-child')).toBeInTheDocument()
+    })
+
+    test('should wrap children in APIProvider with custom key when custom key is configured and platform key is not present', () => {
+        mockUseCheckout.mockReturnValue({
+            configurations: {
+                configurations: []
+            }
+        })
+
+        mockGetConfig.mockReturnValue({
+            app: {
+                googleCloudAPI: {
+                    apiKey: 'custom-api-key'
+                }
+            }
+        })
+
+        const {getByTestId} = render(
+            <GoogleAPIProvider>
+                <div data-testid="test-child">Test Child</div>
+            </GoogleAPIProvider>
+        )
+
+        const apiProvider = getByTestId('api-provider')
+        expect(apiProvider).toBeInTheDocument()
+        expect(apiProvider).toHaveAttribute('data-api-key', 'custom-api-key')
+        expect(getByTestId('test-child')).toBeInTheDocument()
+    })
+
+    test('should wrap children in APIProvider with custom key when custom key is configured and configurations is undefined', () => {
+        mockUseCheckout.mockReturnValue({
+            configurations: undefined
+        })
+
+        mockGetConfig.mockReturnValue({
+            app: {
+                googleCloudAPI: {
+                    apiKey: 'custom-api-key'
+                }
+            }
+        })
+
+        const {getByTestId} = render(
+            <GoogleAPIProvider>
+                <div data-testid="test-child">Test Child</div>
+            </GoogleAPIProvider>
+        )
+
+        const apiProvider = getByTestId('api-provider')
+        expect(apiProvider).toBeInTheDocument()
+        expect(apiProvider).toHaveAttribute('data-api-key', 'custom-api-key')
+        expect(getByTestId('test-child')).toBeInTheDocument()
+    })
+
+    test('should wrap children in APIProvider with custom key when custom key is configured and configurations is null', () => {
+        mockUseCheckout.mockReturnValue({
+            configurations: null
         })
 
         mockGetConfig.mockReturnValue({

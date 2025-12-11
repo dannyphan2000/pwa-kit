@@ -12,23 +12,20 @@ import {getConfig} from '@salesforce/pwa-kit-runtime/utils/ssr-config'
 
 /**
  * Resolve the Google Cloud API key from the configurations
- * It will only return a key if the FT is enabled
- * regardless of the key being provided by the platform or the MRT env variable
- * Custom keys(MRT Env variable) take precedence over the platform provided key
- *
- * @param {Object} configurations - The configurations object
- * @returns {string} The Google Cloud API key
+ * User-defined environment variable (GOOGLE_CLOUD_API_KEY) always take precedence over the platform provided key
+ * If no custom key is set, the platform provided key is used (only if feature toggle is enabled in production)
  */
 function resolveGoogleCloudAPIKey(configurations) {
-    // If the FT is not enabled, the gcp API key will not be returned from the Shopper Config API
-    // Therefore the presence of the SF platform provided key is also serving as our feature toggle
+    const customKey = getConfig()?.app?.googleCloudAPI?.apiKey
+    if (customKey) {
+        return customKey
+    }
+
     const platformProvidedKey = configurations?.configurations?.find(
         (config) => config.id === 'gcp'
     )?.value
 
-    return !platformProvidedKey
-        ? null
-        : getConfig()?.app?.googleCloudAPI?.apiKey || platformProvidedKey
+    return platformProvidedKey || null
 }
 
 export const GoogleAPIProvider = ({children}) => {
