@@ -217,11 +217,13 @@ export const configureRoutes = (
     if (fuzzyPathMatching) {
         outputRoutes = configureRoutesWithFuzzyMatching(routes, urlConfig, allSites, ignoredRoutes)
     } else {
-        outputRoutes = configureRoutesWithExplicitMatching(routes, urlConfig, allSites, ignoredRoutes)
+        outputRoutes = configureRoutesWithExplicitMatching(
+            routes,
+            urlConfig,
+            allSites,
+            ignoredRoutes
+        )
     }
-
-    console.log('outputRoutes', outputRoutes)
-    console.log('total routes', outputRoutes.length)
 
     return outputRoutes
 }

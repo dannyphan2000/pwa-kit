@@ -121,8 +121,6 @@ const Refinements = ({
                                         }
                                     >
                                         {({isExpanded}) => {
-                                            console.log('isExpanded', isExpanded)
-                                            isExpanded = true
                                             return (
                                                 <>
                                                     <AccordionButton
