@@ -24,6 +24,7 @@ class AccessDenied extends ServiceException {
 }
 
 describe('server', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let originalEnv, app, server
     const lambdaMock = mockClient(LambdaClient)
     const s3Mock = mockClient(S3Client)

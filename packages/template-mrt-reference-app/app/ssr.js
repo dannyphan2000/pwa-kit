@@ -408,7 +408,6 @@ const {handler, app, server} = runtime.createHandler(options, (app) => {
     app.get('/ssr-shared', ssrShared)
     app.get('/streaming-large', streamingLarge)
 
-
     // Add a /auth/logout path that will always send a 401 (to allow clearing
     // of browser credentials)
     app.all('/auth/logout', (req, res) => res.status(401).send('Logged out'))
