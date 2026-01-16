@@ -158,7 +158,7 @@ jobs:
         with:
           payload: |
             {
-              "message": "⚠️ NPM Token expiring soon! Only ${{ env.days_left }} days remaining. Please rotate the token using instructions in PWA Kit Release Doc."
+              "message": "⚠️ NPM Token expiring soon! Only ${{ env.days_left }} days remaining. Please rotate the token using the instructions in this doc: ${{ secrets.PWA_KIT_RELEASE_DOC_LINK }}"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
