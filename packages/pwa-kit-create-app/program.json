@@ -450,7 +450,7 @@
                 "private": true
             },
             {
-                "id": "retail-react-app-hybrid-public-client-test-projec",
+                "id": "retail-react-app-hybrid-public-client-test-project",
                 "name": "Retail React App Hybrid Test Public SLAS client project",
                 "description": "",
                 "templateId": "retail-react-app",
