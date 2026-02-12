@@ -512,6 +512,9 @@ const ContactInfo = ({isSocialEnabled = false, idps = [], onRegisteredUserChoseG
         }
     }
 
+    const customerEmail = customer?.email || form.getValues('email')
+    const customerPhone = customer?.phoneHome || form.getValues('phone')
+
     return (
         <>
             <ToggleCard
@@ -535,8 +538,8 @@ const ContactInfo = ({isSocialEnabled = false, idps = [], onRegisteredUserChoseG
                               id: 'checkout_contact_info.action.sign_out'
                           })
                         : formatMessage({
-                              defaultMessage: 'Edit',
-                              id: 'checkout_contact_info.action.edit'
+                              defaultMessage: 'Change',
+                              id: 'checkout_contact_info.action.change'
                           })
                 }
             >
@@ -666,18 +669,14 @@ const ContactInfo = ({isSocialEnabled = false, idps = [], onRegisteredUserChoseG
                     </Container>
                 </ToggleCardEdit>
 
-                {(customer?.email || form.getValues('email')) && (
+                {customerEmail ? (
                     <ToggleCardSummary>
                         <Stack spacing={1}>
-                            <Text>{customer?.email || form.getValues('email')}</Text>
-                            {(customer?.phoneHome || form.getValues('phone')) && (
-                                <Text fontSize="sm" color="gray.600">
-                                    {customer?.phoneHome || form.getValues('phone')}
-                                </Text>
-                            )}
+                            <Text>{customerEmail}</Text>
+                            {customerPhone && <Text>{customerPhone}</Text>}
                         </Stack>
                     </ToggleCardSummary>
-                )}
+                ) : null}
             </ToggleCard>
 
             {/* Sign Out Confirmation Dialog */}
