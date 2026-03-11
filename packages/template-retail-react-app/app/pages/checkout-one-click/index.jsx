@@ -500,7 +500,7 @@ const CheckoutOneClick = () => {
 
             // If successful `onBillingSubmit` returns the updated basket. If the form was invalid on
             // submit, `undefined` is returned.
-            
+
             const updatedBasket = await onBillingSubmit(billingFormSnapshot)
 
             if (updatedBasket) {
